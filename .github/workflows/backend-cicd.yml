@@ -6,7 +6,7 @@ on:
     paths:
       - 'template.yml'
       - 'lambda/**'
-      - 'frontend/**'  # Add this line to include frontend changes
+      - 'HTML/**'  # Add this line to include frontend changes
 
 jobs:
   test-and-deploy:
