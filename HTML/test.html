@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<button type="submit" onclick="UserAction()">Test</button>
+
+<script>
+function UserAction() {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            alert(this.responseText);
+        }
+    };
+    xhttp.open("GET", "https://nbrsy2doe4.execute-api.us-east-1.amazonaws.com/PRODUCTION", true);
+    xhttp.setRequestHeader("Content-type", "application/json");
+    xhttp.send("test data");
+}
+</script>
+
+</body>
+</html>

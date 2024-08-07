@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+	<title>Cloud Resume Challange Blog</title>
+	
+	<!-- Meta -->
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="">
+	<meta name="author" content="Xiaoying Riley at 3rd Wave Media">    
+	<link rel="shortcut icon" href="favicon.ico"> 
+	
+	<!-- Google Fonts -->
+	<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900" rel="stylesheet">
+	
+	<!-- FontAwesome JS-->
+	<script defer src="assets/fontawesome/js/all.min.js"></script>
+	
+	<!-- Theme CSS -->  
+	<link id="theme-style" rel="stylesheet" href="assets/css/devresume.css">
+
+</head> 
+
+<body>
+	
+	<div class="main-wrapper">
+		<div class="container px-3 px-lg-5">
+			<article class="resume-wrapper mx-auto theme-bg-light p-5 mb-5 my-5 shadow-lg">
+				
+				<div class="resume-header">
+					<div class="row align-items-center">
+						<div class="resume-title col-12 col-md-6 col-lg-8 col-xl-9">
+							<h2 class="resume-name mb-0 text-uppercase">Cloud Resume Challenge</h2>
+							<div class="resume-tagline mb-3 mb-md-0">Clouds are cool</div>
+						</div><!--//resume-title-->
+
+					</div><!--//row-->
+					
+				</div><!--//resume-header-->
+				<hr>
+				<div class="resume-intro py-3">
+					<div class="row align-items-center">
+
+						
+						<div class="col text-start">
+							<p class="mb-0">
+							Hello everyone, I am Jonathan. I have been working cloud adjacent for the last few years working in the cloud, but not designing it.  
+							I would like to know more so while I have some free time decided to take on the <a href="https://cloudresumechallenge.dev/docs/the-challenge/aws/" class="theme-link">Cloud Resume Challenge</a>.
+ 
+							</p>
+						</div><!--//col-->
+					</div>
+				</div><!--//resume-intro-->
+				<hr>
+				<div class="resume-body">
+					<div class="row">
+						<div class="resume-main col-12 col-lg-8 col-xl-9   pe-0   pe-lg-5">
+							<section class="work-section py-3">
+								<h3 class="text-uppercase resume-section-heading mb-4">Challenge</h3>
+								<div class="item mb-3">
+									<div class="item-heading row align-items-center mb-2">
+										<h4 class="item-title col-12 col-md-6 col-lg-8 mb-2 mb-md-0">1. Certification</h4>
+										<div class="item-meta col-12 col-md-6 col-lg-4 text-muted text-start text-md-end">2 weeks study time | 2021</div>
+										
+									</div>
+									<div class="item-content">
+										<p>I received the AWS Cloud Practitioner certification in 2021. It is an introductory certification that orients you on the industry-leading AWS cloud.</p>
+									</div>
+								</div><!--//item-->
+								<div class="item mb-3">
+									<div class="item-heading row align-items-center mb-2">
+										<h4 class="item-title col-12 col-md-6 col-lg-8 mb-2 mb-md-0">2. and 3. HTML and CSS</h4>
+										<div class="item-meta col-12 col-md-6 col-lg-4 text-muted text-start text-md-end">4 hours | Feb 2023</div>
+										
+									</div>
+									<div class="item-content">
+										<p>Using a <a href="https://themes.3rdwavemedia.com/bootstrap-templates/personal/devblog-free-bootstrap-5-blog-template-for-developers/" class="theme-link">bootstrap template</a> I went ahead and put my <a href="../HTML/index.html" class="theme-link">resume </a> up in no time over the course of several evenings while watching TV. 
+										This was fairly easy as I have basic web design skills learned throughout the years thanks to <a href="https://www.codecademy.com/" class="theme-link">Codeacademy </a>
+										</p>
+										<ul class="resume-list">
+											<li>HTML</li>
+											<li>CSS</li>
+											<li>Jquery</li>
+											<li>Bootstrap</li>
+										</ul>
+									</div>
+								</div><!--//item-->
+								<div class="item mb-3">
+									<div class="item-heading row align-items-center mb-2">
+										<h4 class="item-title col-12 col-md-6 col-lg-8 mb-2 mb-md-0">4. Static Website</h4>
+										<div class="item-meta col-12 col-md-6 col-lg-4 text-muted text-start text-md-end">1 hour | Feb 2023</div>
+										
+									</div>
+									<div class="item-content">
+										<p>I went ahead and created an S3 bucket named cloudresumewitcoski in us-east-1 (Shout out to Northern Virginia a few miles from my house).  
+										I set all features and encryption as default.  I then uploaded the files of Step 1 and 2 into the S3 bucket.
+										Reading various other people doing the challenge I needed to make sure the following were done: 
+										<ul>
+											<li>Block public access — yes.</li>
+											<li>Server-side encryption — not required</li>
+											<li>Bucket versioning — not required.</li>
+											<li>Enable static website hosting</li>
+										</ul>
+										
+										</p>
+										<ul class="resume-list">
+											<li>S3</li>
+										</ul>
+									</div>
+								</div><!--//item-->
+								<div class="item mb-3">
+									<div class="item-heading row align-items-center mb-2">
+										<h4 class="item-title col-12 col-md-6 col-lg-8 mb-2 mb-md-0">5. HTTPS</h4>
+										<div class="item-meta col-12 col-md-6 col-lg-4 text-muted text-start text-md-end">1 hour | Feb 2023</div>
+										
+									</div>
+									<div class="item-content">
+										<p>Too see our website we then use CloudFront.  Starting up a new CloudFront we set the S3 bucket from Step 3 to the origin. 
+										We then need to change the <strong> Origin access </strong> to <strong> Origin access control settings (recommended)</strong>.
+										So I went ahead and created the cloudfront distribution with the s3 bucket as the origin. I then copied the s3 bucket policy.  
+										After some time I was able to see my website!!!
+										
+										</p>
+										<ul class="resume-list">
+											<li>Cloudfront </li>
+											<li>JSON</li> 
+
+										</ul>
+									</div>
+								</div><!--//item-->
+																<div class="item mb-3">
+									<div class="item-heading row align-items-center mb-2">
+										<h4 class="item-title col-12 col-md-6 col-lg-8 mb-2 mb-md-0">6. DNS</h4>
+										<div class="item-meta col-12 col-md-6 col-lg-4 text-muted text-start text-md-end">30 minutes | Feb 2023</div>
+										
+									</div>
+									<div class="item-content">
+										<p>I then went ahead and bought witcoskitech.com on route 53. Super easy!
+										Next I went ahead and used <strong> AWS Certificate Manager </strong>.to procure an SSL certificate for the site.
+										</p>
+										<ul class="resume-list">
+											<li>Route 53</li>
+											<li></li>
+										</ul>
+									</div>
+								</div><!--//item-->
+																<div class="item mb-3">
+									<div class="item-heading row align-items-center mb-2">
+										<h4 class="item-title col-12 col-md-6 col-lg-8 mb-2 mb-md-0">7. Javascript</h4>
+										<div class="item-meta col-12 col-md-6 col-lg-4 text-muted text-start text-md-end">Tyco Telecommunications | 2007 - 2009</div>
+										
+									</div>
+									<div class="item-content">
+										<p>Your resume webpage should include a visitor counter that displays how many people have accessed the site. 
+										You will need to write a bit of Javascript to make this happen. Here is a helpful tutorial to get you started in the right direction.
+										</p>
+										<ul class="resume-list">
+											<li>Python</li>
+											<li>AutoCAD</li>
+											<li>FME</li>
+										</ul>
+									</div>
+								</div><!--//item-->
+																<div class="item mb-3">
+									<div class="item-heading row align-items-center mb-2">
+										<h4 class="item-title col-12 col-md-6 col-lg-8 mb-2 mb-md-0">8. Database</h4>
+										<div class="item-meta col-12 col-md-6 col-lg-4 text-muted text-start text-md-end">WDG Location Consulting | 2007</div>
+										
+									</div>
+									<div class="item-content">
+										<p>The visitor counter will need to retrieve and update its count in a database somewhere. 
+										I suggest you use Amazon’s DynamoDB for this. (Use on-demand pricing for the database and you’ll pay essentially nothing, 
+										unless you store or retrieve much more data than this project requires.) Here is a great free course on DynamoDB.
+										</p>
+										<ul class="resume-list">
+											<li>Python</li>
+											<li>AutoCAD</li>
+											<li>FME</li>
+										</ul>
+									</div>
+									
+								</div><!--//item-->
+																								<div class="item mb-3">
+									<div class="item-heading row align-items-center mb-2">
+										<h4 class="item-title col-12 col-md-6 col-lg-8 mb-2 mb-md-0">9. API</h4>
+										<div class="item-meta col-12 col-md-6 col-lg-4 text-muted text-start text-md-end">Philmont Scout Ranch | 2007</div>
+										
+									</div>
+									<div class="item-content">
+										<p>Do not communicate directly with DynamoDB from your Javascript code. Instead, you will need to create an API that accepts requests from your web app and communicates with the database.
+										I suggest using AWS’s API Gateway and Lambda services for this. They will be free or close to free for what we are doing.
+										</p>
+										<ul class="resume-list">
+											<li>Python</li>
+											<li>AutoCAD</li>
+											<li>FME</li>
+										</ul>
+									</div>
+								</div><!--//item-->
+																								<div class="item mb-3">
+									<div class="item-heading row align-items-center mb-2">
+										<h4 class="item-title col-12 col-md-6 col-lg-8 mb-2 mb-md-0">10. Python</h4>
+										<div class="item-meta col-12 col-md-6 col-lg-4 text-muted text-start text-md-end">National Geographic Society | 2003</div>
+										
+									</div>
+									<div class="item-content">
+										<p>You will need to write a bit of code in the Lambda function; you could use more Javascript, 
+										but it would be better for our purposes to explore Python – a common language used in back-end programs and scripts – 
+										and its boto3 library for AWS. Here is a good, free Python tutorial.
+										</p>
+										<ul class="resume-list">
+											<li>Python</li>
+											<li>AutoCAD</li>
+											<li>FME</li>
+										</ul>
+									</div>
+								</div><!--//item-->
+																								<div class="item mb-3">
+									<div class="item-heading row align-items-center mb-2">
+										<h4 class="item-title col-12 col-md-6 col-lg-8 mb-2 mb-md-0">11. Tests </h4>
+										<div class="item-meta col-12 col-md-6 col-lg-4 text-muted text-start text-md-end">Tyco Telecommunications | 2007 - 2009</div>
+										
+									</div>
+									<div class="item-content">
+										<p>You should also include some tests for your Python code. Here are some resources on writing good Python tests.
+										</p>
+										<ul class="resume-list">
+											<li>Python</li>
+											<li>AutoCAD</li>
+											<li>FME</li>
+										</ul>
+									</div>
+								</div><!--//item-->
+																								<div class="item mb-3">
+									<div class="item-heading row align-items-center mb-2">
+										<h4 class="item-title col-12 col-md-6 col-lg-8 mb-2 mb-md-0">12. Infrastructure as Code </h4>
+										<div class="item-meta col-12 col-md-6 col-lg-4 text-muted text-start text-md-end">Tyco Telecommunications | 2007 - 2009</div>
+										
+									</div>
+									<div class="item-content">
+										<p>You should not be configuring your API resources – the DynamoDB table, the API Gateway,
+										the Lambda function – manually, by clicking around in the AWS console. Instead, define them in an AWS Serverless Application Model (SAM) 
+										template and deploy them using the AWS SAM CLI. This is called “infrastructure as code” or IaC. It saves you time in the long run.
+
+										Note: A more broadly applicable and commonly-used IaC tool in the industry is Terraform. 
+										It’s a little less straightforward to use than SAM for an AWS serverless API, but many people prefer to use it for their project anyway. 
+										If you want to use Terraform instead of SAM, follow this guide.
+										</p>
+										<ul class="resume-list">
+											<li>Python</li>
+											<li>AutoCAD</li>
+											<li>FME</li>
+										</ul>
+									</div>
+								</div><!--//item-->
+																								<div class="item mb-3">
+									<div class="item-heading row align-items-center mb-2">
+										<h4 class="item-title col-12 col-md-6 col-lg-8 mb-2 mb-md-0">13. Source Control </h4>
+										<div class="item-meta col-12 col-md-6 col-lg-4 text-muted text-start text-md-end">Tyco Telecommunications | 2007 - 2009</div>
+										
+									</div>
+									<div class="item-content">
+										<p>You do not want to be updating either your back-end API or your front-end website by making calls from your laptop, though. 
+										You want them to update automatically whenever you make a change to the code. 
+										(This is called continuous integration and deployment, or CI/CD.) Create a GitHub repository for your backend code.
+										</p>
+										<ul class="resume-list">
+											<li>Python</li>
+											<li>AutoCAD</li>
+											<li>FME</li>
+										</ul>
+									</div>
+								</div><!--//item-->
+																								<div class="item mb-3">
+									<div class="item-heading row align-items-center mb-2">
+										<h4 class="item-title col-12 col-md-6 col-lg-8 mb-2 mb-md-0">14. CI/CD (Back end) </h4>
+										<div class="item-meta col-12 col-md-6 col-lg-4 text-muted text-start text-md-end">Tyco Telecommunications | 2007 - 2009</div>
+										
+									</div>
+									<div class="item-content">
+										<p>Set up GitHub Actions such that when you push an update 
+										to your Serverless Application Model template or Python code, your Python tests get run. If the tests pass, the SAM application should get packaged and deployed to AWS.
+										</p>
+										<ul class="resume-list">
+											<li>Python</li>
+											<li>AutoCAD</li>
+											<li>FME</li>
+										</ul>
+									</div>
+								</div><!--//item-->
+																								<div class="item mb-3">
+									<div class="item-heading row align-items-center mb-2">
+										<h4 class="item-title col-12 col-md-6 col-lg-8 mb-2 mb-md-0">15. CI/CD (Front end) </h4>
+										<div class="item-meta col-12 col-md-6 col-lg-4 text-muted text-start text-md-end">Tyco Telecommunications | 2007 - 2009</div>
+										
+									</div>
+									<div class="item-content">
+										<p>Create a second GitHub repository for your website code. Create GitHub Actions such that when you push new website code, the S3 bucket automatically gets updated. 
+										(You may need to invalidate your CloudFront cache in the code as well.)
+										Important note: DO NOT commit AWS credentials to source control! Bad hats will find them and use them against you!
+										</p>
+										<ul class="resume-list">
+											<li>Python</li>
+											<li>AutoCAD</li>
+											<li>FME</li>
+										</ul>
+									</div>
+								</div><!--//item-->
+																								<div class="item mb-3">
+									<div class="item-heading row align-items-center mb-2">
+										<h4 class="item-title col-12 col-md-6 col-lg-8 mb-2 mb-md-0">16.Blog post</h4>
+										<div class="item-meta col-12 col-md-6 col-lg-4 text-muted text-start text-md-end">Tyco Telecommunications | 2007 - 2009</div>
+										
+									</div>
+									<div class="item-content">
+										<p>Finally, in the text of your resume, you should link a short blog post describing some things you learned while working on this project. 
+										Dev.to or Hashnode are great places to publish if you don’t have your own blog.
+
+										And that’s the gist of it! For strategies, tools, and further challenges to help you get hired in cloud, 
+										check out the AWS edition of the Cloud Resume Challenge book.
+										</p>
+										<ul class="resume-list">
+											<li>Python</li>
+											<li>AutoCAD</li>
+											<li>FME</li>
+										</ul>
+									</div>
+								</div><!--//item-->
+																								
+							</section><!--//work-section-->
+
+							
+							<section class="project-section py-3">
+								<h3 class="text-uppercase resume-section-heading mb-4">Extra Projects</h3>
+								<div class="item mb-3">
+									<div class="item-heading row align-items-center mb-2">
+										<h4 class="item-title col-12 col-md-6 col-lg-8 mb-2 mb-md-0">[UT hEREe</h4>
+										<div class="item-meta col-12 col-md-6 col-lg-4 text-muted text-start text-md-end">Open Source</div>
+										
+									</div>
+									<div class="item-content">
+										<p> SDFSDFSDFSDFSDFSDFSD FSDFSDF SDF   
+										</p>
+										
+										
+									</div>
+								</div><!--//item-->
+								
+						</div><!--//resume-main-->
+						<aside class="resume-aside col-12 col-lg-4 col-xl-3 px-lg-4 pb-lg-4">
+							<section class="skills-section py-3">
+								<h3 class="text-uppercase resume-section-heading mb-4">Certifications Earned</h3>
+								<div class="item">
+									<h4 class="item-title"></h4>
+									<ul class="list-unstyled resume-skills-list">
+									
+											<li class="mb-2">AWS Cloud Practitioner (2021)</li>
+											<li class="mb-2">.....................<li>
+										</ul>
+									</div><!--//item-->
+
+									</section><!--//skills-section-->
+									<section class="education-section py-3">
+										<h3 class="text-uppercase resume-section-heading mb-4">AWS Services Used</h3>
+										<ul class="list-unstyled resume-education-list">
+											<li>
+												<div class="resume-degree font-weight-bold">S3</div>	
+											</li>
+											<li>
+												<div class="resume-degree font-weight-bold">Amazon CloudFront</div>
+											</li>
+											
+												<div class="resume-degree font-weight-bold">Amazon Route 53</div>
+											</li>
+										
+												<div class="resume-degree font-weight-bold">DynamoDB</div>
+											</li>
+										</ul>
+									</section>
+
+									<section class="skills-section py-3">
+										<h3 class="text-uppercase resume-section-heading mb-4">Programming Languages Used</h3>
+										<ul class="list-unstyled resume-lang-list">
+											<li>HTML <span class="text-muted"></span></li>
+											<li>CSS <span class="text-muted"></span></li>
+											<li>Python <span class="text-muted"></span></li>
+											<li>Javascript <span class="text-muted"></span></li>
+											<li>......... <span class="text-muted"></span></li>
+											
+										</ul>
+									</section><!--//certificates-section-->
+									<section class="skills-section py-3">
+										<h3 class="text-uppercase resume-section-heading mb-4">Time</h3>
+										<ul class="list-unstyled resume-interests-list mb-0">
+											<li class="mb-2">Certifications<span class="text-muted"> 2 weeks </span></li>
+											<li class="mb-2">Coding<span class="text-muted"> 4 hours </span></li>
+											<li class="mb-2">Youtube Tutorials<span class="text-muted"> .........</span></li>
+											<li class="mb-2">Blog Tutorials<span class="text-muted"> ........</span></li>
+										</ul>
+									</section><!--//certificates-section-->
+									
+								</aside><!--//resume-aside-->
+							</div><!--//row-->
+						</div><!--//resume-body-->
+						<hr>
+						<div class="resume-footer text-center">
+							<ul class="resume-social-list list-inline mx-auto mb-0 d-inline-block text-muted">
+								<li class="list-inline-item mb-lg-0 me-3"><a class="resume-link" href="#"><i class="fab fa-github-square fa-2x me-2" data-fa-transform="down-4"></i><span class="d-none d-lg-inline-block text-muted">github.com/jwitcoski</span></a></li>
+								<li class="list-inline-item mb-lg-0 me-3"><a class="resume-link" href="#"><i class="fab fa-linkedin fa-2x me-2" data-fa-transform="down-4"></i><span class="d-none d-lg-inline-block text-muted">linkedin.com/in/jonathanwitcoski</span></a></li>
+								<li class="list-inline-item mb-lg-0 me-lg-3"><a class="resume-link" href="#"><i class="fab fa-twitter-square fa-2x me-2" data-fa-transform="down-4"></i><span class="d-none d-lg-inline-block text-muted">@msppingthings</span></a></li>
+							</ul>
+						</div><!--//resume-footer-->
+					</article>
+					
+				</div><!--//container-->
+				
+				<footer class="footer text-center py-4">
+					<!--/* This template is free as long as you keep the footer attribution link. If you'd like to use the template without the attribution link, you can buy the commercial license via our website: themes.3rdwavemedia.com Thank you for your support. :) */-->
+					<small class="copyright text-muted">Designed with <span class="sr-only">love</span><i class="fas fa-heart"></i> by <a class="theme-link" href="http://themes.3rdwavemedia.com" target="_blank">Xiaoying Riley</a> for developers</small>
+				</footer>
+				
+			</div><!--//main-wrapper-->
+			
+
+</body>
+</html> 
+
