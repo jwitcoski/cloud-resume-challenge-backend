@@ -2,7 +2,7 @@ import os
 import sys
 import json
 import boto3
-from moto import mock_dynamodb
+from moto import mock_dynamodb2  # Change this line
 from decimal import Decimal
 
 # Set AWS region for tests
@@ -13,7 +13,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from lambda_function import lambda_handler
 
-@mock_dynamodb
+@mock_dynamodb2  # Change this line
 def test_lambda_handler():
     # Set up mock DynamoDB
     dynamodb = boto3.resource('dynamodb')
@@ -49,6 +49,7 @@ def test_lambda_handler():
     item = table.get_item(Key={'id': 'count'})['Item']
     assert item['visitCount'] == Decimal('2')
 
+@mock_dynamodb2  # Add this decorator to the error test as well
 def test_lambda_handler_error():
     # Test error handling (no DynamoDB table)
     event = {}
