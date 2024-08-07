@@ -3,11 +3,9 @@ import boto3
 import os
 from decimal import Decimal
 
+# Initialize DynamoDB resource outside of the handler for better performance
 dynamodb = boto3.resource('dynamodb')
-ddbTableName = os.environ['TABLE_NAME']
-table = dynamodb.Table(ddbTableName)
 
-# Helper function to convert DynamoDB Decimal types to int
 def decimal_to_int(obj):
     if isinstance(obj, Decimal):
         return int(obj)
@@ -15,6 +13,10 @@ def decimal_to_int(obj):
 
 def lambda_handler(event, context):
     try:
+        # Get the table name from environment variable
+        ddbTableName = os.environ.get('TABLE_NAME', 'cloud-resume-challenge')
+        table = dynamodb.Table(ddbTableName)
+
         # Attempt to get the current visit count
         response = table.get_item(Key={'id': 'count'})
         
@@ -38,12 +40,20 @@ def lambda_handler(event, context):
 
         return {
             'statusCode': 200,
-            'body': json.dumps({'Count': new_count}, default=decimal_to_int)
+            'body': json.dumps({'Count': new_count}, default=decimal_to_int),
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            }
         }
 
     except Exception as e:
         print(f"Error updating visit count: {str(e)}")
         return {
             'statusCode': 500,
-            'body': json.dumps({'error': 'Could not update visit count'})
+            'body': json.dumps({'error': 'Could not update visit count'}),
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            }
         }
