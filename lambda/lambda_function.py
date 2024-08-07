@@ -11,26 +11,33 @@ def decimal_to_int(obj):
         return int(obj)
     raise TypeError
 
+import json
+import boto3
+import os
+from decimal import Decimal
+
+dynamodb = boto3.resource('dynamodb')
+
+def decimal_to_int(obj):
+    if isinstance(obj, Decimal):
+        return int(obj)
+    raise TypeError
+
 def lambda_handler(event, context):
     try:
-        # Get the table name from environment variable
-        ddbTableName = os.environ.get('TABLE_NAME', 'cloud-resume-challenge')
+        ddbTableName = os.environ['TABLE_NAME']
         table = dynamodb.Table(ddbTableName)
 
-        # Attempt to get the current visit count
         response = table.get_item(Key={'id': 'count'})
         
         if 'Item' in response:
             count = response['Item'].get('visitCount', 0)
         else:
-            # Initialize the count if the item doesn't exist
             count = 0
             table.put_item(Item={'id': 'count', 'visitCount': count})
         
-        # Increment the visit count
         new_count = count + 1
 
-        # Update the visit count in DynamoDB
         table.update_item(
             Key={'id': 'count'},
             UpdateExpression='SET visitCount = :c',

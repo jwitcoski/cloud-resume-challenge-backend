@@ -2,7 +2,7 @@ import os
 import sys
 import json
 import boto3
-from moto import mock_dynamodb2  # Change this line
+from moto import mock_dynamodb2
 from decimal import Decimal
 
 # Set AWS region for tests
@@ -13,8 +13,14 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from lambda_function import lambda_handler
 
-@mock_dynamodb2  # Change this line
+@mock_dynamodb2
 def test_lambda_handler():
+    # Set up mock AWS credentials
+    os.environ['AWS_ACCESS_KEY_ID'] = 'testing'
+    os.environ['AWS_SECRET_ACCESS_KEY'] = 'testing'
+    os.environ['AWS_SECURITY_TOKEN'] = 'testing'
+    os.environ['AWS_SESSION_TOKEN'] = 'testing'
+
     # Set up mock DynamoDB
     dynamodb = boto3.resource('dynamodb')
     table = dynamodb.create_table(
@@ -31,7 +37,7 @@ def test_lambda_handler():
     event = {}
     context = {}
     response = lambda_handler(event, context)
-    
+
     assert response['statusCode'] == 200
     body = json.loads(response['body'])
     assert 'Count' in body
@@ -39,7 +45,7 @@ def test_lambda_handler():
 
     # Test second invocation (should increment count)
     response = lambda_handler(event, context)
-    
+
     assert response['statusCode'] == 200
     body = json.loads(response['body'])
     assert 'Count' in body
@@ -49,13 +55,13 @@ def test_lambda_handler():
     item = table.get_item(Key={'id': 'count'})['Item']
     assert item['visitCount'] == Decimal('2')
 
-@mock_dynamodb2  # Add this decorator to the error test as well
+@mock_dynamodb2
 def test_lambda_handler_error():
-    # Test error handling (no DynamoDB table)
+    # Don't set up DynamoDB table to simulate an error
     event = {}
     context = {}
     response = lambda_handler(event, context)
-    
+
     assert response['statusCode'] == 500
     body = json.loads(response['body'])
     assert 'error' in body
