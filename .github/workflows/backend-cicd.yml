@@ -6,7 +6,8 @@ on:
     paths:
       - 'template.yml'
       - 'lambda/**'
-      - 'HTML/**'  # Add this line to include frontend changes
+      - 'HTML/**'
+  workflow_dispatch:  # This allows manual triggering
 
 jobs:
   test-and-deploy:
@@ -43,10 +44,10 @@ jobs:
     - name: SAM deploy
       run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset
 
-    # Add these steps for frontend deployment
-    - name: Deploy frontend to S3
+    # Updated step for HTML deployment
+    - name: Deploy HTML to S3
       run: |
-        aws s3 sync ./frontend s3://witcoskitech.com --delete
+        aws s3 sync ./HTML s3://witcoskitech.com --delete
 
     - name: Invalidate CloudFront Distribution
       run: |
