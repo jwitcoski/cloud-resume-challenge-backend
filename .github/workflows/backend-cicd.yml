@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: Backend CI/CD
 
 on:
   push:
@@ -6,8 +6,7 @@ on:
     paths:
       - 'template.yml'
       - 'lambda/**'
-      - 'HTML/**'
-  workflow_dispatch:  # This allows manual triggering
+  workflow_dispatch:
 
 jobs:
   test-and-deploy:
@@ -36,19 +35,10 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-east-1  # or your preferred region
+        aws-region: us-east-1
 
     - name: SAM build
       run: sam build
 
     - name: SAM deploy
       run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset
-
-    # Updated step for HTML deployment
-    - name: Deploy HTML to S3
-      run: |
-        aws s3 sync ./HTML s3://witcoskitech.com --delete
-
-    - name: Invalidate CloudFront Distribution
-      run: |
-        aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
