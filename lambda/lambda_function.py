@@ -3,20 +3,10 @@ import boto3
 import os
 from decimal import Decimal
 
-# Initialize DynamoDB resource outside of the handler for better performance
-dynamodb = boto3.resource('dynamodb')
-
-def decimal_to_int(obj):
-    if isinstance(obj, Decimal):
-        return int(obj)
-    raise TypeError
-
-import json
-import boto3
-import os
-from decimal import Decimal
-
-dynamodb = boto3.resource('dynamodb')
+def get_dynamodb_resource():
+    if 'AWS_SAM_LOCAL' in os.environ:
+        return boto3.resource('dynamodb', endpoint_url="http://dynamodb-local:8000")
+    return boto3.resource('dynamodb')
 
 def decimal_to_int(obj):
     if isinstance(obj, Decimal):
@@ -25,6 +15,7 @@ def decimal_to_int(obj):
 
 def lambda_handler(event, context):
     try:
+        dynamodb = get_dynamodb_resource()
         ddbTableName = os.environ['TABLE_NAME']
         table = dynamodb.Table(ddbTableName)
 
