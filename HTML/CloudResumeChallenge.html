@@ -65,7 +65,7 @@
         <h1>Cloud Resume Challenge Journey</h1>
         <p>Hello everyone, I'm Jonathan.</p>
 
-        <p>I've been working in the cloud industry for the past few years, but my focus has primarily been on utilizing cloud services rather than designing them. With some free time on my hands, I decided to challenge myself by taking on the <a href="https://cloudresumechallenge.dev/docs/the-challenge/aws/">Cloud Resume Challenge</a>. After two years of effort, I'm thrilled to announce that I've completed the challenge!</p>
+        <p>I've been working near the cloud industry for the past few years, but my focus has primarily been on utilizing products already produced in cloud services rather than designing them. With some free time on my hands, I decided to challenge myself by taking on the <a href="https://cloudresumechallenge.dev/docs/the-challenge/aws/">Cloud Resume Challenge</a>. After two years of effort, I'm thrilled to announce that I've completed the challenge!</p>
 
         <img src="https://miro.medium.com/v2/resize:fit:828/format:webp/1*agGvuEPjZp9kEn91DI1Cwg.png" alt="AWS Services Architecture">
         <p class="image-caption">AWS services used and how they integrate with the entire architecture. (Image credit: Cody Waits)</p>
@@ -82,7 +82,7 @@
         <p>Using a <a href="https://themes.3rdwavemedia.com/bootstrap-templates/personal/devblog-free-bootstrap-5-blog-template-for-developers/">Bootstrap template</a>, I quickly put together my <a href="https://witcoskitech.com/HTML/index.html">resume</a> over the course of several evenings while watching TV. Thanks to the basic web design skills I've acquired over the years through platforms like <a href="https://www.codecademy.com/">Codecademy</a>, this part was fairly straightforward.</p>
 
         <h3>Steps 4 and 5: Static Website and HTTPS (2 hours | Feb 2023)</h3>
-        <p>Next, I created an S3 bucket named <code>cloudresumewitcoski</code> in the us-east-1 region (shout out to Northern Virginia, just a few miles from my house). I set all features and encryption to default, then uploaded the files from Steps 2 and 3 into the S3 bucket. To make the website accessible via HTTPS, I used CloudFront, setting the S3 bucket as the origin and adjusting the Origin access to "Origin access control settings (recommended)." After creating the CloudFront distribution and copying the S3 bucket policy, I was finally able to see my website live!</p>
+        <p>Next, I created an S3 bucket named <code>witcoskitech.com</code> in the us-east-1 region (shout out to Northern Virginia, just a few miles from my house). I set all features and encryption to default, then uploaded the files from Steps 2 and 3 into the S3 bucket. To make the website accessible via HTTPS, I used CloudFront, setting the S3 bucket as the origin and adjusting the Origin access to "Origin access control settings (recommended)." After creating the CloudFront distribution and copying the S3 bucket policy, I was finally able to see my website live!</p>
 
         <h2>2024: Overcoming Obstacles</h2>
         <h3>Step 6: DNS (30 minutes… scratch that, 80 hours | Feb 2023 to April 2024)</h3>
@@ -97,15 +97,20 @@
         <h3>Steps 7-10: JavaScript, Database, API, Python (20 hours | May 2024 to July 2024)</h3>
         <p>After a break to welcome my second son, I resumed the challenge. By this point, AI chatbots like ChatGPT had become popular, and I decided to use one to help me continue. I know it's a bit of cheating, but with a 2-year-old and a newborn, I could only work on the challenge late at night after they fell asleep.</p>
 
+
+		<img src="assets/images/Chatgpt_cartoon.png" alt="Cartoon of a stressed man working on computer while managing kids">
+		<p class="image-caption">Here is the cartoon illustration mae by ChatGPT of a stressed man holding a baby and managing a two-year-old while trying to work on a computer. This image captures the light-hearted and humorous scenario of balancing the Cloud Resume Challenge with family life.</p>
+
+
         <p>Since no one really wants to read a resume, I decided to expand the challenge into something more interesting by showcasing my cartographic and geographic skills. I created ski maps using an open-source GIS program called QGIS, utilizing DEM data from <a href="https://opentopography.org/">OpenTopography</a> and ski map data from <a href="https://openstreetmap.org/">OpenStreetMap.org</a>. I bought <code>globalskiatlas.com</code> to host this project.</p>
 
         <img src="https://globalskiatlas.com/data/North%20America/United%20States/Pennsylvania/map/Jack%20Frost%20Mountain%20Ski%20Area.jpeg" alt="Jack Frost Ski Mountain Ski Area">
         <p class="image-caption">Jack Frost Ski Mountain Ski Area Map</p>
 
-        <p>The inspiration for Global Ski Atlas came from a table of ski resorts in the U.S. by Stuart Winchester at Storm Skiing, a collection of ski resort maps at <a href="https://skimap.org/">skimap.org</a>, and the winter sports data display at <a href="https://openskimap.org/">openskimap.org</a>.</p>
+        <p>The inspiration for Global Ski Atlas came from a table of ski resorts in the U.S. by Stuart Winchester at <a href= https://www.stormskiing.com/> Storm Skiing </a>, a collection of ski resort maps at <a href="https://skimap.org/">skimap.org</a>, and the winter sports data display at <a href="https://openskimap.org/">openskimap.org</a>.</p>
 
         <img src="https://globalskiatlas.com/blog/qgismodel.png" alt="QGIS Model to output ski maps">
-        <p class="image-caption">QGIS Model used to generate ski maps</p>
+		<p class="image-caption">QGIS Model used to generate ski maps. While not directly relevant to the Cloud Resume Challenge, mastering QGIS for this project was a challenge in itself. Getting the symbology, labeling, and even figuring out the angle to align the map (making the highest point north and lowest point south) pushed me to explore QGIS in ways I hadn't before in my career. This process of creating custom ski maps added an extra layer of complexity and learning to my journey.</p>
 
         <p>I started by creating the DynamoDB databases. Setting up the visitor counter was easy with instructions from ChatGPT. Writing the JavaScript and the Python within the Lambda function was also straightforward, with most errors quickly resolved by the AI assistant. However, I got stuck on the API. A helpful comment on my Stack Overflow post pointed out that my Lambda function settings were incorrect. I switched to using Cursor.sh, which, along with Postman, helped me get the Lambda functions up and running.</p>
 
@@ -114,15 +119,41 @@
         <h3>Steps 12-15: Infrastructure as Code, Source Control, and CI/CD (20 hours | July-August 2024)</h3>
         <p>Next up was Infrastructure as Code. I admit, it had been a while since I last used the command prompt. However, with the help of my trusty AI sidekick, I used AWS SAM to define and deploy all my backend resources. I then opened up my GitHub account and created a repository for version control. Initially, I made a mistake by putting all the code, including the front end, in one repository. After six attempts, I finally got the code to deploy correctly. I then separated the front end and backend into separate deployments. If I were to do this again, I would separate the front end and backend from the start—something I plan on doing next with <code>globalskiatlas.com</code>. I ran into a small hiccup where my code created a new DynamoDB database, but I managed to reroute my API Gateway resource to the correct one.</p>
 
-        <img src="\HTML\assets\images\path_to_your_github_actions_workflow_screenshot.png" alt="GitHub Actions Workflow">
+        <img src="assets/images/path_to_your_github_actions_workflow_screenshot.png" alt="GitHub Actions Workflow">
         <p class="image-caption">My GitHub Actions Workflow for CI/CD</p>
 
-        <p>I'm planning to repeat Steps 12-15 with the addition of automating the process of updating the Google Sheets file > CSV in S3 > DynamoDB with a Lambda function that runs whenever the CSV gets updated.</p>
+<h3>Future Plans: Automating the Data Pipeline</h3>
+<p>As I look to the future, I'm excited to take this project to the next level. My next challenge? Automating the entire data flow process. Here's what I have in mind:</p>
 
+<div class="data-flow">
+    <div class="flow-step"><i class="fas fa-table"></i><span>Google Sheets</span></div><div class="flow-arrow">➡️</div><div class="flow-step"><i class="fas fa-file-csv"></i><span>CSV in S3</span></div><div class="flow-arrow">➡️</div><div class="flow-step"><i class="fas fa-database"></i><span>DynamoDB</span></div>
+</div>
+
+<p>The grand plan is to create a Lambda function that springs into action whenever the CSV file in S3 gets a refresh. This way, our DynamoDB database will always be in sync with the latest data, without any manual intervention. It's all about making the system smarter and more efficient!</p>
+
+<p>This automation will not only streamline our workflow but also serve as a practical application of the skills I've honed through Steps 12-15 of the Cloud Resume Challenge. It's a perfect blend of what I've learned and where I want to go next in my cloud journey.</p>
         <h2>The Final Step</h2>
         <h3>Step 16: Write a Blog Post (4 hours | August 2024)</h3>
         <p>Now, I'm on the last step. I still have work to do on my second skiing website, and I plan on earning more advanced cloud certifications. This challenge has introduced me to a dozen Amazon applications, opening the door to cloud computing for this geography nerd. Inspired by <a href="https://www.linkedin.com/in/mbforr/">Matt Forrest</a>, who frequently posts about Cloud GIS, I hope to continue expanding my skill set in digital cartography and GIS.</p>
-    </div>
+
+        <h2>Thank You and Further Resources</h2>
+        <p>Thank you for taking the time to read through my Cloud Resume Challenge journey! If you're interested in diving deeper into the code and projects mentioned, here are the relevant GitHub repositories:</p>
+        
+        <ul>
+            <li>Online Resume (Backend and Frontend): <a href="https://github.com/jwitcoski/cloud-resume-challenge-backend">https://github.com/jwitcoski/cloud-resume-challenge-backend</a></li>
+            <li>QGIS Model for Ski Atlas: <a href="https://github.com/jwitcoski/skiatlas">https://github.com/jwitcoski/skiatlas</a></li>
+            <li>Global Ski Atlas Frontend (Future Site): <a href="https://github.com/jwitcoski/globalskiatlas--frontend">https://github.com/jwitcoski/globalskiatlas--frontend</a></li>
+            <li>Global Ski Atlas Backend (Future Site): <a href="https://github.com/jwitcoski/globalskiatlas--backend">https://github.com/jwitcoski/globalskiatlas--backend</a></li>
+        </ul>
+		
+		<p>If you'd like to connect or follow my future projects, you can find me on:</p>
+        <ul>
+            <li>LinkedIn: <a href="https://www.linkedin.com/in/jonathanwitcoski/">https://www.linkedin.com/in/jonathanwitcoski/</a></li>
+            <li>Twitter (X): <a href="https://x.com/MappingThings">@MappingThings</a> and <a href="https://x.com/GlobalSkiAtlas">@GlobalSkiAtlas</a></li>
+        </ul>
+
+        <p>Feel free to reach out if you have any questions or just want to chat about cloud computing, GIS, or skiing!</p>
+		</div>
 </body>
 </html>
 
