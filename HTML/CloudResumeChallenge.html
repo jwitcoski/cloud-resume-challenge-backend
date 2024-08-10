@@ -88,7 +88,7 @@
         <h3>Step 6: DNS (30 minutes… scratch that, 80 hours | Feb 2023 to April 2024)</h3>
         <p>I purchased the domain <code>witcoskitech.com</code> through Route 53 and used AWS Certificate Manager to procure an SSL certificate for the site. However, this is where things went terribly wrong. For some reason, my S3 bucket wouldn't connect with my domain. I tried blog posts, AI chatbots, and posting on help forums, but nothing worked. I eventually gave up, especially as life got in the way—my first son was born!</p>
 
-        <p>In April 2024, an anonymous member of the Cloud Challenge Discord community finally replied to my post. We spent an hour trying to solve the issue but to no avail. Desperate, I posted a $20 bounty on Upwork with screenshots. Within two days, I received multiple solutions. A fantastic individual casually mentioned, "Apparently, your name servers are not configured properly." He guided me through the solution:</p>
+        <p>In April 2024, an anonymous member of the Cloud Challenge Discord community finally replied to my post. We spent an hour trying to solve the issue but to no avail. Desperate, I posted a $20 bounty on Upwork with screenshots. Within two days, I received multiple solutions. A fantastic individual casually mentioned, "Apparently, your name servers are not configured properly." Shout out to <a href="https://www.upwork.com/freelancers/romanz153"> Roman Z.</a> for guiding me through the solution:</p>
 
         <ul>
             <li>Go to Route 53 / Registered domains / <code>witcoskitech.com</code> / Edit name servers and change them to match those from Route 53 / Hosted zones / <code>witcoskitech.com</code> / NS record.</li>
