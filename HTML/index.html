@@ -4,228 +4,131 @@
 		<title>Jonathan Witcoski</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<meta name="description" content="Jonathan Witcoski — Software Developer, Geographer, Cloud Solution Architect. Geospatial AI, AWS, FedRAMP, and full-stack development." />
 		<link rel="stylesheet" href="assets/css/main.css" />
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 	</head>
-	<body class="is-preload">
+	<body class="is-preload" ng-app="resumeApp" ng-controller="ResumeController as vm" ng-class="{'is-article-visible': vm.currentSection}">
 
 		<!-- Wrapper -->
 			<div id="wrapper">
 
 				<!-- Header -->
-					<header id="header">
+					<header id="header" ng-show="!vm.currentSection">
 						<div class="content">
 							<div class="inner">
-								<img src="images/profilephoto.jpeg" alt="Sedrick D." class="profile-photo">
+								<img src="images/profilephoto.jpeg" alt="Jonathan Witcoski" class="profile-photo">
 								<h1>Jonathan Witcoski</h1>
-								<p id="typewriter"></p>
+								<p typewriter="vm.typewriterPhrases"></p>
 							</div>
 						</div>
-						<nav>
+						<nav ng-class="{'use-middle': vm.sections.length % 2 === 0}">
 							<ul>
-								<li><a href="#about">About</a></li>
-								<li><a href="#experience">Experience</a></li>
-								<li><a href="#education">Education</a></li>
-								<li><a href="#skills">Skills</a></li>
-								<li><a href="#projects">Projects</a></li>
-								<li><a href="#contact">Contact</a></li>
+								<li ng-repeat="section in vm.sections" ng-class="{'is-middle': vm.sections.length % 2 === 0 && $index === vm.sections.length/2}"><a href="#" ng-click="vm.showSection(section.id); $event.preventDefault()">{{section.label}}</a></li>
 							</ul>
 						</nav>
-						
 					</header>
 
 				<!-- Main -->
-					<div id="main">
+					<div id="main" ng-show="vm.currentSection" ng-click="vm.currentSection && vm.closeArticle()">
 
 						<!-- About -->
-							<article id="about">
-								<h2 class="major">About</h2>
-								<p>I am a Geographer specializing in frontend and backend development for a complex scalable web map app. 
-							Want to know how I may help your project? Check out my project portfolio and online resume.</p>
-						
-								
-								<h3>Cloud Resume Challenge</h3>
-									<h4>Open Source</h4>
-									<a href="/CloudResumeChallenge.html">
-										<img src="assets/images/CloudResumeArchitecture.png" alt="Cloud Resume Challenge" style="max-width: 100%; height: auto;">
-									</a>
-									<p>This webpage was built to challenge myself to master the cloud by building this website using various AWS components. Read the <a href="/CloudResumeChallenge.html">blog here</a></p>
-
+						<article id="about" ng-show="vm.currentSection === 'about'" ng-class="{'active': vm.currentSection === 'about'}" ng-click="$event.stopPropagation()">
+							<div class="close" ng-click="vm.closeArticle()">Close</div>
+							<h2 class="major">About</h2>
+							<p>{{vm.about.intro}}</p>
+							<h3>{{vm.about.cloudResume.title}}</h3>
+							<h4>{{vm.about.cloudResume.subtitle}}</h4>
+							<a ng-href="{{vm.about.cloudResume.link}}">
+								<img ng-src="{{vm.about.cloudResume.image}}" alt="{{vm.about.cloudResume.alt}}" style="max-width: 100%; height: auto;">
+							</a>
+							<p ng-if="vm.about.cloudResume.screenshotImage" style="margin-top: 0.5rem;"><strong>Screenshot of live site:</strong></p>
+							<img ng-if="vm.about.cloudResume.screenshotImage" ng-src="{{vm.about.cloudResume.screenshotImage}}" alt="Screenshot of Cloud Resume Challenge live site" style="max-width: 100%; height: auto; border: 1px solid rgba(255,255,255,0.2); border-radius: 4px;">
+							<p style="margin-top: 1rem;">This webpage was built to challenge myself to master the cloud by building this website using various AWS components. Read the <a ng-href="{{vm.about.cloudResume.link}}">blog here</a></p>
+							<p><strong>GitHub repository:</strong> <a ng-href="{{vm.about.cloudResume.githubUrl}}" target="_blank" rel="noopener">cloud-resume-challenge-backend</a> · <strong>Live site:</strong> <a ng-href="{{vm.about.cloudResume.siteUrl}}" target="_blank" rel="noopener">witcoskitech.com</a></p>
 						</article>
 
 						<!-- Experience -->
-							<article id="experience">
-								<h2 class="major">Experience</h2>
-								<h3>Geographer</h3>
-								<h4>DRT Solutions / Centers for Disease Control and Prevention</h4>
-								<p>March 2022 – Current</p>
-								<p>Developed interactive security-focused dashboards for public health analysis, enhancing data accessibility while ensuring compliance with federal security standards. Implemented IAM security best practices across cloud infrastructure, ensuring proper authentication and authorization controls. Managed cross-functional teams to deliver complex projects on schedule while addressing security requirements.</p>
-								<p><strong>Technology Stack:</strong> Microsoft Entra ID, R, ESRI, PowerBI, DAX, Python, D3.JS</p>
-
-								<h3>GIS Data Engineer / Data Conversion Scrum Master</h3>
-								<h4>Saicon/National Grid</h4>
-								<p>May 2021 – March 2022</p>
-								<p>Spearheaded migration of sensitive geospatial data from legacy systems to secure cloud infrastructure in Azure. Designed and implemented robust security protocols for data transmission and storage. Developed and modified SQL scripts for geospatial data analysis with security controls for quality assurance. Managed Scrum processes across multiple teams, ensuring on-time delivery while addressing security concerns.</p>
-								<p><strong>Technology Stack:</strong> Azure, Python, ArcPy, ESRI, SmallWorld, Infrastructure as Code</p>
-
-								<h3>Geographer</h3>
-								<h4>US Census Bureau</h4>
-								<p>November 2016 – March 2021</p>
-								<p>Managed modification and improvement of Census boundaries following strict security protocols for sensitive data. Developed custom Python tools for secure processing of geographic data, reducing processing time by 30%. Collaborated with cross-functional teams to implement security best practices for geospatial workflows.</p>
-								<p><strong>Technology Stack:</strong> Oracle, Python, ArcPy, ESRI, QGIS, SQL</p>
-
-								<h3>GIS Systems Administrator / Software Engineer</h3>
-								<h4>C2 Solutions Group Inc.</h4>
-								<p>May 2014 – November 2016</p>
-								<p>Led infrastructure security initiatives for GIS platforms used by sensitive government organizations. Managed installation, configuration, and administration of secure GIS tool suites. Provided technical support and security guidance for ESRI-based GIS systems to ARNG-ILI and ARNG-ILE divisions. Developed and maintained security metrics dashboards for system monitoring. Implemented security controls and best practices across GIS infrastructure.</p>
-								<p><strong>Technology Stack:</strong> ArcGIS Server, ESRI Portal, ESRI License Manager, Sharepoint, Windows Server, Linux, Python</p>
-
-								<h3>Geospatial Analyst</h3>
-								<h4>Booz Allen Hamilton</h4>
-								<p>October 2009 – May 2014</p>
-								<p>Provided geospatial analysis and mapping for DHS and FEMA security-critical projects. Developed secure geospatial solutions following federal security standards. Led risk assessment initiatives for geospatial infrastructure. Collaborated with security teams to implement controls and safeguards for sensitive location data.</p>
-								<p><strong>Technology Stack:</strong> Python, ArcGIS, Security Frameworks</p>
-
-								<h3>GIS Specialist</h3>
-								<h4>Tyco Telecommunications</h4>
-								<p>2007 – 2009</p>
-								<p>Developed a spatial database of an underwater telecommunication cable, sonar data, and various other information of relevance to the company. Prepared a table, map, and graph for use in the completion of a final report and internal spatial data query.</p>
-								<p><strong>Technology Stack:</strong> Python, AutoCAD, FME</p>
-
-								<h3>GIS Specialist</h3>
-								<h4>WDG Location Consulting</h4>
-								<p>2007</p>
-								<p>Performed spatial analysis for site selection and market research.</p>
-
-								<h3>GIS Specialist</h3>
-								<h4>Philmont Scout Ranch</h4>
-								<p>2007</p>
-								<p>Mapped trails and facilities for one of the largest Scout camps in America.</p>
-
-								<h3>Intern</h3>
-								<h4>National Geographic Society</h4>
-								<p>2003</p>
-							</article>
+						<article id="experience" ng-show="vm.currentSection === 'experience'" ng-class="{'active': vm.currentSection === 'experience'}" ng-click="$event.stopPropagation()">
+							<div class="close" ng-click="vm.closeArticle()">Close</div>
+							<h2 class="major">Experience</h2>
+							<div ng-repeat="job in vm.experience" class="experience-job" style="margin-bottom: 1.5rem;">
+								<h3>{{job.title}}</h3>
+								<h4>{{job.org}}<span ng-if="job.website"> · <a ng-href="{{job.website}}" target="_blank" rel="noopener" style="font-weight: normal; text-decoration: underline;">vectorscopeai.com</a></span></h4>
+								<p>{{job.period}}</p>
+								<p ng-if="job.website"><strong>Website:</strong> <a ng-href="{{job.website}}" target="_blank" rel="noopener">{{job.website}}</a></p>
+								<p ng-if="job.description">{{job.description}}</p>
+								<p ng-if="job.stack"><strong>Technology Stack:</strong> {{job.stack}}</p>
+								<hr ng-if="!$last" style="margin: 1.25rem 0; border-color: rgba(255,255,255,0.1);" />
+							</div>
+						</article>
 
 						<!-- Education -->
-							<article id="education">
-								<h2 class="major">Education</h2>
-								
-								<h3>Master of Science in Geography</h3>
-								<h4>University of Tennessee</h4>
-								<p>2004 - 2007</p>
-
-								<h3>Bachelor of Arts in Geography and Anthropology</h3>
-								<h4>Penn State University</h4>
-								<p>2000 - 2004</p>
-								<p><em>Minor in Geographic Information Science</em></p>
-							</article>
+						<article id="education" ng-show="vm.currentSection === 'education'" ng-class="{'active': vm.currentSection === 'education'}" ng-click="$event.stopPropagation()">
+							<div class="close" ng-click="vm.closeArticle()">Close</div>
+							<h2 class="major">Education</h2>
+							<div ng-repeat="edu in vm.education">
+								<h3>{{edu.degree}}</h3>
+								<h4>{{edu.school}}</h4>
+								<p>{{edu.period}}</p>
+								<p ng-if="edu.note"><em>{{edu.note}}</em></p>
+							</div>
+						</article>
 
 						<!-- Skills -->
-						
-						<article id="skills">
+						<article id="skills" ng-show="vm.currentSection === 'skills'" ng-class="{'active': vm.currentSection === 'skills'}" ng-click="$event.stopPropagation()">
+							<div class="close" ng-click="vm.closeArticle()">Close</div>
 							<h2 class="major">Skills & <br>Certifications</h2>
-							<h3>Skills</h3>
-							
-							<h4>Cloud & DevOps</h4>
-							<ul>
-								<li>Amazon Web Services (AWS)</li>
-								<li>AWS IAM</li>
-								<li>AWS Step Functions</li>
-								<li>AWS Lambda</li>
-								<li>AWS S3</li>
-								<li>AWS API Gateway</li>
-								<li>AWS SQS</li>
-								<li>DynamoDB</li>
-								<li>Bedrock AI models</li>
-								<li>Microsoft Entra ID</li>
-								<li>Infrastructure as Code (IaC)</li>
-								<li>Terraform</li>
-								<li>CI/CD (Continuous Integration/Continuous Deployment)</li>
-								<li>Serverless Architecture</li>
-								<li>Git</li>
-								<li>PowerShell</li>
-							</ul>
-
-							<h4>Geospatial Technologies</h4>
-							<ul>
-								<li>ESRI</li>
-								<li>ArcPy</li>
-								<li>QGIS</li>
-								<li>GeoPandas</li>
-								<li>GeoServer</li>
-								<li>Mapbox</li>
-								<li>Leaflet</li>
-								<li>D3.js</li>
-							</ul>
-
-							<h4>Data & Analytics</h4>
-							<ul>
-								<li>Python</li>
-								<li>SQL</li>
-								<li>Power BI</li>
-								<li>DAX</li>
-								<li>Oracle</li>
-								<li>API Development</li>
-								<li>R</li>
-								<li>Security Frameworks</li>
-							</ul>
-							
-								<h3>Certifications</h3>
+							<h3>CORE SKILLS</h3>
+							<div ng-repeat="category in vm.skills">
+								<h4>{{category.label}}</h4>
 								<ul>
-									<li>
-										<strong>AWS Certified Cloud Practitioner</strong>
-										<p>(2021)</p>
-									</li>
+									<li ng-repeat="skill in category.items">{{skill}}</li>
 								</ul>
-								<div class="certification-badges">
-										<img src="images/aws-cloud-practitioner.png" alt="AWS Cloud Practitioner Foundational" />
-								</div>
-							</article>
+							</div>
+							<h3>Certifications</h3>
+							<ul>
+								<li ng-repeat="cert in vm.certifications">
+									<strong>{{cert.name}}</strong>
+									<p>({{cert.year}})</p>
+								</li>
+							</ul>
+							<div class="certification-badges">
+								<img ng-src="{{vm.certificationBadge}}" alt="AWS Cloud Practitioner Foundational" />
+							</div>
+						</article>
+
 						<!-- Projects -->
-								<article id="projects">
-									<h2 class="major">Projects</h2>
+						<article id="projects" ng-show="vm.currentSection === 'projects'" ng-class="{'active': vm.currentSection === 'projects'}" ng-click="$event.stopPropagation()">
+							<div class="close" ng-click="vm.closeArticle()">Close</div>
+							<h2 class="major">Projects</h2>
+							<div ng-repeat="proj in vm.projects">
+								<h3>{{proj.title}}</h3>
+								<h4>{{proj.subtitle}}</h4>
+								<a ng-href="{{proj.link}}">
+									<img ng-src="{{proj.image}}" alt="{{proj.alt}}" style="max-width: 100%; height: auto;">
+								</a>
+								<p>{{proj.description}}<a ng-if="proj.descriptionLink" ng-href="{{proj.descriptionLink}}">{{proj.descriptionLinkText}}</a></p>
+								<p><strong>Technology Stack:</strong> {{proj.stack}}</p>
+								<p ng-if="proj.siteUrl"><strong>Project Website:</strong> <a ng-href="{{proj.siteUrl}}">{{proj.siteLabel || proj.siteUrl}}</a></p>
+							</div>
+						</article>
 
-									<h3>Cloud Resume Challenge</h3>
-									<h4>Open Source | 2022-2024</h4>
-									<a href="/CloudResumeChallenge.html">
-										<img src="assets/images/CloudResumeArchitecture.png" alt="Cloud Resume Challenge" style="max-width: 100%; height: auto;">
-									</a>
-									<p>Implemented a full-stack serverless architecture using AWS S3, CloudFront, Lambda, API Gateway, and DynamoDB. Configured Route 53 for domain management and AWS Certificate Manager for SSL/TLS security. Established CI/CD pipelines using GitHub Actions for automated testing and deployment. Designed and implemented IAM security policies following best practices.</p>
-									<p><strong>Technology Stack:</strong> AWS S3, CloudFront, Lambda, API Gateway, DynamoDB, Route 53, AWS Certificate Manager, GitHub Actions, IAM</p>
-									<p><strong>Project Website:</strong> <a href="https://witcoskitech.com">witcoskitech.com</a></p>
-
-									<h3>Global Ski Atlas</h3>
-									<h4>Open Source | 2024-current</h4>
-									<a href="https://globalskiatlas.com">
-										<img src="assets/images/globalskiatlas.jpg" alt="Global Ski Atlas" style="max-width: 100%; height: auto;">
-									</a>
-									<p>Architected and deployed comprehensive AWS serverless infrastructure using Step Functions, Lambda, DynamoDB, S3, API Gateway, and SQS to automate ski resort data processing, integrated with Amazon Bedrock's Nova model for AI-generated resort descriptions. Designed RESTful API endpoints and orchestrated complex Step Functions workflows with 8+ Lambda functions to query OpenStreetMap, process data through SQS queues, and store enriched metadata in DynamoDB with S3 references. Developed automated deployment scripts and QGIS workflows to extract ski resort geometries from OpenStreetMap, creating high-resolution cartographic products and migrating to interactive D3.js web visualizations. Implemented serverless data pipelines connecting Google Sheets to S3 and DynamoDB, currently conducting spatial analysis using Python (Pandas + GeoPandas) for weather overlays and elevation metadata.</p>
-									<p><strong>Technology Stack:</strong> AWS Step Functions, Lambda, DynamoDB, S3, API Gateway, SQS, Amazon Bedrock, QGIS, OpenStreetMap, D3.js, Python, Pandas, GeoPandas</p>
-									<p><strong>Project Website:</strong> <a href="https://globalskiatlas.com">globalskiatlas.com</a></p>
-
-									<h3>Unity Game</h3>
-									<h4>GIS SDK API</h4>
-									<a href="https://jwitcoski.github.io/unity.html">
-										<img src="https://jwitcoski.github.io/UnityGames/tankgame/tank.gif" alt="Unity Game" style="max-width: 100%; height: auto;">
-									</a>
-									<p>Here is an example of my Unity game I created using a GIS SDK API. This game is available to be played on a Windows PC. Visit <a href="https://jwitcoski.github.io/unity.html">Unity Game</a></p>
-									<p><strong>Technology Stack:</strong> Unity, C#, GIS SDK API</p>
-								</article>
 						<!-- Contact -->
-							<article id="contact">
-								<h2 class="major">Contact</h2>
-								<ul class="icons">
-									<li><a href="mailto:jwitcoski@gmail.com" class="icon solid fa-envelope"><span class="label">Email</span></a></li>
-									<li><a href="https://www.linkedin.com/in/jonathanwitcoski" class="icon brands fa-linkedin"><span class="label">LinkedIn</span></a></li>
-								</ul>
-							</article>
+						<article id="contact" ng-show="vm.currentSection === 'contact'" ng-class="{'active': vm.currentSection === 'contact'}" ng-click="$event.stopPropagation()">
+							<div class="close" ng-click="vm.closeArticle()">Close</div>
+							<h2 class="major">Contact</h2>
+							<ul class="icons">
+								<li><a ng-href="mailto:{{vm.contact.email}}" class="icon solid fa-envelope"><span class="label">Email</span></a></li>
+								<li><a ng-href="{{vm.contact.linkedin}}" class="icon brands fa-linkedin" target="_blank" rel="noopener"><span class="label">LinkedIn</span></a></li>
+							</ul>
+						</article>
 
 					</div>
 
 				<!-- Footer -->
-					<footer id="footer">
-						<p class="visitor-counter"><span class="counter-number"></span></p>
+					<footer id="footer" ng-show="!vm.currentSection">
+						<p class="visitor-counter"><span class="counter-number">PAGE VIEWS: {{vm.visitorCount}}</span></p>
 						<p class="copyright">&copy; Jonathan Witcoski All rights reserved.</p>
 					</footer>
 
@@ -235,54 +138,8 @@
 			<div id="bg"></div>
 
 		<!-- Scripts -->
-			<script src="assets/js/jquery.min.js"></script>
-			<script src="assets/js/browser.min.js"></script>
-			<script src="assets/js/breakpoints.min.js"></script>
-			<script src="assets/js/util.js"></script>
-			<script src="assets/js/main.js"></script>
-			<script>
-				const texts = [
-					"Software Developer",
-					"Geographer",
-					"Consultant",
-					"Cloud Solution Architect"
-					
-				];
-				const typingSpeed = 100;
-				const erasingSpeed = 50;
-				const delayBetweenTexts = 1000;
-				let textIndex = 0;
-				let charIndex = 0;
-				let isTyping = true;
-
-				function animate() {
-					const currentText = texts[textIndex];
-					const typewriterElement = document.getElementById("typewriter");
-
-					if (isTyping) {
-						if (charIndex < currentText.length) {
-							typewriterElement.textContent += currentText.charAt(charIndex);
-							charIndex++;
-							setTimeout(animate, typingSpeed);
-						} else {
-							isTyping = false;
-							setTimeout(animate, delayBetweenTexts);
-						}
-					} else {
-						if (charIndex > 0) {
-							typewriterElement.textContent = currentText.substring(0, charIndex - 1);
-							charIndex--;
-							setTimeout(animate, erasingSpeed);
-						} else {
-							isTyping = true;
-							textIndex = (textIndex + 1) % texts.length;
-							setTimeout(animate, typingSpeed);
-						}
-					}
-				}
-
-				window.onload = animate;
-			</script>
-			<script src="assets/js/visitorcounter.js"></script>
+			<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+			<script src="assets/js/app.js"></script>
+			<script src="assets/js/typewriter.directive.js"></script>
 	</body>
 </html>
