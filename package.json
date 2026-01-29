@@ -1,0 +1,8 @@
+{
+  "name": "cloud-resume-challenge",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "npx serve HTML -l 3000"
+  }
+}
