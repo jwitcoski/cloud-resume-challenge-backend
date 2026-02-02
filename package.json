@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "npx serve HTML -l 3000"
+    "start": "npm run dev --prefix HTML",
+    "dev": "npm run dev --prefix HTML",
+    "build": "npm run build --prefix HTML",
+    "serve:static": "npx serve HTML -l 3000"
   }
 }

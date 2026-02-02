@@ -11,18 +11,31 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        cache-dependency-path: HTML/package-lock.json
+
+    - name: Install and build Next.js (static export)
+      run: |
+        cd HTML
+        npm ci
+        npm run build
 
     - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
+      uses: aws-actions/configure-aws-credentials@v4
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-east-1
 
-    - name: Deploy HTML to S3
+    - name: Deploy static site to S3
       run: |
-        aws s3 sync ./HTML s3://witcoskitech.com --delete
+        aws s3 sync HTML/out s3://witcoskitech.com --delete
 
     - name: Invalidate CloudFront Distribution
       env:

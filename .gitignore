@@ -1,2 +1,7 @@
-".aws-sam" 
-"samconfig.toml" 
+.aws-sam
+samconfig.toml
+
+# Next.js (HTML app)
+HTML/node_modules
+HTML/.next
+HTML/out 
