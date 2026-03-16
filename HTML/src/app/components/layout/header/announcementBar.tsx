@@ -9,7 +9,7 @@ const AnnouncementBar = () => {
                 </div>
                 <div className="relative z-10 container">
                     <div className="py-2.5 flex items-center justify-center gap-2">
-                        <p className="text-sm sm:text-base text-white">Founder, <a href="https://vectorscopeai.com" target="_blank" rel="noopener noreferrer" className="text-white underline hover:no-underline">Vector Scope AI</a> — spatial intelligence & GeoAI for government and enterprise.</p>
+                        <p className="text-sm sm:text-base text-white">Founder & GIS Architect, <a href="https://vectorscopeai.com" target="_blank" rel="noopener noreferrer" className="text-white underline hover:no-underline">Vector Scope AI</a> — collaborative map updates for agencies. Vector Ledger connects ArcGIS with GeoParquet and data lakes.</p>
                         <Image src={"/images/icon/arrow-icon.svg"} alt="arrow-icon" width={24} height={24} className="group-hover:translate-x-1.5 transition-all duration-500 ease-in-out" />
                     </div>
                 </div>

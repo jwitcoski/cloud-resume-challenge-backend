@@ -10,8 +10,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Jonathan Witcoski — GeoAI & Geospatial Solutions",
-  description: "Founder & Principal at Vector Scope AI. Spatial intelligence, cloud-native GIS, and AI-powered geospatial solutions for government and enterprise.",
+  title: "Jonathan Witcoski — GIS Architect & Vector Scope AI",
+  description: "Founder & GIS Architect at Vector Scope AI. Collaborative map updates for agencies—Vector Ledger connects ArcGIS with GeoParquet and data lakes.",
 };
 
 export default function RootLayout({

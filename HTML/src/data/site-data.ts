@@ -1,16 +1,16 @@
 export const experienceData = [
     {
         icon: "/images/icon/tailwind-icon.svg",
-        role: "Founder & Principal | Vector Scope AI LLC",
+        role: "Founder & GIS Architect | Vector Scope AI LLC",
         location: "Remote",
         startYear: "2025",
         endYear: "Present",
         bulletPoints: [
-            "Lead AI-powered geospatial consultancy delivering spatial intelligence solutions for government and enterprise clients",
-            "Design cloud-native geospatial ETL pipelines supporting large-scale operational planning and logistics optimization",
-            "Architect scalable spatial analytics solutions for petabyte-scale geodata processing",
-            "Build automated workflows processing millions of records daily, reducing manual effort by 80%+",
-            "Provide technical architecture guidance aligned with FedRAMP security and compliance requirements"
+            "Building Vector Ledger—the lakehouse layer for ArcGIS: collaborative map updates for agencies with versioned GeoParquet and Iceberg",
+            "Bridging ArcGIS Online/Enterprise with Spark/Sedona/Iceberg data lakes so staff edit via Esri web apps and output stays portable and analytics-ready",
+            "Designing Ledger Editor, Dashboard, Lake (GeoParquet storage), and Ledger Grid (Kubernetes GIS) for agency pilot deployments",
+            "Running Global Ski Atlas as live demo (3000+ resorts, web editor, public atlas) to prove the platform for boundaries and program areas",
+            "Pursuing Esri Startup Program and pilot engagements for agencies needing collaborative editing and GeoParquet for ArcGIS"
         ]
     },
     {
@@ -87,6 +87,7 @@ export const educationData = [
 
 export const projectOverview = {
     sideProjects: [
+        { name: "Vector Scope AI", url: "https://vectorscopeai.com" },
         { name: "Global Ski Atlas", url: "https://globalskiatlas.com" },
         { name: "Cloud Resume Challenge", url: "/cloud-resume-challenge" },
     ]
