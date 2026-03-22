@@ -6,9 +6,10 @@ export const experienceData = [
         startYear: "2025",
         endYear: "Present",
         bulletPoints: [
-            "Building Vector Ledger—the lakehouse layer for ArcGIS: collaborative map updates for agencies with versioned GeoParquet and Iceberg",
+            "Building Vector Ledger—the lakehouse layer for ArcGIS: collaborative map updates for agencies with versioned GeoParquet and Apache Iceberg",
             "Bridging ArcGIS Online/Enterprise with Spark/Sedona/Iceberg data lakes so staff edit via Esri web apps and output stays portable and analytics-ready",
-            "Designing Ledger Editor, Dashboard, Lake (GeoParquet storage), and Ledger Grid (Kubernetes GIS) for agency pilot deployments",
+            "Designing Ledger Editor, Dashboard, Lake (GeoParquet storage), and Ledger Grid (Kubernetes GIS) with changelog history and validation APIs for agency pilots",
+            "Implementing rules engine and topology validation (e.g., pipe sizing) stored in lakehouse Parquet—enforce edit-time constraints without separate databases",
             "Running Global Ski Atlas as live demo (3000+ resorts, web editor, public atlas) to prove the platform for boundaries and program areas",
             "Pursuing Esri Startup Program and pilot engagements for agencies needing collaborative editing and GeoParquet for ArcGIS"
         ]
@@ -94,6 +95,13 @@ export const projectOverview = {
 };
 
 export const featureWork = [
+    {
+        title: "Vector Ledger",
+        description: "Lakehouse layer for ArcGIS—versioned GeoParquet and Iceberg, validation APIs, changelog history, rules in the lake.",
+        roles: ["Apache Iceberg", "GeoParquet", "ArcGIS", "Validation API"],
+        image: "/images/feature-work/VectorLedger_AWS_ESRI_Architecture.png",
+        url: "https://vectorscopeai.com"
+    },
     {
         title: "Global Ski Atlas",
         description: "Full-stack web GIS with automated Python ETL and interactive JavaScript mapping.",
