@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 
 const AboutMe = () => {
-    const servicesBedge = ["Apache Iceberg", "GeoParquet", "GeoAI", "Spatial Data Engineering", "Python", "JavaScript", "SQL", "REST APIs", "Validation APIs", "ETL Automation", "Cloud-Native Architecture", "Docker", "Jenkins", "GitLab", "CI/CD", "FedRAMP/FISMA", "Azure", "AWS", "ArcGIS Enterprise", "PostgreSQL/PostGIS", "Agile/Scrum", "Technical Project Management"];
+    const servicesBedge = ["ArcGIS Enterprise", "ArcGIS Online", "ArcGIS Pro", "ArcGIS API for JavaScript", "Python", "JavaScript", "SQL", "REST APIs", "SQL Server", "PostgreSQL/PostGIS", "Spatial Analyst", "ETL Automation", "AWS", "Azure", "React", "Power BI", "Docker", "Jenkins", "GitLab", "CI/CD", "Agile/Scrum"];
     return (
         <section>
             <div className="container">
@@ -9,8 +9,8 @@ const AboutMe = () => {
                     <div className="flex flex-col gap-9 sm:gap-12 max-w-3xl mx-auto px-4 sm:px-7 py-11 md:py-20">
                         <div className="flex flex-col gap-4">
                             <p className="text-sm tracking-[2px] text-primary uppercase font-medium">About Me</p>
-                            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-[32px]">Hey there. I'm Jonathan — Founder & Principal at <a href="https://vectorscopeai.com" target="_blank" rel="noopener noreferrer" className="bg-[linear-gradient(90deg,_rgba(243,202,77,0.4)_0%,_rgba(243,202,77,0.05)_100%)] hover:underline">Vector Scope AI</a>, delivering <span className="border-b-2">spatial intelligence solutions</span> for government and enterprise. I build the lakehouse layer for ArcGIS: versioned GeoParquet and Iceberg, validation APIs, and collaborative editing so agencies keep analytics-ready data.</h2>
-                            <h5 className="text-secondary font-normal">Previously at DRT Strategies (CDC), National Grid, U.S. Census Bureau, and Booz Allen Hamilton.</h5>
+                            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-[32px]">Hey there. I'm Jonathan — a GIS developer with 15+ years building <span className="border-b-2">enterprise geospatial applications</span> for CDC, utilities, and federal clients. I work in ArcGIS Enterprise, Python, JavaScript, and PostGIS, with a focus on web mapping, spatial databases, and automated ETL workflows.</h2>
+                            <h5 className="text-secondary font-normal">Currently at DRT Strategies (CDC). Also building tools at <a href="https://vectorscopeai.com" target="_blank" rel="noopener noreferrer" className="hover:underline">Vector Scope AI</a>. Previously National Grid, U.S. Census Bureau, C2 Solutions (Reston, VA), and Booz Allen Hamilton (FEMA/DHS).</h5>
                         </div>
                         <div className="flex flex-col gap-4">
                             <p className="text-sm text-primary uppercase font-medium">Core Skills</p>
