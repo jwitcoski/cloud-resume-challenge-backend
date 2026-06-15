@@ -64,7 +64,7 @@ export default function CloudResumeChallengePage() {
             certification. This introductory certification helped me gain a solid
             understanding of AWS, the industry-leading cloud platform. It took me about
             two weeks of study time to pass the exam. I&apos;m now preparing for the{" "}
-            <Link href="/aws-solutions-architect-study" className="text-[#007bff] hover:underline">
+            <Link href="/aws-solutions-architect-study.html" className="text-[#007bff] hover:underline">
               Solutions Architect – Associate (SAA-C03)
             </Link>{" "}
             with a nightly study plan tied to my production projects.

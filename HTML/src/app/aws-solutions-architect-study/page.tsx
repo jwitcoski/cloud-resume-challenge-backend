@@ -143,7 +143,7 @@ export default function AwsSolutionsArchitectStudyPage() {
           </p>
           <p className="leading-relaxed mb-6">
             I earned{" "}
-            <Link href="/cloud-resume-challenge" className="text-[#007bff] hover:underline">
+            <Link href="/cloud-resume-challenge.html" className="text-[#007bff] hover:underline">
               AWS Cloud Practitioner in 2021
             </Link>{" "}
             and have since built production AWS for{" "}
@@ -187,7 +187,7 @@ export default function AwsSolutionsArchitectStudyPage() {
             Repo mapping: frontend → <code className="bg-[#f4f4f4] px-1 rounded">GlobalSkiAtlas_2</code> ·
             backend → <code className="bg-[#f4f4f4] px-1 rounded">globalskiatlas_data</code>.
             Additional labs use{" "}
-            <Link href="/cloud-resume-challenge" className="text-[#007bff] hover:underline">
+            <Link href="/cloud-resume-challenge.html" className="text-[#007bff] hover:underline">
               Cloud Resume Challenge
             </Link>{" "}
             where an isolated stack is safer than touching production atlas code.

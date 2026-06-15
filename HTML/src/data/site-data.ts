@@ -72,15 +72,15 @@ export const educationData = [
     { date: "2007", title: "Master of Science in Geography", subtitle: "University of Tennessee, Knoxville" },
     { date: "—", title: "Bachelor of Arts, Geography and Anthropology", subtitle: "Penn State University — Minor in GIS" },
     { date: "2021", title: "AWS Certified Cloud Practitioner", subtitle: "Amazon Web Services" },
-    { date: "2026", title: "AWS Solutions Architect – Associate (SAA-C03)", subtitle: "In progress — see study plan", url: "/aws-solutions-architect-study" }
+    { date: "2026", title: "AWS Solutions Architect – Associate (SAA-C03)", subtitle: "In progress — see study plan", url: "/aws-solutions-architect-study.html" }
 ];
 
 export const projectOverview = {
     sideProjects: [
         { name: "Global Ski Atlas", url: "https://globalskiatlas.com" },
         { name: "Vector Scope AI", url: "https://vectorscopeai.com" },
-        { name: "Cloud Resume Challenge", url: "/cloud-resume-challenge" },
-        { name: "AWS SAA Study Plan", url: "/aws-solutions-architect-study" },
+        { name: "Cloud Resume Challenge", url: "/cloud-resume-challenge.html" },
+        { name: "AWS SAA Study Plan", url: "/aws-solutions-architect-study.html" },
     ]
 };
 
@@ -104,6 +104,6 @@ export const featureWork = [
         description: "AWS-hosted application with IaC, REST APIs, and CI/CD.",
         roles: ["AWS", "REST APIs", "CI/CD", "IaC"],
         image: "/images/cloud-resume-challenge/CloudResumeArchitecture.png",
-        url: "/cloud-resume-challenge"
+        url: "/cloud-resume-challenge.html"
     }
 ];
