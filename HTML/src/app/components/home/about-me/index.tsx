@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 
 const AboutMe = () => {
-    const servicesBedge = ["ArcGIS Enterprise", "ArcGIS Online", "ArcGIS Pro", "ArcGIS API for JavaScript", "Python", "JavaScript", "SQL", "REST APIs", "SQL Server", "PostgreSQL/PostGIS", "Spatial Analyst", "ETL Automation", "AWS", "Azure", "React", "Power BI", "Docker", "Jenkins", "GitLab", "CI/CD", "Agile/Scrum"];
+    const servicesBedge = ["ArcGIS Enterprise", "ArcGIS Online", "ArcGIS Pro", "ArcGIS API for JavaScript", "Python", "R", "JavaScript", "SQL", "REST APIs", "SQL Server", "PostgreSQL/PostGIS", "GeoParquet", "PMTiles", "Spatial Analyst", "ETL Automation", "AWS", "Azure", "React", "Power BI", "Docker", "Jenkins", "GitLab", "CI/CD", "Agile/Scrum"];
     return (
         <section>
             <div className="container">

@@ -7,8 +7,8 @@ export const experienceData = [
         endYear: "Present",
         bulletPoints: [
             "Develop web mapping applications and dashboards with ArcGIS Enterprise, JavaScript, React, and Power BI for CDC surveillance programs",
-            "Build SQL Server and PostgreSQL/PostGIS databases and Python/SQL ETL pipelines for recurring geospatial updates",
-            "Work with CDC teams on enterprise GIS standards, automation, and application support"
+            "Use R and Python to build PMTiles and GeoParquet datasets that feed those dashboards and web maps",
+            "Build SQL Server and PostgreSQL/PostGIS databases and Python/SQL ETL pipelines for recurring geospatial updates"
         ]
     },
     {
@@ -71,7 +71,8 @@ export const experienceData = [
 export const educationData = [
     { date: "2007", title: "Master of Science in Geography", subtitle: "University of Tennessee, Knoxville" },
     { date: "—", title: "Bachelor of Arts, Geography and Anthropology", subtitle: "Penn State University — Minor in GIS" },
-    { date: "2021", title: "AWS Certified Cloud Practitioner", subtitle: "Amazon Web Services" }
+    { date: "2021", title: "AWS Certified Cloud Practitioner", subtitle: "Amazon Web Services" },
+    { date: "2026", title: "AWS Solutions Architect – Associate (SAA-C03)", subtitle: "In progress — see study plan", url: "/aws-solutions-architect-study" }
 ];
 
 export const projectOverview = {
@@ -79,6 +80,7 @@ export const projectOverview = {
         { name: "Global Ski Atlas", url: "https://globalskiatlas.com" },
         { name: "Vector Scope AI", url: "https://vectorscopeai.com" },
         { name: "Cloud Resume Challenge", url: "/cloud-resume-challenge" },
+        { name: "AWS SAA Study Plan", url: "/aws-solutions-architect-study" },
     ]
 };
 

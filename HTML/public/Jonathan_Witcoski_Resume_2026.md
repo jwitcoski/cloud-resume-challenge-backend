@@ -1,13 +1,15 @@
 # JONATHAN WITCOSKI
 
 **Email:** jwitcoski@gmail.com | **Phone:** (570) 582-3933 | **LinkedIn:** linkedin.com/in/jonathanwitcoski/  
-**Location:** DC metro area (previously Reston, VA)
+**Location:** DC metro area · previously Reston, VA
+
+Senior GIS Developer with 15+ years building enterprise ArcGIS web applications, spatial databases, and automated geospatial workflows for federal agencies and utilities. Strong match for ArcGIS Enterprise/Online/Pro, Python, JavaScript, SQL, SQL Server, PostgreSQL/PostGIS, and REST API development.
 
 ## TECHNICAL SKILLS
 
-**GIS:** ArcGIS Enterprise, ArcGIS Online, ArcGIS Pro, ArcGIS API for JavaScript, Spatial Analyst  
-**Development:** Python, JavaScript, SQL, REST APIs, web services  
-**Data:** SQL Server, PostgreSQL/PostGIS, spatial ETL, geospatial data standards  
+**GIS:** ArcGIS Enterprise, ArcGIS Online, ArcGIS Pro, ArcGIS API for JavaScript, Spatial Analyst, raster analytics  
+**Development:** Python, R, JavaScript, SQL, REST APIs, web services  
+**Data:** SQL Server, PostgreSQL/PostGIS, GeoParquet, PMTiles, spatial ETL, geospatial data formats and standards  
 **Cloud & ops:** AWS, Azure, Docker, Jenkins, GitLab, CI/CD
 
 ## EXPERIENCE
@@ -16,9 +18,9 @@
 
 Remote | March 2022 – Present
 
-- Develop web mapping applications and dashboards with ArcGIS Enterprise, JavaScript, React, and Power BI for CDC surveillance programs
+- Develop web mapping applications and dashboards with ArcGIS Enterprise, ArcGIS API for JavaScript, JavaScript, React, and Power BI for CDC surveillance programs
+- Use R and Python to build automated workflows for raster and vector data extraction, producing PMTiles and GeoParquet datasets that feed dashboards and web maps
 - Build SQL Server and PostgreSQL/PostGIS databases and Python/SQL ETL pipelines for recurring geospatial updates
-- Work with CDC teams on enterprise GIS standards, automation, and application support
 
 ### Founder | Vector Scope AI LLC
 
@@ -38,8 +40,8 @@ Remote | May 2021 – March 2022
 
 Suitland, MD | November 2016 – March 2021
 
-- Developed Python tools and ArcGIS API workflows for census geography production
-- Automated spatial processing workflows across large national datasets
+- Developed Python tools and ArcGIS API workflows for census geography production across large national datasets
+- Automated spatial and raster processing workflows using ArcGIS Spatial Analyst
 
 ### GIS Systems Administrator & Software Engineer | C2 Solutions Group Inc.
 
@@ -53,7 +55,7 @@ Reston, VA | May 2014 – November 2016
 Philadelphia, PA & Arlington, VA | October 2009 – May 2014
 
 - Built maps, spatial analysis workflows, and web GIS tools for FEMA and DHS disaster response
-- Supported situational awareness and decision-making during major disaster operations
+- Processed and analyzed raster and imagery datasets to support situational awareness during major disaster operations
 
 ### Earlier Roles
 

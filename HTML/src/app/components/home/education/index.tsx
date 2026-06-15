@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { educationData } from "@/data/site-data";
 
 const Education = () => {
@@ -36,7 +37,13 @@ const Education = () => {
 
                                         <div className="flex flex-col gap-2 flex-1 sm:pl-16 ml-2 sm:ml-0">
                                             <h5 className="font-semibold">{item.title}</h5>
-                                            <p className="text-primary">{item.subtitle}</p>
+                                            {item.url ? (
+                                                <Link href={item.url} className="text-primary hover:underline">
+                                                    {item.subtitle}
+                                                </Link>
+                                            ) : (
+                                                <p className="text-primary">{item.subtitle}</p>
+                                            )}
                                         </div>
                                     </div>
                                 ))}
