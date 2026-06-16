@@ -5,8 +5,10 @@ import {
   countByReadiness,
   domainTasks,
   examServices,
+  getStudyNightDefaults,
   readinessLegend,
   reviewSchedule,
+  studyNights,
   type ExamReadiness,
 } from "@/data/saa-c03-exam-checklist";
 
@@ -37,18 +39,31 @@ export default function ExamChecklist() {
 
   useEffect(() => {
     setMounted(true);
+    const defaults = getStudyNightDefaults();
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw) as {
-          services?: Record<string, boolean>;
-          tasks?: Record<string, boolean>;
-        };
-        setChecked(parsed.services ?? {});
-        setTasksChecked(parsed.tasks ?? {});
+      const parsed = raw
+        ? (JSON.parse(raw) as {
+            services?: Record<string, boolean>;
+            tasks?: Record<string, boolean>;
+          })
+        : null;
+      const services = { ...(parsed?.services ?? {}) };
+      const tasks = { ...(parsed?.tasks ?? {}) };
+      for (const [id, val] of Object.entries(defaults.services)) {
+        if (val) services[id] = true;
+      }
+      for (const [id, val] of Object.entries(defaults.tasks)) {
+        if (val) tasks[id] = true;
+      }
+      setChecked(services);
+      setTasksChecked(tasks);
+      if (!raw || JSON.stringify(parsed) !== JSON.stringify({ services, tasks })) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({ services, tasks }));
       }
     } catch {
-      /* ignore corrupt storage */
+      setChecked(defaults.services);
+      setTasksChecked(defaults.tasks);
     }
   }, []);
 
@@ -148,6 +163,25 @@ export default function ExamChecklist() {
             </div>
           </div>
         </div>
+        {studyNights.length > 0 && (
+          <div className="mb-4 space-y-2">
+            <p className="text-sm font-medium text-[#444]">Study nights completed</p>
+            <ul className="text-sm text-[#555] space-y-1">
+              {studyNights.map((n) => (
+                <li key={n.night} className="flex flex-wrap gap-x-2 gap-y-0.5">
+                  <span>
+                    Night {n.night}: <strong>{n.title}</strong>
+                  </span>
+                  <span className="text-[#888]">({n.completedDate})</span>
+                  {n.practiceScore && (
+                    <span className="text-[#666]">· Practice {n.practiceScore}</span>
+                  )}
+                  {n.lab && <span className="text-[#666]">· {n.lab}</span>}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
         <div className="flex flex-wrap gap-2 text-xs">
           <span className="px-2 py-1 rounded bg-green-100 text-green-800">
             Know {counts.know}

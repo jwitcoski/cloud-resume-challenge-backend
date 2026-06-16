@@ -22,6 +22,20 @@ export type DomainTask = {
   checkpoints: string[];
 };
 
+export type StudyNight = {
+  night: number;
+  week: number;
+  title: string;
+  completedDate: string;
+  lab?: string;
+  practiceScore?: string;
+  notes?: string;
+  /** Service ids reviewed that night (checklist rows). */
+  reviewedServiceIds: string[];
+  /** Domain checkpoint ids completed, e.g. d1-t1-cp-0. */
+  completedCheckpointIds: string[];
+};
+
 export const readinessLegend: Record<
   ExamReadiness,
   { label: string; description: string }
@@ -84,13 +98,13 @@ export const examServices: ExamService[] = [
   { id: "wavelength", name: "AWS Wavelength", category: "Compute", readiness: "awareness", domain: "D3", examFocus: "5G edge compute at carrier sites" },
 
   // Containers
-  { id: "ecr", name: "Amazon ECR", category: "Containers", readiness: "know", domain: "D3", examFocus: "Private Docker registry; image scanning", gsaNote: "Backend pipeline images" },
-  { id: "ecs", name: "Amazon ECS", category: "Containers", readiness: "know", domain: "D2/D3", examFocus: "Task definitions; services; Fargate vs EC2 launch", gsaNote: "Backend batch pipeline" },
+  { id: "ecr", name: "Amazon ECR", category: "Containers", readiness: "know", domain: "D3", examFocus: "Private Docker registry; image scanning", gsaNote: "Night 1: deploy user push scoped to globalskiatlas-backend-k8s-pipeline" },
+  { id: "ecs", name: "Amazon ECS", category: "Containers", readiness: "know", domain: "D2/D3", examFocus: "Task definitions; services; Fargate vs EC2 launch", gsaNote: "Night 1 audit: execution role (ECR/logs) vs task role (S3)" },
   { id: "ecs-anywhere", name: "Amazon ECS Anywhere", category: "Containers", readiness: "awareness", domain: "D3", examFocus: "Run ECS tasks on your own hardware" },
   { id: "eks", name: "Amazon EKS", category: "Containers", readiness: "study", domain: "D2/D3", examFocus: "Managed Kubernetes; vs ECS when K8s required", studyWeek: 4 },
   { id: "eks-anywhere", name: "Amazon EKS Anywhere", category: "Containers", readiness: "awareness", domain: "D3", examFocus: "K8s on-premises" },
   { id: "eks-distro", name: "Amazon EKS Distro", category: "Containers", readiness: "awareness", domain: "D3", examFocus: "Open-source K8s distribution" },
-  { id: "fargate", name: "AWS Fargate", category: "Containers", readiness: "know", domain: "D3/D4", examFocus: "Serverless containers; no EC2 to manage; per-task billing", gsaNote: "Backend ECS tasks" },
+  { id: "fargate", name: "AWS Fargate", category: "Containers", readiness: "know", domain: "D3/D4", examFocus: "Serverless containers; no EC2 to manage; per-task billing", gsaNote: "Night 1: CannotPullContainerError → execution role, not task role (Q3)" },
 
   // Database
   { id: "aurora", name: "Amazon Aurora", category: "Database", readiness: "study", domain: "D2/D3/D4", examFocus: "MySQL/PostgreSQL compatible; storage auto-scales; Global Database", studyWeek: 3 },
@@ -124,16 +138,16 @@ export const examServices: ExamService[] = [
 
   // Management and Governance
   { id: "auto-scaling", name: "AWS Auto Scaling", category: "Management and Governance", readiness: "study", domain: "D2/D4", examFocus: "Unified scaling for multiple resources", studyWeek: 4 },
-  { id: "cli", name: "AWS CLI", category: "Management and Governance", readiness: "know", domain: "D1", examFocus: "Scripting AWS operations", gsaNote: "Daily deploy scripts" },
+  { id: "cli", name: "AWS CLI", category: "Management and Governance", readiness: "know", domain: "D1", examFocus: "Scripting AWS operations", gsaNote: "Night 1 lab: get-policy-version, simulate-principal-policy, list-role-policies" },
   { id: "cloudformation", name: "AWS CloudFormation", category: "Management and Governance", readiness: "know", domain: "D2", examFocus: "IaC stacks; drift; nested stacks; StackSets", gsaNote: "SAM generates CFN" },
-  { id: "cloudtrail", name: "AWS CloudTrail", category: "Management and Governance", readiness: "study", domain: "D1", examFocus: "API audit log; org trail; vs Config for compliance state", studyWeek: 1 },
+  { id: "cloudtrail", name: "AWS CloudTrail", category: "Management and Governance", readiness: "partial", domain: "D1", examFocus: "API audit log; org trail; vs Config for compliance state", gsaNote: "Night 1: who deleted bucket → CloudTrail (Q7)", studyWeek: 1 },
   { id: "cloudwatch", name: "Amazon CloudWatch", category: "Management and Governance", readiness: "partial", domain: "D2/D3", examFocus: "Metrics, alarms, logs, dashboards, EventBridge integration", gsaNote: "Logs only so far", studyWeek: 2 },
   { id: "compute-optimizer", name: "AWS Compute Optimizer", category: "Management and Governance", readiness: "study", domain: "D4", examFocus: "Right-size EC2/EBS/Lambda recommendations", studyWeek: 5 },
-  { id: "config", name: "AWS Config", category: "Management and Governance", readiness: "study", domain: "D1", examFocus: "Resource configuration history; rules; compliance", studyWeek: 1 },
+  { id: "config", name: "AWS Config", category: "Management and Governance", readiness: "partial", domain: "D1", examFocus: "Resource configuration history; rules; compliance", gsaNote: "Night 1: config state vs CloudTrail API audit", studyWeek: 1 },
   { id: "control-tower", name: "AWS Control Tower", category: "Management and Governance", readiness: "awareness", domain: "D1", examFocus: "Multi-account landing zone; guardrails" },
   { id: "health", name: "AWS Health Dashboard", category: "Management and Governance", readiness: "awareness", domain: "D2", examFocus: "AWS service events affecting your account" },
   { id: "license-manager", name: "AWS License Manager", category: "Management and Governance", readiness: "awareness", domain: "D4", examFocus: "Track software licenses on AWS" },
-  { id: "organizations", name: "AWS Organizations", category: "Management and Governance", readiness: "study", domain: "D1", examFocus: "Multi-account; SCPs; consolidated billing", studyWeek: 1 },
+  { id: "organizations", name: "AWS Organizations", category: "Management and Governance", readiness: "partial", domain: "D1", examFocus: "Multi-account; SCPs; consolidated billing", gsaNote: "Night 1: SCP Deny beats IAM Allow — even admins (Q1, B1)", studyWeek: 1 },
   { id: "service-catalog", name: "AWS Service Catalog", category: "Management and Governance", readiness: "awareness", domain: "D1", examFocus: "Approved products for self-service provisioning" },
   { id: "ssm", name: "AWS Systems Manager", category: "Management and Governance", readiness: "study", domain: "D1", examFocus: "Parameter Store vs Secrets Manager; Patch Manager; Session Manager", studyWeek: 1 },
   { id: "trusted-advisor", name: "AWS Trusted Advisor", category: "Management and Governance", readiness: "study", domain: "D4", examFocus: "Cost/security/fault tolerance checks", studyWeek: 5 },
@@ -160,29 +174,29 @@ export const examServices: ExamService[] = [
   { id: "route53", name: "Amazon Route 53", category: "Networking and Content Delivery", readiness: "partial", domain: "D2/D3", examFocus: "Routing policies; health checks; alias records; failover", gsaNote: "Basic DNS only", studyWeek: 4 },
   { id: "site-to-site-vpn", name: "AWS Site-to-Site VPN", category: "Networking and Content Delivery", readiness: "study", domain: "D2", examFocus: "IPsec tunnel on-premises ↔ VPC; quick/cheap vs DX", studyWeek: 3 },
   { id: "transit-gateway", name: "AWS Transit Gateway", category: "Networking and Content Delivery", readiness: "study", domain: "D2/D4", examFocus: "Hub for VPC/VPN/DX; vs full mesh peering", studyWeek: 3 },
-  { id: "vpc", name: "Amazon VPC", category: "Networking and Content Delivery", readiness: "partial", domain: "D1/D2", examFocus: "Subnets, IGW, NAT GW, NACL vs SG, VPC endpoints, peering", gsaNote: "Fargate awsvpc only", studyWeek: 2 },
+  { id: "vpc", name: "Amazon VPC", category: "Networking and Content Delivery", readiness: "partial", domain: "D1/D2", examFocus: "Subnets, IGW, NAT GW, NACL vs SG, VPC endpoints, peering", gsaNote: "Night 1: SG stateful at ENI vs NACL stateless at subnet (Q5)", studyWeek: 2 },
 
   // Security, Identity, and Compliance
   { id: "artifact", name: "AWS Artifact", category: "Security, Identity, and Compliance", readiness: "awareness", domain: "D1", examFocus: "Download compliance reports (SOC, PCI)" },
   { id: "audit-manager", name: "AWS Audit Manager", category: "Security, Identity, and Compliance", readiness: "awareness", domain: "D1", examFocus: "Continuous compliance audits" },
   { id: "acm", name: "AWS Certificate Manager (ACM)", category: "Security, Identity, and Compliance", readiness: "partial", domain: "D1", examFocus: "Free public TLS certs; must use us-east-1 for CloudFront", gsaNote: "CloudFront HTTPS", studyWeek: 1 },
   { id: "cloudhsm", name: "AWS CloudHSM", category: "Security, Identity, and Compliance", readiness: "awareness", domain: "D1", examFocus: "Dedicated hardware HSM; vs KMS shared" },
-  { id: "cognito", name: "Amazon Cognito", category: "Security, Identity, and Compliance", readiness: "know", domain: "D1", examFocus: "User pools vs identity pools; OAuth/OIDC; federated sign-in", gsaNote: "Frontend wiki auth" },
+  { id: "cognito", name: "Amazon Cognito", category: "Security, Identity, and Compliance", readiness: "know", domain: "D1", examFocus: "User pools vs identity pools; OAuth/OIDC; federated sign-in", gsaNote: "Night 1: User Pool auth + Identity Pool for AWS creds (Q8)" },
   { id: "detective", name: "Amazon Detective", category: "Security, Identity, and Compliance", readiness: "awareness", domain: "D1", examFocus: "Investigate security findings root cause" },
   { id: "directory-service", name: "AWS Directory Service", category: "Security, Identity, and Compliance", readiness: "awareness", domain: "D1", examFocus: "Managed Microsoft AD / Simple AD" },
   { id: "firewall-manager", name: "AWS Firewall Manager", category: "Security, Identity, and Compliance", readiness: "awareness", domain: "D1", examFocus: "Central WAF/rule management across accounts" },
   { id: "guardduty", name: "Amazon GuardDuty", category: "Security, Identity, and Compliance", readiness: "study", domain: "D1", examFocus: "Threat detection from CloudTrail/VPC/ DNS logs", studyWeek: 1 },
-  { id: "iam-identity-center", name: "AWS IAM Identity Center", category: "Security, Identity, and Compliance", readiness: "study", domain: "D1", examFocus: "SSO to AWS accounts and SaaS; successor to AWS SSO", studyWeek: 1 },
+  { id: "iam-identity-center", name: "AWS IAM Identity Center", category: "Security, Identity, and Compliance", readiness: "partial", domain: "D1", examFocus: "SSO to AWS accounts and SaaS; successor to AWS SSO", gsaNote: "Night 1: multi-account SSO — not RAM (Q4)", studyWeek: 1 },
   { id: "inspector", name: "Amazon Inspector", category: "Security, Identity, and Compliance", readiness: "awareness", domain: "D1", examFocus: "Automated vulnerability scanning for EC2/containers" },
-  { id: "kms", name: "AWS KMS", category: "Security, Identity, and Compliance", readiness: "study", domain: "D1", examFocus: "CMK; envelope encryption; key policies vs IAM; SSE-KMS", studyWeek: 1 },
+  { id: "kms", name: "AWS KMS", category: "Security, Identity, and Compliance", readiness: "study", domain: "D1", examFocus: "CMK; envelope encryption; key policies vs IAM; SSE-KMS", gsaNote: "Night 1 preview: Lambda needs kms:Decrypt + s3:GetObject (Q2); lab Night 2", studyWeek: 1 },
   { id: "macie", name: "Amazon Macie", category: "Security, Identity, and Compliance", readiness: "awareness", domain: "D1", examFocus: "Discover/classify sensitive data in S3" },
   { id: "network-firewall", name: "AWS Network Firewall", category: "Security, Identity, and Compliance", readiness: "awareness", domain: "D1", examFocus: "Stateful VPC traffic filtering" },
-  { id: "ram", name: "AWS Resource Access Manager (RAM)", category: "Security, Identity, and Compliance", readiness: "awareness", domain: "D1", examFocus: "Share subnets/transit gateway across accounts" },
+  { id: "ram", name: "AWS Resource Access Manager (RAM)", category: "Security, Identity, and Compliance", readiness: "partial", domain: "D1", examFocus: "Share subnets/transit gateway across accounts", gsaNote: "Night 1: share TGW across accounts — not SSO (B2)" },
   { id: "secrets-manager", name: "AWS Secrets Manager", category: "Security, Identity, and Compliance", readiness: "study", domain: "D1", examFocus: "Rotation; vs Parameter Store SecureString", studyWeek: 1 },
   { id: "security-hub", name: "AWS Security Hub", category: "Security, Identity, and Compliance", readiness: "awareness", domain: "D1", examFocus: "Aggregate findings from GuardDuty, Inspector, etc." },
-  { id: "shield", name: "AWS Shield", category: "Security, Identity, and Compliance", readiness: "study", domain: "D1", examFocus: "Standard (free, L3/L4) vs Advanced (DDoS cost protection + WAF)", studyWeek: 1 },
-  { id: "waf", name: "AWS WAF", category: "Security, Identity, and Compliance", readiness: "study", domain: "D1", examFocus: "Web ACLs; rate limiting; attach to CloudFront/ALB/API GW", studyWeek: 1 },
-  { id: "iam", name: "IAM", category: "Security, Identity, and Compliance", readiness: "know", domain: "D1", examFocus: "Policies, roles, MFA, boundary, SCP, least privilege", gsaNote: "Deploy + ECS + Lambda roles" },
+  { id: "shield", name: "AWS Shield", category: "Security, Identity, and Compliance", readiness: "partial", domain: "D1", examFocus: "Standard (free, L3/L4) vs Advanced (DDoS cost protection + WAF)", gsaNote: "Night 1: WAF for SQLi + Shield on CloudFront (Q10)", studyWeek: 1 },
+  { id: "waf", name: "AWS WAF", category: "Security, Identity, and Compliance", readiness: "partial", domain: "D1", examFocus: "Web ACLs; rate limiting; attach to CloudFront/ALB/API GW", gsaNote: "Night 1: L7 rules with Shield; lab Night 4", studyWeek: 1 },
+  { id: "iam", name: "IAM", category: "Security, Identity, and Compliance", readiness: "know", domain: "D1", examFocus: "Policies, roles, MFA, boundary, SCP, least privilege", gsaNote: "Night 1 audit: GitHubActionsGlobalskiatlas v3; PassRole + iam:PassedToService; CFN needs PassRole (Q6)" },
 
   // Serverless
   { id: "lambda", name: "AWS Lambda", category: "Serverless", readiness: "know", domain: "D2/D3", examFocus: "Concurrency, DLQ, VPC cold start, provisioned concurrency", gsaNote: "Frontend + backend APIs" },
@@ -192,7 +206,7 @@ export const examServices: ExamService[] = [
   { id: "ebs", name: "Amazon EBS", category: "Storage", readiness: "study", domain: "D3/D4", examFocus: "gp3/io2/st1/sc1; snapshots; Multi-Attach io2", studyWeek: 4 },
   { id: "efs", name: "Amazon EFS", category: "Storage", readiness: "study", domain: "D3/D4", examFocus: "Shared NFS; scales with EC2/Lambda; vs EBS block", studyWeek: 4 },
   { id: "fsx", name: "Amazon FSx", category: "Storage", readiness: "awareness", domain: "D4", examFocus: "Windows/Lustre/NetApp/ONTAP file systems" },
-  { id: "s3", name: "Amazon S3", category: "Storage", readiness: "know", domain: "D3/D4", examFocus: "Storage classes; lifecycle; versioning; replication; OAC", gsaNote: "Frontend + backend buckets" },
+  { id: "s3", name: "Amazon S3", category: "Storage", readiness: "know", domain: "D3/D4", examFocus: "Storage classes; lifecycle; versioning; replication; OAC", gsaNote: "Night 1: task role S3WriteGlobalskiatlasOutput → globalskiatlas-backend-k8s-output only" },
   { id: "glacier", name: "Amazon S3 Glacier", category: "Storage", readiness: "study", domain: "D4", examFocus: "Archive tiers; retrieval times; Glacier Deep Archive", studyWeek: 5 },
   { id: "storage-gateway", name: "AWS Storage Gateway", category: "Storage", readiness: "awareness", domain: "D4", examFocus: "Hybrid on-premises cache backed by S3" },
 ];
@@ -395,6 +409,65 @@ export const domainTasks: DomainTask[] = [
     ],
   },
 ];
+
+/** Completed nightly study sessions — drives default checklist seeding. */
+export const studyNights: StudyNight[] = [
+  {
+    night: 1,
+    week: 1,
+    title: "Baseline + Domain 1 intro",
+    completedDate: "2026-06-15",
+    lab: "Audit IAM policies on deploy user and ECS roles",
+    practiceScore: "8/10",
+    notes:
+      "Audited github-actions-globalskiatlas policy v3 and S3WriteGlobalskiatlasOutput task role. Least-privilege separation passed. Missed Q1 (SCP vs IAM) and Q4 (RAM vs Identity Center).",
+    reviewedServiceIds: [
+      "iam",
+      "cli",
+      "ecs",
+      "fargate",
+      "ecr",
+      "s3",
+      "cognito",
+      "organizations",
+      "iam-identity-center",
+      "ram",
+      "cloudtrail",
+      "config",
+      "cloudformation",
+      "kms",
+      "shield",
+      "waf",
+      "guardduty",
+      "secrets-manager",
+      "ssm",
+      "acm",
+      "vpc",
+    ],
+    completedCheckpointIds: [
+      "d1-t1-cp-0",
+      "d1-t1-cp-1",
+      "d1-t1-cp-2",
+      "d1-t1-cp-3",
+      "d1-t1-cp-4",
+      "d1-t3-cp-0",
+    ],
+  },
+];
+
+/** Merge all completed nights into default checklist state for first-time visitors. */
+export function getStudyNightDefaults(): {
+  services: Record<string, boolean>;
+  tasks: Record<string, boolean>;
+} {
+  const services: Record<string, boolean> = {};
+  const tasks: Record<string, boolean> = {};
+  for (const night of studyNights) {
+    for (const id of night.reviewedServiceIds) services[id] = true;
+    for (const id of night.completedCheckpointIds) tasks[id] = true;
+  }
+  return { services, tasks };
+}
 
 export const reviewSchedule: { week: number; categories: string[]; serviceCount: number }[] = [
   { week: 1, categories: ["Security, Identity, and Compliance", "Management and Governance"], serviceCount: 28 },
