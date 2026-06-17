@@ -188,7 +188,7 @@ export const examServices: ExamService[] = [
   { id: "guardduty", name: "Amazon GuardDuty", category: "Security, Identity, and Compliance", readiness: "study", domain: "D1", examFocus: "Threat detection from CloudTrail/VPC/ DNS logs", studyWeek: 1 },
   { id: "iam-identity-center", name: "AWS IAM Identity Center", category: "Security, Identity, and Compliance", readiness: "partial", domain: "D1", examFocus: "SSO to AWS accounts and SaaS; successor to AWS SSO", gsaNote: "Night 1: multi-account SSO — not RAM (Q4)", studyWeek: 1 },
   { id: "inspector", name: "Amazon Inspector", category: "Security, Identity, and Compliance", readiness: "awareness", domain: "D1", examFocus: "Automated vulnerability scanning for EC2/containers" },
-  { id: "kms", name: "AWS KMS", category: "Security, Identity, and Compliance", readiness: "study", domain: "D1", examFocus: "CMK; envelope encryption; key policies vs IAM; SSE-KMS", gsaNote: "Night 1 preview: Lambda needs kms:Decrypt + s3:GetObject (Q2); lab Night 2", studyWeek: 1 },
+  { id: "kms", name: "AWS KMS", category: "Security, Identity, and Compliance", readiness: "partial", domain: "D1", examFocus: "CMK; envelope encryption; key policies vs IAM; SSE-KMS", gsaNote: "Night 2: CMK alias/saa-study-witcoskitech; key policy root stmt; SSE-KMS lab prefix; kms:Decrypt + s3:GetObject both required", studyWeek: 1 },
   { id: "macie", name: "Amazon Macie", category: "Security, Identity, and Compliance", readiness: "awareness", domain: "D1", examFocus: "Discover/classify sensitive data in S3" },
   { id: "network-firewall", name: "AWS Network Firewall", category: "Security, Identity, and Compliance", readiness: "awareness", domain: "D1", examFocus: "Stateful VPC traffic filtering" },
   { id: "ram", name: "AWS Resource Access Manager (RAM)", category: "Security, Identity, and Compliance", readiness: "partial", domain: "D1", examFocus: "Share subnets/transit gateway across accounts", gsaNote: "Night 1: share TGW across accounts — not SSO (B2)" },
@@ -206,7 +206,7 @@ export const examServices: ExamService[] = [
   { id: "ebs", name: "Amazon EBS", category: "Storage", readiness: "study", domain: "D3/D4", examFocus: "gp3/io2/st1/sc1; snapshots; Multi-Attach io2", studyWeek: 4 },
   { id: "efs", name: "Amazon EFS", category: "Storage", readiness: "study", domain: "D3/D4", examFocus: "Shared NFS; scales with EC2/Lambda; vs EBS block", studyWeek: 4 },
   { id: "fsx", name: "Amazon FSx", category: "Storage", readiness: "awareness", domain: "D4", examFocus: "Windows/Lustre/NetApp/ONTAP file systems" },
-  { id: "s3", name: "Amazon S3", category: "Storage", readiness: "know", domain: "D3/D4", examFocus: "Storage classes; lifecycle; versioning; replication; OAC", gsaNote: "Night 1: task role S3WriteGlobalskiatlasOutput → globalskiatlas-backend-k8s-output only" },
+  { id: "s3", name: "Amazon S3", category: "Storage", readiness: "know", domain: "D3/D4", examFocus: "Storage classes; lifecycle; versioning; replication; OAC", gsaNote: "Night 2: bucket default SSE-S3 (AES256); per-upload SSE-KMS on study-lab/kms-test/; BucketKey enabled" },
   { id: "glacier", name: "Amazon S3 Glacier", category: "Storage", readiness: "study", domain: "D4", examFocus: "Archive tiers; retrieval times; Glacier Deep Archive", studyWeek: 5 },
   { id: "storage-gateway", name: "AWS Storage Gateway", category: "Storage", readiness: "awareness", domain: "D4", examFocus: "Hybrid on-premises cache backed by S3" },
 ];
@@ -452,6 +452,18 @@ export const studyNights: StudyNight[] = [
       "d1-t1-cp-4",
       "d1-t3-cp-0",
     ],
+  },
+  {
+    night: 2,
+    week: 1,
+    title: "Lab 1A — KMS + S3 encryption",
+    completedDate: "2026-06-17",
+    lab: "SSE-KMS on study-lab/kms-test/ prefix in witcoskitech.com",
+    practiceScore: "6/10",
+    notes:
+      "Created CMK alias/saa-study-witcoskitech; uploaded SSE-KMS test object alongside SSE-S3 site files. simulate: github-actions-globalskiatlas implicitDeny on kms:Decrypt + s3:GetObject. Missed Q6 (cross-account key policy + IAM), Q7 (Bucket Key cost), Q8 (Secrets Manager vs KMS), Q9 (bucket policy Deny for encryption).",
+    reviewedServiceIds: ["kms", "s3", "cloudhsm", "macie", "iam"],
+    completedCheckpointIds: ["d1-t2-cp-0"],
   },
 ];
 
