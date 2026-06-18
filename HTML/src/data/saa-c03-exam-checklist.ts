@@ -149,7 +149,7 @@ export const examServices: ExamService[] = [
   { id: "license-manager", name: "AWS License Manager", category: "Management and Governance", readiness: "awareness", domain: "D4", examFocus: "Track software licenses on AWS" },
   { id: "organizations", name: "AWS Organizations", category: "Management and Governance", readiness: "partial", domain: "D1", examFocus: "Multi-account; SCPs; consolidated billing", gsaNote: "Night 1: SCP Deny beats IAM Allow — even admins (Q1, B1)", studyWeek: 1 },
   { id: "service-catalog", name: "AWS Service Catalog", category: "Management and Governance", readiness: "awareness", domain: "D1", examFocus: "Approved products for self-service provisioning" },
-  { id: "ssm", name: "AWS Systems Manager", category: "Management and Governance", readiness: "study", domain: "D1", examFocus: "Parameter Store vs Secrets Manager; Patch Manager; Session Manager", studyWeek: 1 },
+  { id: "ssm", name: "AWS Systems Manager", category: "Management and Governance", readiness: "partial", domain: "D1", examFocus: "Parameter Store vs Secrets Manager; Patch Manager; Session Manager", gsaNote: "Night 3: SecureString /saa-study/gsa-wiki-cognito contrast; Session Manager replaces bastion (Q9)", studyWeek: 1 },
   { id: "trusted-advisor", name: "AWS Trusted Advisor", category: "Management and Governance", readiness: "study", domain: "D4", examFocus: "Cost/security/fault tolerance checks", studyWeek: 5 },
   { id: "well-architected", name: "AWS Well-Architected Tool", category: "Management and Governance", readiness: "awareness", domain: "All", examFocus: "Six pillars review framework" },
 
@@ -181,7 +181,7 @@ export const examServices: ExamService[] = [
   { id: "audit-manager", name: "AWS Audit Manager", category: "Security, Identity, and Compliance", readiness: "awareness", domain: "D1", examFocus: "Continuous compliance audits" },
   { id: "acm", name: "AWS Certificate Manager (ACM)", category: "Security, Identity, and Compliance", readiness: "partial", domain: "D1", examFocus: "Free public TLS certs; must use us-east-1 for CloudFront", gsaNote: "CloudFront HTTPS", studyWeek: 1 },
   { id: "cloudhsm", name: "AWS CloudHSM", category: "Security, Identity, and Compliance", readiness: "awareness", domain: "D1", examFocus: "Dedicated hardware HSM; vs KMS shared" },
-  { id: "cognito", name: "Amazon Cognito", category: "Security, Identity, and Compliance", readiness: "know", domain: "D1", examFocus: "User pools vs identity pools; OAuth/OIDC; federated sign-in", gsaNote: "Night 1: User Pool auth + Identity Pool for AWS creds (Q8)" },
+  { id: "cognito", name: "Amazon Cognito", category: "Security, Identity, and Compliance", readiness: "know", domain: "D1", examFocus: "User pools vs identity pools; OAuth/OIDC; federated sign-in", gsaNote: "Night 3: wiki pool us-east-1_Ggqkiudld config in Secrets Manager saa-study/gsa-wiki-cognito", },
   { id: "detective", name: "Amazon Detective", category: "Security, Identity, and Compliance", readiness: "awareness", domain: "D1", examFocus: "Investigate security findings root cause" },
   { id: "directory-service", name: "AWS Directory Service", category: "Security, Identity, and Compliance", readiness: "awareness", domain: "D1", examFocus: "Managed Microsoft AD / Simple AD" },
   { id: "firewall-manager", name: "AWS Firewall Manager", category: "Security, Identity, and Compliance", readiness: "awareness", domain: "D1", examFocus: "Central WAF/rule management across accounts" },
@@ -192,14 +192,14 @@ export const examServices: ExamService[] = [
   { id: "macie", name: "Amazon Macie", category: "Security, Identity, and Compliance", readiness: "awareness", domain: "D1", examFocus: "Discover/classify sensitive data in S3" },
   { id: "network-firewall", name: "AWS Network Firewall", category: "Security, Identity, and Compliance", readiness: "awareness", domain: "D1", examFocus: "Stateful VPC traffic filtering" },
   { id: "ram", name: "AWS Resource Access Manager (RAM)", category: "Security, Identity, and Compliance", readiness: "partial", domain: "D1", examFocus: "Share subnets/transit gateway across accounts", gsaNote: "Night 1: share TGW across accounts — not SSO (B2)" },
-  { id: "secrets-manager", name: "AWS Secrets Manager", category: "Security, Identity, and Compliance", readiness: "study", domain: "D1", examFocus: "Rotation; vs Parameter Store SecureString", studyWeek: 1 },
+  { id: "secrets-manager", name: "AWS Secrets Manager", category: "Security, Identity, and Compliance", readiness: "partial", domain: "D1", examFocus: "Rotation; vs Parameter Store SecureString", gsaNote: "Night 3: saa-study/gsa-wiki-cognito; WikiCognitoSecretRead scoped GetSecretValue + kms:Decrypt; KMS stores keys not passwords (Q6)", studyWeek: 1 },
   { id: "security-hub", name: "AWS Security Hub", category: "Security, Identity, and Compliance", readiness: "awareness", domain: "D1", examFocus: "Aggregate findings from GuardDuty, Inspector, etc." },
   { id: "shield", name: "AWS Shield", category: "Security, Identity, and Compliance", readiness: "partial", domain: "D1", examFocus: "Standard (free, L3/L4) vs Advanced (DDoS cost protection + WAF)", gsaNote: "Night 1: WAF for SQLi + Shield on CloudFront (Q10)", studyWeek: 1 },
   { id: "waf", name: "AWS WAF", category: "Security, Identity, and Compliance", readiness: "partial", domain: "D1", examFocus: "Web ACLs; rate limiting; attach to CloudFront/ALB/API GW", gsaNote: "Night 1: L7 rules with Shield; lab Night 4", studyWeek: 1 },
   { id: "iam", name: "IAM", category: "Security, Identity, and Compliance", readiness: "know", domain: "D1", examFocus: "Policies, roles, MFA, boundary, SCP, least privilege", gsaNote: "Night 1 audit: GitHubActionsGlobalskiatlas v3; PassRole + iam:PassedToService; CFN needs PassRole (Q6)" },
 
   // Serverless
-  { id: "lambda", name: "AWS Lambda", category: "Serverless", readiness: "know", domain: "D2/D3", examFocus: "Concurrency, DLQ, VPC cold start, provisioned concurrency", gsaNote: "Frontend + backend APIs" },
+  { id: "lambda", name: "AWS Lambda", category: "Serverless", readiness: "know", domain: "D2/D3", examFocus: "Concurrency, DLQ, VPC cold start, provisioned concurrency", gsaNote: "Night 3: sam-app-WikiApiFunction COGNITO_SECRET_ARN env; code still reads legacy COGNITO_* vars" },
 
   // Storage
   { id: "backup", name: "AWS Backup", category: "Storage", readiness: "study", domain: "D2/D4", examFocus: "Centralized backup for RDS, EBS, DynamoDB, etc.", studyWeek: 3 },
@@ -464,6 +464,18 @@ export const studyNights: StudyNight[] = [
       "Created CMK alias/saa-study-witcoskitech; uploaded SSE-KMS test object alongside SSE-S3 site files. simulate: github-actions-globalskiatlas implicitDeny on kms:Decrypt + s3:GetObject. Missed Q6 (cross-account key policy + IAM), Q7 (Bucket Key cost), Q8 (Secrets Manager vs KMS), Q9 (bucket policy Deny for encryption).",
     reviewedServiceIds: ["kms", "s3", "cloudhsm", "macie", "iam"],
     completedCheckpointIds: ["d1-t2-cp-0"],
+  },
+  {
+    night: 3,
+    week: 1,
+    title: "Lab 1B — Secrets Manager",
+    completedDate: "2026-06-18",
+    lab: "saa-study/gsa-wiki-cognito secret + WikiCognitoSecretRead on wiki Lambda role",
+    practiceScore: "9/10",
+    notes:
+      "Created Cognito config secret (SSE-KMS with Night 2 CMK); scoped GetSecretValue + kms:Decrypt; simulate allowed on wiki role. SSM SecureString contrast at /saa-study/gsa-wiki-cognito. COGNITO_SECRET_ARN on sam-app-WikiApiFunction; code migration pending. Missed Q6 (KMS stores keys, Secrets Manager stores values).",
+    reviewedServiceIds: ["secrets-manager", "ssm", "cognito", "kms", "lambda", "iam"],
+    completedCheckpointIds: ["d1-t2-cp-2"],
   },
 ];
 
