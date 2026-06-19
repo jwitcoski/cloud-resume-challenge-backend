@@ -166,7 +166,7 @@ export const examServices: ExamService[] = [
 
   // Networking and Content Delivery
   { id: "client-vpn", name: "AWS Client VPN", category: "Networking and Content Delivery", readiness: "study", domain: "D1", examFocus: "Remote users → VPC; vs Site-to-Site for offices", studyWeek: 3 },
-  { id: "cloudfront", name: "Amazon CloudFront", category: "Networking and Content Delivery", readiness: "know", domain: "D3/D4", examFocus: "CDN; OAC; cache behaviors; signed URLs; edge functions", gsaNote: "Frontend static + API origins" },
+  { id: "cloudfront", name: "Amazon CloudFront", category: "Networking and Content Delivery", readiness: "know", domain: "D3/D4", examFocus: "CDN; OAC; cache behaviors; signed URLs; edge functions", gsaNote: "Night 4: WAF Web ACL attach on E3BDMTLYF8G4VB (api/wiki* POST); torn down after lab" },
   { id: "direct-connect", name: "AWS Direct Connect", category: "Networking and Content Delivery", readiness: "study", domain: "D2/D4", examFocus: "Dedicated private link to AWS; vs VPN over internet", studyWeek: 3 },
   { id: "elb", name: "Elastic Load Balancing (ELB)", category: "Networking and Content Delivery", readiness: "study", domain: "D2/D3", examFocus: "ALB (L7) vs NLB (L4/TCP/UDP) vs GWLB (firewall)", studyWeek: 2 },
   { id: "global-accelerator", name: "AWS Global Accelerator", category: "Networking and Content Delivery", readiness: "study", domain: "D3/D4", examFocus: "Static anycast IPs; TCP/UDP; vs CloudFront for HTTP cache", studyWeek: 4 },
@@ -184,18 +184,18 @@ export const examServices: ExamService[] = [
   { id: "cognito", name: "Amazon Cognito", category: "Security, Identity, and Compliance", readiness: "know", domain: "D1", examFocus: "User pools vs identity pools; OAuth/OIDC; federated sign-in", gsaNote: "Night 3: wiki pool us-east-1_Ggqkiudld config in Secrets Manager saa-study/gsa-wiki-cognito", },
   { id: "detective", name: "Amazon Detective", category: "Security, Identity, and Compliance", readiness: "awareness", domain: "D1", examFocus: "Investigate security findings root cause" },
   { id: "directory-service", name: "AWS Directory Service", category: "Security, Identity, and Compliance", readiness: "awareness", domain: "D1", examFocus: "Managed Microsoft AD / Simple AD" },
-  { id: "firewall-manager", name: "AWS Firewall Manager", category: "Security, Identity, and Compliance", readiness: "awareness", domain: "D1", examFocus: "Central WAF/rule management across accounts" },
+  { id: "firewall-manager", name: "AWS Firewall Manager", category: "Security, Identity, and Compliance", readiness: "awareness", domain: "D1", examFocus: "Central WAF/rule management across accounts", gsaNote: "Night 4 Q8: org-wide WAF policy — not a Security Group replacement" },
   { id: "guardduty", name: "Amazon GuardDuty", category: "Security, Identity, and Compliance", readiness: "study", domain: "D1", examFocus: "Threat detection from CloudTrail/VPC/ DNS logs", studyWeek: 1 },
   { id: "iam-identity-center", name: "AWS IAM Identity Center", category: "Security, Identity, and Compliance", readiness: "partial", domain: "D1", examFocus: "SSO to AWS accounts and SaaS; successor to AWS SSO", gsaNote: "Night 1: multi-account SSO — not RAM (Q4)", studyWeek: 1 },
   { id: "inspector", name: "Amazon Inspector", category: "Security, Identity, and Compliance", readiness: "awareness", domain: "D1", examFocus: "Automated vulnerability scanning for EC2/containers" },
   { id: "kms", name: "AWS KMS", category: "Security, Identity, and Compliance", readiness: "partial", domain: "D1", examFocus: "CMK; envelope encryption; key policies vs IAM; SSE-KMS", gsaNote: "Night 2: CMK alias/saa-study-witcoskitech; key policy root stmt; SSE-KMS lab prefix; kms:Decrypt + s3:GetObject both required", studyWeek: 1 },
   { id: "macie", name: "Amazon Macie", category: "Security, Identity, and Compliance", readiness: "awareness", domain: "D1", examFocus: "Discover/classify sensitive data in S3" },
-  { id: "network-firewall", name: "AWS Network Firewall", category: "Security, Identity, and Compliance", readiness: "awareness", domain: "D1", examFocus: "Stateful VPC traffic filtering" },
+  { id: "network-firewall", name: "AWS Network Firewall", category: "Security, Identity, and Compliance", readiness: "awareness", domain: "D1", examFocus: "Stateful VPC traffic filtering", gsaNote: "Night 4 Q5: VPC subnet east-west filtering — not CloudFront/WAF" },
   { id: "ram", name: "AWS Resource Access Manager (RAM)", category: "Security, Identity, and Compliance", readiness: "partial", domain: "D1", examFocus: "Share subnets/transit gateway across accounts", gsaNote: "Night 1: share TGW across accounts — not SSO (B2)" },
   { id: "secrets-manager", name: "AWS Secrets Manager", category: "Security, Identity, and Compliance", readiness: "partial", domain: "D1", examFocus: "Rotation; vs Parameter Store SecureString", gsaNote: "Night 3: saa-study/gsa-wiki-cognito; WikiCognitoSecretRead scoped GetSecretValue + kms:Decrypt; KMS stores keys not passwords (Q6)", studyWeek: 1 },
   { id: "security-hub", name: "AWS Security Hub", category: "Security, Identity, and Compliance", readiness: "awareness", domain: "D1", examFocus: "Aggregate findings from GuardDuty, Inspector, etc." },
-  { id: "shield", name: "AWS Shield", category: "Security, Identity, and Compliance", readiness: "partial", domain: "D1", examFocus: "Standard (free, L3/L4) vs Advanced (DDoS cost protection + WAF)", gsaNote: "Night 1: WAF for SQLi + Shield on CloudFront (Q10)", studyWeek: 1 },
-  { id: "waf", name: "AWS WAF", category: "Security, Identity, and Compliance", readiness: "partial", domain: "D1", examFocus: "Web ACLs; rate limiting; attach to CloudFront/ALB/API GW", gsaNote: "Night 1: L7 rules with Shield; lab Night 4", studyWeek: 1 },
+  { id: "shield", name: "AWS Shield", category: "Security, Identity, and Compliance", readiness: "partial", domain: "D1", examFocus: "Standard (free, L3/L4) vs Advanced (DDoS cost protection + WAF)", gsaNote: "Night 4: Standard free on CloudFront; pair with WAF for L7 SQLi (Q10)", studyWeek: 1 },
+  { id: "waf", name: "AWS WAF", category: "Security, Identity, and Compliance", readiness: "partial", domain: "D1", examFocus: "Web ACLs; rate limiting; attach to CloudFront/ALB/API GW", gsaNote: "Night 4: saa-study-globalskiatlas-waf lab; us-east-1 CLOUDFRONT scope; ALB=REGIONAL (Q2/Q4); torn down (~$96/yr)", studyWeek: 1 },
   { id: "iam", name: "IAM", category: "Security, Identity, and Compliance", readiness: "know", domain: "D1", examFocus: "Policies, roles, MFA, boundary, SCP, least privilege", gsaNote: "Night 1 audit: GitHubActionsGlobalskiatlas v3; PassRole + iam:PassedToService; CFN needs PassRole (Q6)" },
 
   // Serverless
@@ -476,6 +476,18 @@ export const studyNights: StudyNight[] = [
       "Created Cognito config secret (SSE-KMS with Night 2 CMK); scoped GetSecretValue + kms:Decrypt; simulate allowed on wiki role. SSM SecureString contrast at /saa-study/gsa-wiki-cognito. COGNITO_SECRET_ARN on sam-app-WikiApiFunction; code migration pending. Missed Q6 (KMS stores keys, Secrets Manager stores values).",
     reviewedServiceIds: ["secrets-manager", "ssm", "cognito", "kms", "lambda", "iam"],
     completedCheckpointIds: ["d1-t2-cp-2"],
+  },
+  {
+    night: 4,
+    week: 1,
+    title: "Lab 1C — WAF on CloudFront",
+    completedDate: "2026-06-19",
+    lab: "saa-study-globalskiatlas-waf on E3BDMTLYF8G4VB — torn down after lab",
+    practiceScore: "7/10",
+    notes:
+      "Created CLOUDFRONT Web ACL (CommonRuleSet, KnownBadInputs, SQLiRuleSet) on globalskiatlas.com; GET/POST api/wiki* allowed, SQLi probe blocked. Detached + deleted Web ACL to avoid ~$96/yr. Missed Q2 (CloudFront WAF=us-east-1), Q4 (ALB=REGIONAL scope), Q8 (Firewall Manager for org-wide WAF).",
+    reviewedServiceIds: ["waf", "shield", "cloudfront", "network-firewall", "firewall-manager"],
+    completedCheckpointIds: ["d1-t2-cp-3"],
   },
 ];
 

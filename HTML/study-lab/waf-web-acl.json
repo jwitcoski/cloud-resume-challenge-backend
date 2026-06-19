@@ -1,0 +1,60 @@
+{
+  "Name": "saa-study-globalskiatlas-waf",
+  "Scope": "CLOUDFRONT",
+  "DefaultAction": { "Allow": {} },
+  "Rules": [
+    {
+      "Name": "AWSManagedRulesCommonRuleSet",
+      "Priority": 1,
+      "Statement": {
+        "ManagedRuleGroupStatement": {
+          "VendorName": "AWS",
+          "Name": "AWSManagedRulesCommonRuleSet"
+        }
+      },
+      "OverrideAction": { "None": {} },
+      "VisibilityConfig": {
+        "SampledRequestsEnabled": true,
+        "CloudWatchMetricsEnabled": true,
+        "MetricName": "CommonRuleSet"
+      }
+    },
+    {
+      "Name": "AWSManagedRulesKnownBadInputsRuleSet",
+      "Priority": 2,
+      "Statement": {
+        "ManagedRuleGroupStatement": {
+          "VendorName": "AWS",
+          "Name": "AWSManagedRulesKnownBadInputsRuleSet"
+        }
+      },
+      "OverrideAction": { "None": {} },
+      "VisibilityConfig": {
+        "SampledRequestsEnabled": true,
+        "CloudWatchMetricsEnabled": true,
+        "MetricName": "KnownBadInputs"
+      }
+    },
+    {
+      "Name": "AWSManagedRulesSQLiRuleSet",
+      "Priority": 3,
+      "Statement": {
+        "ManagedRuleGroupStatement": {
+          "VendorName": "AWS",
+          "Name": "AWSManagedRulesSQLiRuleSet"
+        }
+      },
+      "OverrideAction": { "None": {} },
+      "VisibilityConfig": {
+        "SampledRequestsEnabled": true,
+        "CloudWatchMetricsEnabled": true,
+        "MetricName": "SQLiRuleSet"
+      }
+    }
+  ],
+  "VisibilityConfig": {
+    "SampledRequestsEnabled": true,
+    "CloudWatchMetricsEnabled": true,
+    "MetricName": "saa-study-globalskiatlas-waf"
+  }
+}
