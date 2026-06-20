@@ -1,0 +1,8 @@
+{
+  "Name": "saa-study-account-trail",
+  "S3BucketName": "saa-study-cloudtrail-298043721974",
+  "IsMultiRegionTrail": true,
+  "LogFileValidationEnabled": true,
+  "TrailARN": "arn:aws:cloudtrail:us-east-1:298043721974:trail/saa-study-account-trail",
+  "IsLogging": true
+}

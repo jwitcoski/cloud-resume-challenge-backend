@@ -1,0 +1,11 @@
+{
+  "analyzerName": "saa-study-account",
+  "type": "ACCOUNT",
+  "arn": "arn:aws:access-analyzer:us-east-1:298043721974:analyzer/saa-study-account",
+  "externalAccessFindings": 0,
+  "iamFix": {
+    "policy": "GitHubActionsGlobalskiatlas",
+    "version": "v4",
+    "change": "Scoped ecs:RunTask for globalskiatlas-backend-k8s-iceland from arn:aws:ecs:*:*:... to us-east-1 account 298043721974"
+  }
+}

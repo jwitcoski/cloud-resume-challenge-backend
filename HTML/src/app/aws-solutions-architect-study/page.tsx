@@ -71,7 +71,7 @@ const nightlyPlan: NightPlan[] = [
   { night: 3, week: 1, title: "Lab 1B — Secrets Manager", minutes: [20, 70, 30], blocks: ["Secrets Manager vs Parameter Store", "Move Cognito config to Secrets Manager", "Tighten Lambda GetSecretValue scope"], lab: "Global Ski Atlas frontend — wiki auth secrets" },
   { night: 4, week: 1, title: "Lab 1C — WAF on CloudFront", minutes: [20, 70, 30], blocks: ["Managed rule groups overview", "Attach WAF Web ACL to distribution", "Test wiki POST still works"], lab: "witcoskitech.com or globalskiatlas.com" },
   { night: 5, week: 1, title: "CloudTrail + Config + Access Analyzer", minutes: [30, 60, 30], blocks: ["CloudTrail vs Config vs GuardDuty", "Enable trail + two Config rules", "Fix one over-broad IAM finding"], lab: "Account-level security" },
-  { night: 6, week: 1, title: "Week 1 review", minutes: [20, 40, 60], blocks: ["Check off remaining Week 1 category services", "25 timed practice questions", "Domain 1 task checkpoints"], lab: undefined },
+  { night: 6, week: 1, title: "Week 1 review", minutes: [20, 40, 60], blocks: ["Check off remaining Week 1 category services", "25 timed practice questions", "Domain 1 task checkpoints", "Teardown: run study-lab/week1-teardown-config.sh (stop Config charges)"], lab: "AWS Config teardown — Night 5 lab" },
   { night: 7, week: 1, title: "Week 1 consolidation", minutes: [30, 30, 60], blocks: ["Draw security architecture for both sites", "15 practice questions (missed topics)", "Plan Week 2 VPC diagram on paper"], lab: undefined },
 
   { night: 8, week: 2, title: "VPC fundamentals", minutes: [40, 50, 30], blocks: ["Public/private subnets, IGW, NAT, SG vs NACL", "Draw 2-AZ VPC for Fargate pipeline", "5 flashcards: NAT vs IGW"], lab: "Paper design before build" },

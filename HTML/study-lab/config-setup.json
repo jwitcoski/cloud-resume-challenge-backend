@@ -1,0 +1,16 @@
+{
+  "recorder": "saa-study-recorder",
+  "deliveryChannel": "saa-study-delivery",
+  "s3Bucket": "saa-study-config-298043721974",
+  "teardown": "End of Week 1 (Night 6 or 7) — run study-lab/week1-teardown-config.sh to stop Config charges (~$2-5/mo while recording 322 resources).",
+  "rules": [
+    {
+      "name": "saa-study-s3-public-read-prohibited",
+      "source": "S3_BUCKET_PUBLIC_READ_PROHIBITED"
+    },
+    {
+      "name": "saa-study-iam-user-mfa-enabled",
+      "source": "IAM_USER_MFA_ENABLED"
+    }
+  ]
+}

@@ -140,10 +140,10 @@ export const examServices: ExamService[] = [
   { id: "auto-scaling", name: "AWS Auto Scaling", category: "Management and Governance", readiness: "study", domain: "D2/D4", examFocus: "Unified scaling for multiple resources", studyWeek: 4 },
   { id: "cli", name: "AWS CLI", category: "Management and Governance", readiness: "know", domain: "D1", examFocus: "Scripting AWS operations", gsaNote: "Night 1 lab: get-policy-version, simulate-principal-policy, list-role-policies" },
   { id: "cloudformation", name: "AWS CloudFormation", category: "Management and Governance", readiness: "know", domain: "D2", examFocus: "IaC stacks; drift; nested stacks; StackSets", gsaNote: "SAM generates CFN" },
-  { id: "cloudtrail", name: "AWS CloudTrail", category: "Management and Governance", readiness: "partial", domain: "D1", examFocus: "API audit log; org trail; vs Config for compliance state", gsaNote: "Night 1: who deleted bucket → CloudTrail (Q7)", studyWeek: 1 },
+  { id: "cloudtrail", name: "AWS CloudTrail", category: "Management and Governance", readiness: "partial", domain: "D1", examFocus: "API audit log; org trail; vs Config for compliance state", gsaNote: "Night 5: saa-study-account-trail multi-region → saa-study-cloudtrail-298043721974; log file validation on", studyWeek: 1 },
   { id: "cloudwatch", name: "Amazon CloudWatch", category: "Management and Governance", readiness: "partial", domain: "D2/D3", examFocus: "Metrics, alarms, logs, dashboards, EventBridge integration", gsaNote: "Logs only so far", studyWeek: 2 },
   { id: "compute-optimizer", name: "AWS Compute Optimizer", category: "Management and Governance", readiness: "study", domain: "D4", examFocus: "Right-size EC2/EBS/Lambda recommendations", studyWeek: 5 },
-  { id: "config", name: "AWS Config", category: "Management and Governance", readiness: "partial", domain: "D1", examFocus: "Resource configuration history; rules; compliance", gsaNote: "Night 1: config state vs CloudTrail API audit", studyWeek: 1 },
+  { id: "config", name: "AWS Config", category: "Management and Governance", readiness: "partial", domain: "D1", examFocus: "Resource configuration history; rules; compliance", gsaNote: "Night 5: saa-study-recorder + S3_BUCKET_PUBLIC_READ_PROHIBITED + IAM_USER_MFA_ENABLED rules", studyWeek: 1 },
   { id: "control-tower", name: "AWS Control Tower", category: "Management and Governance", readiness: "awareness", domain: "D1", examFocus: "Multi-account landing zone; guardrails" },
   { id: "health", name: "AWS Health Dashboard", category: "Management and Governance", readiness: "awareness", domain: "D2", examFocus: "AWS service events affecting your account" },
   { id: "license-manager", name: "AWS License Manager", category: "Management and Governance", readiness: "awareness", domain: "D4", examFocus: "Track software licenses on AWS" },
@@ -185,7 +185,7 @@ export const examServices: ExamService[] = [
   { id: "detective", name: "Amazon Detective", category: "Security, Identity, and Compliance", readiness: "awareness", domain: "D1", examFocus: "Investigate security findings root cause" },
   { id: "directory-service", name: "AWS Directory Service", category: "Security, Identity, and Compliance", readiness: "awareness", domain: "D1", examFocus: "Managed Microsoft AD / Simple AD" },
   { id: "firewall-manager", name: "AWS Firewall Manager", category: "Security, Identity, and Compliance", readiness: "awareness", domain: "D1", examFocus: "Central WAF/rule management across accounts", gsaNote: "Night 4 Q8: org-wide WAF policy — not a Security Group replacement" },
-  { id: "guardduty", name: "Amazon GuardDuty", category: "Security, Identity, and Compliance", readiness: "study", domain: "D1", examFocus: "Threat detection from CloudTrail/VPC/ DNS logs", studyWeek: 1 },
+  { id: "guardduty", name: "Amazon GuardDuty", category: "Security, Identity, and Compliance", readiness: "study", domain: "D1", examFocus: "Threat detection from CloudTrail/VPC/ DNS logs", gsaNote: "Night 5: needs CloudTrail (now on); threat detection not compliance state — that's Config (Q2)", studyWeek: 1 },
   { id: "iam-identity-center", name: "AWS IAM Identity Center", category: "Security, Identity, and Compliance", readiness: "partial", domain: "D1", examFocus: "SSO to AWS accounts and SaaS; successor to AWS SSO", gsaNote: "Night 1: multi-account SSO — not RAM (Q4)", studyWeek: 1 },
   { id: "inspector", name: "Amazon Inspector", category: "Security, Identity, and Compliance", readiness: "awareness", domain: "D1", examFocus: "Automated vulnerability scanning for EC2/containers" },
   { id: "kms", name: "AWS KMS", category: "Security, Identity, and Compliance", readiness: "partial", domain: "D1", examFocus: "CMK; envelope encryption; key policies vs IAM; SSE-KMS", gsaNote: "Night 2: CMK alias/saa-study-witcoskitech; key policy root stmt; SSE-KMS lab prefix; kms:Decrypt + s3:GetObject both required", studyWeek: 1 },
@@ -196,7 +196,7 @@ export const examServices: ExamService[] = [
   { id: "security-hub", name: "AWS Security Hub", category: "Security, Identity, and Compliance", readiness: "awareness", domain: "D1", examFocus: "Aggregate findings from GuardDuty, Inspector, etc." },
   { id: "shield", name: "AWS Shield", category: "Security, Identity, and Compliance", readiness: "partial", domain: "D1", examFocus: "Standard (free, L3/L4) vs Advanced (DDoS cost protection + WAF)", gsaNote: "Night 4: Standard free on CloudFront; pair with WAF for L7 SQLi (Q10)", studyWeek: 1 },
   { id: "waf", name: "AWS WAF", category: "Security, Identity, and Compliance", readiness: "partial", domain: "D1", examFocus: "Web ACLs; rate limiting; attach to CloudFront/ALB/API GW", gsaNote: "Night 4: saa-study-globalskiatlas-waf lab; us-east-1 CLOUDFRONT scope; ALB=REGIONAL (Q2/Q4); torn down (~$96/yr)", studyWeek: 1 },
-  { id: "iam", name: "IAM", category: "Security, Identity, and Compliance", readiness: "know", domain: "D1", examFocus: "Policies, roles, MFA, boundary, SCP, least privilege", gsaNote: "Night 1 audit: GitHubActionsGlobalskiatlas v3; PassRole + iam:PassedToService; CFN needs PassRole (Q6)" },
+  { id: "iam", name: "IAM", category: "Security, Identity, and Compliance", readiness: "know", domain: "D1", examFocus: "Policies, roles, MFA, boundary, SCP, least privilege", gsaNote: "Night 5: GitHubActionsGlobalskiatlas v4 — scoped Iceland ecs:RunTask ARN; Access Analyzer validate-policy clean", studyWeek: 1 },
 
   // Serverless
   { id: "lambda", name: "AWS Lambda", category: "Serverless", readiness: "know", domain: "D2/D3", examFocus: "Concurrency, DLQ, VPC cold start, provisioned concurrency", gsaNote: "Night 3: sam-app-WikiApiFunction COGNITO_SECRET_ARN env; code still reads legacy COGNITO_* vars" },
@@ -488,6 +488,26 @@ export const studyNights: StudyNight[] = [
       "Created CLOUDFRONT Web ACL (CommonRuleSet, KnownBadInputs, SQLiRuleSet) on globalskiatlas.com; GET/POST api/wiki* allowed, SQLi probe blocked. Detached + deleted Web ACL to avoid ~$96/yr. Missed Q2 (CloudFront WAF=us-east-1), Q4 (ALB=REGIONAL scope), Q8 (Firewall Manager for org-wide WAF).",
     reviewedServiceIds: ["waf", "shield", "cloudfront", "network-firewall", "firewall-manager"],
     completedCheckpointIds: ["d1-t2-cp-3"],
+  },
+  {
+    night: 5,
+    week: 1,
+    title: "CloudTrail + Config + Access Analyzer",
+    completedDate: "2026-06-19",
+    lab: "saa-study-account-trail + Config rules + GitHubActionsGlobalskiatlas v4",
+    practiceScore: "9/10",
+    notes:
+      "Enabled multi-region CloudTrail (log validation) and Config recorder with S3 public-read + IAM MFA rules. Created ACCOUNT Access Analyzer (0 external findings). Tightened deploy policy: Iceland ecs:RunTask from ecs:*:* to us-east-1/298043721974; simulate still allowed. Quiz (night-5-quiz.json): missed Q4 (log file validation vs data events). TEARDOWN: delete Config at end of Week 1 (Night 6/7) — study-lab/week1-teardown-config.sh.",
+    reviewedServiceIds: [
+      "cloudtrail",
+      "config",
+      "guardduty",
+      "iam",
+      "security-hub",
+      "inspector",
+      "cloudwatch",
+    ],
+    completedCheckpointIds: ["d1-t3-cp-4"],
   },
 ];
 

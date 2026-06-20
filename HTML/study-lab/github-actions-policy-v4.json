@@ -1,0 +1,51 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ECRAuth",
+      "Effect": "Allow",
+      "Action": "ecr:GetAuthorizationToken",
+      "Resource": "*"
+    },
+    {
+      "Sid": "ECRPush",
+      "Effect": "Allow",
+      "Action": [
+        "ecr:BatchCheckLayerAvailability",
+        "ecr:GetDownloadUrlForLayer",
+        "ecr:BatchGetImage",
+        "ecr:PutImage",
+        "ecr:InitiateLayerUpload",
+        "ecr:UploadLayerPart",
+        "ecr:CompleteLayerUpload"
+      ],
+      "Resource": "arn:aws:ecr:*:*:repository/globalskiatlas-backend-k8s-pipeline"
+    },
+    {
+      "Sid": "ECSRunTask",
+      "Effect": "Allow",
+      "Action": "ecs:RunTask",
+      "Resource": [
+        "arn:aws:ecs:us-east-1:298043721974:task-definition/globalskiatlas-backend-k8s-iceland:*",
+        "arn:aws:ecs:us-east-1:298043721974:task-definition/globalskiatlas-backend-k8s-pipeline-small:*",
+        "arn:aws:ecs:us-east-1:298043721974:task-definition/globalskiatlas-backend-k8s-pipeline-medium:*",
+        "arn:aws:ecs:us-east-1:298043721974:task-definition/globalskiatlas-backend-k8s-pipeline-large:*",
+        "arn:aws:ecs:us-east-1:298043721974:task-definition/globalskiatlas-backend-k8s-pipeline-xlarge:*"
+      ]
+    },
+    {
+      "Sid": "PassRole",
+      "Effect": "Allow",
+      "Action": "iam:PassRole",
+      "Resource": [
+        "arn:aws:iam::*:role/globalskiatlas-backend-k8s-ecs-execution",
+        "arn:aws:iam::*:role/globalskiatlas-backend-k8s-ecs-task"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "iam:PassedToService": "ecs-tasks.amazonaws.com"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "name": "saa-study-recorder",
+  "roleARN": "arn:aws:iam::298043721974:role/saa-study-config-role",
+  "recordingGroup": {
+    "allSupported": true,
+    "includeGlobalResourceTypes": true
+  }
+}

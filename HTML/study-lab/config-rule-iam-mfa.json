@@ -1,0 +1,7 @@
+{
+  "ConfigRuleName": "saa-study-iam-user-mfa-enabled",
+  "Source": {
+    "Owner": "AWS",
+    "SourceIdentifier": "IAM_USER_MFA_ENABLED"
+  }
+}

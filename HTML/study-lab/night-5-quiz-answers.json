@@ -1,0 +1,56 @@
+{
+  "night": 5,
+  "title": "CloudTrail + Config + Access Analyzer",
+  "answers": [
+    {
+      "id": "Q1",
+      "answer": "B",
+      "explanation": "CloudTrail logs API calls (DeleteObject) with user, time, and source IP. Config tracks current configuration state, not a searchable API audit log."
+    },
+    {
+      "id": "Q2",
+      "answer": "C",
+      "explanation": "Config rules like S3_BUCKET_PUBLIC_READ_PROHIBITED evaluate current bucket policy state. CloudTrail only shows when a policy changed. GuardDuty detects threats, not compliance."
+    },
+    {
+      "id": "Q3",
+      "answer": "B",
+      "explanation": "Config aggregator collects compliance data from multiple accounts/regions into one view. Org CloudTrail centralizes API logs but does not show Config compliance state."
+    },
+    {
+      "id": "Q4",
+      "answer": "B",
+      "explanation": "Log file validation creates digest files with SHA-256 hashes so you can verify log integrity. Multi-Region only expands coverage, not integrity proof."
+    },
+    {
+      "id": "Q5",
+      "answer": "B",
+      "explanation": "Access Analyzer evaluates resource policies for external/cross-account access. Config can flag public read via a rule, but Analyzer specifically analyzes who outside the account can access the resource."
+    },
+    {
+      "id": "Q6",
+      "answer": "B",
+      "explanation": "Classic exam trap — they are complementary, not interchangeable. CloudTrail = who did what. Config = what is configured and is it compliant."
+    },
+    {
+      "id": "Q7",
+      "answer": "B",
+      "explanation": "GuardDuty uses ML on CloudTrail, VPC Flow Logs, and DNS logs to detect threats. Config evaluates configuration compliance, not malicious network behavior."
+    },
+    {
+      "id": "Q8",
+      "answer": "A",
+      "explanation": "Security Hub aggregates and prioritizes findings from multiple security services. Config aggregator is compliance-focused, not a full findings dashboard."
+    },
+    {
+      "id": "Q9",
+      "answer": "B",
+      "explanation": "Malware Protection scans EBS volumes from GuardDuty findings. Native GuardDuty threat detection (C2, crypto-mining) is separate from optional Malware Protection add-on."
+    },
+    {
+      "id": "Q10",
+      "answer": "C",
+      "explanation": "NON_COMPLIANT means the resource fails the rule definition, not necessarily that you have an incident. Static sites often use public bucket policies; modern pattern is private bucket + CloudFront OAC."
+    }
+  ]
+}
