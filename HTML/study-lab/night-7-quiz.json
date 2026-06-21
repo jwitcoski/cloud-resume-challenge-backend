@@ -1,0 +1,161 @@
+{
+  "night": 7,
+  "title": "Week 1 consolidation",
+  "topic": "Missed topics drill — SCP, IAM roles, KMS, WAF scope, observability",
+  "format": "15 timed scenario questions (~24 min, ~96 sec each). Answer without peeking at night-7-quiz-answers.json first.",
+  "answerKey": "night-7-quiz-answers.json",
+  "answerDistribution": "A×4 B×3 C×4 D×4 — options shuffled so correct letter varies",
+  "missedTopicsFrom": "Nights 1–6 quiz misses + second-guesses",
+  "questions": [
+    {
+      "id": "Q1",
+      "question": "A developer with AdministratorAccess in a member account cannot launch RDS instances. IAM policies show Allow for rds:*. What is the most likely blocker?",
+      "options": {
+        "A": "An Organizations SCP explicitly denies rds:CreateDBInstance",
+        "B": "CloudTrail is disabled in that Region",
+        "C": "The VPC has no NAT Gateway",
+        "D": "AWS Config is recording too many resources"
+      }
+    },
+    {
+      "id": "Q2",
+      "question": "Account A wants Account B to attach a shared private subnet to a Transit Gateway. Which service enables the subnet share?",
+      "options": {
+        "A": "AWS IAM Identity Center",
+        "B": "AWS Organizations consolidated billing only",
+        "C": "AWS Resource Access Manager (RAM)",
+        "D": "AWS Security Hub"
+      }
+    },
+    {
+      "id": "Q3",
+      "question": "An ECS Fargate task cannot write logs to CloudWatch even though the task role has logs:CreateLogStream. What should you fix first?",
+      "options": {
+        "A": "Attach a WAF Web ACL to the task ENI",
+        "B": "Enable GuardDuty in the Region",
+        "C": "Move the task to a public subnet",
+        "D": "Add CloudWatch Logs permissions to the task execution role"
+      }
+    },
+    {
+      "id": "Q4",
+      "question": "Account B must read S3 objects encrypted with Account A's customer managed KMS key. Which combination is required?",
+      "options": {
+        "A": "S3 bucket policy on Account A only",
+        "B": "KMS key policy on the CMK granting Account B + IAM policy on Account B principal",
+        "C": "Secrets Manager rotation in Account A",
+        "D": "CloudFront Origin Access Control only"
+      }
+    },
+    {
+      "id": "Q5",
+      "question": "After enabling SSE-KMS on a bucket with millions of small GET requests, KMS costs spike. Which S3 feature reduces KMS API charges?",
+      "options": {
+        "A": "S3 Transfer Acceleration",
+        "B": "S3 Intelligent-Tiering",
+        "C": "S3 Bucket Key",
+        "D": "S3 Object Lock"
+      }
+    },
+    {
+      "id": "Q6",
+      "question": "A team asks where to store a database password that must rotate automatically every 30 days. Best recommendation?",
+      "options": {
+        "A": "AWS KMS customer managed key",
+        "B": "SSM Parameter Store String (no encryption)",
+        "C": "CloudTrail log file",
+        "D": "AWS Secrets Manager"
+      }
+    },
+    {
+      "id": "Q7",
+      "question": "You need to enforce that all new S3 PutObject calls use SSE-KMS. Which control is most direct?",
+      "options": {
+        "A": "S3 bucket policy with s3:x-amz-server-side-encryption condition Deny",
+        "B": "Enable GuardDuty S3 Protection",
+        "C": "Attach Shield Advanced to the bucket",
+        "D": "Enable Macie on the bucket"
+      }
+    },
+    {
+      "id": "Q8",
+      "question": "You must attach a WAF Web ACL to a CloudFront distribution for globalskiatlas.com. In which Region and scope must you create the Web ACL?",
+      "options": {
+        "A": "Same Region as the S3 origin only — no special scope",
+        "B": "Any Region; WAF is global for all scopes",
+        "C": "eu-west-1 because CloudFront edge is in Europe",
+        "D": "us-east-1 with CLOUDFRONT scope"
+      }
+    },
+    {
+      "id": "Q9",
+      "question": "You need WAF on an Application Load Balancer in eu-central-1. What scope and Region apply?",
+      "options": {
+        "A": "CLOUDFRONT scope in us-east-1",
+        "B": "CLOUDFRONT scope in eu-central-1",
+        "C": "REGIONAL scope in eu-central-1",
+        "D": "REGIONAL scope in us-east-1 only"
+      }
+    },
+    {
+      "id": "Q10",
+      "question": "A CISO wants to deploy the same AWSManagedRulesCommonRuleSet WAF rules to 40 member accounts automatically. Best service?",
+      "options": {
+        "A": "AWS Firewall Manager",
+        "B": "AWS Security Hub",
+        "C": "AWS Config",
+        "D": "Amazon Inspector"
+      }
+    },
+    {
+      "id": "Q11",
+      "question": "An auditor needs cryptographic proof that CloudTrail log files were not modified after delivery to S3. Which feature?",
+      "options": {
+        "A": "CloudTrail data events on S3",
+        "B": "CloudTrail log file validation (digest files)",
+        "C": "CloudTrail Insights",
+        "D": "Multi-Region trail only"
+      }
+    },
+    {
+      "id": "Q12",
+      "question": "You need continuous evaluation of whether any IAM user currently lacks MFA enabled. Best approach?",
+      "options": {
+        "A": "CloudWatch metric alarm on IAM API calls",
+        "B": "CloudTrail log file validation",
+        "C": "AWS Config managed rule (e.g. iam-user-mfa-enabled)",
+        "D": "Amazon Macie"
+      }
+    },
+    {
+      "id": "Q13",
+      "question": "Security Hub shows GuardDuty and Inspector findings in one prioritized dashboard. A separate team wants org-wide WAF policy deployment. Which mapping is correct?",
+      "options": {
+        "A": "Security Hub deploys WAF; Firewall Manager aggregates findings",
+        "B": "Both services deploy WAF Web ACLs",
+        "C": "Neither applies to WAF",
+        "D": "Security Hub aggregates findings; Firewall Manager deploys WAF policies org-wide"
+      }
+    },
+    {
+      "id": "Q14",
+      "question": "An S3 bucket policy allows s3:GetObject to Principal \"*\". Which tool analyzes whether resources are accessible from outside your AWS account?",
+      "options": {
+        "A": "AWS Control Tower",
+        "B": "IAM Access Analyzer",
+        "C": "AWS Artifact",
+        "D": "AWS Audit Manager"
+      }
+    },
+    {
+      "id": "Q15",
+      "question": "A startup needs automated multi-account landing zones with guardrails and account vending. Which service?",
+      "options": {
+        "A": "AWS Control Tower",
+        "B": "IAM Access Analyzer",
+        "C": "Amazon Cognito",
+        "D": "AWS Resource Groups"
+      }
+    }
+  ]
+}

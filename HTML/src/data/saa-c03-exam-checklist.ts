@@ -537,6 +537,25 @@ export const studyNights: StudyNight[] = [
       "d1-t3-cp-2",
     ],
   },
+  {
+    night: 7,
+    week: 1,
+    title: "Week 1 consolidation",
+    completedDate: "2026-06-20",
+    lab: "Paper only — week1-security-architecture.md + week2-vpc-plan.md",
+    practiceScore: "15/15",
+    notes:
+      "Drew security architecture for witcoskitech.com and globalskiatlas.com; planned Week 2 VPC (2-AZ private Fargate). Quiz (night-7-quiz.json): 15/15 on missed-topics drill — SCP, RAM, execution role, KMS, Bucket Key, Secrets Manager, WAF scope, Firewall Manager, log validation, Config vs CloudWatch, Access Analyzer, Control Tower. Week 1 complete — Night 8 VPC fundamentals next.",
+    reviewedServiceIds: [
+      "vpc",
+      "organizations",
+      "ram",
+      "ecs",
+      "ecr",
+      "fargate",
+    ],
+    completedCheckpointIds: ["d1-t1-cp-3", "d1-t2-cp-3"],
+  },
 ];
 
 /** Merge all completed nights into default checklist state for first-time visitors. */

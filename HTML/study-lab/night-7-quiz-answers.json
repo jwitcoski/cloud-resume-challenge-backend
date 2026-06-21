@@ -1,0 +1,82 @@
+{
+  "night": 7,
+  "title": "Week 1 consolidation",
+  "answerDistribution": { "A": 4, "B": 3, "C": 4, "D": 4 },
+  "answers": [
+    {
+      "id": "Q1",
+      "answer": "A",
+      "explanation": "SCPs apply to all principals in member accounts — even AdministratorAccess cannot override an explicit SCP Deny. Night 1 miss."
+    },
+    {
+      "id": "Q2",
+      "answer": "C",
+      "explanation": "RAM shares subnets, TGW attachments, and other resources across accounts. Identity Center is workforce SSO, not resource sharing. Night 1 miss."
+    },
+    {
+      "id": "Q3",
+      "answer": "D",
+      "explanation": "Fargate pulls images and writes logs via the task execution role. The task role is for application AWS API calls at runtime. Night 6 Q4 miss."
+    },
+    {
+      "id": "Q4",
+      "answer": "B",
+      "explanation": "Cross-account KMS requires both key policy trust on the CMK and IAM permissions on the caller. Night 2 miss."
+    },
+    {
+      "id": "Q5",
+      "answer": "C",
+      "explanation": "S3 Bucket Key reduces KMS API calls for SSE-KMS. Transfer Acceleration speeds uploads — it does not reduce KMS charges. Night 6 Q7 miss."
+    },
+    {
+      "id": "Q6",
+      "answer": "D",
+      "explanation": "Secrets Manager stores secret values with optional automatic rotation. KMS stores encryption keys, not application passwords. Nights 2–3 miss."
+    },
+    {
+      "id": "Q7",
+      "answer": "A",
+      "explanation": "Bucket policy Deny on PutObject without SSE-KMS enforces encryption at upload. Night 2 Q9 miss."
+    },
+    {
+      "id": "Q8",
+      "answer": "D",
+      "explanation": "CloudFront WAF Web ACLs use CLOUDFRONT scope and are created in us-east-1. Night 4 miss."
+    },
+    {
+      "id": "Q9",
+      "answer": "C",
+      "explanation": "ALB WAF uses REGIONAL scope in the same Region as the load balancer. Night 4 Q4 miss."
+    },
+    {
+      "id": "Q10",
+      "answer": "A",
+      "explanation": "Firewall Manager deploys WAF (and other) policies org-wide from a central admin account. Night 4/6 miss."
+    },
+    {
+      "id": "Q11",
+      "answer": "B",
+      "explanation": "Log file validation creates SHA-256 digest files for tamper detection. Data events log S3/Lambda API activity — different purpose. Night 5 Q4 miss."
+    },
+    {
+      "id": "Q12",
+      "answer": "C",
+      "explanation": "Config rules evaluate current resource configuration state continuously. CloudWatch alarms on metrics, not compliance state. Night 6 Q17 miss."
+    },
+    {
+      "id": "Q13",
+      "answer": "D",
+      "explanation": "Security Hub = findings dashboard. Firewall Manager = policy deployment (WAF, SG, etc.). Night 6 Q14 miss."
+    },
+    {
+      "id": "Q14",
+      "answer": "B",
+      "explanation": "Access Analyzer evaluates resource policies for external/cross-account access paths. Control Tower = landing zone. Night 6 Q19 miss."
+    },
+    {
+      "id": "Q15",
+      "answer": "A",
+      "explanation": "Control Tower provides multi-account landing zone with guardrails and Account Factory. Access Analyzer finds external access, not account vending."
+    }
+  ]
+}
