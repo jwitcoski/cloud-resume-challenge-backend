@@ -1,0 +1,131 @@
+{
+  "night": 6,
+  "title": "Week 1 review",
+  "answers": [
+    {
+      "id": "Q1",
+      "answer": "B",
+      "explanation": "SCPs apply to all principals in member accounts — even AdministratorAccess cannot override an explicit SCP Deny. Night 1 miss."
+    },
+    {
+      "id": "Q2",
+      "answer": "B",
+      "explanation": "RAM shares resources (subnets, TGW) across accounts. Identity Center is SSO, not resource sharing. Night 1 miss."
+    },
+    {
+      "id": "Q3",
+      "answer": "B",
+      "explanation": "IAM Identity Center (formerly AWS SSO) federates workforce users to AWS accounts and SaaS apps. Cognito is for customer-facing apps."
+    },
+    {
+      "id": "Q4",
+      "answer": "B",
+      "explanation": "Fargate pulls images and writes logs via the task execution role, not the task role. Night 1 lab topic."
+    },
+    {
+      "id": "Q5",
+      "answer": "B",
+      "explanation": "NACLs are stateless — you must allow return traffic on ephemeral ports. Security groups are stateful. Night 1 topic."
+    },
+    {
+      "id": "Q6",
+      "answer": "B",
+      "explanation": "Cross-account KMS requires both key policy trust and IAM permissions on the caller. Night 2 miss."
+    },
+    {
+      "id": "Q7",
+      "answer": "B",
+      "explanation": "S3 Bucket Key reduces KMS API calls by using a bucket-level key for SSE-KMS. Night 2 miss."
+    },
+    {
+      "id": "Q8",
+      "answer": "B",
+      "explanation": "Secrets Manager stores credentials with optional automatic rotation. Parameter Store String has no rotation."
+    },
+    {
+      "id": "Q9",
+      "answer": "B",
+      "explanation": "KMS = keys. Secrets Manager = secret values. Night 3 miss."
+    },
+    {
+      "id": "Q10",
+      "answer": "B",
+      "explanation": "ACM certificates for CloudFront must be in us-east-1. ALB certs use the Region of the load balancer."
+    },
+    {
+      "id": "Q11",
+      "answer": "B",
+      "explanation": "ALB/API Gateway use REGIONAL scope. CloudFront uses CLOUDFRONT scope in us-east-1. Night 4 miss."
+    },
+    {
+      "id": "Q12",
+      "answer": "B",
+      "explanation": "Shield Standard covers L3/L4 DDoS free on CloudFront. WAF handles L7 (SQLi, XSS). Night 4 lab."
+    },
+    {
+      "id": "Q13",
+      "answer": "B",
+      "explanation": "Network Firewall filters VPC traffic between subnets. WAF is for HTTP at the edge/ALB. Night 4 miss."
+    },
+    {
+      "id": "Q14",
+      "answer": "A",
+      "explanation": "Firewall Manager deploys WAF rules org-wide. Night 4 miss."
+    },
+    {
+      "id": "Q15",
+      "answer": "B",
+      "explanation": "CloudTrail = API audit log with who/when/what."
+    },
+    {
+      "id": "Q16",
+      "answer": "B",
+      "explanation": "Log file validation provides digest hashes for tamper detection. Not the same as data events. Night 5 miss."
+    },
+    {
+      "id": "Q17",
+      "answer": "B",
+      "explanation": "Config rules evaluate current resource configuration state continuously."
+    },
+    {
+      "id": "Q18",
+      "answer": "B",
+      "explanation": "GuardDuty ML threat detection from CloudTrail, VPC Flow, DNS logs."
+    },
+    {
+      "id": "Q19",
+      "answer": "B",
+      "explanation": "Access Analyzer evaluates resource policies for external/cross-account access paths."
+    },
+    {
+      "id": "Q20",
+      "answer": "B",
+      "explanation": "Session Manager provides shell access without inbound SSH. Night 3 SSM contrast."
+    },
+    {
+      "id": "Q21",
+      "answer": "A",
+      "explanation": "Macie discovers and classifies sensitive data in S3. Week 1 awareness gap."
+    },
+    {
+      "id": "Q22",
+      "answer": "B",
+      "explanation": "NON_COMPLIANT ≠ incident. Public bucket + CloudFront works but fails the rule; OAC is the modern fix."
+    },
+    {
+      "id": "Q23",
+      "answer": "B",
+      "explanation": "Night 3 lab pattern: Secrets Manager + scoped IAM + kms:Decrypt on the CMK."
+    },
+    {
+      "id": "Q24",
+      "answer": "A",
+      "explanation": "Control Tower = multi-account landing zone with guardrails. Week 1 awareness gap."
+    },
+    {
+      "id": "Q25",
+      "answer": "B",
+      "explanation": "Config charges ~$2-5/mo recording all resources. CloudTrail first trail is free; teardown script keeps it."
+    }
+  ]
+}

@@ -509,6 +509,34 @@ export const studyNights: StudyNight[] = [
     ],
     completedCheckpointIds: ["d1-t3-cp-4"],
   },
+  {
+    night: 6,
+    week: 1,
+    title: "Week 1 review",
+    completedDate: "2026-06-20",
+    lab: "Full Week 1 teardown — Config, CloudTrail, Access Analyzer, SSM contrast param, kms-test object",
+    practiceScore: "20/25",
+    notes:
+      "Week 1 recap quiz (night-6-quiz.json): missed Q4 (ECS execution vs task role), Q7 (Bucket Key vs Transfer Acceleration), Q14 (Firewall Manager vs Security Hub), Q17 (Config rule vs CloudWatch — second-guessed B), Q19 (Access Analyzer vs Control Tower). Teardown: study-lab/week1-teardown-full.sh — kept saa-study/gsa-wiki-cognito + CMK (wiki Lambda COGNITO_SECRET_ARN). Checked off Week 1 awareness: Control Tower, Macie, Artifact, Detective, Audit Manager, Service Catalog, Well-Architected.",
+    reviewedServiceIds: [
+      "control-tower",
+      "macie",
+      "artifact",
+      "detective",
+      "audit-manager",
+      "directory-service",
+      "service-catalog",
+      "well-architected",
+      "acm",
+      "ssm",
+    ],
+    completedCheckpointIds: [
+      "d1-t2-cp-1",
+      "d1-t2-cp-4",
+      "d1-t3-cp-1",
+      "d1-t3-cp-2",
+    ],
+  },
 ];
 
 /** Merge all completed nights into default checklist state for first-time visitors. */
