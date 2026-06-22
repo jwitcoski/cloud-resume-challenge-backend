@@ -1,0 +1,57 @@
+{
+  "night": 8,
+  "title": "VPC fundamentals",
+  "answerDistribution": { "A": 3, "B": 2, "C": 3, "D": 2 },
+  "answers": [
+    {
+      "id": "Q1",
+      "answer": "B",
+      "explanation": "A subnet is public because its route table sends 0.0.0.0/0 to an Internet Gateway — not because of the subnet name. Night 8 Block 1."
+    },
+    {
+      "id": "Q2",
+      "answer": "C",
+      "explanation": "ECR image pulls need ecr.api + ecr.dkr interface endpoints; image layers are stored in S3, so an S3 gateway endpoint completes the path without NAT. Night 8 flashcard #5."
+    },
+    {
+      "id": "Q3",
+      "answer": "A",
+      "explanation": "NACLs are stateless — you must allow ephemeral return ports explicitly. Security groups are stateful and would have allowed the return traffic. Night 8 Block 1 / Night 6 Q5."
+    },
+    {
+      "id": "Q4",
+      "answer": "D",
+      "explanation": "NAT Gateway must live in a public subnet (IGW route) so it can reach the internet on behalf of private subnets. Night 8 Block 1."
+    },
+    {
+      "id": "Q5",
+      "answer": "B",
+      "explanation": "NAT is outbound-only from the private subnet side — internet cannot initiate connections to private IPs through NAT. Night 8 Block 1."
+    },
+    {
+      "id": "Q6",
+      "answer": "C",
+      "explanation": "S3 gateway endpoints are free and keep S3 traffic off the NAT. Night 8 flashcard #3 / week2-vpc-plan.md."
+    },
+    {
+      "id": "Q7",
+      "answer": "A",
+      "explanation": "A bastion (jump host) in a public subnet is the classic pattern for SSH into private EC2. Night 8 bastion discussion."
+    },
+    {
+      "id": "Q8",
+      "answer": "C",
+      "explanation": "Session Manager provides shell access over SSM without public IPs or open port 22 — preferred over bastion per week2-vpc-plan.md."
+    },
+    {
+      "id": "Q9",
+      "answer": "D",
+      "explanation": "DynamoDB supports a gateway VPC endpoint (like S3). Traffic stays on the AWS network and avoids NAT. Night 8 exam scenario sketch."
+    },
+    {
+      "id": "Q10",
+      "answer": "A",
+      "explanation": "Reference the source security group ID, not 0.0.0.0/0 or broad CIDR — least privilege and works as ENIs change. Night 8 exam scenario sketch."
+    }
+  ]
+}

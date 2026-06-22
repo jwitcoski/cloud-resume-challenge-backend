@@ -556,6 +556,18 @@ export const studyNights: StudyNight[] = [
     ],
     completedCheckpointIds: ["d1-t1-cp-3", "d1-t2-cp-3"],
   },
+  {
+    night: 8,
+    week: 2,
+    title: "VPC fundamentals",
+    completedDate: "2026-06-21",
+    lab: "Paper design — week2-vpc-plan.md (2-AZ private Fargate)",
+    practiceScore: "8/10",
+    notes:
+      "Deep dive: public/private subnets, IGW, NAT (outbound-only), SG stateful vs NACL stateless, bastion vs SSM Session Manager, S3/ECR VPC endpoints. Quiz (night-8-quiz.json): 8/10 — missed Q2 (ECR needs ecr.api + ecr.dkr + S3 gateway endpoints, not IGW), Q7 (bastion jump host vs PrivateLink). Night 9 Lab 2A VPC build next.",
+    reviewedServiceIds: ["vpc", "ssm", "privatelink"],
+    completedCheckpointIds: ["d1-t2-cp-4", "d3-t4-cp-3", "d4-t4-cp-0"],
+  },
 ];
 
 /** Merge all completed nights into default checklist state for first-time visitors. */

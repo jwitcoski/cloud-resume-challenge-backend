@@ -1,0 +1,110 @@
+{
+  "night": 8,
+  "title": "VPC fundamentals",
+  "topic": "Public/private subnets, IGW, NAT, SG vs NACL, bastion vs SSM, VPC endpoints",
+  "format": "10 timed scenario questions (~16 min, ~96 sec each). Answer without peeking at night-8-quiz-answers.json first.",
+  "answerKey": "night-8-quiz-answers.json",
+  "answerDistribution": "A×3 B×2 C×3 D×2 — options shuffled so correct letter varies",
+  "questions": [
+    {
+      "id": "Q1",
+      "question": "An engineer creates subnets named \"public-a\" and \"private-b\" but both route tables only have a local route for 10.0.0.0/16. Neither subnet can reach the internet. What must be added to make subnet public-a actually public?",
+      "options": {
+        "A": "Enable auto-assign private IPv4 on the subnet",
+        "B": "Add 0.0.0.0/0 → Internet Gateway to public-a's route table",
+        "C": "Attach a NAT Gateway to public-a",
+        "D": "Change the NACL from default to custom"
+      }
+    },
+    {
+      "id": "Q2",
+      "question": "ECS Fargate tasks in a private subnet must pull container images from ECR without sending that traffic through a NAT Gateway. Which combination meets the requirement?",
+      "options": {
+        "A": "Internet Gateway in the private subnet route table",
+        "B": "Bastion host in the public subnet with ECR credentials",
+        "C": "Interface endpoints for ecr.api and ecr.dkr plus an S3 gateway endpoint",
+        "D": "Security group allowing inbound 443 from 0.0.0.0/0"
+      }
+    },
+    {
+      "id": "Q3",
+      "question": "A security group allows inbound HTTPS on port 443 to an EC2 instance. A custom subnet NACL allows inbound 443 but denies all ephemeral ports (1024–65535). Clients cannot complete TLS handshakes. What is the most likely cause?",
+      "options": {
+        "A": "NACLs are stateless; return traffic on ephemeral ports is blocked",
+        "B": "Security groups are stateless and require explicit outbound rules for every response port",
+        "C": "The instance needs a public IP for HTTPS",
+        "D": "IGW does not support port 443"
+      }
+    },
+    {
+      "id": "Q4",
+      "question": "You deploy a NAT Gateway so Fargate tasks in private subnets can reach the internet for software updates. Where must the NAT Gateway be placed?",
+      "options": {
+        "A": "Private subnet with route 0.0.0.0/0 → NAT",
+        "B": "Any subnet; NAT is VPC-scoped like the Internet Gateway",
+        "C": "Private subnet with no default route to avoid exposure",
+        "D": "Public subnet whose route table has 0.0.0.0/0 → Internet Gateway"
+      }
+    },
+    {
+      "id": "Q5",
+      "question": "A Fargate task runs in a private subnet with outbound routing via NAT Gateway. The task security group allows no inbound rules. Can a user on the public internet initiate an SSH session to the task's private IP?",
+      "options": {
+        "A": "Yes, if the NAT Gateway forwards inbound connections to matching private IPs",
+        "B": "No; NAT provides outbound-only internet access from the private subnet's perspective",
+        "C": "Yes, if the task execution role has ssm:StartSession",
+        "D": "Yes, after adding an Internet Gateway route to the private subnet"
+      }
+    },
+    {
+      "id": "Q6",
+      "question": "A data pipeline in private subnets writes large objects frequently to S3 in the same Region. NAT Gateway data-processing charges are high. What is the most cost-effective networking change for S3 traffic?",
+      "options": {
+        "A": "Move the tasks to a public subnet with public IPs",
+        "B": "Add a second NAT Gateway per Availability Zone",
+        "C": "Add an S3 gateway VPC endpoint and route S3 prefix lists to it in the private route table",
+        "D": "Replace the NAT Gateway with a Site-to-Site VPN"
+      }
+    },
+    {
+      "id": "Q7",
+      "question": "Administrators need occasional shell access to EC2 instances in private subnets without exposing every instance to the internet. A small EC2 in a public subnet accepts SSH only from the corporate office IP range; private instances accept SSH only from that server's security group. What is this pattern called?",
+      "options": {
+        "A": "Bastion (jump) host",
+        "B": "AWS PrivateLink endpoint service",
+        "C": "Transit Gateway attachment",
+        "D": "Client VPN concentrator"
+      }
+    },
+    {
+      "id": "Q8",
+      "question": "Security wants admin shell access to private EC2 instances without opening port 22 to the internet and without managing SSH keys on a jump box. Instances already run the SSM Agent. What should you use?",
+      "options": {
+        "A": "NAT Gateway with port forwarding",
+        "B": "Internet Gateway with restrictive NACL",
+        "C": "AWS Systems Manager Session Manager",
+        "D": "AWS Client VPN with full tunnel only"
+      }
+    },
+    {
+      "id": "Q9",
+      "question": "A Lambda function runs inside a VPC in private subnets and calls DynamoDB in the same Region. You want to avoid NAT Gateway charges for DynamoDB traffic. What is the best approach?",
+      "options": {
+        "A": "Assign elastic IPs to each Lambda ENI",
+        "B": "Route 0.0.0.0/0 from the Lambda subnets to an Internet Gateway",
+        "C": "Use an Application Load Balancer in front of DynamoDB",
+        "D": "Add a DynamoDB gateway VPC endpoint and update the subnet route tables"
+      }
+    },
+    {
+      "id": "Q10",
+      "question": "Aurora PostgreSQL runs in private subnets. A Lambda function in the same VPC must connect on port 5432. Both use security groups. What is the recommended ingress rule on the Aurora security group?",
+      "options": {
+        "A": "Allow inbound TCP 5432 from the Lambda function's security group ID",
+        "B": "Allow inbound TCP 5432 from 0.0.0.0/0",
+        "C": "Allow inbound TCP 5432 from the VPC CIDR 10.0.0.0/16 only",
+        "D": "No inbound rule; Aurora initiates connections to Lambda"
+      }
+    }
+  ]
+}
