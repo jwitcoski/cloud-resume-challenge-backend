@@ -262,6 +262,23 @@ export default function AwsSolutionsArchitectStudyPage() {
 
           <ExamChecklist />
 
+          <div className="rounded-lg border border-blue-200 bg-blue-50/50 p-4 mb-10">
+            <h2 className="text-lg font-semibold text-[#444] mb-1">
+              Practice quizzes
+            </h2>
+            <p className="text-sm text-[#555] mb-3 leading-relaxed">
+              Timed scenario questions from{" "}
+              <code className="bg-white/80 px-1 rounded text-xs">study-lab/</code>{" "}
+              — answers hidden until submit, with explanations after grading.
+            </p>
+            <Link
+              href="/aws-solutions-architect-study/quiz/"
+              className="inline-flex text-sm font-medium text-[#007bff] hover:underline"
+            >
+              Open quiz taker (Nights 5–8) →
+            </Link>
+          </div>
+
           <h2 className="text-2xl font-bold text-[#444] mt-12 mb-4">
             Nightly structure (every 2-hour block)
           </h2>

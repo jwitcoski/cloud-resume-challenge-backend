@@ -15,6 +15,11 @@ When creating or editing `night-*-quiz.json` / `night-*-quiz-answers.json`:
 - `"format"` field in quiz JSON: scenario → best service → why not the others.
 - Explanations in answers JSON should cite which night/topic the question reinforces.
 
+## Quiz taker (web UI)
+
+- Quizzes render at `/aws-solutions-architect-study/quiz/` — auto-discovers `night-N-quiz.json` + `night-N-quiz-answers.json` at build time.
+- Add a new night: drop both JSON files in `study-lab/` and redeploy; no code changes required.
+
 ## Existing quizzes to rebalance (backlog)
 
 - `night-5-quiz.json` — audit answer distribution when next edited.
