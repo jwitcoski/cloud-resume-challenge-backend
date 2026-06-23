@@ -275,7 +275,7 @@ export default function AwsSolutionsArchitectStudyPage() {
               href="/aws-solutions-architect-study/quiz/"
               className="inline-flex text-sm font-medium text-[#007bff] hover:underline"
             >
-              Open quiz taker (Nights 5–8) →
+              Open quiz taker (Nights 5–9) →
             </Link>
           </div>
 

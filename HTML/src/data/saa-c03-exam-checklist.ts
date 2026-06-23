@@ -568,6 +568,18 @@ export const studyNights: StudyNight[] = [
     reviewedServiceIds: ["vpc", "ssm", "privatelink"],
     completedCheckpointIds: ["d1-t2-cp-4", "d3-t4-cp-3", "d4-t4-cp-0"],
   },
+  {
+    night: 9,
+    week: 2,
+    title: "Lab 2A — VPC build (part 1)",
+    completedDate: "2026-06-22",
+    lab: "saa-study-gsa VPC — night-9-lab-vpc-build.sh → night-9-vpc-ids.json",
+    practiceScore: "9/10",
+    notes:
+      "Built 2-AZ VPC: IGW, public/private subnets, route tables, NAT in public-a, Fargate SG. Quiz (night-9-quiz.json): 9/10 — missed Q3 (single NAT in AZ-a: no auto-failover to public-b; outbound lost until NAT recreated). NAT return-traffic / receptionist analogy solid. Night 10 — Run Iceland ECS task in private subnets.",
+    reviewedServiceIds: ["vpc", "ec2", "ecs"],
+    completedCheckpointIds: ["d4-t4-cp-1"],
+  },
 ];
 
 /** Merge all completed nights into default checklist state for first-time visitors. */

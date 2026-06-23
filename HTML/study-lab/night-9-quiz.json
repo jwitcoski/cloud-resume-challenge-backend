@@ -1,0 +1,110 @@
+{
+  "night": 9,
+  "title": "Lab 2A — VPC build",
+  "topic": "Hands-on VPC: subnets, route tables, IGW, NAT, EIP, security groups",
+  "format": "10 timed scenario questions (~16 min, ~96 sec each). Reinforces what you just built in night-9-lab-vpc-build.sh. Answer without peeking at night-9-quiz-answers.json first.",
+  "answerKey": "night-9-quiz-answers.json",
+  "answerDistribution": "A×3 B×2 C×3 D×2 — options shuffled so correct letter varies",
+  "questions": [
+    {
+      "id": "Q1",
+      "question": "You create a VPC and subnets named public-a and private-a, but instances in public-a still cannot reach the internet. DNS resolves but ping to 8.8.8.8 fails. The subnet has map-public-ip-on-launch enabled. What is the most likely missing step?",
+      "options": {
+        "A": "Attach an Internet Gateway and add 0.0.0.0/0 → IGW on the public subnet's route table",
+        "B": "Enable VPC Flow Logs on the subnet",
+        "C": "Add a NAT Gateway to the public subnet route table",
+        "D": "Change the NACL to allow ICMP"
+      }
+    },
+    {
+      "id": "Q2",
+      "question": "Your lab script places a NAT Gateway in saa-study-gsa-public-a (10.0.1.0/24). Private subnet route tables point 0.0.0.0/0 to that NAT. Why must the NAT sit in a public subnet rather than a private one?",
+      "options": {
+        "A": "NAT Gateways are only billed when placed in public subnets",
+        "B": "Private subnets cannot have Elastic IPs attached to resources",
+        "C": "The NAT needs a route to the internet via an Internet Gateway in its subnet's route table",
+        "D": "AWS requires NAT Gateways to share the same CIDR as private subnets"
+      }
+    },
+    {
+      "id": "Q3",
+      "question": "You associate both public subnets (AZ-a and AZ-b) with one route table that routes 0.0.0.0/0 to the IGW. Private subnets share a second route table routing 0.0.0.0/0 to a single NAT in AZ-a. What happens if us-east-1a becomes unavailable?",
+      "options": {
+        "A": "Private workloads in AZ-b lose outbound internet until the NAT is recreated or replaced per-AZ",
+        "B": "AWS automatically fails over the NAT to the public-b subnet",
+        "C": "The IGW redirects NAT traffic to AZ-b",
+        "D": "Private subnets fail over to the public route table"
+      }
+    },
+    {
+      "id": "Q4",
+      "question": "Before launching a NAT Gateway, the build script calls allocate-address --domain vpc. What happens if you skip the Elastic IP and try to create the NAT with only a private IP?",
+      "options": {
+        "A": "NAT Gateway creation fails — a VPC Elastic IP allocation is required",
+        "B": "NAT works but only for traffic within the VPC CIDR",
+        "C": "AWS auto-assigns a public IP from the subnet pool at no charge",
+        "D": "NAT uses the Internet Gateway's public IP instead"
+      }
+    },
+    {
+      "id": "Q5",
+      "question": "The lab enables enable-dns-hostnames and enable-dns-support on the VPC. A Fargate task in a private subnet needs to pull from ECR using the standard regional endpoint hostname. Which statement is correct?",
+      "options": {
+        "A": "DNS hostnames are irrelevant; you must hard-code IP addresses in the task definition",
+        "B": "Private subnets cannot resolve AWS service DNS names",
+        "C": "DNS support allows resolution of public AWS endpoint names; private subnets still need NAT or VPC endpoints to reach them",
+        "D": "Enabling DNS hostnames automatically creates interface endpoints for all AWS services"
+      }
+    },
+    {
+      "id": "Q6",
+      "question": "You created saa-study-gsa-fargate-sg with egress TCP 443 to 0.0.0.0/0 and no inbound rules. For Night 10, the Iceland pipeline task must write to S3 and pull from ECR. What is the first networking check if the task fails to start?",
+      "options": {
+        "A": "Add inbound 443 from 0.0.0.0/0 to the task security group",
+        "B": "Confirm the task runs in private subnets with NAT or VPC endpoints for ECR/S3, and the execution role can pull images",
+        "C": "Move the task to a public subnet and disable the security group",
+        "D": "Attach an Internet Gateway directly to the private subnet"
+      }
+    },
+    {
+      "id": "Q7",
+      "question": "A colleague associates a new private subnet with the main (default) route table, which only has the local 10.0.0.0/16 route. Fargate tasks in that subnet cannot reach the internet. What fix matches the lab pattern?",
+      "options": {
+        "A": "Associate the subnet with saa-study-gsa-rt-private (0.0.0.0/0 → NAT)",
+        "B": "Rename the subnet to include private- in the name",
+        "C": "Enable map-public-ip-on-launch on the subnet",
+        "D": "Add an Internet Gateway route to the main route table only"
+      }
+    },
+    {
+      "id": "Q8",
+      "question": "You want to reduce NAT data-processing charges for large S3 uploads from private subnets in this VPC. Which addition from week2-vpc-plan.md keeps S3 traffic off the NAT?",
+      "options": {
+        "A": "Second NAT Gateway in AZ-b",
+        "B": "S3 gateway VPC endpoint associated with the private route table",
+        "C": "Internet Gateway route in the private route table",
+        "D": "Bastion host in the public subnet"
+      }
+    },
+    {
+      "id": "Q9",
+      "question": "When running ecs:RunTask for Iceland in Night 10, you set assignPublicIp to DISABLED and pass subnet IDs from night-9-vpc-ids.json privateA and privateB. What does DISABLED imply?",
+      "options": {
+        "A": "The task receives no public IPv4 address; outbound internet uses NAT or VPC endpoints",
+        "B": "The task cannot communicate with other resources in the VPC",
+        "C": "ECS automatically creates a Site-to-Site VPN for the task",
+        "D": "The task is rejected unless the subnet has an Internet Gateway route"
+      }
+    },
+    {
+      "id": "Q10",
+      "question": "After the lab build, you document resource IDs in night-9-vpc-ids.json for the globalskiatlas backend repo. Which pair of IDs is required for the ecs:RunTask networkConfiguration in Night 10?",
+      "options": {
+        "A": "VPC ID and Internet Gateway ID",
+        "B": "Private subnet IDs and Fargate security group ID",
+        "C": "NAT Gateway ID and Elastic IP allocation ID",
+        "D": "Public subnet IDs and route table ID only"
+      }
+    }
+  ]
+}
