@@ -1,0 +1,31 @@
+{
+  "lab": "night-10-lab2a-fargate-private",
+  "region": "us-east-1",
+  "completedAt": "2026-06-23T18:40:00Z",
+  "cluster": "globalskiatlas-backend-k8s",
+  "taskDefinition": "arn:aws:ecs:us-east-1:298043721974:task-definition/globalskiatlas-backend-k8s-iceland:1",
+  "taskArn": "arn:aws:ecs:us-east-1:298043721974:task/globalskiatlas-backend-k8s/b3ad523bdb9e4f8bacf3523412d11d7f",
+  "network": {
+    "subnets": ["subnet-0c00b7003aa3eb4db", "subnet-08aac9b095b7dec9c"],
+    "securityGroups": ["sg-09c00d8e2de6cee92"],
+    "assignPublicIp": "DISABLED",
+    "taskPrivateIp": "10.0.11.239",
+    "availabilityZone": "us-east-1a"
+  },
+  "result": {
+    "exitCode": 0,
+    "stoppedReason": "Essential container in task exited",
+    "startedAt": "2026-06-23T14:39:26.253000-04:00",
+    "stoppedAt": "2026-06-23T14:40:00-04:00"
+  },
+  "quiz": {
+    "score": "8/10",
+    "missed": ["Q3", "Q4"],
+    "notes": "Q3 task role vs execution role for S3; Q4 CloudWatch logs needs network path not task role"
+  },
+  "verify": {
+    "logGroup": "/ecs/globalskiatlas-backend-k8s-iceland",
+    "s3Bucket": "globalskiatlas-backend-k8s-output",
+    "s3Prefix": "iceland/2026-06/"
+  }
+}

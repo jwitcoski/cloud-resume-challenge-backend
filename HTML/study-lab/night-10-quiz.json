@@ -1,0 +1,110 @@
+{
+  "night": 10,
+  "title": "Lab 2A — private Fargate (part 2)",
+  "topic": "ECS Fargate awsvpc networking, execution vs task role, private subnet RunTask, troubleshooting",
+  "format": "10 timed scenario questions (~16 min, ~96 sec each). Reinforces night-10-lab-fargate-run.sh. Answer without peeking at night-10-quiz-answers.json first.",
+  "answerKey": "night-10-quiz-answers.json",
+  "answerDistribution": "A×3 B×2 C×3 D×2 — options shuffled so correct letter varies",
+  "questions": [
+    {
+      "id": "Q1",
+      "question": "You run ecs:RunTask for globalskiatlas-backend-k8s-iceland with assignPublicIp DISABLED in the Night 9 private subnets. The task stays PENDING then stops with CannotPullContainerError. The Fargate security group allows egress TCP 443 only. What should you verify first?",
+      "options": {
+        "A": "Add an inbound rule on the Fargate SG for ECR on port 443",
+        "B": "Move the task to a public subnet with assignPublicIp ENABLED",
+        "C": "Private route table routes 0.0.0.0/0 to the NAT Gateway and the NAT is available",
+        "D": "Attach an Internet Gateway directly to the private subnet"
+      }
+    },
+    {
+      "id": "Q2",
+      "question": "The Iceland task definition lists executionRoleArn globalskiatlas-backend-k8s-ecs-execution and taskRoleArn globalskiatlas-backend-k8s-ecs-task. Which role must allow ecr:GetAuthorizationToken and image layer pulls before the container starts?",
+      "options": {
+        "A": "Task role — the running application pulls its own image",
+        "B": "Execution role — ECS agent pulls the image on behalf of the task",
+        "C": "GitHub Actions deploy user — only CI/CD may touch ECR",
+        "D": "ECS service-linked role for the cluster"
+      }
+    },
+    {
+      "id": "Q3",
+      "question": "The Iceland container sets REGION=iceland and S3_BUCKET=globalskiatlas-backend-k8s-output. The task starts and pulls the image successfully but fails when uploading pipeline output. Which IAM principal needs s3:PutObject on the bucket?",
+      "options": {
+        "A": "Execution role — all runtime AWS API calls use it",
+        "B": "NAT Gateway service-linked role",
+        "C": "CloudWatch Logs service role",
+        "D": "Task role — application code uses task credentials for S3"
+      }
+    },
+    {
+      "id": "Q4",
+      "question": "Task logConfiguration uses awslogs with group /ecs/globalskiatlas-backend-k8s-iceland. The task stops with ResourceInitializationError mentioning CloudWatch Logs. The execution role has AmazonECSTaskExecutionRolePolicy attached. What is the most likely remaining issue?",
+      "options": {
+        "A": "Network path to CloudWatch Logs endpoints (NAT or logs VPC endpoint) — same egress as ECR",
+        "B": "Task role must include logs:CreateLogGroup",
+        "C": "Security group needs inbound UDP 514 for syslog",
+        "D": "Fargate tasks cannot use awslogs in private subnets"
+      }
+    },
+    {
+      "id": "Q5",
+      "question": "You have not yet added an S3 gateway endpoint to the study VPC. A Fargate task in private subnets with NAT writes large objects to S3 in the same Region. How does that S3 traffic leave the VPC?",
+      "options": {
+        "A": "Stays entirely on the VPC local route — S3 is always private",
+        "B": "Uses DynamoDB gateway endpoint automatically",
+        "C": "Goes out via NAT Gateway to the S3 public endpoint (NAT data-processing charges apply)",
+        "D": "Blocked unless you add inbound 443 to the task security group"
+      }
+    },
+    {
+      "id": "Q6",
+      "question": "After Night 10 you want zero NAT traffic for both ECR image pulls and S3 uploads from private Fargate tasks. Which minimum endpoint set matches week2-vpc-plan.md?",
+      "options": {
+        "A": "S3 gateway endpoint only",
+        "B": "Single interface endpoint for com.amazonaws.us-east-1.ecr.api",
+        "C": "Interface endpoints for ecr.api and ecr.dkr plus an S3 gateway endpoint on the private route table",
+        "D": "Internet Gateway route added to the private route table"
+      }
+    },
+    {
+      "id": "Q7",
+      "question": "A colleague argues the Fargate SG is wrong because there are no inbound rules and the task cannot receive responses from ECR. What is the correct response?",
+      "options": {
+        "A": "Add inbound 443 from the NAT Gateway security group",
+        "B": "Security groups are stateful — return traffic for allowed outbound connections is permitted automatically",
+        "C": "Fargate requires inbound 0.0.0.0/0 on port 443 for TLS handshakes",
+        "D": "Disable the security group entirely for private tasks"
+      }
+    },
+    {
+      "id": "Q8",
+      "question": "night-10-lab-fargate-run.sh passes subnets from night-9-vpc-ids.json and assignPublicIp DISABLED. A task ENI is created in one of the listed private subnets. Can a user on the public internet SSH to the task's private IP through the NAT Gateway?",
+      "options": {
+        "A": "Yes — NAT forwards inbound connections to matching private IPs",
+        "B": "Yes — if the execution role has ssm:StartSession",
+        "C": "Yes — after adding an IGW route to the private subnet",
+        "D": "No — NAT provides outbound-only internet access from the private subnet's perspective"
+      }
+    },
+    {
+      "id": "Q9",
+      "question": "GitHub Actions calls ecs:RunTask with iam:PassRole on globalskiatlas-backend-k8s-ecs-execution and globalskiatlas-backend-k8s-ecs-task. Why is PassRole required?",
+      "options": {
+        "A": "ECS must assume those roles when starting the task on your behalf",
+        "B": "PassRole lets GitHub clone the ECR repository locally",
+        "C": "PassRole replaces the need for a task security group",
+        "D": "PassRole only applies to EC2 launch type, not Fargate"
+      }
+    },
+    {
+      "id": "Q10",
+      "question": "After night-10-lab-fargate-run.sh completes, you confirm success. Which pair of checks best validates the lab besides exit code 0?",
+      "options": {
+        "A": "CloudWatch log stream under /ecs/globalskiatlas-backend-k8s-iceland and new objects in globalskiatlas-backend-k8s-output",
+        "B": "NAT Gateway deleted and IGW detached",
+        "C": "Task received a public Elastic IP on the ENI",
+        "D": "Fargate SG shows inbound rules from 0.0.0.0/0"
+      }
+    }
+  ]
+}

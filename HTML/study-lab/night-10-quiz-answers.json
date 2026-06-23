@@ -1,0 +1,57 @@
+{
+  "night": 10,
+  "title": "Lab 2A — private Fargate (part 2)",
+  "answerDistribution": { "A": 3, "B": 2, "C": 3, "D": 2 },
+  "answers": [
+    {
+      "id": "Q1",
+      "answer": "C",
+      "explanation": "CannotPullContainerError in private subnets is usually missing NAT/endpoints path to ECR, not inbound SG rules. Night 9 Q6 / night-10-lab troubleshooting step 1."
+    },
+    {
+      "id": "Q2",
+      "answer": "B",
+      "explanation": "Execution role pulls images and writes logs before the app starts; task role is for application runtime (S3). Week 1 Night 6 Q4 / Night 5 execution vs task role."
+    },
+    {
+      "id": "Q3",
+      "answer": "D",
+      "explanation": "S3 writes use task role credentials (S3WriteGlobalskiatlasOutput). Execution role is for ECS infrastructure, not app data plane."
+    },
+    {
+      "id": "Q4",
+      "answer": "A",
+      "explanation": "awslogs needs HTTPS egress to CloudWatch Logs — same NAT/endpoints path as ECR. Policy on execution role is not enough without network reachability."
+    },
+    {
+      "id": "Q5",
+      "answer": "C",
+      "explanation": "Without an S3 gateway endpoint, S3 API calls from private subnets use NAT to reach the public S3 endpoint (charges apply). Night 8 Q6 / week2-vpc-plan.md."
+    },
+    {
+      "id": "Q6",
+      "answer": "C",
+      "explanation": "ECR pulls need ecr.api + ecr.dkr interface endpoints; layers live in S3 so add S3 gateway endpoint. Night 8 Q2 flashcard #5."
+    },
+    {
+      "id": "Q7",
+      "answer": "B",
+      "explanation": "Security groups are stateful — outbound 443 to ECR allows return traffic without explicit inbound rules. Night 8 Q3 / Night 9 Fargate SG design."
+    },
+    {
+      "id": "Q8",
+      "answer": "D",
+      "explanation": "NAT is outbound-only from private subnets; no inbound initiation from the internet. Night 8 Q5."
+    },
+    {
+      "id": "Q9",
+      "answer": "A",
+      "explanation": "RunTask caller must iam:PassRole so ECS can assume execution and task roles. github-actions-policy-v4.json PassRole stmt + Night 5 scoped RunTask."
+    },
+    {
+      "id": "Q10",
+      "answer": "A",
+      "explanation": "night-10-lab-fargate-run.sh tails logs and lists S3 — confirms pipeline ran end-to-end in private networking."
+    }
+  ]
+}

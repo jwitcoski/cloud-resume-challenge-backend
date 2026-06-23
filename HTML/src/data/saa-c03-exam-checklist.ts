@@ -580,6 +580,18 @@ export const studyNights: StudyNight[] = [
     reviewedServiceIds: ["vpc", "ec2", "ecs"],
     completedCheckpointIds: ["d4-t4-cp-1"],
   },
+  {
+    night: 10,
+    week: 2,
+    title: "Lab 2A — private Fargate (part 2)",
+    completedDate: "2026-06-23",
+    lab: "Iceland ecs:RunTask in private subnets — night-10-lab-fargate-run.sh → night-10-task-result.json",
+    practiceScore: "8/10",
+    notes:
+      "Hands-on RunTask in private subnets (assignPublicIp DISABLED, NAT egress). User run b3ad523 exit 0, ENI 10.0.11.239 private-a; ECR pull + logs + S3 iceland/2026-06/ via NAT. Quiz (night-10-quiz.json): 8/10 — missed Q3 (task role for S3 PutObject, not execution role), Q4 (logs init = network to CloudWatch, not task role). Study VPC left up for Nights 11–12. Night 11 — ALB vs NLB vs GWLB theory.",
+    reviewedServiceIds: ["ecs", "fargate", "ecr", "cloudwatch", "iam"],
+    completedCheckpointIds: ["d3-t2-cp-2"],
+  },
 ];
 
 /** Merge all completed nights into default checklist state for first-time visitors. */
