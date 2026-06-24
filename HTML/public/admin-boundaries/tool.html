@@ -176,7 +176,7 @@
   <aside id="sidebar">
     <h1>Boundary Exclusion Tool</h1>
     <p class="subtitle">
-      Pick a country and an admin-1 region (state/province), then punch the region out of the country polygon for GeoLayers or broadcast maps.
+      Pick a country and admin region, then punch it out of the country polygon. Regions load from geoBoundaries (global ADM1 + ADM2).
     </p>
 
     <div>
@@ -185,7 +185,15 @@
     </div>
 
     <div>
-      <label for="region-select">State / province</label>
+      <label for="admin-level-select">Admin level</label>
+      <select id="admin-level-select">
+        <option value="1" selected>ADM1 — States / provinces</option>
+        <option value="2">ADM2 — Municipios / counties / districts</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="region-select" id="region-label">State / province</label>
       <select id="region-select"></select>
     </div>
 
@@ -209,7 +217,7 @@
             <path d="M34 28 L52 24 L56 40 L44 50 L32 44 Z" fill="rgba(255,107,107,0.35)" stroke="#ff6b6b" stroke-width="2" stroke-dasharray="4 3"/>
           </svg>
           <strong id="lbl-region">Region</strong>
-          <span>state / province</span>
+          <span id="lbl-region-hint">ADM1 — states, provinces</span>
         </div>
         <div class="math-op" aria-hidden="true">=</div>
         <div class="math-step">
@@ -255,8 +263,8 @@
 
     <details class="help">
       <summary>How to customize the HTML / use in GEOlayers</summary>
-      <p style="margin:8px 0"><strong>Customize HTML:</strong> see the MoveTheAdminBoundaries repo <code>docs/HTML.md</code></p>
-      <p style="margin:8px 0"><strong>GEOlayers (After Effects):</strong> see <code>docs/GEOLAYERS.md</code> in that repo</p>
+      <p style="margin:8px 0"><strong>Change the web map code:</strong> <a href="docs/HTML.md" target="_blank">docs/HTML.md</a> - explains index.html, GeoJSON paths, layer order, colors.</p>
+      <p style="margin:8px 0"><strong>After Effects GEOlayers:</strong> <a href="docs/GEOLAYERS.md" target="_blank">docs/GEOLAYERS.md</a></p>
       <ol>
         <li><strong>Download GeoJSON</strong> above after removing the region.</li>
         <li>For HTML: point the three <code>data:</code> paths at your new .geojson files (see HTML.md).</li>
@@ -266,8 +274,10 @@
 
     <div class="legend">
       <p style="margin-top:0">
-        Data: Natural Earth 50m.<br>
-        <a href="index.html">Texas demo</a>
+        Data: Natural Earth countries + <a href="https://www.geoboundaries.org" target="_blank" rel="noopener">geoBoundaries</a>.<br>
+        <a href="index.html">Texas demo</a> |
+        <a href="docs/HTML.md" target="_blank">Edit the HTML</a> |
+        <a href="docs/GEOLAYERS.md" target="_blank">GEOlayers (AE)</a>
       </p>
     </div>
   </aside>

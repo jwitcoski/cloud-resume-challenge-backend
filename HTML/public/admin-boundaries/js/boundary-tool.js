@@ -1,12 +1,12 @@
 /**
- * Interactive country + admin-1 region exclusion tool.
- * Uses Natural Earth boundaries and polygon-clipping for geometry ops.
+ * Interactive country + admin region exclusion tool.
+ * Countries: Natural Earth. Regions: geoBoundaries (global ADM1 + ADM2).
  */
 
 const NE_BASE =
   "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson";
 const NE_COUNTRIES_URL = `${NE_BASE}/ne_50m_admin_0_countries.geojson`;
-const NE_REGIONS_URL = `${NE_BASE}/ne_50m_admin_1_states_provinces.geojson`;
+const GEOBOUNDARIES_API = "https://www.geoboundaries.org/api/current/gbOpen";
 
 const SOURCE_COUNTRY = "result-country";
 const SOURCE_REGION = "result-region";
@@ -15,11 +15,17 @@ const LAYER_COUNTRY = "result-country-fill";
 const LAYER_REGION = "result-region-fill";
 const LAYER_BORDER = "result-border-line";
 
+const ADMIN_LEVEL_LABELS = {
+  1: { region: "State / province", hint: "ADM1 — states, provinces, oblasts" },
+  2: { region: "Municipio / county / district", hint: "ADM2 — municipios, counties, districts" },
+};
+
 let map;
 let countriesFc = null;
-let regionsFc = null;
-let regionsByCountry = new Map();
+/** @type {Map<string, {name: string, feature: object}[]>} */
+const regionCache = new Map();
 let lastResult = null;
+let regionsRequestId = 0;
 
 function $(id) {
   return document.getElementById(id);
@@ -29,6 +35,27 @@ function setStatus(msg, isError = false) {
   const el = $("status");
   el.textContent = msg;
   el.classList.toggle("error", isError);
+}
+
+function getAdminLevel() {
+  return Number($("admin-level-select")?.value || 1);
+}
+
+function regionCacheKey(iso, level = getAdminLevel()) {
+  return `${iso}-ADM${level}`;
+}
+
+function regionNameFromProps(props) {
+  return props.shapeName || props.name || props.NAME || props.name_en || "";
+}
+
+function updateAdminLevelLabels() {
+  const level = getAdminLevel();
+  const labels = ADMIN_LEVEL_LABELS[level] || ADMIN_LEVEL_LABELS[1];
+  const regionLabel = $("region-label");
+  if (regionLabel) regionLabel.textContent = labels.region;
+  const hint = $("lbl-region-hint");
+  if (hint) hint.textContent = labels.hint;
 }
 
 function updateDiagramLabels() {
@@ -47,6 +74,7 @@ function updateDiagramLabels() {
   lblCountry.textContent = countryText;
   lblRegion.textContent = regionText;
   if (lblRegionLayer) lblRegionLayer.textContent = `Excluded: ${regionText}`;
+  updateAdminLevelLabels();
 }
 
 function setLoading(on) {
@@ -72,7 +100,7 @@ function countryLabel(props) {
 }
 
 function sortByName(a, b) {
-  return a.label.localeCompare(b.label);
+  return a.name.localeCompare(b.name);
 }
 
 function geomToPcInput(geom) {
@@ -114,26 +142,8 @@ function subtractRegion(countryGeom, regionGeom) {
   return pcOutputToGeom(result);
 }
 
-function findCountry(isoOrName) {
-  const q = normalize(isoOrName);
-  for (const f of countriesFc.features) {
-    const p = f.properties;
-    const candidates = [
-      p.ISO_A3,
-      p.ADM0_A3,
-      p.BRK_A3,
-      p.ISO_A2,
-      p.ADMIN,
-      p.NAME,
-      p.NAME_LONG,
-    ].map(normalize);
-    if (candidates.includes(q)) return f;
-  }
-  throw new Error(`Country not found: ${isoOrName}`);
-}
-
 function findRegion(iso, regionName) {
-  const list = regionsByCountry.get(iso) || [];
+  const list = regionCache.get(regionCacheKey(iso)) || [];
   const q = normalize(regionName);
   let match = list.find((r) => normalize(r.name) === q);
   if (match) return match.feature;
@@ -142,25 +152,71 @@ function findRegion(iso, regionName) {
   if (partial.length === 1) return partial[0].feature;
   if (partial.length > 1) {
     throw new Error(
-      `Ambiguous region "${regionName}". Try: ${partial.map((r) => r.name).join(", ")}`
+      `Ambiguous region "${regionName}". Try: ${partial.slice(0, 8).map((r) => r.name).join(", ")}…`
     );
   }
   throw new Error(`Region not found in ${iso}: ${regionName}`);
 }
 
-function indexRegions() {
-  regionsByCountry.clear();
-  for (const f of regionsFc.features) {
-    const iso = f.properties.adm0_a3;
-    if (!iso) continue;
-    if (!regionsByCountry.has(iso)) regionsByCountry.set(iso, []);
-    regionsByCountry.get(iso).push({
-      name: f.properties.name,
-      feature: f,
-    });
+function indexGeoBoundaryFeatures(iso, fc) {
+  const list = fc.features
+    .map((f) => {
+      const name = regionNameFromProps(f.properties || {});
+      return name ? { name, feature: f } : null;
+    })
+    .filter(Boolean)
+    .sort(sortByName);
+  regionCache.set(regionCacheKey(iso), list);
+  return list;
+}
+
+async function fetchGeoBoundaryRegions(iso, adminLevel) {
+  const cacheKey = regionCacheKey(iso, adminLevel);
+  if (regionCache.has(cacheKey)) {
+    return regionCache.get(cacheKey);
   }
-  for (const list of regionsByCountry.values()) {
-    list.sort((a, b) => a.name.localeCompare(b.name));
+
+  const metaUrl = `${GEOBOUNDARIES_API}/${iso}/ADM${adminLevel}/`;
+  const metaRes = await fetch(metaUrl);
+  if (!metaRes.ok) {
+    throw new Error(`No ADM${adminLevel} data for ${iso} (${metaRes.status})`);
+  }
+  const meta = await metaRes.json();
+  const geoUrl = meta.simplifiedGeometryGeoJSON || meta.gjDownloadURL;
+  if (!geoUrl) {
+    throw new Error(`geoBoundaries returned no download URL for ${iso} ADM${adminLevel}`);
+  }
+
+  const geoRes = await fetch(geoUrl);
+  if (!geoRes.ok) {
+    throw new Error(`Failed to download boundaries for ${iso} ADM${adminLevel}`);
+  }
+  const fc = await geoRes.json();
+  return indexGeoBoundaryFeatures(iso, fc);
+}
+
+async function loadRegionsForCountry(iso, adminLevel = getAdminLevel()) {
+  const requestId = ++regionsRequestId;
+  const select = $("region-select");
+  select.disabled = true;
+  select.innerHTML = `<option>Loading ADM${adminLevel}…</option>`;
+  setStatus(`Loading ADM${adminLevel} boundaries for ${iso}…`);
+
+  try {
+    const list = await fetchGeoBoundaryRegions(iso, adminLevel);
+    if (requestId !== regionsRequestId) return;
+
+    populateRegions(iso, adminLevel);
+    const count = list.length;
+    if (count === 0) {
+      setStatus(`No ADM${adminLevel} regions found for ${iso}.`, true);
+    } else {
+      setStatus(`Loaded ${count} ADM${adminLevel} regions for ${iso}. Click Remove region.`);
+    }
+  } catch (err) {
+    if (requestId !== regionsRequestId) return;
+    populateRegions(iso, adminLevel);
+    setStatus(err.message, true);
   }
 }
 
@@ -175,7 +231,7 @@ function populateCountries() {
       return { iso, label: countryLabel(f.properties), feature: f };
     })
     .filter(Boolean)
-    .sort(sortByName);
+    .sort((a, b) => a.label.localeCompare(b.label));
 
   for (const opt of options) {
     const el = document.createElement("option");
@@ -185,10 +241,10 @@ function populateCountries() {
   }
 }
 
-function populateRegions(iso) {
+function populateRegions(iso, adminLevel = getAdminLevel()) {
   const select = $("region-select");
   select.innerHTML = "";
-  const list = regionsByCountry.get(iso) || [];
+  const list = regionCache.get(regionCacheKey(iso, adminLevel)) || [];
 
   if (list.length === 0) {
     const el = document.createElement("option");
@@ -246,6 +302,7 @@ function boundsFromFeature(feature) {
 function applyExclusion() {
   const iso = $("country-select").value;
   const regionName = $("region-select").value;
+  const adminLevel = getAdminLevel();
   if (!iso || !regionName) return;
 
   setLoading(true);
@@ -258,6 +315,7 @@ function applyExclusion() {
     const regionFeature = findRegion(iso, regionName);
     const countryName = countryLabel(countryFeature.properties);
     const resultGeom = subtractRegion(countryFeature.geometry, regionFeature.geometry);
+    const adminLabel = ADMIN_LEVEL_LABELS[adminLevel]?.region || `ADM${adminLevel}`;
 
     const countryResult = {
       type: "FeatureCollection",
@@ -269,6 +327,7 @@ function applyExclusion() {
             country: countryName,
             country_iso: iso,
             excluded_region: regionName,
+            admin_level: `ADM${adminLevel}`,
           },
           geometry: resultGeom,
         },
@@ -283,6 +342,7 @@ function applyExclusion() {
             name: regionName,
             country: countryName,
             country_iso: iso,
+            admin_level: `ADM${adminLevel}`,
             status: "excluded",
           },
           geometry: regionFeature.geometry,
@@ -299,14 +359,14 @@ function applyExclusion() {
       country: countryResult,
       region: regionResult,
       border: borderResult,
-      filename: `${iso.toLowerCase()}_minus_${regionName.toLowerCase().replace(/\s+/g, "_")}`,
+      filename: `${iso.toLowerCase()}_adm${adminLevel}_minus_${regionName.toLowerCase().replace(/\s+/g, "_")}`,
     };
     $("download-btn").disabled = false;
 
     const bbox = boundsFromFeature(countryResult.features[0]);
     map.fitBounds(bbox, { padding: 80, duration: 900 });
 
-    setStatus(`Removed ${regionName} from ${countryName}.`);
+    setStatus(`Removed ${regionName} (${adminLabel}) from ${countryName}.`);
   } catch (err) {
     emptyResult();
     setStatus(err.message, true);
@@ -377,24 +437,18 @@ function addResultLayers() {
 
 async function loadBoundaries() {
   setLoading(true);
-  setStatus("Loading Natural Earth boundaries…");
-  const [countries, regions] = await Promise.all([
-    fetch(NE_COUNTRIES_URL).then((r) => {
-      if (!r.ok) throw new Error("Failed to load countries");
-      return r.json();
-    }),
-    fetch(NE_REGIONS_URL).then((r) => {
-      if (!r.ok) throw new Error("Failed to load regions");
-      return r.json();
-    }),
-  ]);
+  setStatus("Loading countries…");
+  const countries = await fetch(NE_COUNTRIES_URL).then((r) => {
+    if (!r.ok) throw new Error("Failed to load countries");
+    return r.json();
+  });
   countriesFc = countries;
-  regionsFc = regions;
-  indexRegions();
   populateCountries();
-  populateRegions($("country-select").value);
   updateDiagramLabels();
-  setStatus("Select a country and region, then click Remove region.");
+  const iso = $("country-select").value;
+  if (iso) {
+    await loadRegionsForCountry(iso, getAdminLevel());
+  }
   setLoading(false);
 }
 
@@ -428,11 +482,18 @@ function initMap() {
 }
 
 function initUI() {
-  $("country-select").addEventListener("change", (e) => {
-    populateRegions(e.target.value);
+  $("country-select").addEventListener("change", async (e) => {
+    const iso = e.target.value;
     updateDiagramLabels();
     emptyResult();
-    setStatus("Region list updated. Click Remove region.");
+    await loadRegionsForCountry(iso, getAdminLevel());
+  });
+
+  $("admin-level-select").addEventListener("change", async () => {
+    updateDiagramLabels();
+    emptyResult();
+    const iso = $("country-select").value;
+    if (iso) await loadRegionsForCountry(iso, getAdminLevel());
   });
 
   $("region-select").addEventListener("change", () => {
