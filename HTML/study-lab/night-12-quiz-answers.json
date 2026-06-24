@@ -1,0 +1,82 @@
+{
+  "night": 12,
+  "title": "Lab 2B — EventBridge schedule",
+  "answerDistribution": { "A": 4, "B": 4, "C": 4, "D": 3 },
+  "answers": [
+    {
+      "id": "Q1",
+      "answer": "B",
+      "explanation": "Batch monthly Fargate = EventBridge schedule rule + ECS RunTask target. No ALB/CloudFront/NAT scheduling. night-12-eventbridge-schedule.md decision tree."
+    },
+    {
+      "id": "Q2",
+      "answer": "C",
+      "explanation": "ECS targets require RoleArn trusted by events.amazonaws.com with ecs:RunTask + PassRole. FailedInvocations usually IAM/target config. night-12-lab troubleshooting order."
+    },
+    {
+      "id": "Q3",
+      "answer": "A",
+      "explanation": "Scheduled RunTask is still awsvpc Fargate — needs same private subnets, SG, NAT path as Night 10. EventBridge does not pick networking for you."
+    },
+    {
+      "id": "Q4",
+      "answer": "A",
+      "explanation": "EventBridge cron: minutes hours day-of-month month day-of-week year → cron(0 6 1 * ? *) = 06:00 UTC on the 1st. rate(1 month) is invalid."
+    },
+    {
+      "id": "Q5",
+      "answer": "A",
+      "explanation": "EventBridge assumes the target role on the rule — separate from CI user credentials. eventbridge-ecs-trust-policy.json."
+    },
+    {
+      "id": "Q6",
+      "answer": "C",
+      "explanation": "Decouple + buffer + async consumer pace = SQS (Night 13). EventBridge schedule is for time-based triggers, not workload buffering."
+    },
+    {
+      "id": "Q7",
+      "answer": "D",
+      "explanation": "FailedInvocations = EventBridge failed to deliver to target (often IAM). Container exit 1 is after task started — watch ECS events or logs instead."
+    },
+    {
+      "id": "Q8",
+      "answer": "B",
+      "explanation": "Classic EventBridge ECS target role trust principal is events.amazonaws.com. Scheduler uses scheduler.amazonaws.com for its execution role — related but distinct."
+    },
+    {
+      "id": "Q9",
+      "answer": "D",
+      "explanation": "EventBridge Scheduler supports one-time schedules, flexible windows, and retries. Classic rate/cron rules are simpler but less flexible."
+    },
+    {
+      "id": "Q10",
+      "answer": "C",
+      "explanation": "Night 11 preview in night-11-elb-theory.md — batch RunTask needs no LB; ALB for long-running HTTP services."
+    },
+    {
+      "id": "Q11",
+      "answer": "B",
+      "explanation": "Cluster condition in eventbridge-ecs-run-policy.json limits RunTask blast radius — least privilege for exam and production."
+    },
+    {
+      "id": "Q12",
+      "answer": "D",
+      "explanation": "ECS Task State Change on default bus = event pattern rule. Iceland monthly rule = schedule expression rule."
+    },
+    {
+      "id": "Q13",
+      "answer": "C",
+      "explanation": "Fargate cost dominates; rate(1 minute) would run Iceland constantly. Restore monthly cron after --test-fire validation."
+    },
+    {
+      "id": "Q14",
+      "answer": "A",
+      "explanation": "PassRole to ECS tasks requires iam:PassedToService = ecs-tasks.amazonaws.com — same as github-actions-policy-v4.json Night 5."
+    },
+    {
+      "id": "Q15",
+      "answer": "B",
+      "explanation": "Night 12 kicks off batch on schedule; Night 13 SQS decouples completion handling from the runner — classic integration pattern split."
+    }
+  ]
+}

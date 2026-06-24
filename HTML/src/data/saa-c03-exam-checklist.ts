@@ -75,7 +75,7 @@ export const examServices: ExamService[] = [
   // Application Integration
   { id: "appflow", name: "Amazon AppFlow", category: "Application Integration", readiness: "awareness", domain: "D3", examFocus: "SaaS ↔ AWS data transfer without code" },
   { id: "appsync", name: "AWS AppSync", category: "Application Integration", readiness: "awareness", domain: "D3", examFocus: "GraphQL API; real-time subscriptions" },
-  { id: "eventbridge", name: "Amazon EventBridge", category: "Application Integration", readiness: "partial", domain: "D2", examFocus: "Event bus; schedule rules; decouple microservices", gsaNote: "Documented for ECS cron", studyWeek: 2 },
+  { id: "eventbridge", name: "Amazon EventBridge", category: "Application Integration", readiness: "know", domain: "D2", examFocus: "Event bus; schedule rules; decouple microservices", gsaNote: "Night 12: saa-study-gsa-iceland-monthly cron → ecs:RunTask; events.amazonaws.com target role + PassRole", studyWeek: 2 },
   { id: "mq", name: "Amazon MQ", category: "Application Integration", readiness: "awareness", domain: "D2", examFocus: "Managed ActiveMQ/RabbitMQ; lift-and-shift messaging" },
   { id: "sns", name: "Amazon SNS", category: "Application Integration", readiness: "study", domain: "D2", examFocus: "Pub/sub fan-out; SMS/email/mobile push; SNS → SQS pattern", studyWeek: 2 },
   { id: "sqs", name: "Amazon SQS", category: "Application Integration", readiness: "study", domain: "D2", examFocus: "Queue decoupling; standard vs FIFO; DLQ; visibility timeout", studyWeek: 2 },
@@ -141,7 +141,7 @@ export const examServices: ExamService[] = [
   { id: "cli", name: "AWS CLI", category: "Management and Governance", readiness: "know", domain: "D1", examFocus: "Scripting AWS operations", gsaNote: "Night 1 lab: get-policy-version, simulate-principal-policy, list-role-policies" },
   { id: "cloudformation", name: "AWS CloudFormation", category: "Management and Governance", readiness: "know", domain: "D2", examFocus: "IaC stacks; drift; nested stacks; StackSets", gsaNote: "SAM generates CFN" },
   { id: "cloudtrail", name: "AWS CloudTrail", category: "Management and Governance", readiness: "partial", domain: "D1", examFocus: "API audit log; org trail; vs Config for compliance state", gsaNote: "Night 5: saa-study-account-trail multi-region → saa-study-cloudtrail-298043721974; log file validation on", studyWeek: 1 },
-  { id: "cloudwatch", name: "Amazon CloudWatch", category: "Management and Governance", readiness: "partial", domain: "D2/D3", examFocus: "Metrics, alarms, logs, dashboards, EventBridge integration", gsaNote: "Logs only so far", studyWeek: 2 },
+  { id: "cloudwatch", name: "Amazon CloudWatch", category: "Management and Governance", readiness: "partial", domain: "D2/D3", examFocus: "Metrics, alarms, logs, dashboards, EventBridge integration", gsaNote: "ECS logs + Night 12 FailedInvocations alarm on EventBridge rule", studyWeek: 2 },
   { id: "compute-optimizer", name: "AWS Compute Optimizer", category: "Management and Governance", readiness: "study", domain: "D4", examFocus: "Right-size EC2/EBS/Lambda recommendations", studyWeek: 5 },
   { id: "config", name: "AWS Config", category: "Management and Governance", readiness: "partial", domain: "D1", examFocus: "Resource configuration history; rules; compliance", gsaNote: "Night 5: saa-study-recorder + S3_BUCKET_PUBLIC_READ_PROHIBITED + IAM_USER_MFA_ENABLED rules", studyWeek: 1 },
   { id: "control-tower", name: "AWS Control Tower", category: "Management and Governance", readiness: "awareness", domain: "D1", examFocus: "Multi-account landing zone; guardrails" },
@@ -603,6 +603,18 @@ export const studyNights: StudyNight[] = [
       "ALB vs NLB vs GWLB decision tree solid (HTTP→ALB, TCP/UDP→NLB, firewall→GWLB). Quiz (night-11-quiz.json): 14/20 — missed Q9 (task SG inbound from ALB SG only, not shared 0.0.0.0/0 SG), Q10 (ALB cross-zone on by default, NLB off), Q13 (ALB multi-AZ DNS survives AZ loss — not cross-region replication), Q15 (GWLB endpoint in app VPC, not IGW), Q16 (HTTPS→HTTP = TLS termination not GENEVE), Q19 (WAF REGIONAL on ALB — Night 4 callback). Learned deregistration delay vs HealthCheckGracePeriod. Night 12 — EventBridge schedule.",
     reviewedServiceIds: ["elb", "route53", "waf"],
     completedCheckpointIds: ["d2-t2-cp-0"],
+  },
+  {
+    night: 12,
+    week: 2,
+    title: "Lab 2B — EventBridge schedule",
+    completedDate: "2026-06-24",
+    lab: "EventBridge cron → Iceland RunTask — night-12-lab-eventbridge-schedule.ps1 → night-12-eventbridge-result.json",
+    practiceScore: "13/15",
+    notes:
+      "Deployed saa-study-gsa-iceland-monthly (cron 0 6 1 * ? *) + ECS Fargate target in Night 9 private subnets; IAM role saa-study-gsa-eventbridge-ecs (events.amazonaws.com). TestFire: Invocations > 0, startedBy events-rule/..., exit 0. Quiz (night-12-quiz.json): 13/15 — missed Q11 (cluster condition = least privilege, not PassRole name match), Q13 (monthly cron cheaper than rate(1 minute) — Fargate cost dominates, not EventBridge per-invocation). Flashcards: FailedInvocations vs exit code 1; schedule vs event pattern. Night 13 — SQS decoupling.",
+    reviewedServiceIds: ["eventbridge", "ecs", "fargate", "iam", "cloudwatch"],
+    completedCheckpointIds: ["d2-t1-cp-1"],
   },
 ];
 

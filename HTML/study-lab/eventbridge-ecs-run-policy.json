@@ -1,0 +1,32 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ECSRunTask",
+      "Effect": "Allow",
+      "Action": "ecs:RunTask",
+      "Resource": [
+        "arn:aws:ecs:us-east-1:298043721974:task-definition/globalskiatlas-backend-k8s-iceland:*"
+      ],
+      "Condition": {
+        "ArnLike": {
+          "ecs:cluster": "arn:aws:ecs:us-east-1:298043721974:cluster/globalskiatlas-backend-k8s"
+        }
+      }
+    },
+    {
+      "Sid": "PassRole",
+      "Effect": "Allow",
+      "Action": "iam:PassRole",
+      "Resource": [
+        "arn:aws:iam::298043721974:role/globalskiatlas-backend-k8s-ecs-execution",
+        "arn:aws:iam::298043721974:role/globalskiatlas-backend-k8s-ecs-task"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "iam:PassedToService": "ecs-tasks.amazonaws.com"
+        }
+      }
+    }
+  ]
+}
