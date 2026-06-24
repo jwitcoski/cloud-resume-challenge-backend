@@ -103,7 +103,7 @@ export const featureWork = [
         title: "Admin Boundary Tool",
         description: "Punch any state or province out of a country polygon for map highlights (MapTiler + GeoJSON).",
         roles: ["MapTiler", "GeoJSON", "Natural Earth", "Web GIS"],
-        image: "/images/feature-work/feature-img-1.jpg",
+        image: "/images/feature-work/admin-boundary-tool.png",
         url: "/admin-boundaries/tool.html"
     },
     {
