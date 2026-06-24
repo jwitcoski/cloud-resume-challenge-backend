@@ -33,6 +33,9 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 
+# MapTiler client key (injected at deploy from GitHub secret)
+/public/admin-boundaries/js/config.js
+
 # vercel
 .vercel
 

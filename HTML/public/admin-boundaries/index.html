@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>America - Texas Excluded</title>
+  <link href="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.css" rel="stylesheet" />
+  <style>
+    html, body { margin: 0; padding: 0; width: 100%; height: 100%; }
+    #map { position: absolute; inset: 0; }
+    .banner {
+      position: absolute; top: 12px; left: 12px; z-index: 2;
+      background: rgba(0,0,0,.72); color: #fff; padding: 10px 14px;
+      font: 14px/1.4 system-ui, sans-serif; border-radius: 8px; max-width: 360px;
+    }
+    .banner strong { color: #ff6b6b; }
+    #error {
+      display: none; position: absolute; inset: 0; z-index: 3;
+      background: #1a1a1a; color: #ff6b6b; padding: 24px;
+      font: 15px/1.5 system-ui, sans-serif; white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <div id="error"></div>
+  <div class="banner">
+    <strong>Texas excluded</strong> - USA highlight with TX punched out.<br>
+    <a href="tool.html" style="color:#74c0fc">Open the full exclusion tool</a>
+  </div>
+  <script src="js/config.js"></script>
+  <script src="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.umd.min.js"></script>
+  <script>
+    function showError(msg) {
+      const el = document.getElementById("error");
+      el.style.display = "block";
+      el.textContent = msg;
+      console.error(msg);
+    }
+
+    if (typeof maptilersdk === "undefined") {
+      showError("MapTiler SDK failed to load. Check your internet connection.");
+    } else {
+      try {
+        maptilersdk.config.apiKey = window.MAPTILER_API_KEY;
+
+        const map = new maptilersdk.Map({
+          container: "map",
+          style: maptilersdk.MapStyle.DATAVIZ.DARK,
+          center: [-98.5, 39.5],
+          zoom: 4,
+        });
+
+        map.on("error", (e) => {
+          showError("Map error: " + (e.error?.message || e.error || "unknown"));
+        });
+
+        map.on("load", () => {
+          // --- HOW THIS WORKS ---
+          // Texas is NOT removed in this file. Python already built these GeoJSON files:
+          //   usa_minus_texas.geojson  = USA polygon with Texas punched out
+          //   texas_polygon.geojson    = Texas shape (drawn on top as "excluded")
+          //   texas_border.geojson     = dashed outline around Texas
+          // See docs/HTML.md to swap country/region or change colors.
+          // Regenerate data: python scripts/build_exclusion.py -c USA -r Texas
+
+          map.addSource("texas-polygon", {
+            type: "geojson",
+            data: "./data/texas_polygon.geojson",
+          });
+
+          map.addLayer({
+            id: "texas-excluded-fill",
+            type: "fill",
+            source: "texas-polygon",
+            paint: {
+              "fill-color": "#2a2a2a",
+              "fill-opacity": 0.75,
+              "fill-outline-color": "#666",
+            },
+          });
+
+          map.addSource("texas-border-lines", {
+            type: "geojson",
+            data: "./data/texas_border.geojson",
+          });
+
+          map.addLayer({
+            id: "texas-excluded-border",
+            type: "line",
+            source: "texas-border-lines",
+            filter: ["in", "border", "texas"],
+            layout: { "line-cap": "round", "line-join": "round" },
+            paint: {
+              "line-color": "#ff6b6b",
+              "line-dasharray": [4, 3],
+              "line-width": ["interpolate", ["linear"], ["zoom"], 3, 1.5, 8, 3],
+            },
+          });
+
+          map.addSource("usa-no-texas", {
+            type: "geojson",
+            data: "./data/usa_minus_texas.geojson",
+          });
+
+          map.addLayer(
+            {
+              id: "usa-highlight",
+              type: "fill",
+              source: "usa-no-texas",
+              paint: {
+                "fill-color": "#4dabf7",
+                "fill-opacity": 0.35,
+              },
+            },
+            "texas-excluded-fill"
+          );
+        });
+      } catch (err) {
+        showError("Failed to start map:\n" + err.message);
+      }
+    }
+  </script>
+</body>
+</html>

@@ -100,6 +100,13 @@ export const featureWork = [
         url: "https://vectorscopeai.com"
     },
     {
+        title: "Admin Boundary Tool",
+        description: "Punch any state or province out of a country polygon for map highlights (MapTiler + GeoJSON).",
+        roles: ["MapTiler", "GeoJSON", "Natural Earth", "Web GIS"],
+        image: "/images/feature-work/feature-img-1.jpg",
+        url: "/admin-boundaries/tool.html"
+    },
+    {
         title: "Cloud Resume Challenge",
         description: "AWS-hosted application with IaC, REST APIs, and CI/CD.",
         roles: ["AWS", "REST APIs", "CI/CD", "IaC"],
