@@ -592,6 +592,18 @@ export const studyNights: StudyNight[] = [
     reviewedServiceIds: ["ecs", "fargate", "ecr", "cloudwatch", "iam"],
     completedCheckpointIds: ["d3-t2-cp-2"],
   },
+  {
+    night: 11,
+    week: 2,
+    title: "ELB + ALB theory",
+    completedDate: "2026-06-23",
+    lab: "Theory — night-11-elb-theory.md (no AWS spend)",
+    practiceScore: "14/20",
+    notes:
+      "ALB vs NLB vs GWLB decision tree solid (HTTP→ALB, TCP/UDP→NLB, firewall→GWLB). Quiz (night-11-quiz.json): 14/20 — missed Q9 (task SG inbound from ALB SG only, not shared 0.0.0.0/0 SG), Q10 (ALB cross-zone on by default, NLB off), Q13 (ALB multi-AZ DNS survives AZ loss — not cross-region replication), Q15 (GWLB endpoint in app VPC, not IGW), Q16 (HTTPS→HTTP = TLS termination not GENEVE), Q19 (WAF REGIONAL on ALB — Night 4 callback). Learned deregistration delay vs HealthCheckGracePeriod. Night 12 — EventBridge schedule.",
+    reviewedServiceIds: ["elb", "route53", "waf"],
+    completedCheckpointIds: ["d2-t2-cp-0"],
+  },
 ];
 
 /** Merge all completed nights into default checklist state for first-time visitors. */

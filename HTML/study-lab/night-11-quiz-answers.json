@@ -1,0 +1,107 @@
+{
+  "night": 11,
+  "title": "ELB + resilience (ALB, NLB, GWLB)",
+  "answerDistribution": { "A": 5, "B": 5, "C": 5, "D": 5 },
+  "answers": [
+    {
+      "id": "Q1",
+      "answer": "A",
+      "explanation": "ALB is Layer 7 — path/host rules, WAF (REGIONAL), and authenticate-oidc/cognito actions. NLB/GWLB cannot do HTTP routing or WAF at L7."
+    },
+    {
+      "id": "Q2",
+      "answer": "B",
+      "explanation": "NLB provides static IP/EIP per AZ and TCP passthrough so instances terminate TLS. ALB would terminate TLS unless configured for passthrough (TLS listener to TLS target)."
+    },
+    {
+      "id": "Q3",
+      "answer": "C",
+      "explanation": "GWLB is for inline third-party appliances (firewalls/IDS) using GENEVE. ALB/NLB distribute to app targets, not inspection fleets."
+    },
+    {
+      "id": "Q4",
+      "answer": "B",
+      "explanation": "Health check uses port 8080 but instance SG only allows 443 — checks fail while manual curl on 8080 works from bastion. Allow ALB SG → target port 8080 (health check port must match SG)."
+    },
+    {
+      "id": "Q5",
+      "answer": "B",
+      "explanation": "HealthCheckGracePeriod suspends ASG health checks (including ELB) while instances boot. Deregistration delay is for scale-in draining, not launch."
+    },
+    {
+      "id": "Q6",
+      "answer": "A",
+      "explanation": "Failover routing requires health checks on the primary (or associated child checks). Without them Route 53 keeps sending traffic to a failed primary."
+    },
+    {
+      "id": "Q7",
+      "answer": "B",
+      "explanation": "NLB supports UDP (and TCP/TLS) at Layer 4. ALB is HTTP/HTTPS/WebSockets — not raw UDP telemetry."
+    },
+    {
+      "id": "Q8",
+      "answer": "A",
+      "explanation": "Deregistration delay (connection draining) lets in-flight requests complete when a target is deregistered during scale-in or deploy."
+    },
+    {
+      "id": "Q9",
+      "answer": "A",
+      "explanation": "Standard three-tier pattern: ALB SG allows client ingress; task SG allows app port only from ALB SG. Matches Night 9 Fargate SG thinking (least privilege)."
+    },
+    {
+      "id": "Q10",
+      "answer": "A",
+      "explanation": "ALB cross-zone ON by default; NLB cross-zone OFF by default. Disabling NLB cross-zone reduces cross-AZ transfer when clients hit NLB nodes in their own AZ."
+    },
+    {
+      "id": "Q11",
+      "answer": "A",
+      "explanation": "TCP health check only verifies port open, not HTTP semantics. If app needs GET /ping, use HTTP/HTTPS health check with that path."
+    },
+    {
+      "id": "Q12",
+      "answer": "B",
+      "explanation": "ALB supports Lambda as a target type with listener rules. NLB cannot invoke Lambda as an L7 target in the same way."
+    },
+    {
+      "id": "Q13",
+      "answer": "C",
+      "explanation": "ALB is a managed multi-AZ service — DNS resolves to nodes in healthy AZs. Individual target failures are handled by health checks, not whole-AZ ALB failure."
+    },
+    {
+      "id": "Q14",
+      "answer": "A",
+      "explanation": "ALB duration-based stickiness sets AWSALB cookie so sessions hit the same target. NLB has 5-tuple stickiness for TCP flows, not HTTP session cookies."
+    },
+    {
+      "id": "Q15",
+      "answer": "B",
+      "explanation": "GWLB endpoints in VPC subnets redirect traffic to the GWLB for inspection through appliances. Not IGW or ALB."
+    },
+    {
+      "id": "Q16",
+      "answer": "B",
+      "explanation": "HTTPS listener → HTTP target is TLS termination (SSL offloading) at ALB. Passthrough would forward encrypted bytes unchanged (NLB TCP or ALB TLS→TLS)."
+    },
+    {
+      "id": "Q17",
+      "answer": "A",
+      "explanation": "ASG health check type ELB uses target group health status to mark instances InService or terminate unhealthy ones."
+    },
+    {
+      "id": "Q18",
+      "answer": "B",
+      "explanation": "NLB EIPs give stable IPs for partner allowlists while targets scale behind them. ALB DNS name is stable but IP set changes — partners often require fixed IPs."
+    },
+    {
+      "id": "Q19",
+      "answer": "C",
+      "explanation": "WAF on ALB uses REGIONAL scope in the ALB Region. CLOUDFRONT scope is only for CloudFront distributions (Night 4/6/7 WAF scope questions)."
+    },
+    {
+      "id": "Q20",
+      "answer": "A",
+      "explanation": "502 from ALB often means LB could not connect to target — wrong target port in TG registration vs process listen port is a classic post-deploy miss. Health check can pass on a different port/path than traffic."
+    }
+  ]
+}
