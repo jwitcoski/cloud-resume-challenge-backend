@@ -77,7 +77,7 @@ export const examServices: ExamService[] = [
   { id: "appsync", name: "AWS AppSync", category: "Application Integration", readiness: "awareness", domain: "D3", examFocus: "GraphQL API; real-time subscriptions" },
   { id: "eventbridge", name: "Amazon EventBridge", category: "Application Integration", readiness: "know", domain: "D2", examFocus: "Event bus; schedule rules; decouple microservices", gsaNote: "Night 12: saa-study-gsa-iceland-monthly cron → ecs:RunTask; events.amazonaws.com target role + PassRole", studyWeek: 2 },
   { id: "mq", name: "Amazon MQ", category: "Application Integration", readiness: "awareness", domain: "D2", examFocus: "Managed ActiveMQ/RabbitMQ; lift-and-shift messaging" },
-  { id: "sns", name: "Amazon SNS", category: "Application Integration", readiness: "study", domain: "D2", examFocus: "Pub/sub fan-out; SMS/email/mobile push; SNS → SQS pattern", studyWeek: 2 },
+  { id: "sns", name: "Amazon SNS", category: "Application Integration", readiness: "know", domain: "D2", examFocus: "Pub/sub fan-out; SMS/email/mobile push; SNS → SQS pattern", gsaNote: "Night 14: saa-study-gsa-iceland-alerts topic; failure rule → SNS; inbox SQS sub; Night 12 alarm action", studyWeek: 2 },
   { id: "sqs", name: "Amazon SQS", category: "Application Integration", readiness: "study", domain: "D2", examFocus: "Queue decoupling; standard vs FIFO; DLQ; visibility timeout", studyWeek: 2 },
   { id: "step-functions", name: "AWS Step Functions", category: "Application Integration", readiness: "study", domain: "D2", examFocus: "Orchestrate Lambda/ECS; Standard vs Express; error handling", studyWeek: 5 },
 
@@ -626,6 +626,18 @@ export const studyNights: StudyNight[] = [
     notes:
       "E2E: Night 12 TestFire exit 0 → ECS Task State Change → saa-study-gsa-iceland-completion (startedBy events-rule/...). Quiz 12/15 — missed Q2 (visibility timeout < processing time = duplicates), Q10 (message reappears after timeout, not instant DLQ), Q12 (SQS is Regional). Rebuilt Night 9 VPC via night-9-lab-vpc-build.ps1; fixed Night 12 PS cron * glob. Teardown: NAT/VPC + SQS + EventBridge. Night 14 — SNS fan-out.",
     reviewedServiceIds: ["sqs", "eventbridge"],
+    completedCheckpointIds: ["d2-t1-cp-1"],
+  },
+  {
+    night: 14,
+    week: 2,
+    title: "Lab 2C part 2 — SNS fan-out",
+    completedDate: "2026-06-26",
+    lab: "SNS alerts topic + failure rule + SQS inbox sub + alarm action — night-14-lab-sns-setup.ps1 -TestPublish",
+    practiceScore: "11/15",
+    notes:
+      "Deployed saa-study-gsa-iceland-alerts + saa-study-gsa-iceland-alerts-inbox (SNS→SQS fan-out) + saa-study-gsa-iceland-failure-to-sns (ECS exit ≠ 0). Quiz (night-14-quiz.json): 11/15 — missed Q2 (SNS→SQS queue policy + aws:SourceArn, not IAM ReceiveMessage), Q10 (filter policy skips sub silently — no filter DLQ), Q12 (SNS retries Lambda + subscription DLQ — not immediate delete), Q14 (cross-account = topic policy on A + IAM on B). Solid on Q4 FailedInvocations vs exit 1, Q9 SQS success / SNS failure split. Flashcards: mobile push APNS/FCM; raw message delivery. Night 15 — RDS + Aurora.",
+    reviewedServiceIds: ["sns", "eventbridge", "cloudwatch"],
     completedCheckpointIds: ["d2-t1-cp-1"],
   },
 ];

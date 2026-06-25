@@ -1,0 +1,82 @@
+{
+  "night": 14,
+  "title": "Lab 2C part 2 — SNS fan-out",
+  "answerDistribution": { "A": 4, "B": 4, "C": 4, "D": 3 },
+  "answers": [
+    {
+      "id": "Q1",
+      "answer": "C",
+      "explanation": "Push fan-out to email + SQS = SNS. night-14-sns-fanout.md decision tree. SQS is pull buffer, not multi-subscriber push."
+    },
+    {
+      "id": "Q2",
+      "answer": "A",
+      "explanation": "SNS→SQS requires queue resource policy with sns.amazonaws.com + aws:SourceArn. sns-sqs-subscriber-policy.json."
+    },
+    {
+      "id": "Q3",
+      "answer": "B",
+      "explanation": "Email/SMS subscriptions stay PendingConfirmation until recipient confirms. Classic exam trap."
+    },
+    {
+      "id": "Q4",
+      "answer": "D",
+      "explanation": "FailedInvocations = EventBridge could not deliver to ECS target. Container exit 1 = Night 14 failure rule, not this alarm."
+    },
+    {
+      "id": "Q5",
+      "answer": "C",
+      "explanation": "SNS→multiple SQS queues = fan-out pattern. One shared queue = competing consumers, not per-team copies."
+    },
+    {
+      "id": "Q6",
+      "answer": "A",
+      "explanation": "EventBridge→SNS needs topic policy like SQS queue policy. sns-iceland-alerts-topic-policy.json."
+    },
+    {
+      "id": "Q7",
+      "answer": "A",
+      "explanation": "SNS mobile push (APNS/FCM/GCM) via platform applications — exam awareness for fan-out to devices."
+    },
+    {
+      "id": "Q8",
+      "answer": "B",
+      "explanation": "Strict order + dedup across subscribers → FIFO SNS (.fifo) with FIFO SQS subscribers."
+    },
+    {
+      "id": "Q9",
+      "answer": "C",
+      "explanation": "Nights 13+14 split: SQS buffers success work; SNS pushes failure alerts. Flashcard #1."
+    },
+    {
+      "id": "Q10",
+      "answer": "D",
+      "explanation": "Subscription filter policy excludes messages for that subscriber only; publish still succeeds to others."
+    },
+    {
+      "id": "Q11",
+      "answer": "B",
+      "explanation": "Raw message delivery = SQS body is the published content without SNS JSON wrapper."
+    },
+    {
+      "id": "Q12",
+      "answer": "A",
+      "explanation": "SNS retries Lambda on failure; use subscription DLQ for poison messages. Contrast with SQS consumer DLQ."
+    },
+    {
+      "id": "Q13",
+      "answer": "C",
+      "explanation": "Worker pool with back-pressure = SQS pull. SNS pushes to all subscribers — wrong for single competing worker tier."
+    },
+    {
+      "id": "Q14",
+      "answer": "D",
+      "explanation": "Cross-account SNS: topic policy on publisher side + IAM on caller. Standard integration exam pattern."
+    },
+    {
+      "id": "Q15",
+      "answer": "B",
+      "explanation": "Night 13 and Night 14 are independent labs — run both setup scripts. Teardown scripts are also separate."
+    }
+  ]
+}

@@ -1,0 +1,160 @@
+{
+  "night": 14,
+  "title": "Lab 2C part 2 — SNS fan-out",
+  "topic": "SNS pub/sub, fan-out, SNS→SQS, EventBridge→SNS, CloudWatch alarm actions, email subscription confirmation, FIFO topics",
+  "format": "15 timed scenario questions (~24 min, ~96 sec each). Reinforces night-14-sns-fanout.md and night-14-lab-sns-setup scripts. Answer without peeking at night-14-quiz-answers.json first.",
+  "answerKey": "night-14-quiz-answers.json",
+  "answerDistribution": "A×4 B×4 C×4 D×3 — options shuffled so correct letter varies",
+  "questions": [
+    {
+      "id": "Q1",
+      "question": "Iceland batch exits 1 after an S3 permission error. Night 13 SQS completion queue only receives exit code 0 events. Ops wants email and a ticketing SQS queue notified from the same failure event without each channel polling a shared work queue. What service fits?",
+      "options": {
+        "A": "Amazon SQS FIFO — strict ordering ensures email and ticketing receive failures in sequence",
+        "B": "AWS Step Functions — Catch state on the Iceland container routes failures to two queues",
+        "C": "Amazon SNS topic with email and SQS subscriptions — one publish fans out to all subscribers",
+        "D": "Amazon EventBridge archive — replays failed ECS events to subscribers on a schedule"
+      }
+    },
+    {
+      "id": "Q2",
+      "question": "night-14-lab-sns-setup subscribes saa-study-gsa-iceland-alerts-inbox to the alerts topic. Messages never arrive in the inbox after sns:Publish succeeds. Subscription shows Confirmed. What is the most likely missing piece?",
+      "options": {
+        "A": "SQS queue policy allowing sns.amazonaws.com sqs:SendMessage with aws:SourceArn matching the topic ARN",
+        "B": "IAM user policy granting sqs:ReceiveMessage to the SNS service principal on the inbox queue",
+        "C": "EventBridge input transformer mapping SNS Message to SQS MessageBody before delivery",
+        "D": "FIFO topic suffix .fifo required whenever SNS targets any SQS standard queue subscriber"
+      }
+    },
+    {
+      "id": "Q3",
+      "question": "You subscribe an email endpoint to an SNS topic for Iceland failure alerts. aws sns list-subscriptions-by-topic shows SubscriptionArn PendingConfirmation. What must happen before email delivery?",
+      "options": {
+        "A": "Attach an IAM role to the topic so SES can assume it and send on behalf of SNS",
+        "B": "The recipient confirms the subscription via the link AWS emailed to that address",
+        "C": "Enable SNS delivery status logging to S3 — confirmation is automatic after first publish",
+        "D": "Convert the subscription protocol from email to email-json using a second subscribe call"
+      }
+    },
+    {
+      "id": "Q4",
+      "question": "Night 12 CloudWatch alarm saa-study-gsa-iceland-task-failed watches FailedInvocations on the schedule rule. Night 14 adds the same SNS topic as an alarm action. What does this alarm detect?",
+      "options": {
+        "A": "Iceland container exit code 1 after the task stops in the cluster",
+        "B": "SQS completion queue depth exceeding one message for more than five minutes",
+        "C": "NAT Gateway bandwidth saturation in the Night 9 private subnets during RunTask",
+        "D": "EventBridge could not invoke the ECS RunTask target — infra/config failure on the rule"
+      }
+    },
+    {
+      "id": "Q5",
+      "question": "An exam scenario needs three internal teams each with its own durable queue receiving every order-placed event from a single checkout service. Producers should not know team queue URLs. Best pattern?",
+      "options": {
+        "A": "One SQS standard queue — all three teams share ReceiveMessage on the same URL",
+        "B": "Three Lambda functions polling one DynamoDB stream shard in round-robin",
+        "C": "SNS topic publish from checkout; three SQS queue subscriptions — classic fan-out",
+        "D": "EventBridge custom bus with one rule per team and identical event patterns in series"
+      }
+    },
+    {
+      "id": "Q6",
+      "question": "night-14-lab-sns-setup creates EventBridge rule saa-study-gsa-iceland-failure-to-sns targeting SNS. FailedInvocations metric increments on that rule. Topic policy and rule pattern look correct. What is the usual fix?",
+      "options": {
+        "A": "SNS topic policy allowing events.amazonaws.com sns:Publish with aws:SourceArn equal to the rule ARN",
+        "B": "Subscribe EventBridge as an HTTPS endpoint on the topic before put-targets will succeed",
+        "C": "Enable SNS server-side encryption with a CMK that trusts the default event bus only",
+        "D": "Change the SNS topic to FIFO — EventBridge cannot target standard SNS topics"
+      }
+    },
+    {
+      "id": "Q7",
+      "question": "A mobile app needs push notifications to millions of devices with platform-specific payloads (APNS, FCM). The backend publishes one logical event per user action. Which SNS capability is most relevant?",
+      "options": {
+        "A": "SNS mobile push endpoints with platform application ARNs — fan-out to device tokens",
+        "B": "SNS email-json protocol only — mobile devices poll the topic over HTTPS",
+        "C": "SQS long polling from the mobile client — SNS is not used for push delivery",
+        "D": "EventBridge Scheduler one-off schedules — replaces SNS for per-device delivery timing"
+      }
+    },
+    {
+      "id": "Q8",
+      "question": "You need strict ordering and deduplication of trade-execution alerts delivered to multiple FIFO SQS queues. Which SNS topic type should you create?",
+      "options": {
+        "A": "Standard SNS topic with raw message delivery enabled on all subscriptions",
+        "B": "FIFO SNS topic (name ends in .fifo) with deduplication — pairs with FIFO queue subs",
+        "C": "Standard SNS topic with message filtering on the subscription filter policy only",
+        "D": "SNS topic in another Region — cross-Region FIFO ordering is automatic for finance"
+      }
+    },
+    {
+      "id": "Q9",
+      "question": "Night 13 completion consumer and Night 14 SNS inbox both need Iceland pipeline signals. Success should buffer for a slow stats worker; failures should push to ops immediately. How should you split services?",
+      "options": {
+        "A": "Single SNS topic for both success and failure — all subscribers get every message",
+        "B": "Replace both with one EventBridge rule targeting five Lambda functions directly",
+        "C": "SQS for success path (pull/worker buffer); SNS for failure path (push fan-out alerts)",
+        "D": "SNS for success only — SQS cannot receive EventBridge ECS Task State Change events"
+      }
+    },
+    {
+      "id": "Q10",
+      "question": "An SNS subscription uses a filter policy so only messages with attribute severity=critical reach a PagerDuty HTTPS endpoint. Non-critical publishes still succeed. What happens to filtered-out messages for that subscription?",
+      "options": {
+        "A": "SNS delivers them to the DLQ configured on the topic for all rejected filter matches",
+        "B": "SNS retries the HTTPS endpoint until the filter policy is updated to allow them",
+        "C": "Messages are rerouted to the default EventBridge bus for manual replay",
+        "D": "That subscription simply does not receive them — other subscribers still get the publish"
+      }
+    },
+    {
+      "id": "Q11",
+      "question": "Raw message delivery is enabled on an SNS→SQS subscription. What does the SQS message body contain compared to the default SNS wrapping?",
+      "options": {
+        "A": "Base64-encoded gzip of the payload plus mandatory MessageId and TopicArn attributes",
+        "B": "Only the published message payload — no SNS metadata JSON envelope around it",
+        "C": "The ECS Task State Change event only — SNS strips custom publish bodies entirely",
+        "D": "An empty body — raw delivery requires MessageAttributes on every publish call"
+      }
+    },
+    {
+      "id": "Q12",
+      "question": "A Lambda function is subscribed directly to an SNS topic (not via SQS). The function times out on some invocations. What is SNS default behavior?",
+      "options": {
+        "A": "SNS retries delivery to Lambda with backoff; configure DLQ on the subscription for poison messages",
+        "B": "SNS immediately deletes the message — Lambda must poll an SQS DLQ separately",
+        "C": "SNS pauses all topic publishes globally until the Lambda concurrency limit is raised",
+        "D": "SNS converts the subscription to email-json after three Lambda timeouts automatically"
+      }
+    },
+    {
+      "id": "Q13",
+      "question": "Compared to Night 13 SQS completion queue, why is SNS the wrong choice for the stats-uploader worker pool that processes one message at a time with back-pressure?",
+      "options": {
+        "A": "SNS cannot deliver to Lambda — only SQS supports Lambda event source mappings",
+        "B": "SNS is Regional and cannot be used in us-east-1 with ECS Fargate tasks",
+        "C": "SNS push fan-out does not buffer work for competing consumers — use SQS pull model",
+        "D": "SNS requires email confirmation before any programmatic subscriber can be added"
+      }
+    },
+    {
+      "id": "Q14",
+      "question": "Cross-account Account B must publish to Account A SNS topic saa-study-gsa-iceland-alerts. What two controls are typically required?",
+      "options": {
+        "A": "VPC peering between accounts; SNS messages cannot cross account boundaries otherwise",
+        "B": "SNS topic in Account B only — cross-account publish is not supported for standard topics",
+        "C": "AWS Organizations SCP denying all SNS in B — cross-account requires Control Tower enrollment",
+        "D": "Topic policy on A allowing B principal sns:Publish; IAM on B allowing sns:Publish to topic ARN"
+      }
+    },
+    {
+      "id": "Q15",
+      "question": "After Night 14 teardown, you want Iceland success events on SQS and failure alerts on SNS again. Minimum lab scripts to re-deploy both paths?",
+      "options": {
+        "A": "night-14-lab-sns-setup only — it recreates the Night 13 completion queue automatically",
+        "B": "night-13-lab-sqs-setup then night-14-lab-sns-setup — success queue and failure fan-out are separate",
+        "C": "night-12-lab-eventbridge-schedule only — schedule rule includes SQS and SNS targets",
+        "D": "night-14-lab-sns-inbox only — inbox script creates the topic and failure rule on first run"
+      }
+    }
+  ]
+}

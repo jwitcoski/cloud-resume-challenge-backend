@@ -1,0 +1,28 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowEventBridgeFailureRule",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "events.amazonaws.com"
+      },
+      "Action": "sns:Publish",
+      "Resource": "TOPIC_ARN_PLACEHOLDER",
+      "Condition": {
+        "ArnEquals": {
+          "aws:SourceArn": "RULE_ARN_PLACEHOLDER"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCloudWatchAlarms",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "cloudwatch.amazonaws.com"
+      },
+      "Action": "sns:Publish",
+      "Resource": "TOPIC_ARN_PLACEHOLDER"
+    }
+  ]
+}
