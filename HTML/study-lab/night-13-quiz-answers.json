@@ -1,0 +1,82 @@
+{
+  "night": 13,
+  "title": "Lab 2C — SQS decoupling",
+  "answerDistribution": { "A": 4, "B": 4, "C": 4, "D": 3 },
+  "answers": [
+    {
+      "id": "Q1",
+      "answer": "C",
+      "explanation": "Buffer async work between batch and worker = SQS. night-13-sqs-decoupling.md decision tree. SNS is push fan-out; Step Functions is orchestration."
+    },
+    {
+      "id": "Q2",
+      "answer": "B",
+      "explanation": "Visibility timeout must exceed max processing time (or use ChangeMessageVisibility / Lambda event source mapping). Classic exam trap."
+    },
+    {
+      "id": "Q3",
+      "answer": "A",
+      "explanation": "Monthly Iceland completions — order irrelevant, throughput matters → standard queue. FIFO when order/dedup required (Q9 contrast)."
+    },
+    {
+      "id": "Q4",
+      "answer": "D",
+      "explanation": "RedrivePolicy + DLQ isolates poison messages after maxReceiveCount failed processing cycles. night-13-lab-sqs-setup.sh defaults."
+    },
+    {
+      "id": "Q5",
+      "answer": "C",
+      "explanation": "EventBridge → SQS needs queue resource policy with events.amazonaws.com and aws:SourceArn = rule ARN. sqs-completion-queue-policy.json."
+    },
+    {
+      "id": "Q6",
+      "answer": "B",
+      "explanation": "Long polling (WaitTimeSeconds up to 20) cuts empty ReceiveMessage churn. night-13-lab-sqs-consumer.sh uses 20s."
+    },
+    {
+      "id": "Q7",
+      "answer": "A",
+      "explanation": "Single worker tier pulling from SQS = buffer + back-pressure. SNS fans out pushes; does not consolidate to one queue consumer pattern."
+    },
+    {
+      "id": "Q8",
+      "answer": "D",
+      "explanation": "DLQ without redrive policy does nothing useful. maxReceiveCount on source queue required."
+    },
+    {
+      "id": "Q9",
+      "answer": "C",
+      "explanation": "Per-customer ordering + dedup → FIFO with MessageGroupId + content-based deduplication. Standard queue wrong for ledger."
+    },
+    {
+      "id": "Q10",
+      "answer": "B",
+      "explanation": "At-least-once: message hidden during visibility timeout, then visible again if not deleted. Flashcard #2."
+    },
+    {
+      "id": "Q11",
+      "answer": "A",
+      "explanation": "Schedule trigger (Night 12) vs completion handling (Night 13 SQS) — loose coupling split. Multiple rules on default bus are fine."
+    },
+    {
+      "id": "Q12",
+      "answer": "D",
+      "explanation": "SQS is Regional. Cross-Region queue access is possible but usually wrong for latency/cost — queue near consumer or replicate events."
+    },
+    {
+      "id": "Q13",
+      "answer": "C",
+      "explanation": "ApproximateNumberOfMessages is eventually consistent — do not treat as exact ledger count."
+    },
+    {
+      "id": "Q14",
+      "answer": "B",
+      "explanation": "Event pattern filters exit 0 only — failed Iceland run produces no completion message. Add failure path via SNS in Night 14."
+    },
+    {
+      "id": "Q15",
+      "answer": "A",
+      "explanation": "SNS fan-out to many subscribers — Night 14 preview. SQS + Lambda works but one queue ≠ multi-subscriber push."
+    }
+  ]
+}

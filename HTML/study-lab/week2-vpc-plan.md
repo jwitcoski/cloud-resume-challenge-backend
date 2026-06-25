@@ -61,7 +61,8 @@ GitHub Actions ── ecs:RunTask ──► Fargate in private subnet
 | 10 | Run Iceland ECS task in private subnet; troubleshoot SG |
 | 11 | ALB vs NLB vs GWLB theory |
 | 12 | EventBridge cron → Iceland RunTask (lab) |
-| 13–14 | SQS, SNS labs |
+| 13 | SQS completion queue + DLQ; EventBridge ECS success → SQS (lab) |
+| 14 | SNS fan-out (failure alerts + subscriptions) |
 
 ## 5 flashcards to write tonight
 

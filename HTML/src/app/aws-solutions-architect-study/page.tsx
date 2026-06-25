@@ -1,6 +1,7 @@
 import Link from "next/link";
 import ExamChecklist from "./ExamChecklist";
 import { countByReadiness, examServices } from "@/data/saa-c03-exam-checklist";
+import { listQuizSummaries } from "@/data/study-quizzes";
 
 export const metadata = {
   title: "AWS Solutions Architect Study Plan | Jonathan Witcoski",
@@ -122,6 +123,14 @@ function LevelBadge({ level }: { level: ServiceRow["level"] }) {
 }
 
 export default function AwsSolutionsArchitectStudyPage() {
+  const quizzes = listQuizSummaries();
+  const quizNightRange =
+    quizzes.length > 0
+      ? quizzes.length === 1
+        ? `Night ${quizzes[0].night}`
+        : `Nights ${quizzes[0].night}–${quizzes[quizzes.length - 1].night}`
+      : null;
+
   return (
     <main className="min-h-screen bg-[#f4f4f4] text-[#333]">
       <div className="container max-w-3xl mx-auto px-4 sm:px-7 py-10">
@@ -172,6 +181,27 @@ export default function AwsSolutionsArchitectStudyPage() {
               <p className="text-sm text-[#666]">High-Performing + Cost-Optimized</p>
             </div>
           </div>
+
+          {quizzes.length > 0 && (
+            <div className="rounded-lg border border-blue-200 bg-blue-50/50 p-4 mb-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <div>
+                <h2 className="text-lg font-semibold text-[#444] mb-1">
+                  Practice quizzes
+                </h2>
+                <p className="text-sm text-[#555] leading-relaxed">
+                  {quizNightRange} — timed scenario questions from{" "}
+                  <code className="bg-white/80 px-1 rounded text-xs">study-lab/</code>
+                  , with explanations after submit.
+                </p>
+              </div>
+              <Link
+                href="/aws-solutions-architect-study/quiz/"
+                className="inline-flex shrink-0 items-center justify-center rounded-md bg-[#007bff] px-4 py-2 text-sm font-medium text-white hover:bg-[#0069d9] transition-colors"
+              >
+                Open quizzes →
+              </Link>
+            </div>
+          )}
 
           <h2 className="text-2xl font-bold text-[#444] mt-10 mb-4">
             What I already know
@@ -261,23 +291,6 @@ export default function AwsSolutionsArchitectStudyPage() {
           </p>
 
           <ExamChecklist />
-
-          <div className="rounded-lg border border-blue-200 bg-blue-50/50 p-4 mb-10">
-            <h2 className="text-lg font-semibold text-[#444] mb-1">
-              Practice quizzes
-            </h2>
-            <p className="text-sm text-[#555] mb-3 leading-relaxed">
-              Timed scenario questions from{" "}
-              <code className="bg-white/80 px-1 rounded text-xs">study-lab/</code>{" "}
-              — answers hidden until submit, with explanations after grading.
-            </p>
-            <Link
-              href="/aws-solutions-architect-study/quiz/"
-              className="inline-flex text-sm font-medium text-[#007bff] hover:underline"
-            >
-              Open quiz taker (Nights 5–9) →
-            </Link>
-          </div>
 
           <h2 className="text-2xl font-bold text-[#444] mt-12 mb-4">
             Nightly structure (every 2-hour block)

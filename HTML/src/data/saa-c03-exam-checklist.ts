@@ -616,6 +616,18 @@ export const studyNights: StudyNight[] = [
     reviewedServiceIds: ["eventbridge", "ecs", "fargate", "iam", "cloudwatch"],
     completedCheckpointIds: ["d2-t1-cp-1"],
   },
+  {
+    night: 13,
+    week: 2,
+    title: "Lab 2C — SQS decoupling",
+    completedDate: "2026-06-25",
+    lab: "SQS completion queue + DLQ + EventBridge ECS success → SQS — night-13-lab-sqs-setup.ps1",
+    practiceScore: "12/15",
+    notes:
+      "E2E: Night 12 TestFire exit 0 → ECS Task State Change → saa-study-gsa-iceland-completion (startedBy events-rule/...). Quiz 12/15 — missed Q2 (visibility timeout < processing time = duplicates), Q10 (message reappears after timeout, not instant DLQ), Q12 (SQS is Regional). Rebuilt Night 9 VPC via night-9-lab-vpc-build.ps1; fixed Night 12 PS cron * glob. Teardown: NAT/VPC + SQS + EventBridge. Night 14 — SNS fan-out.",
+    reviewedServiceIds: ["sqs", "eventbridge"],
+    completedCheckpointIds: ["d2-t1-cp-1"],
+  },
 ];
 
 /** Merge all completed nights into default checklist state for first-time visitors. */

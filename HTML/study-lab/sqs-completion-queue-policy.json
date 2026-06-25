@@ -1,0 +1,19 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowEventBridgeIcelandSuccessRule",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "events.amazonaws.com"
+      },
+      "Action": "sqs:SendMessage",
+      "Resource": "QUEUE_ARN_PLACEHOLDER",
+      "Condition": {
+        "ArnEquals": {
+          "aws:SourceArn": "RULE_ARN_PLACEHOLDER"
+        }
+      }
+    }
+  ]
+}

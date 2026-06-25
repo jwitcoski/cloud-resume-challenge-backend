@@ -1,0 +1,11 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "IcelandPublishCompletionToStudyQueue",
+      "Effect": "Allow",
+      "Action": ["sqs:SendMessage", "sqs:GetQueueUrl"],
+      "Resource": "arn:aws:sqs:us-east-1:298043721974:saa-study-gsa-iceland-completion"
+    }
+  ]
+}
