@@ -640,6 +640,18 @@ export const studyNights: StudyNight[] = [
     reviewedServiceIds: ["sns", "eventbridge", "cloudwatch"],
     completedCheckpointIds: ["d2-t1-cp-1"],
   },
+  {
+    night: 15,
+    week: 3,
+    title: "RDS + Aurora deep dive",
+    completedDate: "2026-06-26",
+    lab: "Theory — night-15-rds-aurora.md (no AWS spend)",
+    practiceScore: "12/15",
+    notes:
+      "Quiz (night-15-quiz.json): 12/15 — missed Q5 (Global Database for sub-second cross-Region RPO, not promote read replica), Q7 (Aurora storage auto-scales — no manual GB), Q10 (PITR max retention 35 days, not 14/365). Solid on RDS Proxy (Q2/Q13), Serverless v2 no scale-to-zero (Q11), Multi-AZ vs async replicas (Q9), DynamoDB+Aurora split (Q15). Added plain-English database guide to night-15-rds-aurora.md. Quiz site: client-side load from public/study-lab + predev sync. Night 16 — Aurora lab.",
+    reviewedServiceIds: ["rds", "aurora", "aurora-serverless", "rds-proxy"],
+    completedCheckpointIds: ["d2-t2-cp-1", "d3-t3-cp-1"],
+  },
 ];
 
 /** Merge all completed nights into default checklist state for first-time visitors. */

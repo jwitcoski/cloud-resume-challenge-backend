@@ -51,7 +51,14 @@ export type QuizSummary = {
 };
 
 function studyLabDir(): string {
-  return path.join(process.cwd(), "study-lab");
+  const candidates = [
+    path.join(process.cwd(), "study-lab"),
+    path.join(process.cwd(), "HTML", "study-lab"),
+  ];
+  for (const dir of candidates) {
+    if (fs.existsSync(dir)) return dir;
+  }
+  return candidates[0];
 }
 
 /** Nights that have both night-N-quiz.json and night-N-quiz-answers.json */

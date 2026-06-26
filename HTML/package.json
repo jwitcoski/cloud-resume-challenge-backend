@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "sync-quizzes": "node scripts/sync-study-quizzes.mjs",
+    "predev": "node scripts/sync-study-quizzes.mjs",
+    "prebuild": "node scripts/sync-study-quizzes.mjs",
     "dev": "next dev --turbopack",
     "build": "next build && node scripts/postbuild-s3.mjs",
     "start": "next start",

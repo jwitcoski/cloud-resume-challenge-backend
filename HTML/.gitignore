@@ -36,6 +36,9 @@ yarn-error.log*
 # MapTiler client key (injected at deploy from GitHub secret)
 /public/admin-boundaries/js/config.js
 
+# synced from study-lab on predev/prebuild (scripts/sync-study-quizzes.mjs)
+/public/study-lab/
+
 # vercel
 .vercel
 

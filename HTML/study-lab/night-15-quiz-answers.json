@@ -1,0 +1,82 @@
+{
+  "night": 15,
+  "title": "RDS + Aurora deep dive",
+  "answerDistribution": { "A": 4, "B": 4, "C": 4, "D": 3 },
+  "answers": [
+    {
+      "id": "Q1",
+      "answer": "C",
+      "explanation": "HA with sync failover = Multi-AZ (RDS) or Aurora storage-layer redundancy. Standby is not for reads. night-15-rds-aurora.md Multi-AZ table."
+    },
+    {
+      "id": "Q2",
+      "answer": "B",
+      "explanation": "Lambda connection storms → RDS Proxy pools to Aurora/RDS. night-15-rds-aurora.md RDS Proxy section."
+    },
+    {
+      "id": "Q3",
+      "answer": "A",
+      "explanation": "Spiky PostgreSQL + auto scale = Aurora Serverless v2. v1 scale-to-zero is legacy; v2 keeps min ACU."
+    },
+    {
+      "id": "Q4",
+      "answer": "D",
+      "explanation": "Read scaling = async read replicas. Multi-AZ standby is not a read endpoint on standard RDS."
+    },
+    {
+      "id": "Q5",
+      "answer": "C",
+      "explanation": "Sub-second cross-Region RPO + secondary reads = Aurora Global Database."
+    },
+    {
+      "id": "Q6",
+      "answer": "B",
+      "explanation": "JOINs + FKs + ACID = relational (Aurora/RDS). DynamoDB for simple key access (wiki counters)."
+    },
+    {
+      "id": "Q7",
+      "answer": "A",
+      "explanation": "Aurora storage auto-scales to 128 TiB — no manual GB provisioning. Classic exam trap."
+    },
+    {
+      "id": "Q8",
+      "answer": "D",
+      "explanation": "DR failover to replica = manual promote; breaks replication chain. Async lag may apply."
+    },
+    {
+      "id": "Q9",
+      "answer": "B",
+      "explanation": "Multi-AZ sync for HA; read replicas async for scale. Flashcard #1."
+    },
+    {
+      "id": "Q10",
+      "answer": "C",
+      "explanation": "RDS automated backup retention 1–35 days with PITR. night-15-rds-aurora.md backups table."
+    },
+    {
+      "id": "Q11",
+      "answer": "D",
+      "explanation": "Serverless v2 does not scale to zero ACUs. Stop/start RDS or teardown dev for idle savings."
+    },
+    {
+      "id": "Q12",
+      "answer": "A",
+      "explanation": "DB SG inbound from app SG on DB port — Night 8 quiz callback; night-16 lab preview."
+    },
+    {
+      "id": "Q13",
+      "answer": "B",
+      "explanation": "RDS Proxy is the serverless→relational pooling answer. Multi-AZ does not add connection slots for reads on standby."
+    },
+    {
+      "id": "Q14",
+      "answer": "C",
+      "explanation": "Backtrack = Aurora MySQL-compatible only. PostgreSQL uses PITR from automated backups."
+    },
+    {
+      "id": "Q15",
+      "answer": "A",
+      "explanation": "Right tool per access pattern: DynamoDB counters vs Aurora relational stats. GSA architecture diagram in night-15-rds-aurora.md."
+    }
+  ]
+}

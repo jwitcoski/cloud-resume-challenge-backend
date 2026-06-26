@@ -1,5 +1,7 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import { listQuizSummaries } from "@/data/study-quizzes";
+import QuizIndexClient from "./QuizIndexClient";
 
 export const metadata = {
   title: "SAA-C03 Practice Quizzes | Jonathan Witcoski",
@@ -36,42 +38,9 @@ export default function StudyQuizIndexPage() {
             browser per night.
           </p>
 
-          {quizzes.length === 0 ? (
-            <p className="text-[#666]">
-              No quizzes found. Add matching{" "}
-              <code className="bg-[#f4f4f4] px-1 rounded text-xs">
-                night-N-quiz.json
-              </code>{" "}
-              and{" "}
-              <code className="bg-[#f4f4f4] px-1 rounded text-xs">
-                night-N-quiz-answers.json
-              </code>{" "}
-              under <code className="bg-[#f4f4f4] px-1 rounded text-xs">study-lab/</code>.
-            </p>
-          ) : (
-            <ul className="space-y-3">
-              {quizzes.map((q) => (
-                <li key={q.night}>
-                  <Link
-                    href={`/aws-solutions-architect-study/quiz/${q.night}/`}
-                    className="block rounded-lg border border-[#ddd] p-4 hover:border-blue-400 hover:bg-blue-50/30 transition-colors"
-                  >
-                    <div className="flex flex-wrap items-baseline justify-between gap-2">
-                      <h2 className="font-semibold text-[#444]">
-                        Night {q.night}: {q.title}
-                      </h2>
-                      <span className="text-sm text-[#888] whitespace-nowrap">
-                        {q.questionCount} questions · ~{q.suggestedMinutes} min
-                      </span>
-                    </div>
-                    {q.topic && (
-                      <p className="text-sm text-[#666] mt-1">{q.topic}</p>
-                    )}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          )}
+          <Suspense fallback={<p className="text-sm text-[#666]">Loading…</p>}>
+            <QuizIndexClient quizzes={quizzes} />
+          </Suspense>
         </div>
       </div>
     </main>
