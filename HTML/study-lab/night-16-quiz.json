@@ -1,0 +1,160 @@
+{
+  "night": 16,
+  "title": "Lab 2D part 1 — Aurora Serverless v2 study stack",
+  "topic": "Aurora Serverless v2 in private subnets, DB subnet groups, security group database access, RDS Data API schema init, writer vs reader endpoints, teardown cost",
+  "format": "15 timed scenario questions (~24 min, ~96 sec each). Reinforces night-16-aurora-lab.md and night-16-lab-aurora-setup scripts. Answer without peeking at night-16-quiz-answers.json first.",
+  "answerKey": "night-16-quiz-answers.json",
+  "answerDistribution": "A×4 B×4 C×4 D×3 — options shuffled so correct letter varies",
+  "questions": [
+    {
+      "id": "Q1",
+      "question": "night-16-lab-aurora-setup places Aurora in Night 9 private subnets. A stats Lambda in the same VPC must connect on port 5432. Both use security groups. What ingress rule belongs on the Aurora security group?",
+      "options": {
+        "A": "TCP 5432 from 10.0.0.0/16 — entire VPC CIDR for simplicity",
+        "B": "TCP 5432 from saa-study-gsa-lambda-stats-sg — source is the app security group",
+        "C": "TCP 443 from lambda-stats-sg — PostgreSQL uses HTTPS like RDS Data API",
+        "D": "No inbound rule — Aurora initiates connections to Lambda on 5432"
+      }
+    },
+    {
+      "id": "Q2",
+      "question": "The lab creates saa-study-gsa-aurora-subnets spanning private-a and private-b. Why must the DB subnet group include subnets in at least two Availability Zones?",
+      "options": {
+        "A": "Aurora requires public subnets in two AZs for Internet Gateway routing",
+        "B": "NAT Gateway must sit in the same subnet group as the writer instance",
+        "C": "Aurora storage replication mandates two AZs for subnet group creation and HA placement",
+        "D": "Lambda ENIs can only attach to subnets listed in the DB subnet group"
+      }
+    },
+    {
+      "id": "Q3",
+      "question": "You deploy Aurora Serverless v2 with MinCapacity=0.5 and MaxCapacity=1 ACU for the study cluster. Overnight the database has no connections. What happens to billing?",
+      "options": {
+        "A": "Billing drops to zero ACU — Serverless v2 scales to zero like v1",
+        "B": "Minimum 0.5 ACU still bills while the cluster and instance exist",
+        "C": "Aurora stops the instance automatically and charges only snapshot storage",
+        "D": "Only NAT Gateway cost applies because the DB is in a private subnet"
+      }
+    },
+    {
+      "id": "Q4",
+      "question": "night-16-lab enables --enable-http-endpoint on the cluster so -InitSchema runs from your laptop without psql in the VPC. Which service executes the CREATE TABLE statements?",
+      "options": {
+        "A": "Amazon RDS Data API over HTTPS using the cluster ARN and Secrets Manager secret",
+        "B": "AWS Systems Manager Session Manager tunneling psql through the NAT Gateway",
+        "C": "Amazon API Gateway HTTP API proxying SQL to the Aurora writer endpoint",
+        "D": "AWS CloudFormation custom resource Lambda with VPC attachment and psql binary"
+      }
+    },
+    {
+      "id": "Q5",
+      "question": "The setup script sets --no-publicly-accessible on saa-study-gsa-aurora-instance. A developer tries to connect with psql from a home laptop using the writer endpoint. What is the expected result?",
+      "options": {
+        "A": "Connection succeeds if they have the master password from Secrets Manager",
+        "B": "Connection succeeds when using the reader endpoint instead of the writer",
+        "C": "Connection fails — the instance has no public IP; clients must be in the VPC path",
+        "D": "Connection succeeds after adding 0.0.0.0/0 to the Aurora security group"
+      }
+    },
+    {
+      "id": "Q6",
+      "question": "Night 17 Lambda will INSERT into resort_stats. Which Aurora endpoint should the stats uploader use for writes?",
+      "options": {
+        "A": "Cluster reader endpoint — load-balanced across Aurora replicas",
+        "B": "Custom CNAME you create in Route 53 pointing at the instance IP",
+        "C": "Cluster writer endpoint — all writes go to the primary instance",
+        "D": "RDS Proxy endpoint only — writer endpoint rejects INSERT statements"
+      }
+    },
+    {
+      "id": "Q7",
+      "question": "Master credentials for saa-study-gsa-aurora use --manage-master-user-password. Where does the setup script read the secret ARN for RDS Data API calls?",
+      "options": {
+        "A": "SSM Parameter Store String parameter written by the teardown script",
+        "B": "MasterUserSecret.SecretArn on the DB cluster from describe-db-clusters",
+        "C": "Lambda environment variable GSA_DB_PASSWORD exported in night-9-vpc-ids.json",
+        "D": "IAM user access key embedded in night-16-aurora-result.json by default"
+      }
+    },
+    {
+      "id": "Q8",
+      "question": "A teammate proposes placing Aurora in the Night 9 public subnets (public-a/public-b) to avoid NAT costs for patching. What is the best response for a production-style GSA stats database?",
+      "options": {
+        "A": "Correct — public subnets remove the need for security groups on the database",
+        "B": "Correct — Aurora requires IGW routes for automated minor version patching",
+        "C": "Use private subnets with NAT — databases stay non-public; apps reach them via SG rules",
+        "D": "Use public subnets but disable the writer endpoint to block inbound SQL"
+      }
+    },
+    {
+      "id": "Q9",
+      "question": "After night-16-lab-aurora-setup.ps1, describe-db-instances shows DBInstanceClass db.serverless. Where is the MinCapacity=0.5 / MaxCapacity=1 scaling configuration stored?",
+      "options": {
+        "A": "On the DB instance as a modify-db-instance --max-allocated-storage flag",
+        "B": "On the Aurora cluster as ServerlessV2ScalingConfiguration",
+        "C": "On the DB subnet group as a capacity attribute per subnet",
+        "D": "On the lambda-stats-sg as a tag consumed by Aurora Auto Scaling"
+      }
+    },
+    {
+      "id": "Q10",
+      "question": "You run night-16-lab-aurora-teardown.ps1 after the lab. Which resources does it intentionally leave running?",
+      "options": {
+        "A": "Aurora cluster and instance — teardown only removes security groups",
+        "B": "Night 9 VPC, NAT Gateway, and Night 12–14 EventBridge/SQS/SNS resources",
+        "C": "Only the resort_stats table — cluster is stopped but not deleted",
+        "D": "DB subnet group and Secrets Manager secret for Night 17 reuse"
+      }
+    },
+    {
+      "id": "Q11",
+      "question": "GSA stores wiki page-view counts in DynamoDB and monthly resort aggregates in Aurora resort_stats. A report needs SELECT with JOIN across resort rows. Which store fits?",
+      "options": {
+        "A": "DynamoDB — enable DAX and use PartiQL JOIN across partition keys",
+        "B": "S3 Iceberg only — Aurora cannot query relational aggregates",
+        "C": "Aurora PostgreSQL — relational schema and SQL JOINs on resort_stats",
+        "D": "ElastiCache Redis — store JSON blobs keyed by resort_id for JOIN emulation"
+      }
+    },
+    {
+      "id": "Q12",
+      "question": "The Iceland batch completion path uses Night 13 SQS. Night 16 adds Aurora. Where does resort_stats fit in the pipeline relative to SQS?",
+      "options": {
+        "A": "SQS messages are stored inside Aurora as BLOB columns in resort_stats",
+        "B": "Aurora replaces SQS — the batch writes SQL rows instead of queue messages",
+        "C": "Downstream stats uploader (after SQS) writes relational rows to Aurora",
+        "D": "Aurora publishes completion events back to SQS via RDS Event Notifications"
+      }
+    },
+    {
+      "id": "Q13",
+      "question": "A junior engineer adds 0.0.0.0/0 on TCP 5432 to saa-study-gsa-aurora-sg so they can psql from home. What is the exam-aligned fix?",
+      "options": {
+        "A": "Enable public accessibility on the instance — SG open to the world is then safe",
+        "B": "Remove the rule — use VPC Lambda or RDS Data API; source SG reference only",
+        "C": "Switch to Aurora MySQL — port 3306 does not need security group rules",
+        "D": "Attach the Aurora SG to the Lambda function instead of the database"
+      }
+    },
+    {
+      "id": "Q14",
+      "question": "night-16-lab creates saa-study-gsa-lambda-stats-sg with no inbound rules. Night 17 Lambda will attach to this SG in private subnets. Why is empty inbound acceptable?",
+      "options": {
+        "A": "Lambda in a VPC never receives inbound connections — only outbound to Aurora matters",
+        "B": "Aurora opens return traffic automatically without security group state tracking",
+        "C": "NAT Gateway security group mirrors all inbound to Lambda ENIs",
+        "D": "Inbound rules are inherited from the Night 9 fargate security group"
+      }
+    },
+    {
+      "id": "Q15",
+      "question": "You need a read-only BI dashboard querying resort_stats without adding write load to the primary. Aurora has one writer and no extra reader instances yet. What is the practical first step?",
+      "options": {
+        "A": "Point BI at the cluster reader endpoint — it load-balances when readers exist",
+        "B": "Add an Aurora read replica instance, then use the reader endpoint for SELECT",
+        "C": "Use DynamoDB streams to replicate resort_stats into a second Aurora cluster",
+        "D": "Enable Aurora Backtrack on PostgreSQL to serve historical read queries"
+      }
+    }
+  ]
+}

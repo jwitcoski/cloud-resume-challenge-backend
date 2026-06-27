@@ -1,0 +1,82 @@
+{
+  "night": 16,
+  "title": "Lab 2D part 1 — Aurora Serverless v2 study stack",
+  "answerDistribution": { "A": 4, "B": 4, "C": 4, "D": 3 },
+  "answers": [
+    {
+      "id": "Q1",
+      "correct": "B",
+      "explanation": "DB SG inbound from app SG on DB port 5432 — Night 8/15 callback; night-16-lab wires lambda-stats-sg → aurora-sg."
+    },
+    {
+      "id": "Q2",
+      "correct": "C",
+      "explanation": "DB subnet group must span ≥2 AZs for Aurora/RDS HA placement. night-16 uses Night 9 private-a + private-b."
+    },
+    {
+      "id": "Q3",
+      "correct": "B",
+      "explanation": "Aurora Serverless v2 does not scale to zero — min ACU (0.5 here) bills while cluster exists. Night 15 trap."
+    },
+    {
+      "id": "Q4",
+      "correct": "A",
+      "explanation": "RDS Data API + Secrets Manager secret + cluster ARN — setup -InitSchema path in night-16-lab-aurora-setup.ps1."
+    },
+    {
+      "id": "Q5",
+      "correct": "C",
+      "explanation": "Private subnet + no public accessibility = no direct laptop psql. Use Data API or in-VPC Lambda (Night 17)."
+    },
+    {
+      "id": "Q6",
+      "correct": "C",
+      "explanation": "Writes use cluster writer endpoint. Reader endpoint is for read replicas only."
+    },
+    {
+      "id": "Q7",
+      "correct": "B",
+      "explanation": "ManageMasterUserPassword stores secret; describe-db-clusters returns MasterUserSecret.SecretArn."
+    },
+    {
+      "id": "Q8",
+      "correct": "C",
+      "explanation": "Databases in private subnets; NAT for outbound maintenance; SG rules for app access — Night 9/16 pattern."
+    },
+    {
+      "id": "Q9",
+      "correct": "B",
+      "explanation": "ServerlessV2ScalingConfiguration is on the DB cluster; instance class is db.serverless."
+    },
+    {
+      "id": "Q10",
+      "correct": "B",
+      "explanation": "Teardown removes Aurora + SGs + subnet group only — Night 9 VPC and Night 12–14 labs unchanged."
+    },
+    {
+      "id": "Q11",
+      "correct": "C",
+      "explanation": "JOINs and relational reports → Aurora. DynamoDB for simple key access (Night 15 GSA split)."
+    },
+    {
+      "id": "Q12",
+      "correct": "C",
+      "explanation": "SQS decouples batch completion; stats uploader (Night 17) persists aggregates to Aurora resort_stats."
+    },
+    {
+      "id": "Q13",
+      "correct": "B",
+      "explanation": "Never 0.0.0.0/0 on DB port — use SG reference or Data API/Lambda in VPC."
+    },
+    {
+      "id": "Q14",
+      "correct": "A",
+      "explanation": "Lambda initiates outbound connections; no inbound listeners required on lambda-stats-sg."
+    },
+    {
+      "id": "Q15",
+      "correct": "B",
+      "explanation": "Add a reader instance first; then reader endpoint load-balances SELECTs. With only a writer, reader endpoint still hits primary but adding replica is the scale-out pattern."
+    }
+  ]
+}

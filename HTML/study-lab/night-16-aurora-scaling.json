@@ -1,0 +1,8 @@
+{
+  "DBClusterIdentifier": "saa-study-gsa-aurora",
+  "ServerlessV2ScalingConfiguration": {
+    "MinCapacity": 0.5,
+    "MaxCapacity": 1.0
+  },
+  "ApplyImmediately": true
+}
