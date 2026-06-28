@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 import type { QuizSummary } from "@/data/study-quizzes-types";
-import QuizNightLoader from "./QuizNightLoader";
 
 type QuizIndexClientProps = {
   quizzes: QuizSummary[];
@@ -11,21 +11,18 @@ type QuizIndexClientProps = {
 
 export default function QuizIndexClient({ quizzes }: QuizIndexClientProps) {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const nightParam = searchParams.get("night");
   const night = nightParam ? Number.parseInt(nightParam, 10) : Number.NaN;
 
+  useEffect(() => {
+    if (!Number.isNaN(night) && night > 0) {
+      router.replace(`/aws-solutions-architect-study/quiz/${night}/`);
+    }
+  }, [night, router]);
+
   if (!Number.isNaN(night) && night > 0) {
-    return (
-      <>
-        <Link
-          href="/aws-solutions-architect-study/quiz/"
-          className="inline-flex items-center gap-2 text-sm text-primary hover:underline mb-6"
-        >
-          ← All quizzes
-        </Link>
-        <QuizNightLoader night={night} />
-      </>
-    );
+    return <p className="text-sm text-[#666] py-8 text-center">Loading quiz…</p>;
   }
 
   if (quizzes.length === 0) {

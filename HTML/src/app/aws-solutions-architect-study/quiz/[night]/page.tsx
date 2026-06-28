@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { listQuizNights, loadQuiz } from "@/data/study-quizzes";
-import QuizNightLoader from "../QuizNightLoader";
+import QuizTaker from "../QuizTaker";
 
 type PageProps = {
   params: Promise<{ night: string }>;
@@ -29,9 +29,8 @@ export default async function StudyQuizNightPage({ params }: PageProps) {
   const night = Number.parseInt(nightParam, 10);
   if (Number.isNaN(night)) notFound();
 
-  // Route exists only for nights known at dev/build start (static export).
-  // Quiz JSON is loaded client-side from public/study-lab/ (synced on predev/prebuild).
-  if (!loadQuiz(night)) notFound();
+  const quiz = loadQuiz(night);
+  if (!quiz) notFound();
 
   return (
     <main className="min-h-screen bg-[#f4f4f4] text-[#333]">
@@ -43,7 +42,7 @@ export default async function StudyQuizNightPage({ params }: PageProps) {
           >
             ← All quizzes
           </Link>
-          <QuizNightLoader night={night} />
+          <QuizTaker quiz={quiz} />
         </div>
       </div>
     </main>

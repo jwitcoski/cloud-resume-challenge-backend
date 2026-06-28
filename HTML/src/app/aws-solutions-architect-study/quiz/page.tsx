@@ -6,7 +6,7 @@ import QuizIndexClient from "./QuizIndexClient";
 export const metadata = {
   title: "SAA-C03 Practice Quizzes | Jonathan Witcoski",
   description:
-    "Timed scenario quizzes from the nightly study lab — auto-loaded from study-lab JSON.",
+    "Timed scenario quizzes from the nightly study lab — baked in at build from study-lab JSON.",
 };
 
 export default function StudyQuizIndexPage() {
@@ -30,12 +30,12 @@ export default function StudyQuizIndexPage() {
             SAA-C03 practice quizzes
           </h1>
           <p className="leading-relaxed text-[#555] mb-8">
-            Interactive quizzes loaded from{" "}
+            Interactive quizzes from{" "}
             <code className="bg-[#f4f4f4] px-1 rounded text-xs">
               HTML/study-lab/night-*-quiz.json
             </code>
-            . Answers stay hidden until you submit. Progress is saved in your
-            browser per night.
+            , embedded when the site is built. Answers stay hidden until you submit.
+            Progress is saved in your browser per night.
           </p>
 
           <Suspense fallback={<p className="text-sm text-[#666]">Loading…</p>}>
