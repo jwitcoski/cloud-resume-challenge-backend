@@ -1,0 +1,82 @@
+{
+  "night": 18,
+  "title": "DynamoDB resilience — PITR + Streams + stub stream Lambda",
+  "answerDistribution": { "A": 4, "B": 4, "C": 4, "D": 3 },
+  "answers": [
+    {
+      "id": "Q1",
+      "correct": "A",
+      "explanation": "PITR restore-table-to-point-in-time creates a new table within 35 days — never overwrites the source (Night 18 lab + Night 15 PITR trap)."
+    },
+    {
+      "id": "Q2",
+      "correct": "C",
+      "explanation": "KEYS_ONLY omits attribute values — no old/new viewCount in the stream record."
+    },
+    {
+      "id": "Q3",
+      "correct": "A",
+      "explanation": "StartingPosition LATEST skips history before mapping creation — bump after mapping to test (night-18 setup -VerifyStream)."
+    },
+    {
+      "id": "Q4",
+      "correct": "C",
+      "explanation": "ADD is atomic increment; read-modify-write SET races under concurrent wiki traffic."
+    },
+    {
+      "id": "Q5",
+      "correct": "A",
+      "explanation": "Streams deliver at-least-once — stub logging handler is idempotent; counters need conditional/idempotent design."
+    },
+    {
+      "id": "Q6",
+      "correct": "C",
+      "explanation": "Night 18 DynamoDB Streams vs Night 17 SQS event source mapping — different decoupling sources."
+    },
+    {
+      "id": "Q7",
+      "correct": "A",
+      "explanation": "Global tables for multi-Region DynamoDB active-active — awareness read in Night 18 block 3."
+    },
+    {
+      "id": "Q8",
+      "correct": "D",
+      "explanation": "Gateway VPC endpoint for DynamoDB avoids NAT on DynamoDB API traffic (Night 8 Q10 pattern)."
+    },
+    {
+      "id": "Q9",
+      "correct": "C",
+      "explanation": "PAY_PER_REQUEST fits spiky wiki views — no RCU/WCU planning (Night 18 lab table)."
+    },
+    {
+      "id": "Q10",
+      "correct": "D",
+      "explanation": "AWS Backup centralizes policies across DynamoDB, RDS, EBS — Night 19 preview; PITR is per-table only."
+    },
+    {
+      "id": "Q11",
+      "correct": "C",
+      "explanation": "Global tables: last writer wins; eventual cross-Region consistency — not strong global locks."
+    },
+    {
+      "id": "Q12",
+      "correct": "C",
+      "explanation": "GSA split from Night 15–17 — Aurora JOIN reports vs DynamoDB hot counters."
+    },
+    {
+      "id": "Q13",
+      "correct": "B",
+      "explanation": "Standard Lambda logging permissions — night-18-lab Ensure-Role policy pattern."
+    },
+    {
+      "id": "Q14",
+      "correct": "C",
+      "explanation": "DynamoDB PITR max 35 days — Night 15 quiz Q10 trap (not 14 or 365)."
+    },
+    {
+      "id": "Q15",
+      "correct": "B",
+      "explanation": "Night 18 teardown is isolated study stack — Aurora and SQS unchanged (mirrors Night 17 Q12 logic)."
+    }
+  ]
+}

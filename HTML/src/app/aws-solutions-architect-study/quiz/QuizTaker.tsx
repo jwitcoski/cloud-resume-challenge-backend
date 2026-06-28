@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
-import type { LoadedQuiz, QuizOption } from "@/data/study-quizzes";
+import type { LoadedQuiz, QuizOption } from "@/data/study-quizzes-types";
 
 const OPTIONS: QuizOption[] = ["A", "B", "C", "D"];
 

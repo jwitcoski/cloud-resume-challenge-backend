@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import type { QuizSummary } from "@/data/study-quizzes";
+import type { QuizSummary } from "@/data/study-quizzes-types";
 import QuizNightLoader from "./QuizNightLoader";
 
 type QuizIndexClientProps = {

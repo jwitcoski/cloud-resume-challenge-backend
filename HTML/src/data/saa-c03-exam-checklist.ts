@@ -664,6 +664,18 @@ export const studyNights: StudyNight[] = [
     reviewedServiceIds: ["lambda", "aurora", "rds", "sqs", "secrets-manager", "vpc"],
     completedCheckpointIds: ["d2-t2-cp-1", "d3-t3-cp-1"],
   },
+  {
+    night: 18,
+    week: 3,
+    title: "DynamoDB resilience — PITR + Streams + stub stream Lambda",
+    completedDate: "2026-06-28",
+    lab: "saa-study-gsa-wiki-views (PITR + NEW_AND_OLD_IMAGES stream) + saa-study-gsa-wiki-stream-processor — night-18-lab-dynamodb-setup.ps1 -BumpView -VerifyStream; stream log wiki/iceland 2→3",
+    practiceScore: "9/15",
+    notes:
+      "Quiz (night-18-quiz.json): 9/15 — missed Q2 (KEYS_ONLY strips all attributes from stream; NEW_IMAGE hides old only), Q5 (at-least-once streams → idempotent handler, not FIFO SQS in path), Q6 (Night 18 DynamoDB Streams vs Night 17 SQS trigger), Q7 (global tables for multi-Region DynamoDB — RDS replica trap), Q10 (AWS Backup centralizes cross-service retention, not CloudTrail), Q11 (global tables last-writer-wins, not ConditionalCheckFailed). Solid on PITR restore→new table (Q1), LATEST skips pre-mapping history (Q3), ADD atomic increment (Q4), DynamoDB gateway VPC endpoint (Q8), PAY_PER_REQUEST (Q9), GSA Aurora+DynamoDB split (Q12), CloudWatch Logs IAM (Q13), PITR 35 days (Q14), teardown isolation (Q15). Created night-18-dynamodb-resilience.md + lab/quiz assets. Night 19 — DR + AWS Backup.",
+    reviewedServiceIds: ["dynamodb", "lambda", "backup"],
+    completedCheckpointIds: ["d2-t2-cp-1", "d3-t3-cp-1"],
+  },
 ];
 
 /** Merge all completed nights into default checklist state for first-time visitors. */

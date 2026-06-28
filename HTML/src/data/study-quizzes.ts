@@ -1,75 +1,20 @@
 import fs from "fs";
 import path from "path";
+import { normalizeQuizAnswers } from "@/data/study-quiz-normalize";
+import type { LoadedQuiz, QuizSummary, StudyQuiz, StudyQuizAnswers } from "@/data/study-quizzes-types";
 
-export type QuizOption = "A" | "B" | "C" | "D";
+export type {
+  QuizOption,
+  StudyQuizQuestion,
+  StudyQuiz,
+  StudyQuizAnswer,
+  StudyQuizAnswerRaw,
+  StudyQuizAnswers,
+  LoadedQuiz,
+  QuizSummary,
+} from "@/data/study-quizzes-types";
 
-export type StudyQuizQuestion = {
-  id: string;
-  question: string;
-  options: Record<QuizOption, string>;
-};
-
-export type StudyQuiz = {
-  night: number;
-  title: string;
-  topic?: string;
-  format?: string;
-  answerKey?: string;
-  questions: StudyQuizQuestion[];
-};
-
-export type StudyQuizAnswer = {
-  id: string;
-  answer: QuizOption;
-  explanation: string;
-};
-
-/** Raw JSON may use "answer" (nights 5–15) or "correct" (nights 16+). */
-export type StudyQuizAnswerRaw = {
-  id: string;
-  answer?: QuizOption;
-  correct?: QuizOption;
-  explanation: string;
-};
-
-export type StudyQuizAnswers = {
-  night: number;
-  title: string;
-  answers: StudyQuizAnswerRaw[];
-};
-
-/** Accept answer keys using either "answer" or "correct" field names. */
-export function normalizeQuizAnswers(
-  raw: StudyQuizAnswerRaw[]
-): StudyQuizAnswer[] {
-  return raw.map((entry) => {
-    const answer = entry.answer ?? entry.correct;
-    if (!answer) {
-      throw new Error(`Quiz answer ${entry.id} missing "answer" or "correct"`);
-    }
-    return { id: entry.id, answer, explanation: entry.explanation };
-  });
-}
-
-export type LoadedQuiz = {
-  night: number;
-  title: string;
-  topic?: string;
-  format?: string;
-  questionCount: number;
-  /** ~96 sec per question — SAA study pace */
-  suggestedMinutes: number;
-  questions: StudyQuizQuestion[];
-  answers: StudyQuizAnswer[];
-};
-
-export type QuizSummary = {
-  night: number;
-  title: string;
-  topic?: string;
-  questionCount: number;
-  suggestedMinutes: number;
-};
+export { normalizeQuizAnswers };
 
 function studyLabDir(): string {
   const candidates = [

@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import type { LoadedQuiz, StudyQuiz, StudyQuizAnswers } from "@/data/study-quizzes";
-import { normalizeQuizAnswers } from "@/data/study-quizzes";
+import type { LoadedQuiz, StudyQuiz, StudyQuizAnswers } from "@/data/study-quizzes-types";
+import { normalizeQuizAnswers } from "@/data/study-quiz-normalize";
 import QuizTaker from "./QuizTaker";
 
 type QuizNightLoaderProps = {
