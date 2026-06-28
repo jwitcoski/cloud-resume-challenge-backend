@@ -43,6 +43,14 @@ jobs:
       run: |
         aws s3 sync HTML/out s3://witcoskitech.com --delete --exclude "pitchprice/*" --exclude "study-lab/*"
 
+    - name: Sync study quizzes to S3 (quiz JSON only — preserves other study-lab artifacts)
+      run: |
+        aws s3 sync HTML/out/study-lab s3://witcoskitech.com/study-lab \
+          --exclude "*" \
+          --include "night-*-quiz.json" \
+          --include "night-*-quiz-answers.json" \
+          --include "quiz-manifest.json"
+
     - name: Invalidate CloudFront Distribution
       env:
         DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
