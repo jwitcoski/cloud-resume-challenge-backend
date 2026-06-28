@@ -652,6 +652,18 @@ export const studyNights: StudyNight[] = [
     reviewedServiceIds: ["rds", "aurora", "aurora-serverless", "rds-proxy"],
     completedCheckpointIds: ["d2-t2-cp-1", "d3-t3-cp-1"],
   },
+  {
+    night: 17,
+    week: 3,
+    title: "Lab 2D part 2 — Lambda stats uploader → Aurora",
+    completedDate: "2026-06-27",
+    lab: "Theory + quiz — night-17-lambda-aurora.md; setup/teardown scripts (Lambda not deployed tonight)",
+    practiceScore: "11/15",
+    notes:
+      "Quiz (night-17-quiz.json): 11/15 — missed Q2 (writer endpoint for INSERT, not Data API), Q6 (study lab maps ECS completion → IS-001 UPSERT), Q12 (Aurora teardown does not break Night 13 SQS), Q13 (standard SQS at-least-once → idempotent UPSERT, not FIFO). Solid on ENI cold start (Q3), NAT egress (Q7), DynamoDB vs Aurora split (Q8/Q14), RDS Proxy (Q9). Fixed quiz site 0/15 bug (answer key used correct vs answer field). Plain-English ENI/TCP/RDS Proxy guide in night-17-lambda-aurora.md. Night 18 — DynamoDB resilience.",
+    reviewedServiceIds: ["lambda", "aurora", "rds", "sqs", "secrets-manager", "vpc"],
+    completedCheckpointIds: ["d2-t2-cp-1", "d3-t3-cp-1"],
+  },
 ];
 
 /** Merge all completed nights into default checklist state for first-time visitors. */

@@ -1,0 +1,82 @@
+{
+  "night": 17,
+  "title": "Lab 2D part 2 — Lambda stats uploader → Aurora",
+  "answerDistribution": { "A": 4, "B": 4, "C": 4, "D": 3 },
+  "answers": [
+    {
+      "id": "Q1",
+      "correct": "B",
+      "explanation": "Lambda is a client — outbound to writer :5432. No inbound listeners on lambda-stats-sg (Night 16 Q14 callback)."
+    },
+    {
+      "id": "Q2",
+      "correct": "D",
+      "explanation": "INSERT/UPSERT uses cluster writer endpoint. Night 16 Q6 — reader is for read replicas."
+    },
+    {
+      "id": "Q3",
+      "correct": "A",
+      "explanation": "VPC Lambda cold start includes ENI create/attach in private subnets — plan timeout ≥ 30s."
+    },
+    {
+      "id": "Q4",
+      "correct": "C",
+      "explanation": "Secrets Manager for rotation/audit; avoid plaintext DB passwords in env vars (Night 15/17 pattern)."
+    },
+    {
+      "id": "Q5",
+      "correct": "C",
+      "explanation": "SQS visibility timeout ≥ Lambda timeout — message reappears if processing exceeds visibility."
+    },
+    {
+      "id": "Q6",
+      "correct": "C",
+      "explanation": "Study lab maps Iceland ECS completion → default IS-001 UPSERT; production would parse metadata."
+    },
+    {
+      "id": "Q7",
+      "correct": "A",
+      "explanation": "Private subnet Lambdas need NAT or VPC endpoints for AWS API egress — Night 9 NAT pattern."
+    },
+    {
+      "id": "Q8",
+      "correct": "A",
+      "explanation": "GSA split from Night 15/16 — DynamoDB counters vs Aurora relational JOIN reports."
+    },
+    {
+      "id": "Q9",
+      "correct": "D",
+      "explanation": "RDS Proxy pools connections for many concurrent Lambdas — Night 15 theory."
+    },
+    {
+      "id": "Q10",
+      "correct": "B",
+      "explanation": "Lab teaches VPC + SG + TCP PostgreSQL path tested on SAA; Data API is alternate (Night 16 init)."
+    },
+    {
+      "id": "Q11",
+      "correct": "B",
+      "explanation": "RDS Data API over HTTPS from laptop; Lambda uses in-VPC TCP — both valid, different paths."
+    },
+    {
+      "id": "Q12",
+      "correct": "A",
+      "explanation": "Night 17 teardown is Lambda-only; Night 13 SQS/EventBridge unaffected by Aurora teardown."
+    },
+    {
+      "id": "Q13",
+      "correct": "D",
+      "explanation": "Standard SQS at-least-once — idempotent UPSERT handles duplicate delivery safely."
+    },
+    {
+      "id": "Q14",
+      "correct": "B",
+      "explanation": "DynamoDB for hot wiki counters; SQS-decoupled Lambda persists batch stats to Aurora."
+    },
+    {
+      "id": "Q15",
+      "correct": "C",
+      "explanation": "IAM role propagation delay common after create-role — sleep/retry before VPC Lambda create."
+    }
+  ]
+}

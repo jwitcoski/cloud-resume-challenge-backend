@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import type { LoadedQuiz, StudyQuiz, StudyQuizAnswers } from "@/data/study-quizzes";
+import { normalizeQuizAnswers } from "@/data/study-quizzes";
 import QuizTaker from "./QuizTaker";
 
 type QuizNightLoaderProps = {
@@ -47,7 +48,7 @@ export default function QuizNightLoader({ night }: QuizNightLoaderProps) {
             questionCount,
             suggestedMinutes: Math.max(1, Math.round((questionCount * 96) / 60)),
             questions: quizData.questions,
-            answers: answerData.answers,
+            answers: normalizeQuizAnswers(answerData.answers),
           });
         }
       } catch {

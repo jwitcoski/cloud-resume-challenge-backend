@@ -24,11 +24,32 @@ export type StudyQuizAnswer = {
   explanation: string;
 };
 
+/** Raw JSON may use "answer" (nights 5–15) or "correct" (nights 16+). */
+export type StudyQuizAnswerRaw = {
+  id: string;
+  answer?: QuizOption;
+  correct?: QuizOption;
+  explanation: string;
+};
+
 export type StudyQuizAnswers = {
   night: number;
   title: string;
-  answers: StudyQuizAnswer[];
+  answers: StudyQuizAnswerRaw[];
 };
+
+/** Accept answer keys using either "answer" or "correct" field names. */
+export function normalizeQuizAnswers(
+  raw: StudyQuizAnswerRaw[]
+): StudyQuizAnswer[] {
+  return raw.map((entry) => {
+    const answer = entry.answer ?? entry.correct;
+    if (!answer) {
+      throw new Error(`Quiz answer ${entry.id} missing "answer" or "correct"`);
+    }
+    return { id: entry.id, answer, explanation: entry.explanation };
+  });
+}
 
 export type LoadedQuiz = {
   night: number;
@@ -97,7 +118,7 @@ export function loadQuiz(night: number): LoadedQuiz | null {
     questionCount,
     suggestedMinutes: Math.max(1, Math.round((questionCount * 96) / 60)),
     questions: quiz.questions,
-    answers: answerData.answers,
+    answers: normalizeQuizAnswers(answerData.answers),
   };
 }
 

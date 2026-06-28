@@ -1,0 +1,160 @@
+{
+  "night": 17,
+  "title": "Lab 2D part 2 — Lambda stats uploader → Aurora",
+  "topic": "Lambda in VPC, ENI cold start, Secrets Manager DB credentials, SQS event source mapping, Aurora writer endpoint UPSERT, DynamoDB vs relational for GSA",
+  "format": "15 timed scenario questions (~24 min, ~96 sec each). Reinforces night-17-lambda-aurora.md and night-17-lab-lambda-stats-setup scripts. Answer without peeking at night-17-quiz-answers.json first.",
+  "answerKey": "night-17-quiz-answers.json",
+  "answerDistribution": "A×4 B×4 C×4 D×3 — options shuffled so correct letter varies",
+  "questions": [
+    {
+      "id": "Q1",
+      "question": "night-17-lab deploys saa-study-gsa-stats-uploader in Night 9 private subnets with saa-study-gsa-lambda-stats-sg. Aurora saa-study-gsa-aurora-sg already allows TCP 5432 from lambda-stats-sg. What additional SG rule does the Lambda security group need for PostgreSQL writes?",
+      "options": {
+        "A": "Inbound TCP 5432 from aurora-sg so Aurora can push result sets back",
+        "B": "No inbound rule — Lambda initiates outbound TCP 5432 to the writer endpoint",
+        "C": "Inbound TCP 443 from 0.0.0.0/0 for Secrets Manager over the public internet",
+        "D": "Inbound TCP 5432 from the entire VPC CIDR 10.0.0.0/16 for failover"
+      }
+    },
+    {
+      "id": "Q2",
+      "question": "The stats uploader runs INSERT … ON CONFLICT to increment monthly_runs in resort_stats. Which Aurora endpoint must DB_HOST point to?",
+      "options": {
+        "A": "Custom Route 53 CNAME you create for the reader instance",
+        "B": "RDS Data API HTTPS endpoint enabled on the cluster",
+        "C": "Cluster reader endpoint — load-balanced SELECT and INSERT",
+        "D": "Cluster writer endpoint — all writes and default primary reads"
+      }
+    },
+    {
+      "id": "Q3",
+      "question": "First -TestInvoke after create-function takes 30+ seconds while later invokes finish in a few seconds. What is the most likely cause?",
+      "options": {
+        "A": "Lambda VPC attachment creates or attaches ENIs in private subnets on cold start",
+        "B": "Aurora Serverless v2 scales to zero and must cold-start the database engine",
+        "C": "SQS long polling blocks the synchronous invoke until a message arrives",
+        "D": "Secrets Manager rotates the master password on every GetSecretValue call"
+      }
+    },
+    {
+      "id": "Q4",
+      "question": "night-17-lab stores DB_SECRET_ARN in environment variables and calls secretsmanager:GetSecretValue at runtime. Why not put the master password directly in DB_PASSWORD?",
+      "options": {
+        "A": "Lambda environment variables cannot exceed 4 KB total size",
+        "B": "PostgreSQL rejects passwords delivered via environment variables over TCP",
+        "C": "Secrets Manager supports rotation and audit; plaintext env vars leak in console and logs",
+        "D": "Aurora ManageMasterUserPassword only works with RDS Data API, not TCP clients"
+      }
+    },
+    {
+      "id": "Q5",
+      "question": "Night 13 queue saa-study-gsa-iceland-completion has VisibilityTimeout=60. The Lambda timeout is 30 seconds. Is this pairing valid for the event source mapping?",
+      "options": {
+        "A": "No — visibility timeout must exactly equal Lambda timeout",
+        "B": "No — visibility timeout must be shorter so DLQ redrive triggers faster",
+        "C": "Yes — visibility timeout should be at least Lambda timeout so the message stays hidden until processing finishes or fails",
+        "D": "Yes — but only if the queue is FIFO with content-based deduplication enabled"
+      }
+    },
+    {
+      "id": "Q6",
+      "question": "An SQS message body contains the full ECS Task State Change JSON from Night 13 EventBridge. The handler has no resort_id field. What should the uploader do in this study lab?",
+      "options": {
+        "A": "Reject the message and send it directly to the DLQ without retry",
+        "B": "Parse taskArn and call ECS DescribeTasks to read container environment overrides",
+        "C": "Treat Iceland completion as the default IS-001 resort row UPSERT for the lab",
+        "D": "Forward the raw JSON to Aurora using RDS Data API batch_execute_statement"
+      }
+    },
+    {
+      "id": "Q7",
+      "question": "Lambda in private subnets must reach Secrets Manager and CloudWatch Logs. Night 9 VPC uses a NAT Gateway in the public subnet. What happens if you remove the NAT route from the private subnet route table?",
+      "options": {
+        "A": "Outbound calls to AWS APIs fail unless VPC interface endpoints replace the NAT path",
+        "B": "Lambda still reaches Secrets Manager because Aurora security groups allow outbound",
+        "C": "Database TCP 5432 continues working but SQS polling stops permanently",
+        "D": "Lambda automatically uses the RDS Data API instead of NAT for all AWS calls"
+      }
+    },
+    {
+      "id": "Q8",
+      "question": "GSA wiki page views use DynamoDB UpdateItem ADD on a partition key. resort_stats monthly aggregates need SQL JOIN reports. Where should each workload live?",
+      "options": {
+        "A": "DynamoDB for simple counters; Aurora for relational stats and JOIN queries",
+        "B": "Both in Aurora — use JSON columns in PostgreSQL for page views",
+        "C": "Both in DynamoDB — store resort_stats as a single-item document per resort",
+        "D": "S3 CSV files for both — Athena replaces DynamoDB and Aurora for all metrics"
+      }
+    },
+    {
+      "id": "Q9",
+      "question": "You add fifty concurrent Lambda pollers on the same completion queue without RDS Proxy. Aurora reports too many connections. What is the exam-best mitigation?",
+      "options": {
+        "A": "Increase Lambda memory to 10 GB so each execution reuses one connection",
+        "B": "Open the Aurora security group to 0.0.0.0/0 so connections distribute globally",
+        "C": "Switch INSERT statements to the reader endpoint to split connection load",
+        "D": "Place RDS Proxy between Lambda and Aurora to pool and multiplex connections"
+      }
+    },
+    {
+      "id": "Q10",
+      "question": "night-17-lab bundles pg8000 in the deployment package instead of using RDS Data API from Lambda. Why choose VPC TCP for this lab path?",
+      "options": {
+        "A": "RDS Data API cannot run INSERT statements against Aurora PostgreSQL",
+        "B": "Exam scenarios often test Lambda-in-VPC + SG-referenced DB access on port 5432",
+        "C": "Data API requires public accessibility on the Aurora instance",
+        "D": "pg8000 is the only driver AWS Lambda runtime includes by default"
+      }
+    },
+    {
+      "id": "Q11",
+      "question": "After -TestInvoke succeeds, -VerifyRow uses aws rds-data execute-statement from your laptop. Why can the laptop query resort_stats while the uploader uses pg8000 over TCP?",
+      "options": {
+        "A": "VerifyRow connects through the Lambda ENI using SSM port forwarding",
+        "B": "RDS Data API uses HTTPS with cluster ARN + Secrets Manager — no VPC path from laptop",
+        "C": "The writer endpoint is public during VerifyRow only",
+        "D": "Aurora automatically mirrors Data API results to a public read replica"
+      }
+    },
+    {
+      "id": "Q12",
+      "question": "night-17-lab-lambda-stats-teardown.ps1 deletes the function and IAM role but leaves Aurora and SQS. A teammate runs Night 16 teardown next. What breaks for Night 13 consumers?",
+      "options": {
+        "A": "Nothing — SQS and EventBridge rules are independent of Aurora",
+        "B": "Night 13 queue is deleted automatically when Aurora cluster is removed",
+        "C": "EventBridge stops publishing because Aurora was the event source",
+        "D": "DLQ messages replay into the deleted Lambda and block the queue forever"
+      }
+    },
+    {
+      "id": "Q13",
+      "question": "The handler uses ON CONFLICT (resort_id) DO UPDATE to increment monthly_runs. Which property makes this safe when SQS delivers duplicate completion messages?",
+      "options": {
+        "A": "SQS FIFO guarantees exactly-once delivery without deduplication IDs",
+        "B": "Lambda event source mapping deletes messages before invoking the function",
+        "C": "Aurora reader endpoint deduplicates concurrent INSERT statements automatically",
+        "D": "Standard SQS is at-least-once — idempotent UPSERT prevents double-count corruption"
+      }
+    },
+    {
+      "id": "Q14",
+      "question": "You need sub-second wiki view counter updates globally with no JOINs. Iceland batch completion runs once per month. Which storage and trigger pairing fits?",
+      "options": {
+        "A": "Aurora for wiki views; SQS triggers monthly Lambda for counters",
+        "B": "DynamoDB for wiki views; SQS → Lambda → Aurora for batch resort_stats",
+        "C": "ElastiCache for both — flush to S3 nightly for BI",
+        "D": "RDS Multi-AZ provisioned instance for wiki views; EventBridge for DynamoDB"
+      }
+    },
+    {
+      "id": "Q15",
+      "question": "Create-function fails with EC2 502 when attaching VpcConfig immediately after creating the IAM role. What is the first fix to try?",
+      "options": {
+        "A": "Enable public accessibility on the Aurora cluster",
+        "B": "Change the Lambda runtime from python3.12 to python3.9 for VPC compatibility",
+        "C": "Wait for IAM role propagation, then retry create-function or update-function-configuration",
+        "D": "Remove Secrets Manager permissions — VPC Lambdas cannot call Secrets Manager"
+      }
+    }
+  ]
+}
