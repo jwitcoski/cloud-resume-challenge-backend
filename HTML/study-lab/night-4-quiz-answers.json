@@ -1,0 +1,57 @@
+{
+  "night": 4,
+  "title": "Lab 1C — WAF on CloudFront",
+  "answerDistribution": { "A": 2, "B": 3, "C": 2, "D": 3 },
+  "answers": [
+    {
+      "id": "Q1",
+      "correct": "B",
+      "explanation": "CloudFront WAF ACLs must be created in us-east-1 — Night 4 missed Q2 topic."
+    },
+    {
+      "id": "Q2",
+      "correct": "B",
+      "explanation": "ALB/API Gateway Regional use REGIONAL scope in their Region — Night 4 missed Q4."
+    },
+    {
+      "id": "Q3",
+      "correct": "B",
+      "explanation": "WAF sampled requests identify blocking rule — tune count/exclusion on false positives."
+    },
+    {
+      "id": "Q4",
+      "correct": "B",
+      "explanation": "Shield Standard free on CloudFront — Night 4 Q10; WAF adds L7 rules."
+    },
+    {
+      "id": "Q5",
+      "correct": "B",
+      "explanation": "Network Firewall for VPC east-west — Night 4 missed Q5 (not WAF/CloudFront)."
+    },
+    {
+      "id": "Q6",
+      "correct": "B",
+      "explanation": "WAF at CloudFront edge inspects HTTP before wiki-api Lambda — Night 4 lab validation."
+    },
+    {
+      "id": "Q7",
+      "correct": "B",
+      "explanation": "Shield Standard remains after WAF teardown — L7 SQLi blocking removed with ACL."
+    },
+    {
+      "id": "Q8",
+      "correct": "A",
+      "explanation": "Firewall Manager centralizes WAF policies org-wide — Night 4 missed Q8."
+    },
+    {
+      "id": "Q9",
+      "correct": "A",
+      "explanation": "Rate-based WAF rules limit requests per IP — common public API pattern."
+    },
+    {
+      "id": "Q10",
+      "correct": "B",
+      "explanation": "ALB uses REGIONAL WAF — Night 11 Q19 callback from Night 4 scope trap."
+    }
+  ]
+}

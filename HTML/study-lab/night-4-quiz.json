@@ -1,0 +1,110 @@
+{
+  "night": 4,
+  "title": "Lab 1C — WAF on CloudFront",
+  "topic": "WAF Web ACL scope CLOUDFRONT vs REGIONAL, managed rule groups, Shield Standard, Firewall Manager, SQLi blocking on api/wiki*, cost teardown",
+  "format": "10 timed scenario questions (~16 min, ~96 sec each). Reinforces Night 4 saa-study-globalskiatlas-waf lab on globalskiatlas.com. Answer without night-4-quiz-answers.json first.",
+  "answerKey": "night-4-quiz-answers.json",
+  "answerDistribution": "A×2 B×3 C×2 D×3 — options shuffled so correct letter varies",
+  "questions": [
+    {
+      "id": "Q1",
+      "question": "Night 4 lab attached Web ACL saa-study-globalskiatlas-waf to CloudFront distribution E3BDMTLYF8G4VB for globalskiatlas.com. In which Region must you create a CLOUDFRONT-scoped Web ACL?",
+      "options": {
+        "A": "Any Region where the S3 bucket resides",
+        "B": "us-east-1 (N. Virginia) only for WAF resources used with CloudFront",
+        "C": "eu-west-1 to match the closest viewers in Europe",
+        "D": "The same Region as the API Gateway REST API backing /api/wiki*"
+      }
+    },
+    {
+      "id": "Q2",
+      "question": "You later add an Application Load Balancer in us-east-1 for a new API. Which WAF scope applies to that ALB?",
+      "options": {
+        "A": "CLOUDFRONT — all WAF ACLs are global regardless of resource",
+        "B": "REGIONAL — created in the same Region as the ALB or API Gateway Regional resource",
+        "C": "GLOBAL — Shield Advanced scope replaces WAF for ALBs",
+        "D": "EDGE — only CloudFront Functions can attach WAF to ALBs"
+      }
+    },
+    {
+      "id": "Q3",
+      "question": "Night 4 managed rules included AWSManagedRulesCommonRuleSet, KnownBadInputs, and SQLiRuleSet. A legitimate wiki POST to /api/wiki/pages returns 403 after attach. What is the first troubleshooting step?",
+      "options": {
+        "A": "Delete the Cognito user pool so all requests become anonymous GET",
+        "B": "Inspect WAF sampled requests / CloudWatch metrics to see which rule blocked the request",
+        "C": "Disable TLS on CloudFront so WAF can inspect plaintext bodies",
+        "D": "Move DynamoDB tables to Aurora so SQLi rules no longer apply"
+      }
+    },
+    {
+      "id": "Q4",
+      "question": "Which AWS service provides free automatic protection against common network and transport layer DDoS on CloudFront?",
+      "options": {
+        "A": "AWS WAF SQLi managed rule group only",
+        "B": "AWS Shield Standard (included at no extra charge for CloudFront and Route 53)",
+        "C": "AWS Network Firewall on the VPC subnet",
+        "D": "Amazon GuardDuty S3 Protection"
+      }
+    },
+    {
+      "id": "Q5",
+      "question": "You need stateful inspection and filtering of east-west traffic between subnets inside a VPC (not HTTP at CloudFront). Which service fits?",
+      "options": {
+        "A": "AWS WAF Web ACL with CLOUDFRONT scope",
+        "B": "AWS Network Firewall deployed in VPC subnets",
+        "C": "Security group allowing 0.0.0.0/0 on all ports",
+        "D": "CloudFront Function redirect-to-canonical"
+      }
+    },
+    {
+      "id": "Q6",
+      "question": "Night 4 lab: GET wiki pages and POST with valid Cognito JWT should pass; a curl probe with SQL injection in the body should be blocked. Which layer enforces the SQLi block?",
+      "options": {
+        "A": "S3 bucket policy Deny on suspicious object keys",
+        "B": "AWS WAF inspecting HTTP request at CloudFront before origin forward",
+        "C": "DynamoDB condition expression on WikiPages partition key",
+        "D": "Cognito PreventUserExistenceErrors setting"
+      }
+    },
+    {
+      "id": "Q7",
+      "question": "After the lab, the Web ACL was detached and deleted to avoid ongoing cost (~$96/yr). What still protects globalskiatlas.com at L3/L4?",
+      "options": {
+        "A": "Nothing — CloudFront is fully public without any AWS DDoS mitigation",
+        "B": "AWS Shield Standard on CloudFront distribution automatically",
+        "C": "WAF continues blocking SQLi even after Web ACL deletion via cache",
+        "D": "API Gateway resource policy replaces all edge security"
+      }
+    },
+    {
+      "id": "Q8",
+      "question": "A company with 50 AWS accounts wants one central team to deploy the same WAF managed rule groups to all CloudFront distributions. Which service?",
+      "options": {
+        "A": "AWS Firewall Manager with WAF policies",
+        "B": "IAM Access Analyzer external access findings",
+        "C": "AWS Config aggregator for CloudFront distributions",
+        "D": "Replace WAF with security group rules on the S3 bucket"
+      }
+    },
+    {
+      "id": "Q9",
+      "question": "Rate-based rules in AWS WAF are commonly used to mitigate which threat on a public wiki API?",
+      "options": {
+        "A": "Brute-force or abusive HTTP request floods from a single IP",
+        "B": "Cross-Region Aurora failover during AZ outage",
+        "C": "KMS key rotation scheduled every 365 days",
+        "D": "S3 Intelligent-Tiering cost optimization"
+      }
+    },
+    {
+      "id": "Q10",
+      "question": "Night 4 vs Night 8 callback: WAF on an internal ALB in a VPC serving HTTPS from clients in the same Region uses which scope and attachment point?",
+      "options": {
+        "A": "CLOUDFRONT scope attached in us-east-1 to the ALB listener ARN",
+        "B": "REGIONAL scope Web ACL associated directly with the ALB or API Gateway Regional",
+        "C": "GLOBAL scope on Route 53 hosted zone only — ALBs cannot use WAF",
+        "D": "EDGE scope via Lambda@Edge on S3 origin only"
+      }
+    }
+  ]
+}

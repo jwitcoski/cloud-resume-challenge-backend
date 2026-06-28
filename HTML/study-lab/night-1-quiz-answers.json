@@ -1,0 +1,57 @@
+{
+  "night": 1,
+  "title": "Baseline + Domain 1 intro — IAM audit",
+  "answerDistribution": { "A": 3, "B": 2, "C": 3, "D": 2 },
+  "answers": [
+    {
+      "id": "Q1",
+      "correct": "B",
+      "explanation": "SCP explicit Deny wins over IAM Allow in member accounts — Night 1 missed topic (Q1 in session notes)."
+    },
+    {
+      "id": "Q2",
+      "correct": "A",
+      "explanation": "GitHub Actions → IAM user/role with scoped policy (github-actions-globalskiatlas v3/v4 audit)."
+    },
+    {
+      "id": "Q3",
+      "correct": "A",
+      "explanation": "ECR pull uses execution role; task role is for app runtime (S3 output). CannotPullContainerError = execution role gap."
+    },
+    {
+      "id": "Q4",
+      "correct": "B",
+      "explanation": "Identity Center for workforce SSO to accounts/SaaS — not RAM (Night 1 Q4 miss: RAM vs Identity Center)."
+    },
+    {
+      "id": "Q5",
+      "correct": "B",
+      "explanation": "NACL evaluated first (stateless); deny blocks before SG — Night 1 SG vs NACL flashcard."
+    },
+    {
+      "id": "Q6",
+      "correct": "B",
+      "explanation": "simulate-principal-policy tests Allow/Deny before deploy — Night 1 CLI lab."
+    },
+    {
+      "id": "Q7",
+      "correct": "A",
+      "explanation": "Task role = app S3 writes; execution role = ECR + logs pull at task startup."
+    },
+    {
+      "id": "Q8",
+      "correct": "B",
+      "explanation": "RAM shares network resources (TGW, subnets) — distinct from Identity Center SSO."
+    },
+    {
+      "id": "Q9",
+      "correct": "C",
+      "explanation": "Caller SG needs outbound only — preview of Night 17 lambda-stats-sg pattern."
+    },
+    {
+      "id": "Q10",
+      "correct": "A",
+      "explanation": "Classic IAM split — identity policy on principal, bucket policy on resource."
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "night": 2,
+  "title": "Lab 1A — KMS + S3 encryption",
+  "answerDistribution": { "A": 2, "B": 3, "C": 3, "D": 2 },
+  "answers": [
+    {
+      "id": "Q1",
+      "correct": "B",
+      "explanation": "SSE-KMS reads need s3:GetObject AND kms:Decrypt on the CMK — Night 2 simulate implicitDeny pattern."
+    },
+    {
+      "id": "Q2",
+      "correct": "A",
+      "explanation": "Deploy user needs kms:Decrypt + s3:GetObject scoped to CMK and prefix — Night 2 lab finding."
+    },
+    {
+      "id": "Q3",
+      "correct": "A",
+      "explanation": "Same bucket can mix SSE-S3 default and SSE-KMS per-object — witcoskitech.com lab layout."
+    },
+    {
+      "id": "Q4",
+      "correct": "B",
+      "explanation": "Bucket Key lowers KMS API call volume — Night 2 missed Q7 topic."
+    },
+    {
+      "id": "Q5",
+      "correct": "B",
+      "explanation": "Cross-account decrypt needs key policy trust + consumer IAM — Night 2 missed Q6."
+    },
+    {
+      "id": "Q6",
+      "correct": "A",
+      "explanation": "Account root on key policy lets IAM delegate CMK usage — standard CMK pattern."
+    },
+    {
+      "id": "Q7",
+      "correct": "A",
+      "explanation": "Classic envelope encryption — data key encrypted by CMK, object encrypted by data key."
+    },
+    {
+      "id": "Q8",
+      "correct": "A",
+      "explanation": "Deny unencrypted or wrong-CMK uploads via PutObject condition keys — Night 2 missed Q9."
+    },
+    {
+      "id": "Q9",
+      "correct": "B",
+      "explanation": "KMS = keys; Secrets Manager = secret values — Night 2/3 exam trap."
+    },
+    {
+      "id": "Q10",
+      "correct": "A",
+      "explanation": "Secrets Manager secrets encrypted with CMK require kms:Decrypt on GetSecretValue path — Night 3 prep."
+    }
+  ]
+}

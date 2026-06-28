@@ -1,0 +1,57 @@
+{
+  "night": 3,
+  "title": "Lab 1B — Secrets Manager + Cognito config",
+  "answerDistribution": { "A": 3, "B": 2, "C": 2, "D": 3 },
+  "answers": [
+    {
+      "id": "Q1",
+      "correct": "B",
+      "explanation": "Avoid plaintext secrets in env vars — Night 3 lab pattern mirrors Night 17 DB_SECRET_ARN."
+    },
+    {
+      "id": "Q2",
+      "correct": "A",
+      "explanation": "GetSecretValue needs secret IAM + KMS key policy allowing role decrypt on the CMK."
+    },
+    {
+      "id": "Q3",
+      "correct": "B",
+      "explanation": "Secrets Manager for rotation/versioning; Parameter Store for config with optional SecureString."
+    },
+    {
+      "id": "Q4",
+      "correct": "B",
+      "explanation": "Night 3 contrast path /saa-study/gsa-wiki-cognito in SSM vs Secrets Manager secret."
+    },
+    {
+      "id": "Q5",
+      "correct": "B",
+      "explanation": "Env holds secret ARN only — fetch value at runtime via GetSecretValue."
+    },
+    {
+      "id": "Q6",
+      "correct": "B",
+      "explanation": "Night 3 missed Q6 — KMS manages keys, not application secret payloads."
+    },
+    {
+      "id": "Q7",
+      "correct": "B",
+      "explanation": "wiki-api validates JWT using Cognito config loaded from secret — week1-security-architecture.md."
+    },
+    {
+      "id": "Q8",
+      "correct": "B",
+      "explanation": "simulate confirms IAM Allow — still verify KMS key policy for decrypt."
+    },
+    {
+      "id": "Q9",
+      "correct": "A",
+      "explanation": "Session Manager replaces bastion SSH — Night 3 / checklist SSM note (Q9)."
+    },
+    {
+      "id": "Q10",
+      "correct": "B",
+      "explanation": "CMK deletion window makes encrypted secrets unreadable — KMS dependency chain."
+    }
+  ]
+}
