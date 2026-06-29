@@ -688,6 +688,18 @@ export const studyNights: StudyNight[] = [
     reviewedServiceIds: ["backup", "aurora", "route53", "dynamodb"],
     completedCheckpointIds: ["d2-t2-cp-1", "d3-t3-cp-1"],
   },
+  {
+    night: 20,
+    week: 3,
+    title: "Migration & Transfer — DMS + S3 staging for database moves",
+    completedDate: "2026-06-29",
+    lab: "saa-study-gsa-migration-298043721974 + DynamoDB export night-20/dynamodb/wiki-views/ — night-20-lab-migration-setup.ps1 -ExportTable -VerifyExport; export 01782700015323 COMPLETED; 18 S3 objects",
+    practiceScore: "9/15",
+    notes:
+      "Quiz (night-20-quiz.json): 9/15 — missed Q2 (full load + CDC not CDC-only after initial copy), Q4 (SFTP → Transfer Family not DataSync), Q10 (DynamoDB export to S3 for Athena staging not DMS→ElastiCache), Q13 (teardown deletes migration bucket only — not Night 19 vault), Q14 (Aurora SG allows DMS replication instance SG on 5432 — Night 16 pattern), Q15 (native export for bulk S3 extract not live replication). Solid on SCT+DMS heterogeneous (Q1), Snowball offline bulk (Q3), PITR export prerequisite (Q5), DataSync vs DMS (Q6), homogeneous Postgres→Aurora (Q7), backup seed + DMS CDC delta (Q8), DMS Serverless (Q9), migration bucket role (Q11), MGN for VMs (Q12). Created night-20-dms-s3-migration.md + lab/quiz; plain-English CDC + SCT sections added post-quiz. Night 21 — VPN + Direct Connect + TGW.",
+    reviewedServiceIds: ["dms", "s3", "datasync", "snow", "dynamodb"],
+    completedCheckpointIds: ["d2-t2-cp-1", "d3-t3-cp-1"],
+  },
 ];
 
 /** Merge all completed nights into default checklist state for first-time visitors. */

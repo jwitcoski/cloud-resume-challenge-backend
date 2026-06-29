@@ -1,0 +1,160 @@
+{
+  "night": 20,
+  "title": "Migration & Transfer — DMS + S3 staging for database moves",
+  "topic": "AWS DMS full load + CDC, homogeneous vs heterogeneous (SCT), DMS Serverless, DynamoDB export/import via S3, DataSync vs Snowball vs Transfer Family vs MGN, Night 19 backup + DMS delta cutover",
+  "format": "15 timed scenario questions (~24 min, ~96 sec each). Reinforces night-20-dms-s3-migration.md and night-20-lab-migration-setup scripts. Answer without peeking at night-20-quiz-answers.json first.",
+  "answerKey": "night-20-quiz-answers.json",
+  "answerDistribution": "A×4 B×4 C×4 D×3 — options shuffled so correct letter varies",
+  "questions": [
+    {
+      "id": "Q1",
+      "question": "Legacy on-prem Oracle resort_stats must move to Aurora PostgreSQL with minimal write downtime during cutover. Which AWS pair handles schema conversion and ongoing replication?",
+      "options": {
+        "A": "AWS Schema Conversion Tool (SCT) for DDL + AWS DMS full load and CDC",
+        "B": "AWS DataSync for schema + AWS Backup for CDC",
+        "C": "AWS Snowball Edge for DDL + RDS snapshot export for CDC",
+        "D": "AWS Transfer Family SFTP + DynamoDB import for CDC"
+      }
+    },
+    {
+      "id": "Q2",
+      "question": "After DMS full load completes on Postgres→Aurora, production still writes to the source for six hours before cutover. Which DMS task mode keeps the target current?",
+      "options": {
+        "A": "Full load only — no further replication after initial copy",
+        "B": "CDC only — assumes target already has all historical rows",
+        "C": "S3 export only — DynamoDB JSON staging replaces CDC",
+        "D": "Full load + CDC — transaction log replication after initial copy"
+      }
+    },
+    {
+      "id": "Q3",
+      "question": "A ski-resort NAS holds 600 TB of video. The data center link is 500 Mbps and leadership wants offline transfer. Best primary service?",
+      "options": {
+        "A": "AWS DMS replication instance with full load + CDC",
+        "B": "AWS DataSync agent scheduled hourly",
+        "C": "AWS Snowball Edge or Snowball device shipment",
+        "D": "DynamoDB export to point in time"
+      }
+    },
+    {
+      "id": "Q4",
+      "question": "Partners must upload daily CSV resort files via SFTP into your landing S3 bucket. Managed service?",
+      "options": {
+        "A": "AWS DMS S3 target endpoint with CDC",
+        "B": "AWS DataSync between on-prem NFS and S3",
+        "C": "AWS Application Migration Service (MGN)",
+        "D": "AWS Transfer Family (managed SFTP) integrated with S3"
+      }
+    },
+    {
+      "id": "Q5",
+      "question": "night-20-lab exports saa-study-gsa-wiki-views to s3://saa-study-gsa-migration-298043721974/night-20/dynamodb/wiki-views/. Which prerequisite must be true on the table?",
+      "options": {
+        "A": "Point-in-time recovery (PITR) enabled — Night 18 lab pattern",
+        "B": "DynamoDB global tables with two active Regions",
+        "C": "AWS Backup vault lock in the same account",
+        "D": "StreamViewType NEW_AND_OLD_IMAGES disabled"
+      }
+    },
+    {
+      "id": "Q6",
+      "question": "Compare AWS DataSync and AWS DMS for the Global Ski Atlas migration portfolio. Which statement is correct?",
+      "options": {
+        "A": "DataSync replicates database transaction logs; DMS syncs files only",
+        "B": "DMS migrates databases (full load/CDC); DataSync moves files/objects online",
+        "C": "Both require a Snowball device for initial seed",
+        "D": "DMS replaces S3; DataSync replaces Aurora"
+      }
+    },
+    {
+      "id": "Q7",
+      "question": "Same-engine PostgreSQL on RDS must move to Aurora PostgreSQL in the Night 9 VPC. No engine change. Migration type and tool?",
+      "options": {
+        "A": "Heterogeneous — requires SCT and Glue ETL only",
+        "B": "Homogeneous — DMS full load + CDC without SCT schema conversion",
+        "C": "Heterogeneous — Snowmobile required for WAL files",
+        "D": "Homogeneous — Transfer Family SFTP only"
+      }
+    },
+    {
+      "id": "Q8",
+      "question": "Ops restored an Aurora cluster from a Night 19 AWS Backup recovery point in a staging VPC. Production source still accepts writes until cutover. What closes the gap?",
+      "options": {
+        "A": "Enable DynamoDB PITR on the restored cluster",
+        "B": "CloudTrail data events replay into Aurora",
+        "C": "Route 53 latency routing alone syncs rows",
+        "D": "DMS CDC from live production source to the restored target"
+      }
+    },
+    {
+      "id": "Q9",
+      "question": "An exam question mentions variable-duration database migration with no fixed replication instance size. Which DMS option fits?",
+      "options": {
+        "A": "DMS Serverless — capacity scales with migration workload",
+        "B": "DMS on Snowcone only",
+        "C": "RDS Multi-AZ synchronous standby",
+        "D": "DynamoDB on-demand billing"
+      }
+    },
+    {
+      "id": "Q10",
+      "question": "You need a portable copy of wiki view counters in S3 for Athena SQL (Night 23 preview), not a new live DynamoDB table. Best export path tonight?",
+      "options": {
+        "A": "PITR restore to saa-study-gsa-wiki-views-restored",
+        "B": "DynamoDB export to point in time → S3 (night-20-lab pattern)",
+        "C": "AWS Backup recovery point mount as filesystem",
+        "D": "DMS homogeneous replication to ElastiCache"
+      }
+    },
+    {
+      "id": "Q11",
+      "question": "night-20-lab creates saa-study-gsa-migration-298043721974 tagged saa-study-migration=night-20. What is this bucket's primary role?",
+      "options": {
+        "A": "Route 53 health check target for DR failover routing",
+        "B": "Encrypted S3 staging for DynamoDB export files and migration artifacts",
+        "C": "CloudTrail log archive that replaces AWS Backup vault storage",
+        "D": "DMS replication instance root EBS volume snapshot store"
+      }
+    },
+    {
+      "id": "Q12",
+      "question": "200 VMware VMs in the resort data center must rehost to EC2 with minimal OS reinstall. Primary AWS service?",
+      "options": {
+        "A": "AWS DMS with heterogeneous endpoints",
+        "B": "DynamoDB import from S3",
+        "C": "AWS Backup cross-Region copy",
+        "D": "AWS Application Migration Service (MGN)"
+      }
+    },
+    {
+      "id": "Q13",
+      "question": "night-20-lab-migration-teardown.ps1 runs after the quiz. What does teardown remove?",
+      "options": {
+        "A": "Migration S3 bucket contents and bucket only — Night 18 wiki table remains",
+        "B": "saa-study-gsa-wiki-views and all stream Lambda mappings",
+        "C": "Night 16 Aurora cluster because export referenced resort_stats",
+        "D": "Night 19 backup vault and all recovery points"
+      }
+    },
+    {
+      "id": "Q14",
+      "question": "DMS replication instance sits in a private subnet and must reach saa-study-gsa-aurora on 5432. Which network pattern matches the exam?",
+      "options": {
+        "A": "Aurora public accessibility = Yes; 0.0.0.0/0 on database SG",
+        "B": "Security group on Aurora allows TCP 5432 from the DMS replication instance security group",
+        "C": "Internet Gateway attached to the DB subnet route table",
+        "D": "NAT Gateway on the Aurora cluster ENI"
+      }
+    },
+    {
+      "id": "Q15",
+      "question": "Compare DynamoDB export to S3 (Tonight) with DMS targeting DynamoDB. When is native export the better answer?",
+      "options": {
+        "A": "Continuous live replication with sub-second lag to a second table",
+        "B": "Heterogeneous Oracle → DynamoDB with SCT",
+        "C": "Bulk extract to S3 files for analytics or offline staging — no replication instance",
+        "D": "On-prem MySQL binlog CDC into DynamoDB"
+      }
+    }
+  ]
+}

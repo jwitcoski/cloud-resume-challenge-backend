@@ -1,0 +1,82 @@
+{
+  "night": 20,
+  "title": "Migration & Transfer — DMS + S3 staging for database moves",
+  "answerDistribution": { "A": 4, "B": 4, "C": 4, "D": 3 },
+  "answers": [
+    {
+      "id": "Q1",
+      "correct": "A",
+      "explanation": "Heterogeneous Oracle→Aurora needs SCT for schema + DMS for data (full load + CDC) — Night 20 block 1."
+    },
+    {
+      "id": "Q2",
+      "correct": "D",
+      "explanation": "Full load + CDC keeps target synced via transaction logs until cutover — classic DMS migration window."
+    },
+    {
+      "id": "Q3",
+      "correct": "C",
+      "explanation": "600 TB over slow link → offline Snowball/Snowball Edge; DataSync online would take too long."
+    },
+    {
+      "id": "Q4",
+      "correct": "D",
+      "explanation": "Transfer Family = managed SFTP/FTP/FTPS into S3 — not DMS or DataSync."
+    },
+    {
+      "id": "Q5",
+      "correct": "A",
+      "explanation": "DynamoDB export to S3 requires PITR enabled — Night 18 lab prerequisite for Night 20 export."
+    },
+    {
+      "id": "Q6",
+      "correct": "B",
+      "explanation": "DMS = databases; DataSync = online file/object transfer — decision matrix in night-20-dms-s3-migration.md."
+    },
+    {
+      "id": "Q7",
+      "correct": "B",
+      "explanation": "Postgres→Aurora Postgres is homogeneous — no SCT needed; DMS homogeneous full load + CDC."
+    },
+    {
+      "id": "Q8",
+      "correct": "D",
+      "explanation": "Backup seeds target; DMS CDC catches production delta until cutover — Night 19 + Night 20 tie-in."
+    },
+    {
+      "id": "Q9",
+      "correct": "A",
+      "explanation": "DMS Serverless for variable/unknown migration duration — exam cue vs fixed replication instance."
+    },
+    {
+      "id": "Q10",
+      "correct": "B",
+      "explanation": "Export to S3 for analytics staging; PITR restore creates another live table, not S3 files."
+    },
+    {
+      "id": "Q11",
+      "correct": "B",
+      "explanation": "Migration bucket stages DynamoDB export JSON for analytics or downstream import — night-20-lab pattern."
+    },
+    {
+      "id": "Q12",
+      "correct": "D",
+      "explanation": "MGN lift-and-shift for servers/VMs; DMS is database-only."
+    },
+    {
+      "id": "Q13",
+      "correct": "A",
+      "explanation": "Teardown deletes migration S3 bucket only — Night 18 table and Night 19 backup unchanged."
+    },
+    {
+      "id": "Q14",
+      "correct": "B",
+      "explanation": "DB SG references DMS replication instance SG on 5432 — same pattern as Night 16 Lambda→Aurora."
+    },
+    {
+      "id": "Q15",
+      "correct": "C",
+      "explanation": "Native export for bulk S3 extract without replication instance; DMS for live DB replication paths."
+    }
+  ]
+}
