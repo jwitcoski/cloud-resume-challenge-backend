@@ -2,6 +2,7 @@ import Link from "next/link";
 import ExamChecklist from "./ExamChecklist";
 import { countByReadiness, examServices } from "@/data/saa-c03-exam-checklist";
 import { listQuizSummaries } from "@/data/study-quizzes";
+import { listGuideSummaries } from "@/data/study-guides";
 
 export const metadata = {
   title: "AWS Solutions Architect Study Plan | Jonathan Witcoski",
@@ -125,6 +126,7 @@ function LevelBadge({ level }: { level: ServiceRow["level"] }) {
 
 export default function AwsSolutionsArchitectStudyPage() {
   const quizzes = listQuizSummaries();
+  const guides = listGuideSummaries();
   const quizNightRange =
     quizzes.length > 0
       ? quizzes.length === 1
@@ -183,24 +185,46 @@ export default function AwsSolutionsArchitectStudyPage() {
             </div>
           </div>
 
-          {quizzes.length > 0 && (
-            <div className="rounded-lg border border-blue-200 bg-blue-50/50 p-4 mb-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-              <div>
-                <h2 className="text-lg font-semibold text-[#444] mb-1">
-                  Practice quizzes
-                </h2>
-                <p className="text-sm text-[#555] leading-relaxed">
-                  {quizNightRange} — timed scenario questions from{" "}
-                  <code className="bg-white/80 px-1 rounded text-xs">study-lab/</code>
-                  , with explanations after submit.
-                </p>
-              </div>
-              <Link
-                href="/aws-solutions-architect-study/quiz/"
-                className="inline-flex shrink-0 items-center justify-center rounded-md bg-[#007bff] px-4 py-2 text-sm font-medium text-white hover:bg-[#0069d9] transition-colors"
-              >
-                Open quizzes →
-              </Link>
+          {(quizzes.length > 0 || guides.length > 0) && (
+            <div className="grid sm:grid-cols-2 gap-4 mb-10">
+              {guides.length > 0 && (
+                <div className="rounded-lg border border-emerald-200 bg-emerald-50/50 p-4 flex flex-col gap-3">
+                  <div>
+                    <h2 className="text-lg font-semibold text-[#444] mb-1">
+                      Study guides
+                    </h2>
+                    <p className="text-sm text-[#555] leading-relaxed">
+                      {guides.length} nightly guides — read before the quiz (
+                      <code className="bg-white/80 px-1 rounded text-xs">study-lab/*.md</code>
+                      ).
+                    </p>
+                  </div>
+                  <Link
+                    href="/aws-solutions-architect-study/guide/"
+                    className="inline-flex shrink-0 items-center justify-center rounded-md bg-emerald-700 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-800 transition-colors"
+                  >
+                    Open guides →
+                  </Link>
+                </div>
+              )}
+              {quizzes.length > 0 && (
+                <div className="rounded-lg border border-blue-200 bg-blue-50/50 p-4 flex flex-col gap-3">
+                  <div>
+                    <h2 className="text-lg font-semibold text-[#444] mb-1">
+                      Practice quizzes
+                    </h2>
+                    <p className="text-sm text-[#555] leading-relaxed">
+                      {quizNightRange} — timed scenario questions with explanations after submit.
+                    </p>
+                  </div>
+                  <Link
+                    href="/aws-solutions-architect-study/quiz/"
+                    className="inline-flex shrink-0 items-center justify-center rounded-md bg-[#007bff] px-4 py-2 text-sm font-medium text-white hover:bg-[#0069d9] transition-colors"
+                  >
+                    Open quizzes →
+                  </Link>
+                </div>
+              )}
             </div>
           )}
 

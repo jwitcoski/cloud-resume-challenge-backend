@@ -7,9 +7,11 @@ import type { QuizSummary } from "@/data/study-quizzes-types";
 
 type QuizIndexClientProps = {
   quizzes: QuizSummary[];
+  guideNights?: number[];
 };
 
-export default function QuizIndexClient({ quizzes }: QuizIndexClientProps) {
+export default function QuizIndexClient({ quizzes, guideNights = [] }: QuizIndexClientProps) {
+  const guideSet = new Set(guideNights);
   const searchParams = useSearchParams();
   const router = useRouter();
   const nightParam = searchParams.get("night");
@@ -43,20 +45,29 @@ export default function QuizIndexClient({ quizzes }: QuizIndexClientProps) {
     <ul className="space-y-3">
       {quizzes.map((q) => (
         <li key={q.night}>
-          <Link
-            href={`/aws-solutions-architect-study/quiz/${q.night}/`}
-            className="block rounded-lg border border-[#ddd] p-4 hover:border-blue-400 hover:bg-blue-50/30 transition-colors"
-          >
-            <div className="flex flex-wrap items-baseline justify-between gap-2">
-              <h2 className="font-semibold text-[#444]">
-                Night {q.night}: {q.title}
-              </h2>
-              <span className="text-sm text-[#888] whitespace-nowrap">
-                {q.questionCount} questions · ~{q.suggestedMinutes} min
-              </span>
-            </div>
-            {q.topic && <p className="text-sm text-[#666] mt-1">{q.topic}</p>}
-          </Link>
+          <div className="rounded-lg border border-[#ddd] p-4 hover:border-blue-400 hover:bg-blue-50/30 transition-colors">
+            <Link href={`/aws-solutions-architect-study/quiz/${q.night}/`}>
+              <div className="flex flex-wrap items-baseline justify-between gap-2">
+                <h2 className="font-semibold text-[#444]">
+                  Night {q.night}: {q.title}
+                </h2>
+                <span className="text-sm text-[#888] whitespace-nowrap">
+                  {q.questionCount} questions · ~{q.suggestedMinutes} min
+                </span>
+              </div>
+              {q.topic && <p className="text-sm text-[#666] mt-1">{q.topic}</p>}
+            </Link>
+            {guideSet.has(q.night) && (
+              <p className="text-sm mt-2">
+                <Link
+                  href={`/aws-solutions-architect-study/guide/${q.night}/`}
+                  className="text-emerald-700 hover:underline"
+                >
+                  Read study guide first →
+                </Link>
+              </p>
+            )}
+          </div>
         </li>
       ))}
     </ul>
