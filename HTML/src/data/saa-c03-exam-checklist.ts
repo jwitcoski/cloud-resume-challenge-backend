@@ -712,6 +712,18 @@ export const studyNights: StudyNight[] = [
     reviewedServiceIds: ["site-to-site-vpn", "direct-connect", "transit-gateway", "privatelink", "vpc", "client-vpn"],
     completedCheckpointIds: ["d2-t2-cp-1", "d3-t3-cp-1"],
   },
+  {
+    night: 22,
+    week: 3,
+    title: "Week 3 review — databases, DR, migration, hybrid",
+    completedDate: "2026-06-29",
+    lab: "Paper 3-tier VPC + ALB + Aurora diagram; $0 deploy — night-22-week-3-review.md",
+    practiceScore: "26/30",
+    notes:
+      "Quiz (night-22-quiz.json): 26/30 — missed Q3 (Aurora Multi-AZ for writer failover, not single-AZ snapshots), Q6 (DMS full load + CDC for live cutover, not CDC-only), Q18 (Aurora SG allows Lambda SG on 5432 — Night 16/17 pattern), Q26 (DX private not encrypted by default — VPN over DX if needed). Solid on 3-tier VPC layout (Q1), Lambda ENI cold start (Q2), PITR new table (Q4), DR ladder (Q5/Q20), hybrid VPN/DX/TGW/peering (Q7/Q11/Q15/Q17/Q22), PrivateLink (Q13), export ≠ CDC (Q14), DynamoDB vs Aurora split (Q27), cutover lag (Q28), teardown order (Q30). Created night-22-week-3-review.md + 30-q quiz. Night 23 — ElastiCache Redis lab.",
+    reviewedServiceIds: ["rds", "aurora", "dynamodb", "aws-backup", "dms", "site-to-site-vpn", "direct-connect", "transit-gateway", "privatelink", "vpc", "lambda"],
+    completedCheckpointIds: ["d2-t2-cp-1", "d3-t3-cp-1"],
+  },
 ];
 
 /** Merge all completed nights into default checklist state for first-time visitors. */

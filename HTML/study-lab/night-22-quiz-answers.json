@@ -1,0 +1,157 @@
+{
+  "night": 22,
+  "title": "Week 3 review — databases, DR, migration, hybrid networking",
+  "answerDistribution": { "A": 8, "B": 7, "C": 8, "D": 7 },
+  "answers": [
+    {
+      "id": "Q1",
+      "correct": "A",
+      "explanation": "Classic 3-tier: ALB in public subnets (IGW route); app and Aurora in private — night-22 Block 1 architecture."
+    },
+    {
+      "id": "Q2",
+      "correct": "B",
+      "explanation": "Lambda VPC cold start attaches ENI — first invoke often times out; second succeeds — Night 17 lab note."
+    },
+    {
+      "id": "Q3",
+      "correct": "A",
+      "explanation": "Aurora Multi-AZ = synchronous storage failover; standby is not for analytics reads — Night 15."
+    },
+    {
+      "id": "Q4",
+      "correct": "C",
+      "explanation": "PITR restores to a new table within 35 days — original unchanged — Night 18."
+    },
+    {
+      "id": "Q5",
+      "correct": "B",
+      "explanation": "Backup and restore = lowest cost, hours RTO — DR ladder Night 19."
+    },
+    {
+      "id": "Q6",
+      "correct": "C",
+      "explanation": "DMS cutover pattern = full load then CDC tailing WAL/binlog — Night 20."
+    },
+    {
+      "id": "Q7",
+      "correct": "D",
+      "explanation": "Site-to-Site VPN = IPSec over internet, hours to stand up — Night 21 quick hybrid."
+    },
+    {
+      "id": "Q8",
+      "correct": "D",
+      "explanation": "NEW_AND_OLD_IMAGES for diffing old vs new viewCount — Night 18 stream view types."
+    },
+    {
+      "id": "Q9",
+      "correct": "A",
+      "explanation": "S3 Gateway endpoint on private route table — Night 8/10; no NAT toll for S3."
+    },
+    {
+      "id": "Q10",
+      "correct": "B",
+      "explanation": "RDS Proxy pools Lambda connection storms — Night 15 theory."
+    },
+    {
+      "id": "Q11",
+      "correct": "B",
+      "explanation": "Transit Gateway hub-spoke for multi-VPC + on-prem — Night 21 Scenario 2."
+    },
+    {
+      "id": "Q12",
+      "correct": "C",
+      "explanation": "Tag-based backup selection auto-enrolls new matching resources — Night 19 lab."
+    },
+    {
+      "id": "Q13",
+      "correct": "C",
+      "explanation": "PrivateLink = consumer interface endpoint to provider NLB — no full VPC peering — Night 21."
+    },
+    {
+      "id": "Q14",
+      "correct": "D",
+      "explanation": "DynamoDB export = snapshot to S3; not live CDC — Night 20 lab distinction."
+    },
+    {
+      "id": "Q15",
+      "correct": "B",
+      "explanation": "DX primary + Site-to-Site VPN backup to same TGW/VGW — Night 21 resilient hybrid pair."
+    },
+    {
+      "id": "Q16",
+      "correct": "C",
+      "explanation": "Aurora Global Database for sub-second cross-Region RPO — Night 15/19; not promote replica alone."
+    },
+    {
+      "id": "Q17",
+      "correct": "C",
+      "explanation": "VPC peering is non-transitive — A-B + B-C does not route A-C — Night 21."
+    },
+    {
+      "id": "Q18",
+      "correct": "A",
+      "explanation": "Aurora SG allows lambda-stats-sg on 5432 — Night 16/17 lab pattern."
+    },
+    {
+      "id": "Q19",
+      "correct": "C",
+      "explanation": "Snowball for offline bulk seed when network is too slow — Night 20."
+    },
+    {
+      "id": "Q20",
+      "correct": "D",
+      "explanation": "Warm standby = scaled-down live DR; lower RTO than pilot light — Night 19 DR ladder."
+    },
+    {
+      "id": "Q21",
+      "correct": "A",
+      "explanation": "SCT for heterogeneous Oracle → PostgreSQL before DMS — Night 20."
+    },
+    {
+      "id": "Q22",
+      "correct": "B",
+      "explanation": "Overlapping CIDR blocks break hybrid routing — Night 21 exam trap."
+    },
+    {
+      "id": "Q23",
+      "correct": "D",
+      "explanation": "SQS visibility timeout ≥ Lambda timeout — Night 17 flashcard."
+    },
+    {
+      "id": "Q24",
+      "correct": "D",
+      "explanation": "CloudTrail logs API calls; AWS Backup stores recovery points — Night 19."
+    },
+    {
+      "id": "Q25",
+      "correct": "D",
+      "explanation": "Serverless v2 has minimum ACU — no scale-to-zero — Night 15/16."
+    },
+    {
+      "id": "Q26",
+      "correct": "C",
+      "explanation": "DX is private not encrypted by default — add VPN over DX if required — Night 21."
+    },
+    {
+      "id": "Q27",
+      "correct": "A",
+      "explanation": "DynamoDB counters vs Aurora relational JOINs — GSA split across Week 3."
+    },
+    {
+      "id": "Q28",
+      "correct": "A",
+      "explanation": "Wait for CDC lag ≈ 0 after stopping writes before cutover — Night 20 cutover checklist."
+    },
+    {
+      "id": "Q29",
+      "correct": "A",
+      "explanation": "Client VPN = per-user remote access; Site-to-Site = whole DC — Night 21."
+    },
+    {
+      "id": "Q30",
+      "correct": "B",
+      "explanation": "Teardown Lambda (Night 17) then Aurora (Night 16); keep VPC for Week 4 — night-22 teardown table."
+    }
+  ]
+}
