@@ -1,0 +1,82 @@
+{
+  "night": 21,
+  "title": "Hybrid networking — VPN, Direct Connect, Transit Gateway, PrivateLink",
+  "answerDistribution": { "A": 4, "B": 4, "C": 4, "D": 3 },
+  "answers": [
+    {
+      "id": "Q1",
+      "correct": "A",
+      "explanation": "Site-to-Site VPN = IPSec over internet, hours to stand up — night-21 Block 1 quick hybrid pattern."
+    },
+    {
+      "id": "Q2",
+      "correct": "D",
+      "explanation": "Direct Connect = dedicated private circuit for consistent latency and high bandwidth — not VPN over public internet."
+    },
+    {
+      "id": "Q3",
+      "correct": "B",
+      "explanation": "DX primary + Site-to-Site VPN backup to same TGW/VGW is the classic resilient hybrid pair."
+    },
+    {
+      "id": "Q4",
+      "correct": "A",
+      "explanation": "Transit Gateway hub-spoke scales multi-account VPCs + on-prem without full mesh peering — Scenario 2 in night-21."
+    },
+    {
+      "id": "Q5",
+      "correct": "C",
+      "explanation": "VPC peering is non-transitive — A↔B and B↔C does not route A→C; need A↔C peering or TGW."
+    },
+    {
+      "id": "Q6",
+      "correct": "C",
+      "explanation": "PrivateLink consumer interface endpoint to vendor NLB service — Scenario 3; no VPC peering to SaaS."
+    },
+    {
+      "id": "Q7",
+      "correct": "B",
+      "explanation": "S3 Gateway VPC endpoint in route table — Night 8/10 pattern; PrivateLink is for third-party published services."
+    },
+    {
+      "id": "Q8",
+      "correct": "A",
+      "explanation": "Overlapping CIDR blocks break hybrid routing — redesign on-prem or VPC CIDR before VPN/DX."
+    },
+    {
+      "id": "Q9",
+      "correct": "C",
+      "explanation": "DX Gateway + Transit Gateway distributes on-prem routes to many VPCs in the Region."
+    },
+    {
+      "id": "Q10",
+      "correct": "D",
+      "explanation": "VPN = IPSec by design; DX is private path not encrypted by default — add VPN over DX when exam requires encryption."
+    },
+    {
+      "id": "Q11",
+      "correct": "A",
+      "explanation": "Security groups on Aurora for on-prem CIDR + Lambda SG on 5432 — same Night 16 pattern extended hybrid."
+    },
+    {
+      "id": "Q12",
+      "correct": "B",
+      "explanation": "Two VPCs, full private IP mesh, same Region → VPC peering; PrivateLink is for service exposure not arbitrary IP routing."
+    },
+    {
+      "id": "Q13",
+      "correct": "C",
+      "explanation": "RAM shares Transit Gateway across accounts for spoke attachments — centralized networking account pattern."
+    },
+    {
+      "id": "Q14",
+      "correct": "B",
+      "explanation": "Theory night — three paper diagrams (on-prem hybrid, TGW hub, PrivateLink SaaS) per night-21 Block 2."
+    },
+    {
+      "id": "Q15",
+      "correct": "D",
+      "explanation": "Client VPN = remote users on laptops; Site-to-Site VPN = DC/router to AWS, not per-laptop."
+    }
+  ]
+}

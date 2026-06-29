@@ -317,7 +317,7 @@ Score on the study site: `/aws-solutions-architect-study/quiz?night=20`.
 | DynamoDB PITR + Streams | Night 18 |
 | RTO/RPO + AWS Backup | Night 19 |
 | **DMS + S3 staging / DynamoDB export** | **Tonight** |
-| VPN + Direct Connect + TGW | Night 21 (preview) |
+| VPN + Direct Connect + TGW | Night 21 |
 
 ---
 

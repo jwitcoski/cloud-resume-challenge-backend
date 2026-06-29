@@ -700,6 +700,18 @@ export const studyNights: StudyNight[] = [
     reviewedServiceIds: ["dms", "s3", "datasync", "snow", "dynamodb"],
     completedCheckpointIds: ["d2-t2-cp-1", "d3-t3-cp-1"],
   },
+  {
+    night: 21,
+    week: 3,
+    title: "Hybrid networking — VPN, Direct Connect, Transit Gateway, PrivateLink",
+    completedDate: "2026-06-30",
+    lab: "Theory night — three paper diagrams (on-prem→VPC hybrid, multi-VPC TGW hub, SaaS via PrivateLink); $0 deploy",
+    practiceScore: "14/15",
+    notes:
+      "Quiz (night-21-quiz.json): 14/15 — missed Q6 (third-party vendor API in another account → PrivateLink interface endpoint, not S3 gateway endpoint — gateway = AWS-owned S3/DynamoDB only). Solid on Site-to-Site VPN quick hybrid (Q1), DX for stable bandwidth (Q2), VPN as DX backup (Q3), TGW hub-spoke (Q4), peering non-transitive (Q5), S3 gateway endpoint Night 8/10 (Q7), overlapping CIDR trap (Q8), DXGW→TGW (Q9), DX not encrypted by default (Q10), Aurora SG on-prem+Lambda (Q11), VPC peering two VPCs (Q12), RAM share TGW (Q13), theory diagrams artifact (Q14), Client VPN vs Site-to-Site (Q15). Created night-21-hybrid-networking.md + quiz; neighborhood analogy section added post-read. Night 22 — Week 3 review.",
+    reviewedServiceIds: ["site-to-site-vpn", "direct-connect", "transit-gateway", "privatelink", "vpc", "client-vpn"],
+    completedCheckpointIds: ["d2-t2-cp-1", "d3-t3-cp-1"],
+  },
 ];
 
 /** Merge all completed nights into default checklist state for first-time visitors. */

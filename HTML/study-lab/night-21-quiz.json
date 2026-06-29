@@ -1,0 +1,160 @@
+{
+  "night": 21,
+  "title": "Hybrid networking — VPN, Direct Connect, Transit Gateway, PrivateLink",
+  "topic": "Site-to-Site VPN vs Direct Connect, DX+VPN failover, Transit Gateway hub-spoke, VPC peering non-transitive routing, PrivateLink vs VPC endpoints, on-prem to Night 9 VPC scenarios",
+  "format": "15 timed scenario questions (~24 min, ~96 sec each). Reinforces night-21-hybrid-networking.md. Theory night — no lab deploy. Answer without peeking at night-21-quiz-answers.json first.",
+  "answerKey": "night-21-quiz-answers.json",
+  "answerDistribution": "A×4 B×4 C×4 D×3 — options shuffled so correct letter varies",
+  "questions": [
+    {
+      "id": "Q1",
+      "question": "Resort HQ (192.168.0.0/16) must reach saa-study-gsa-vpc (10.0.0.0/16) this week over the public internet with encrypted tunnels. No dedicated fiber yet. Fastest AWS hybrid option?",
+      "options": {
+        "A": "AWS Site-to-Site VPN — IPSec from customer gateway to virtual private gateway or Transit Gateway",
+        "B": "AWS Direct Connect with a 10 Gbps dedicated port",
+        "C": "VPC peering between the data center LAN and the VPC",
+        "D": "AWS PrivateLink interface endpoint in the on-prem rack"
+      }
+    },
+    {
+      "id": "Q2",
+      "question": "Leadership requires consistent sub-10 ms jitter and 5 Gbps sustained throughput from on-prem ETL to Aurora in private subnets. Public internet variability is unacceptable. Primary link?",
+      "options": {
+        "A": "Site-to-Site VPN with accelerated VPN only",
+        "B": "NAT Gateway in the public subnet with port forwarding",
+        "C": "Internet Gateway attached to the database subnet route table",
+        "D": "AWS Direct Connect private virtual interface to the VPC or Transit Gateway"
+      }
+    },
+    {
+      "id": "Q3",
+      "question": "You already have Direct Connect as the primary hybrid path. The exam asks for resilience when the DX circuit fails. Standard companion service?",
+      "options": {
+        "A": "Replace DX with a second Internet Gateway in the VPC",
+        "B": "Site-to-Site VPN as backup terminating on the same Transit Gateway or virtual private gateway",
+        "C": "VPC peering to a second Direct Connect location in another Region",
+        "D": "Public VIF only — drop private VIF during outages"
+      }
+    },
+    {
+      "id": "Q4",
+      "question": "Twelve VPCs across three accounts must all reach on-prem 172.16.0.0/12 and a shared inspection VPC. Full mesh VPC peering is rejected. Hub design?",
+      "options": {
+        "A": "Transit Gateway with attachments per VPC and centralized route tables",
+        "B": "One Site-to-Site VPN per VPC to duplicate customer gateways",
+        "C": "PrivateLink interface endpoint in every spoke VPC for each resource",
+        "D": "Inter-Region VPC peering only — no hybrid connectivity"
+      }
+    },
+    {
+      "id": "Q5",
+      "question": "VPC A peers with VPC B. VPC B peers with VPC C. Apps in VPC A must reach RDS in VPC C by private IP. Will peering alone work?",
+      "options": {
+        "A": "Yes — peering is transitive across three VPCs automatically",
+        "B": "Yes — if all three use the same CIDR block",
+        "C": "No — VPC peering is non-transitive; A needs its own peering or a Transit Gateway path to C",
+        "D": "No — peering only works within one AWS account"
+      }
+    },
+    {
+      "id": "Q6",
+      "question": "A third-party ski-analytics API runs in the vendor's AWS account. Your Fargate tasks in saa-study-gsa-vpc must call it without traversing the public internet. Vendor offers AWS PrivateLink. Pattern?",
+      "options": {
+        "A": "Site-to-Site VPN from your VPC to the vendor's office",
+        "B": "VPC peering between 10.0.0.0/16 and the vendor VPC with merged route tables",
+        "C": "Interface VPC endpoint (consumer) in your subnets to the vendor's endpoint service behind their NLB",
+        "D": "S3 Gateway endpoint in the private subnet route table"
+      }
+    },
+    {
+      "id": "Q7",
+      "question": "Fargate tasks in Night 9 private subnets upload pipeline artifacts to S3 without NAT charges for that traffic. Which Night 8 pattern still applies — not PrivateLink to a third party?",
+      "options": {
+        "A": "AWS PrivateLink to a partner-published S3 endpoint service",
+        "B": "S3 Gateway VPC endpoint associated with the private subnet route table",
+        "C": "Direct Connect public VIF as the only option for S3",
+        "D": "Client VPN on each Fargate task ENI"
+      }
+    },
+    {
+      "id": "Q8",
+      "question": "On-prem and AWS both use 10.0.0.0/16. You attempt Site-to-Site VPN to saa-study-gsa-vpc. BGP never installs usable routes. Root cause?",
+      "options": {
+        "A": "Overlapping CIDR blocks — hybrid routing cannot distinguish identical prefixes",
+        "B": "VPN requires exactly one tunnel — delete the second tunnel",
+        "C": "Virtual private gateway must be in a public subnet",
+        "D": "Direct Connect is mandatory when CIDRs match"
+      }
+    },
+    {
+      "id": "Q9",
+      "question": "Direct Connect private VIF terminates on a Direct Connect Gateway. Multiple VPCs in us-east-1 must receive on-prem routes. Common next hop from DX Gateway?",
+      "options": {
+        "A": "Internet Gateway in each VPC",
+        "B": "NAT Gateway in every availability zone",
+        "C": "Transit Gateway — DX Gateway associates with TGW for multi-VPC hybrid hub",
+        "D": "AWS PrivateLink endpoint service per VPC"
+      }
+    },
+    {
+      "id": "Q10",
+      "question": "Compare encryption defaults on the exam. Which statement is correct?",
+      "options": {
+        "A": "Direct Connect encrypts all traffic with IPSec by default",
+        "B": "Transit Gateway encrypts all inter-VPC traffic with customer-managed KMS keys by default",
+        "C": "VPC peering traffic crosses the public internet unless you enable PrivateLink",
+        "D": "Site-to-Site VPN uses IPSec over the internet; DX is a private layer-2/path — add VPN over DX if encryption is required"
+      }
+    },
+    {
+      "id": "Q11",
+      "question": "Night 16 Aurora must accept PostgreSQL only from on-prem BI hosts (192.168.50.0/24) and Lambda in the same VPC — not the internet. Hybrid is already up via TGW. Security control?",
+      "options": {
+        "A": "Aurora security group: allow TCP 5432 from on-prem CIDR and from the Lambda security group",
+        "B": "Enable Aurora public accessibility and restrict NACL to 192.168.50.0/24",
+        "C": "Attach an Internet Gateway to the DB subnet for BI traffic",
+        "D": "Replace hybrid with CloudFront origin for port 5432"
+      }
+    },
+    {
+      "id": "Q12",
+      "question": "Two dev teams need bidirectional private IP connectivity between vpc-dev (10.2.0.0/16) and vpc-staging (10.3.0.0/16) in the same Region. No SaaS endpoint service involved. Simplest fit?",
+      "options": {
+        "A": "AWS PrivateLink with the staging team publishing every EC2 as an endpoint service",
+        "B": "VPC peering with reciprocal routes for each other's CIDR",
+        "C": "Site-to-Site VPN between the two VPCs",
+        "D": "Direct Connect hosted connection between dev and staging only"
+      }
+    },
+    {
+      "id": "Q13",
+      "question": "A shared-services account owns a Transit Gateway. Spoke VPCs in other accounts must attach. Which AWS feature shares the TGW without moving the VPCs?",
+      "options": {
+        "A": "AWS Organizations SCP that copies route tables",
+        "B": "VPC peering from every spoke to the management account only",
+        "C": "AWS Resource Access Manager (RAM) share of the Transit Gateway",
+        "D": "AWS PrivateLink gateway endpoint"
+      }
+    },
+    {
+      "id": "Q14",
+      "question": "night-21-hybrid-networking.md is a theory night with $0 deploy. What hands-on artifact should you produce tonight?",
+      "options": {
+        "A": "Run night-21-lab-vpn-setup.ps1 to create a customer gateway",
+        "B": "Three paper diagrams: on-prem→VPC hybrid, multi-VPC TGW hub, SaaS via PrivateLink",
+        "C": "Delete saa-study-gsa-vpc to avoid NAT charges before Week 3 review",
+        "D": "Enable Aurora public accessibility for VPN testing"
+      }
+    },
+    {
+      "id": "Q15",
+      "question": "Remote engineers on laptops need encrypted access to resources in saa-study-gsa-vpc — not a data-center site link. Service?",
+      "options": {
+        "A": "Site-to-Site VPN with one tunnel per laptop",
+        "B": "Direct Connect hosted connection per engineer",
+        "C": "VPC peering to the corporate hotel Wi-Fi",
+        "D": "AWS Client VPN (or similar remote-access VPN) — per-user, not Site-to-Site VPN"
+      }
+    }
+  ]
+}
