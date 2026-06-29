@@ -1,0 +1,82 @@
+{
+  "night": 19,
+  "title": "DR + AWS Backup — RTO/RPO and centralized backup policies",
+  "answerDistribution": { "A": 4, "B": 4, "C": 4, "D": 3 },
+  "answers": [
+    {
+      "id": "Q1",
+      "correct": "A",
+      "explanation": "RPO = max acceptable data loss window — 30 minutes of wiki views (Night 19 block 1)."
+    },
+    {
+      "id": "Q2",
+      "correct": "C",
+      "explanation": "RTO = max acceptable outage — 15 minutes to restore wiki availability drives warm standby vs backup-restore."
+    },
+    {
+      "id": "Q3",
+      "correct": "B",
+      "explanation": "Backup and restore = cheapest DR tier with highest RTO — AWS Backup + IaC redeploy (four-strategy ladder)."
+    },
+    {
+      "id": "Q4",
+      "correct": "D",
+      "explanation": "Warm standby runs scaled-down live DR; pilot light keeps minimal core only — lower RTO for warm standby."
+    },
+    {
+      "id": "Q5",
+      "correct": "A",
+      "explanation": "AWS Backup centralizes multi-service policies — Night 18 Q10 preview; PITR is per-table only."
+    },
+    {
+      "id": "Q6",
+      "correct": "C",
+      "explanation": "Tag-based selection auto-enrolls matching resources — night-19-lab saa-study-backup=night-19 pattern."
+    },
+    {
+      "id": "Q7",
+      "correct": "B",
+      "explanation": "Aurora Global Database for sub-second cross-Region RPO — Night 15 Q5 trap (not promote read replica)."
+    },
+    {
+      "id": "Q8",
+      "correct": "D",
+      "explanation": "CloudTrail audits API calls — not a backup service (Night 18 Q10 / Night 19 exam traps)."
+    },
+    {
+      "id": "Q9",
+      "correct": "A",
+      "explanation": "Copy action moves recovery points to destination vault on schedule — not live replication."
+    },
+    {
+      "id": "Q10",
+      "correct": "C",
+      "explanation": "Global tables = live multi-Region writes; AWS Backup copy = discrete recovery points."
+    },
+    {
+      "id": "Q11",
+      "correct": "B",
+      "explanation": "Backup vault stores encrypted recovery points — saa-study-gsa-backup-vault in night-19-lab."
+    },
+    {
+      "id": "Q12",
+      "correct": "D",
+      "explanation": "On-demand backup job or manual snapshot before risky migration — complements scheduled plans."
+    },
+    {
+      "id": "Q13",
+      "correct": "A",
+      "explanation": "Night 19 teardown deletes vault/plan/recovery points only — Night 18 table unchanged (mirrors Night 18 Q15)."
+    },
+    {
+      "id": "Q14",
+      "correct": "C",
+      "explanation": "Multi-site active-active for near-zero RTO/RPO — DynamoDB global tables + regional endpoints."
+    },
+    {
+      "id": "Q15",
+      "correct": "B",
+      "explanation": "Native Aurora backups are per-service; AWS Backup adds centralized retention across resource types."
+    }
+  ]
+}

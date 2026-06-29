@@ -676,6 +676,18 @@ export const studyNights: StudyNight[] = [
     reviewedServiceIds: ["dynamodb", "lambda", "backup"],
     completedCheckpointIds: ["d2-t2-cp-1", "d3-t3-cp-1"],
   },
+  {
+    night: 19,
+    week: 3,
+    title: "DR + AWS Backup — RTO/RPO and centralized backup policies",
+    completedDate: "2026-06-29",
+    lab: "saa-study-gsa-backup-vault + saa-study-gsa-night19-plan (tag saa-study-backup=night-19 on wiki-views) — night-19-lab-backup-setup.ps1 -OnDemandBackup -VerifyJob; job 251ac6df COMPLETED; teardown after quiz",
+    practiceScore: "11/15",
+    notes:
+      "Quiz (night-19-quiz.json): 11/15 — missed Q3 (backup-and-restore cheapest DR tier, not pilot light), Q6 (tag-based selection auto-enrolls resources — not vault-name match), Q7 (Aurora Global Database for sub-second cross-Region RPO — Multi-AZ is same-Region only; Night 15 repeat), Q13 (teardown untags table + deletes Backup stack only — no delete-table). Solid on RPO vs RTO (Q1/Q2), warm vs pilot light (Q4), AWS Backup centralized policy (Q5), CloudTrail not backup (Q8), cross-Region copy vs live repl (Q9/Q10), vault role (Q11), pre-migration on-demand snapshot (Q12), multi-site active-active (Q14), Aurora native vs Backup enrollment (Q15). Created night-19-dr-aws-backup.md + lab/quiz assets. Night 20 — DMS + S3 migration.",
+    reviewedServiceIds: ["backup", "aurora", "route53", "dynamodb"],
+    completedCheckpointIds: ["d2-t2-cp-1", "d3-t3-cp-1"],
+  },
 ];
 
 /** Merge all completed nights into default checklist state for first-time visitors. */
