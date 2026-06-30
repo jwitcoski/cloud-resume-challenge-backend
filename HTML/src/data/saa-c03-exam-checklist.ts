@@ -724,6 +724,18 @@ export const studyNights: StudyNight[] = [
     reviewedServiceIds: ["rds", "aurora", "dynamodb", "aws-backup", "dms", "site-to-site-vpn", "direct-connect", "transit-gateway", "privatelink", "vpc", "lambda"],
     completedCheckpointIds: ["d2-t2-cp-1", "d3-t3-cp-1"],
   },
+  {
+    night: 23,
+    week: 4,
+    title: "Lab 3A — ElastiCache (Redis) cache-aside in front of Aurora",
+    completedDate: "2026-06-30",
+    lab: "$0 AWS deploy — theory + quiz; night-23-elasticache-redis.md + lab scripts (not run)",
+    practiceScore: "13/15",
+    notes:
+      "Quiz (night-23-quiz.json): 13/15 — missed Q1 (cache-aside: app GET Redis, miss → SELECT Aurora → SETEX; not read-through where cache pulls DB), Q15 (teardown deletes Lambda/Redis only — keep Night 9 VPC + Night 16 Aurora). Solid on Redis vs Memcached (Q2/Q8), redis-sg :6379 from lambda-stats-sg (Q3), VPC Lambda ENI cold start (Q4), CloudFront edge HTTP vs ElastiCache in-VPC objects (Q5), DAX for DynamoDB (Q6), cache invalidation on write (Q7), Aurora source of truth (Q9), cache subnet group (Q10), bench warm hit (Q11), SG defense in depth (Q12), Redis replication group failover (Q13), Lambda outbound to Redis+Aurora (Q14). Created night-23-elasticache-redis.md + lab/quiz assets. Night 24 — Athena on Iceberg.",
+    reviewedServiceIds: ["elasticache", "vpc", "lambda", "aurora", "rds"],
+    completedCheckpointIds: ["d4-t3-cp-3"],
+  },
 ];
 
 /** Merge all completed nights into default checklist state for first-time visitors. */
