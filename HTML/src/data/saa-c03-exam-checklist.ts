@@ -760,6 +760,18 @@ export const studyNights: StudyNight[] = [
     reviewedServiceIds: ["route53"],
     completedCheckpointIds: ["d2-t2-cp-0", "d3-t4-cp-0"],
   },
+  {
+    night: 26,
+    week: 4,
+    title: "CloudFront + API performance",
+    completedDate: "2026-07-01",
+    lab: "globalskiatlas.com CloudWatch dashboard + cache probe on api/wiki/pages — night-26-lab-cloudfront-setup.ps1 (run)",
+    practiceScore: "11/15",
+    notes:
+      "Quiz (night-26-quiz.json): 11/15 — missed Q3 (per-partner limits → usage plan + API key, not WAF), Q5 (edge-cache anonymous GETs only — not POST in CachedMethods), Q6 (throttle exceeded → 429, not 502), Q13 (optimize Lambda + CloudFront GET cache before ElastiCache). Solid on CachingDisabled default for api/wiki* (Q1), origin Cache-Control (Q2), CloudFront vs ElastiCache layers (Q4/Q15), path pattern specificity (Q7), short TTL vs invalidation (Q8), CloudFront metrics namespace (Q9), GET/HEAD CachedMethods (Q10), account-level API GW throttle (Q11), REGIONAL WAF on ALB Region (Q12), stage vs edge cache (Q14). Ran lab; X-Cache Miss on wiki/pages as expected. Created night-26-cloudfront-api-caching.md + lab/quiz assets + wiki-api-production.md. Night 27 — EC2 + EBS + Spot.",
+    reviewedServiceIds: ["cloudfront", "api-gateway"],
+    completedCheckpointIds: ["d3-t4-cp-4"],
+  },
 ];
 
 /** Merge all completed nights into default checklist state for first-time visitors. */

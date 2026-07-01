@@ -1,0 +1,82 @@
+{
+  "night": 26,
+  "title": "CloudFront + API performance",
+  "answerDistribution": { "A": 4, "B": 4, "C": 4, "D": 3 },
+  "answers": [
+    {
+      "id": "Q1",
+      "correct": "B",
+      "explanation": "Prod api/wiki* uses CachingDisabled — dynamic Cognito-backed API should not edge-cache until designed — night-26-cloudfront-api-caching.md + cf-dist-config.json."
+    },
+    {
+      "id": "Q2",
+      "correct": "C",
+      "explanation": "CloudFront needs origin Cache-Control/Expires when policy allows caching — Night 26 cache probe section."
+    },
+    {
+      "id": "Q3",
+      "correct": "C",
+      "explanation": "Usage plan + API key enforces per-client throttle and quota — Block 1 throttling table."
+    },
+    {
+      "id": "Q4",
+      "correct": "B",
+      "explanation": "CloudFront = HTTP at edge; ElastiCache = VPC object cache — Night 23 vs 26 contrast table."
+    },
+    {
+      "id": "Q5",
+      "correct": "A",
+      "explanation": "Edge-cache anonymous public GETs only; Authorization in cache key multiplies entries — exam trap in Block 1."
+    },
+    {
+      "id": "Q6",
+      "correct": "C",
+      "explanation": "API Gateway returns 429 when throttle exceeded — Block 1 throttling layers."
+    },
+    {
+      "id": "Q7",
+      "correct": "B",
+      "explanation": "CloudFront matches most specific path pattern — api/iceberg-stats behavior in wiki-api-production.md."
+    },
+    {
+      "id": "Q8",
+      "correct": "B",
+      "explanation": "Short TTL / origin max-age avoids constant invalidations — Block 1 exam traps."
+    },
+    {
+      "id": "Q9",
+      "correct": "A",
+      "explanation": "CloudFront metrics in AWS/CloudFront, us-east-1, Region=Global — Night 26 lab dashboard."
+    },
+    {
+      "id": "Q10",
+      "correct": "A",
+      "explanation": "CachedMethods typically GET/HEAD — mutating verbs reach origin — cf-dist-config.json api/wiki* behavior."
+    },
+    {
+      "id": "Q11",
+      "correct": "B",
+      "explanation": "Account-level API Gateway limits apply Region-wide — Block 1 throttling table."
+    },
+    {
+      "id": "Q12",
+      "correct": "A",
+      "explanation": "REGIONAL WAF ACL in ALB Region — contrast Night 4 CLOUDFRONT scope in us-east-1."
+    },
+    {
+      "id": "Q13",
+      "correct": "C",
+      "explanation": "Fix Lambda latency and cache cacheable GETs at edge before adding Redis — performance layering."
+    },
+    {
+      "id": "Q14",
+      "correct": "B",
+      "explanation": "API GW stage cache is Regional; CloudFront is global edge — Block 1 exam awareness."
+    },
+    {
+      "id": "Q15",
+      "correct": "A",
+      "explanation": "Edge cache for identical GETs reduces origin/DynamoDB load; ElastiCache optional deeper — Nights 23+26 stack."
+    }
+  ]
+}

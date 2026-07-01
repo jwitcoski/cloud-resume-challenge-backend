@@ -1,0 +1,160 @@
+{
+  "night": 26,
+  "title": "CloudFront + API performance",
+  "topic": "CloudFront cache behaviors for /api/*, cache policies vs origin Cache-Control, X-Cache hit/miss, API Gateway stage vs usage-plan throttling, CloudFront vs ElastiCache vs API GW cache, invalidation vs TTL, globalskiatlas.com production patterns",
+  "format": "15 timed scenario questions (~24 min, ~96 sec each). Reinforces night-26-cloudfront-api-caching.md and night-26-lab-cloudfront-setup scripts. Answer without peeking at night-26-quiz-answers.json first.",
+  "answerKey": "night-26-quiz-answers.json",
+  "answerDistribution": "A×4 B×4 C×4 D×3 — options shuffled so correct letter varies",
+  "questions": [
+    {
+      "id": "Q1",
+      "question": "globalskiatlas.com serves static HTML from S3 and wiki JSON from API Gateway behind one CloudFront distribution. GET /api/wiki/pages should reach Lambda on every request until you design explicit edge caching. Which cache policy on the api/wiki* behavior is the safe starting point?",
+      "options": {
+        "A": "CachingOptimized — same as the default S3 behavior for consistency",
+        "B": "CachingDisabled — dynamic API responses must not be edge-cached by default",
+        "C": "Elemental-MediaPackage — optimized for HLS video segments at the edge",
+        "D": "Use-Origin-Cache-Control-Headers only — no cache policy object required"
+      }
+    },
+    {
+      "id": "Q2",
+      "question": "After enabling a permissive CloudFront cache policy on GET /api/iceberg-stats, the second identical request still shows X-Cache: Miss. Lambda returns JSON without Cache-Control or Expires. What is the most likely fix?",
+      "options": {
+        "A": "Add Route 53 latency routing so the edge POP is closer to us-east-1",
+        "B": "Enable API Gateway stage caching — CloudFront cannot cache API responses",
+        "C": "Have the origin return Cache-Control (e.g. public, max-age=60) so CloudFront may store the response",
+        "D": "Switch the behavior to target S3 instead of API Gateway for JSON APIs"
+      }
+    },
+    {
+      "id": "Q3",
+      "question": "A partner mobile app must be limited to 1,000 requests per day with burst protection, using a key you issue per partner. Which API Gateway feature primary enforces per-client limits?",
+      "options": {
+        "A": "AWS WAF rate-based rule on the CloudFront distribution only",
+        "B": "Lambda reserved concurrency set to 1,000 on the integration function",
+        "C": "Usage plan with API key — throttle and quota per key",
+        "D": "CloudFront Origin Shield in the API Gateway Region"
+      }
+    },
+    {
+      "id": "Q4",
+      "question": "Night 23 placed Redis in front of Aurora for resort_stats rows inside the VPC. Night 26 discusses CloudFront in front of /api/*. How do the two caches differ?",
+      "options": {
+        "A": "They are interchangeable — disable Redis when CloudFront is enabled",
+        "B": "CloudFront caches HTTP at the edge globally; ElastiCache caches app objects near compute in the VPC",
+        "C": "ElastiCache replaces CloudFront for static S3 assets at lower cost",
+        "D": "CloudFront only caches S3; API Gateway responses always bypass the CDN"
+      }
+    },
+    {
+      "id": "Q5",
+      "question": "Wiki POST /api/wiki/pages requires a Cognito JWT. GET /api/wiki/pages is anonymous. You consider edge-caching GET responses. Which cache-key design avoids serving one user's draft to another?",
+      "options": {
+        "A": "Cache only anonymous GETs — omit Authorization from the cache key or cache a public subset",
+        "B": "Include Authorization in the cache key and set TTL to 24 hours for all users",
+        "C": "Use weighted Route 53 routing between cached and uncached behaviors",
+        "D": "Enable POST in CachedMethods so CloudFront invalidates on every write automatically"
+      }
+    },
+    {
+      "id": "Q6",
+      "question": "Traffic to your REST API stage exceeds the configured steady-state rate but stays within burst capacity for a few seconds. What HTTP status do clients typically receive when limits are exceeded?",
+      "options": {
+        "A": "503 Service Unavailable from CloudFront custom error page",
+        "B": "403 Forbidden — IAM denies the execute-api:Invoke call",
+        "C": "429 Too Many Requests — API Gateway throttle limit reached",
+        "D": "502 Bad Gateway — Lambda integration timeout only"
+      }
+    },
+    {
+      "id": "Q7",
+      "question": "Your CloudFront distribution has behaviors: default * → S3, api/wiki* → Wiki API, api/iceberg-stats → stats API. A request arrives for GET /api/iceberg-stats. Which behavior matches?",
+      "options": {
+        "A": "Default * — longest path wins",
+        "B": "Most specific path pattern — api/iceberg-stats before api/wiki*",
+        "C": "Random weighted choice between API behaviors",
+        "D": "Default * because iceberg-stats is not under api/wiki"
+      }
+    },
+    {
+      "id": "Q8",
+      "question": "Frequently updated JSON at /api/iceberg-stats should not require paid invalidations on every deploy. What is the exam-favored approach?",
+      "options": {
+        "A": "Disable compression on the cache behavior to force revalidation",
+        "B": "Short TTL or origin Cache-Control max-age — let entries expire naturally",
+        "C": "Create a new CloudFront distribution per deploy for zero stale data",
+        "D": "Use S3 Cross-Region Replication on the API Gateway stage"
+      }
+    },
+    {
+      "id": "Q9",
+      "question": "An exam scenario asks where to view CacheHitRate for a CloudFront distribution serving globalskiatlas.com. Which namespace and Region combination is correct?",
+      "options": {
+        "A": "AWS/CloudFront in us-east-1 with DistributionId and Region=Global",
+        "B": "AWS/ApiGateway in every edge POP Region separately",
+        "C": "AWS/Lambda in us-east-1 only — CloudFront has no metrics",
+        "D": "AWS/S3 in the bucket Region — CacheHitRate is an S3 metric"
+      }
+    },
+    {
+      "id": "Q10",
+      "question": "Which HTTP methods can CloudFront cache at the edge when listed in CachedMethods for an API behavior?",
+      "options": {
+        "A": "GET and HEAD only among cacheable methods — not POST/PUT/DELETE",
+        "B": "All seven methods if the origin returns 200",
+        "C": "POST only — GET always goes to origin for APIs",
+        "D": "OPTIONS and PATCH — required for CORS preflight caching"
+      }
+    },
+    {
+      "id": "Q11",
+      "question": "Account-wide API traffic spikes across many APIs in us-east-1. Some stages have not set custom throttle limits. What still caps total invoke rate?",
+      "options": {
+        "A": "Per-distribution CloudFront OriginLatency alarm",
+        "B": "API Gateway account-level throttle limits in the Region",
+        "C": "DynamoDB on-demand capacity only",
+        "D": "Route 53 health check failure threshold"
+      }
+    },
+    {
+      "id": "Q12",
+      "question": "You need to protect a regional ALB from HTTP floods. WAF is already on CloudFront for the public site. Where do you attach a REGIONAL-scoped Web ACL for the ALB?",
+      "options": {
+        "A": "us-east-1 — same Region as the ALB (contrast Night 4 CloudFront WAF in us-east-1)",
+        "B": "Any Region — WAF ACLs are global for all resources",
+        "C": "eu-west-1 — closest to European viewers",
+        "D": "CloudFront edge only — ALBs cannot use WAF"
+      }
+    },
+    {
+      "id": "Q13",
+      "question": "Lambda behind API Gateway averages 800 ms; clients report slow TTFB on cache misses. CloudFront OriginLatency metric is high. First performance step before adding ElastiCache?",
+      "options": {
+        "A": "Enable Multi-AZ on the API Gateway stage",
+        "B": "Increase edge TTL to 86400 seconds on all wiki paths including POST",
+        "C": "Optimize Lambda duration and consider caching cacheable GETs at CloudFront",
+        "D": "Replace HTTP API with S3 website hosting for JSON"
+      }
+    },
+    {
+      "id": "Q14",
+      "question": "Exam contrast: API Gateway REST API stage cache vs CloudFront cache behavior for the same GET endpoint exposed via CloudFront → API GW → Lambda.",
+      "options": {
+        "A": "They are the same service — enable only one",
+        "B": "Stage cache is at API Gateway in the Region; CloudFront cache is at edge POPs globally",
+        "C": "CloudFront stage cache requires Redis in the VPC",
+        "D": "API Gateway cache only works with DynamoDB integrations"
+      }
+    },
+    {
+      "id": "Q15",
+      "question": "A viral article causes millions of identical GET /api/wiki/pages requests worldwide. DynamoDB read capacity is spiking. Which layered approach best cuts database reads?",
+      "options": {
+        "A": "CloudFront edge cache on anonymous GET + origin Cache-Control; ElastiCache optional for in-VPC hot keys",
+        "B": "Disable CloudFront — send all traffic directly to API Gateway DNS",
+        "C": "Usage plan with zero quota — block all readers until spike ends",
+        "D": "Athena SQL over wiki DynamoDB export — replace live reads"
+      }
+    }
+  ]
+}
