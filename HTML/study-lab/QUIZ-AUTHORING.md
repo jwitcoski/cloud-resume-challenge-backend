@@ -15,6 +15,14 @@ When creating or editing `night-*-quiz.json` / `night-*-quiz-answers.json`:
 - Document distribution in the answer file, e.g. `"answerDistribution": { "A": 4, "B": 3, "C": 4, "D": 4 }`.
 - Night 7 (2026-06-20): original draft had 12/15 = B; reshuffled after review.
 
+## Exam relevance (required)
+
+- **Do not** ask lab-only trivia that will not appear on the SAA exam — even if the fact appears in a setup script or result file.
+- **Avoid:** memorizing constants (e.g. CloudFront alias hosted zone ID `Z2FDTNDATAQYW2`), teardown script “what remains” checklists, resource names from `night-*-lab-*.ps1`, or “what does this repo’s script delete?”
+- **Prefer:** routing-policy decision trees, health-check requirements, alias vs CNAME at apex, latency vs geolocation vs failover keywords, ALB multi-AZ vs Route 53 DR, private vs public hosted zone, Global Accelerator vs latency routing.
+- Lab nights may include **one** optional “lab awareness” question at most; do not stack multiple non-exam items in the same quiz.
+- Night 25 (2026-07-01): Q8 (CloudFront zone ID constant) and Q11 (teardown script scope) flagged as off-target — replace when that quiz is next edited.
+
 ## Format
 
 - Scenario-style questions; four plausible distractors.

@@ -748,6 +748,18 @@ export const studyNights: StudyNight[] = [
     reviewedServiceIds: ["athena", "glue", "s3", "aurora", "redshift"],
     completedCheckpointIds: ["d3-t5-cp-2", "d3-t5-cp-1"],
   },
+  {
+    night: 25,
+    week: 4,
+    title: "Lab 3C — Route 53 advanced routing",
+    completedDate: "2026-07-01",
+    lab: "witcoskitech.com night25-* subdomains + HTTPS health check — night-25-lab-route53-setup.ps1 (run)",
+    practiceScore: "12/15",
+    notes:
+      "Quiz (night-25-quiz.json): 12/15 — missed Q3 (lowest-latency Region → latency routing, not geolocation), Q8 (CloudFront alias zone ID constant — lab trivia), Q12 (Global Accelerator anycast vs Route 53 DNS latency — not D). Solid on weighted canary (Q1), failover PRIMARY + health check (Q2), TTL caching on failover flip (Q4), geolocation for EU compliance (Q5), CNAME forbidden at apex (Q6), ALB multi-AZ without Route 53 (Q7), separate R53 vs ALB health (Q9), multivalue answer (Q10), private hosted zone for VPC internal DNS (Q13), child/calculated health checks on ALB failover (Q14), routing policy per FQDN (Q15). Ran Route 53 lab on witcoskitech.com. Created night-25-route53-routing.md + lab/quiz assets; QUIZ-AUTHORING exam-relevance rule. Night 26 — CloudFront API caching.",
+    reviewedServiceIds: ["route53"],
+    completedCheckpointIds: ["d2-t2-cp-0", "d3-t4-cp-0"],
+  },
 ];
 
 /** Merge all completed nights into default checklist state for first-time visitors. */
