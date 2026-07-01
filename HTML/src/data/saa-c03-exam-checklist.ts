@@ -736,6 +736,18 @@ export const studyNights: StudyNight[] = [
     reviewedServiceIds: ["elasticache", "vpc", "lambda", "aurora", "rds"],
     completedCheckpointIds: ["d4-t3-cp-3"],
   },
+  {
+    night: 24,
+    week: 4,
+    title: "Lab 3B — Athena on Iceberg",
+    completedDate: "2026-07-01",
+    lab: "Night 20 migration bucket + Glue catalog + Iceberg CTAS — night-24-athena-iceberg.md + lab scripts (run)",
+    practiceScore: "14/15",
+    notes:
+      "Quiz (night-24-quiz.json): 14/15 — missed Q11 (teardown removes night-24/ Athena/Glue only — Night 20 export prefix and bucket remain). Solid on Athena vs Aurora OLTP (Q1/Q2/Q14), Glue catalog metadata (Q3), Iceberg snapshots/time travel (Q4), scan cost + partitions (Q5/Q12), workgroup OutputLocation (Q6), DynamoDB JSON vs Parquet analytics path (Q7), Redshift for warehouse BI (Q8), crawlers optional (Q9), engine v3 for Iceberg DDL (Q10), Glue ETL/EMR batch transform (Q13), DAX vs Athena layers (Q15). Created night-24-athena-iceberg.md + lab/quiz assets. Night 25 — Route 53 routing policies.",
+    reviewedServiceIds: ["athena", "glue", "s3", "aurora", "redshift"],
+    completedCheckpointIds: ["d3-t5-cp-2", "d3-t5-cp-1"],
+  },
 ];
 
 /** Merge all completed nights into default checklist state for first-time visitors. */

@@ -1,0 +1,82 @@
+{
+  "night": 24,
+  "title": "Lab 3B — Athena on Iceberg",
+  "answerDistribution": { "A": 4, "B": 4, "C": 4, "D": 3 },
+  "answers": [
+    {
+      "id": "Q1",
+      "correct": "A",
+      "explanation": "Athena = serverless SQL on S3 via Glue catalog — Night 24 block 1 decision tree; no cluster for ad hoc analytics."
+    },
+    {
+      "id": "Q2",
+      "correct": "C",
+      "explanation": "Aurora writer handles OLTP UPSERTs with ACID — Nights 16–17; Athena is analytics on files, not live transactional writes."
+    },
+    {
+      "id": "Q3",
+      "correct": "B",
+      "explanation": "Glue catalog stores schema + S3 location + format — Athena needs metadata; files alone are not a table."
+    },
+    {
+      "id": "Q4",
+      "correct": "D",
+      "explanation": "Iceberg snapshots enable time travel / rollback queries — Night 24 Iceberg section and GSA register_iceberg.py thread."
+    },
+    {
+      "id": "Q5",
+      "correct": "A",
+      "explanation": "Athena cost = data scanned — partition and filter to scan less; Night 24 partitioning section."
+    },
+    {
+      "id": "Q6",
+      "correct": "C",
+      "explanation": "Workgroup ResultConfiguration.OutputLocation → night-24/athena-results/ in migration bucket — Night 24 lab table."
+    },
+    {
+      "id": "Q7",
+      "correct": "B",
+      "explanation": "Night 20 export is DynamoDB JSON for wiki-views — not relational Parquet for resort_stats GROUP BY; Night 24 flow diagram."
+    },
+    {
+      "id": "Q8",
+      "correct": "D",
+      "explanation": "Redshift/Redshift Serverless for large concurrent warehouse BI — Athena vs Redshift table in Night 24 block 3."
+    },
+    {
+      "id": "Q9",
+      "correct": "A",
+      "explanation": "Crawlers optional — tonight uses explicit DDL + CTAS; exam trap in Night 24 block 1."
+    },
+    {
+      "id": "Q10",
+      "correct": "C",
+      "explanation": "Iceberg CREATE TABLE requires Athena engine version 3 — night-24-lab workgroup config."
+    },
+    {
+      "id": "Q11",
+      "correct": "B",
+      "explanation": "Teardown removes night-24/ prefix + Glue/Athena only — Night 20 export and bucket remain (Night 24 teardown section)."
+    },
+    {
+      "id": "Q12",
+      "correct": "D",
+      "explanation": "Partition by country_code (or Iceberg partitioning) reduces bytes scanned — Night 24 cost section."
+    },
+    {
+      "id": "Q13",
+      "correct": "A",
+      "explanation": "Glue ETL or EMR for heavy Spark batch; Athena queries curated Parquet/Iceberg output — decision tree."
+    },
+    {
+      "id": "Q14",
+      "correct": "C",
+      "explanation": "OLTP on Aurora, analytics SQL on Athena/S3 — Night 24 compare OLTP vs analytics table."
+    },
+    {
+      "id": "Q15",
+      "correct": "B",
+      "explanation": "DAX accelerates DynamoDB; Athena SQL on S3 snapshots — parallel to Night 23 DAX vs ElastiCache distinction."
+    }
+  ]
+}

@@ -1,0 +1,160 @@
+{
+  "night": 24,
+  "title": "Lab 3B — Athena on Iceberg",
+  "topic": "Athena serverless SQL on S3, Glue Data Catalog, Apache Iceberg table format, partitioning and scan cost, Athena vs Aurora OLTP vs Redshift, workgroups, Night 20 migration bucket reuse",
+  "format": "15 timed scenario questions (~24 min, ~96 sec each). Reinforces night-24-athena-iceberg.md and night-24-lab-athena-setup scripts. Answer without peeking at night-24-quiz-answers.json first.",
+  "answerKey": "night-24-quiz-answers.json",
+  "answerDistribution": "A×4 B×4 C×4 D×3 — options shuffled so correct letter varies",
+  "questions": [
+    {
+      "id": "Q1",
+      "question": "GSA leadership wants ad hoc SQL: resort counts grouped by country_code on Parquet files exported to the Night 20 migration bucket. No always-on warehouse cluster. Best fit?",
+      "options": {
+        "A": "Amazon Athena with Glue catalog tables over the S3 Parquet/Iceberg paths",
+        "B": "Amazon Aurora Serverless v2 — run GROUP BY on the live writer endpoint",
+        "C": "ElastiCache Redis — store pre-aggregated country counts as JSON blobs",
+        "D": "AWS DMS CDC — replicate S3 Parquet rows back into DynamoDB for GetItem"
+      }
+    },
+    {
+      "id": "Q2",
+      "question": "Night 17 stats-uploader must UPSERT monthly_runs on resort_stats with millisecond latency and ACID guarantees. Which store is purpose-built?",
+      "options": {
+        "A": "Athena INSERT INTO over Iceberg — primary transactional path for ski uploads",
+        "B": "S3 Standard with object lock — one object per resort row updated via PUT",
+        "C": "Aurora PostgreSQL writer endpoint in private subnets — OLTP relational store",
+        "D": "Athena CTAS nightly — replaces Aurora for all live write traffic"
+      }
+    },
+    {
+      "id": "Q3",
+      "question": "An Athena query fails with “Table not found” though Parquet files exist in S3. What does the Glue Data Catalog provide that raw S3 lacks?",
+      "options": {
+        "A": "Automatic ACID transactions so INSERT competes with Lambda writers",
+        "B": "Registered table metadata — column names, format, and S3 location for SQL",
+        "C": "Internet-facing HTTPS endpoint so browsers query Parquet directly",
+        "D": "Replacement for IAM — Glue stores user passwords for Athena login"
+      }
+    },
+    {
+      "id": "Q4",
+      "question": "GSA prod registers Apache Iceberg tables on pipeline output instead of a loose Parquet folder. Which Iceberg capability matters most for “query yesterday’s snapshot after a bad ETL run”?",
+      "options": {
+        "A": "Iceberg replaces the need for any S3 bucket — data lives in Athena RAM",
+        "B": "Iceberg forces DynamoDB streams to push every viewCount change into SQL",
+        "C": "Iceberg converts Aurora WAL into binlog for DMS heterogeneous moves",
+        "D": "Iceberg snapshots / time travel — query an earlier table version without restoring a cluster"
+      }
+    },
+    {
+      "id": "Q5",
+      "question": "Your Athena bill spikes after analysts scan an unpartitioned 8 TB export. Primary billing driver to optimize first?",
+      "options": {
+        "A": "Data scanned per query — add partition columns and filter predicates",
+        "B": "Number of Glue crawlers scheduled per hour — disable all crawlers",
+        "C": "Aurora ACU hours — Athena queries always spin up an Aurora reader",
+        "D": "CloudFront edge requests — Athena SQL runs at every POP globally"
+      }
+    },
+    {
+      "id": "Q6",
+      "question": "night-24-lab creates workgroup saa-study-gsa-athena with EnforceWorkGroupConfiguration. Queries fail until OutputLocation is set. Where do result CSV files land?",
+      "options": {
+        "A": "ElastiCache Redis — Athena streams result rows into cache keys",
+        "B": "DynamoDB saa-study-gsa-wiki-views — each row becomes a query item",
+        "C": "S3 prefix night-24/athena-results/ in the migration bucket — workgroup ResultConfiguration",
+        "D": "Lambda /tmp only — S3 is never used for Athena outputs"
+      }
+    },
+    {
+      "id": "Q7",
+      "question": "Night 20 exported saa-study-gsa-wiki-views to night-20/dynamodb/wiki-views/ as DynamoDB JSON. Why is that path not tonight’s direct SQL target for resort_stats analytics?",
+      "options": {
+        "A": "DynamoDB JSON exports are encrypted with KMS keys Athena cannot read",
+        "B": "Format mismatch — wiki export is DynamoDB JSON, not relational Parquet/Iceberg columns for GROUP BY",
+        "C": "Athena only queries Aurora snapshots already loaded into the writer endpoint",
+        "D": "Glue crawlers refuse to run on buckets tagged saa-study-migration=night-20"
+      }
+    },
+    {
+      "id": "Q8",
+      "question": "200 BI users run concurrent complex JOINs on a 50 TB curated star schema all day. Ad hoc serverless SQL on raw S3 alone is too slow. Better primary warehouse?",
+      "options": {
+        "A": "Amazon Athena — pay per query with no cluster tuning ever needed",
+        "B": "ElastiCache Memcached — store every JOIN result as a string key",
+        "C": "CloudFront — cache warehouse SQL responses at the edge",
+        "D": "Amazon Redshift or Redshift Serverless — provisioned/ serverless MPP warehouse"
+      }
+    },
+    {
+      "id": "Q9",
+      "question": "night-24-lab registers resort_snapshot with explicit Athena DDL and CTAS — no crawler deployed. Exam-accurate statement about Glue crawlers?",
+      "options": {
+        "A": "Crawlers are optional — manual DDL or CTAS can populate the catalog without crawling",
+        "B": "Every Athena query requires an hourly crawler run before SQL is allowed",
+        "C": "Crawlers replace IAM roles for S3 read permissions on query results",
+        "D": "Crawlers only work on Aurora — S3 tables must use DMS instead"
+      }
+    },
+    {
+      "id": "Q10",
+      "question": "night-24-lab runs CREATE TABLE … table_type=ICEBERG via CTAS. DDL fails on Athena engine version 2 with unsupported table type. Fix?",
+      "options": {
+        "A": "Move Redis to public subnets so Athena can reach Iceberg metadata",
+        "B": "Enable PITR on the Glue database — Iceberg requires continuous backup",
+        "C": "Select Athena engine version 3 on the workgroup — Iceberg DDL needs v3 features",
+        "D": "Switch to Memcached — Iceberg tables must be loaded into ElastiCache first"
+      }
+    },
+    {
+      "id": "Q11",
+      "question": "You run night-24-lab-athena-teardown.ps1 after finishing analytics practice. What remains in AWS?",
+      "options": {
+        "A": "Nothing — teardown deletes the entire migration bucket including Night 20 DynamoDB export",
+        "B": "Night 20 night-20/ DynamoDB export prefix and bucket — only night-24/ Athena assets removed",
+        "C": "Aurora cluster and Redis — teardown always deletes all Week 3 databases",
+        "D": "Glue catalog for every GSA prod Iceberg table in the production account"
+      }
+    },
+    {
+      "id": "Q12",
+      "question": "A 5-year resort export grows to terabytes. Queries filter on country_code every time. Best cost/latency habit?",
+      "options": {
+        "A": "Store all countries in one giant CSV object — Athena loves single files",
+        "B": "Query Aurora reader instead — readers automatically partition S3 for free",
+        "C": "Disable workgroup OutputLocation to avoid writing result files",
+        "D": "Partition by country_code (or use Iceberg hidden partitioning) so Athena skips irrelevant objects"
+      }
+    },
+    {
+      "id": "Q13",
+      "question": "Nightly Spark job transforms 500 GB of raw JSON logs into curated Parquet before analysts run SQL. Which service runs the heavy batch transform?",
+      "options": {
+        "A": "AWS Glue ETL or Amazon EMR (Spark) — batch transform; Athena queries the output",
+        "B": "Amazon Athena — primary engine for long-running Spark shuffle jobs",
+        "C": "AWS Backup — backup plans convert JSON to Parquet during vault copy",
+        "D": "Route 53 latency routing — routes log bytes to the cheapest S3 AZ"
+      }
+    },
+    {
+      "id": "Q14",
+      "question": "Match workload to store: (1) live resort_stats UPSERT from SQS, (2) quarterly country rollup on historical S3 snapshots.",
+      "options": {
+        "A": "Both on Athena Iceberg — single store simplifies architecture",
+        "B": "Both on DynamoDB streams — relational UPSERT and GROUP BY in one table",
+        "C": "(1) Aurora OLTP writer, (2) Athena SQL on Glue/Iceberg over S3 exports",
+        "D": "(1) CloudFront cache, (2) ElastiCache Redis TTL keys only"
+      }
+    },
+    {
+      "id": "Q15",
+      "question": "Wiki viewCount hot reads (Night 18) need microsecond DynamoDB acceleration. Resort country analytics run on S3 snapshots (Tonight). Pick the DynamoDB-specific cache vs analytics SQL tool.",
+      "options": {
+        "A": "Use Athena workgroups to cache GetItem responses for wiki pageId keys",
+        "B": "DAX for DynamoDB hot reads; Athena for SQL analytics on S3 — different layers",
+        "C": "Redshift Spectrum replaces both DAX and DynamoDB for all GSA reads",
+        "D": "ElastiCache Redis replaces Glue catalog registration for Iceberg tables"
+      }
+    }
+  ]
+}
