@@ -1,0 +1,82 @@
+{
+  "night": 27,
+  "title": "EC2 + EBS + Spot",
+  "answerDistribution": { "A": 4, "B": 4, "C": 4, "D": 3 },
+  "answers": [
+    {
+      "id": "Q1",
+      "correct": "B",
+      "explanation": "gp3 is the default general-purpose SSD with independent IOPS/throughput — Night 27 EBS matrix."
+    },
+    {
+      "id": "Q2",
+      "correct": "A",
+      "explanation": "io2/io2 Block Express for high sustained IOPS databases on EC2 — exam storage table."
+    },
+    {
+      "id": "Q3",
+      "correct": "C",
+      "explanation": "st1 = throughput HDD for large sequential workloads — Night 27 gp3 vs st1 flashcard."
+    },
+    {
+      "id": "Q4",
+      "correct": "D",
+      "explanation": "sc1 = lowest-cost cold HDD for infrequent access — EBS matrix Block 1."
+    },
+    {
+      "id": "Q5",
+      "correct": "A",
+      "explanation": "Monthly retryable Iceland ETL → Fargate Spot or EC2 Spot — iceland-pipeline-compute.md decision tree."
+    },
+    {
+      "id": "Q6",
+      "correct": "C",
+      "explanation": "Spot + Instance Store as sole DB copy is wrong — Aurora/RDS Multi-AZ for authoritative data (Night 15)."
+    },
+    {
+      "id": "Q7",
+      "correct": "B",
+      "explanation": "EBS snapshots to S3 with cross-Region copy for DR — Night 27 exam traps."
+    },
+    {
+      "id": "Q8",
+      "correct": "D",
+      "explanation": "Instance Store = ephemeral, low-latency local — EBS vs Instance Store table."
+    },
+    {
+      "id": "Q9",
+      "correct": "A",
+      "explanation": "EFS shared NFS across many EC2 — contrast single-attach EBS default."
+    },
+    {
+      "id": "Q10",
+      "correct": "B",
+      "explanation": "Capacity-optimized Spot allocation lowers interruption vs lowest-price — Night 27 lab console reading."
+    },
+    {
+      "id": "Q11",
+      "correct": "C",
+      "explanation": "modify-volume on gp3 typically without detach — Night 27 gp3 knobs section."
+    },
+    {
+      "id": "Q12",
+      "correct": "D",
+      "explanation": "AWS Batch + Spot for parallel PMTiles/tile builds — iceland-pipeline-compute WORLD_SCALE note."
+    },
+    {
+      "id": "Q13",
+      "correct": "A",
+      "explanation": "Hibernation requires encrypted root ≤150 GiB — Night 27 exam traps."
+    },
+    {
+      "id": "Q14",
+      "correct": "B",
+      "explanation": "st1/sc1 are data-volume HDD types — not typical root volumes on standard AMIs."
+    },
+    {
+      "id": "Q15",
+      "correct": "C",
+      "explanation": "Iceland durable output to S3 — Nights 10–12; EBS is scratch only on EC2 workers."
+    }
+  ]
+}

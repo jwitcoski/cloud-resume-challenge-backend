@@ -772,6 +772,18 @@ export const studyNights: StudyNight[] = [
     reviewedServiceIds: ["cloudfront", "api-gateway"],
     completedCheckpointIds: ["d3-t4-cp-4"],
   },
+  {
+    night: 27,
+    week: 4,
+    title: "EC2 + EBS + Spot",
+    completedDate: "2026-07-03",
+    lab: "Iceland pipeline cost table + gp3 volume demo — night-27-lab-ec2-setup.ps1",
+    practiceScore: "11/15",
+    notes:
+      "Quiz (night-27-quiz.json): 11/15 — missed Q6 (inappropriate DB pairing → Spot EC2 + Instance Store only, not Aurora Multi-AZ), Q8 (temp video scratch OK to lose → Instance Store, not io2), Q11 (gp3 IOPS → modify-volume without detach, not Instance Store migration), Q13 (hibernation → encrypted root ≤150 GiB, not sc1). Solid on gp3/io2/st1/sc1 ladder (Q1–Q4), Iceland Fargate Spot (Q5), EBS snapshots DR (Q7), EFS shared config (Q9), capacity-optimized Spot (Q10), Batch PMTiles (Q12), st1/sc1 not root (Q14), S3 durable output (Q15). Created night-27-ec2-ebs-spot.md + iceland-pipeline-compute.md + lab/quiz; added IOPS vs throughput and Fargate Spot vs EC2 Spot clarifiers to guide. Night 28 — integration services.",
+    reviewedServiceIds: ["ec2", "ebs", "efs", "batch"],
+    completedCheckpointIds: ["d4-t1-cp-2", "d4-t2-cp-0", "d4-t2-cp-1"],
+  },
 ];
 
 /** Merge all completed nights into default checklist state for first-time visitors. */

@@ -1,0 +1,160 @@
+{
+  "night": 27,
+  "title": "EC2 + EBS + Spot",
+  "topic": "EBS gp3/io2/st1/sc1 volume selection, EBS vs EFS vs Instance Store, Spot vs On-Demand vs Fargate Spot, Iceland pipeline cost patterns, snapshots, hibernation, AWS Batch on Spot",
+  "format": "15 timed scenario questions (~24 min, ~96 sec each). Reinforces night-27-ec2-ebs-spot.md and iceland-pipeline-compute.md. Answer without peeking at night-27-quiz-answers.json first.",
+  "answerKey": "night-27-quiz-answers.json",
+  "answerDistribution": "A×4 B×4 C×4 D×3 — options shuffled so correct letter varies",
+  "questions": [
+    {
+      "id": "Q1",
+      "question": "You launch a new Linux application server on EC2 and need a single-AZ boot volume with balanced price and performance. You want to tune IOPS independently of disk size. Which EBS volume type is the default exam answer?",
+      "options": {
+        "A": "sc1 — cold HDD for infrequent sequential reads at lowest $/GB",
+        "B": "gp3 — general-purpose SSD with provisioned IOPS and throughput",
+        "C": "st1 — throughput-optimized HDD for large sequential workloads",
+        "D": "io2 Block Express — maximum IOPS for latency-sensitive databases"
+      }
+    },
+    {
+      "id": "Q2",
+      "question": "A team runs Oracle on EC2 and needs 80,000+ sustained random IOPS with low latency. Cost is secondary. Which storage meets the requirement?",
+      "options": {
+        "A": "io2 or io2 Block Express provisioned IOPS SSD",
+        "B": "gp3 with baseline 3,000 IOPS only — no further provisioning",
+        "C": "st1 throughput HDD — IOPS scale with volume size per TiB",
+        "D": "S3 Standard with byte-range GET as a block device substitute"
+      }
+    },
+    {
+      "id": "Q3",
+      "question": "A log aggregation EC2 instance performs large sequential writes and reads. Lowest-cost HDD with high throughput matters more than IOPS. Which EBS type fits?",
+      "options": {
+        "A": "gp2 — legacy general SSD tied to volume size for IOPS",
+        "B": "EFS One Zone-IA — NFS shared file system for many instances",
+        "C": "st1 — throughput-optimized HDD for sequential workloads",
+        "D": "Instance Store — ephemeral disks bundled with the instance"
+      }
+    },
+    {
+      "id": "Q4",
+      "question": "Infrequently accessed bulk data on EC2 must use the lowest-cost magnetic-style HDD. Throughput requirements are minimal. Which volume type?",
+      "options": {
+        "A": "gp3 with minimum 125 MiB/s throughput provisioned",
+        "B": "io2 Multi-Attach shared across three Availability Zones",
+        "C": "EFS Standard — elastic NFS storage for shared access",
+        "D": "sc1 — cold HDD optimized for infrequent access at low cost"
+      }
+    },
+    {
+      "id": "Q5",
+      "question": "Global Ski Atlas runs the Iceland OSM pipeline monthly via EventBridge → Fargate. Jobs take about two hours and can be retried next month if interrupted. Which compute purchase model best reduces per-run cost?",
+      "options": {
+        "A": "Fargate Spot capacity provider or EC2 Spot for the batch worker",
+        "B": "Dedicated Hosts — physical server isolation for the whole month",
+        "C": "On-Demand EC2 reserved 24/7 with cron on the instance",
+        "D": "Lambda with 15-minute maximum timeout for the entire ETL"
+      }
+    },
+    {
+      "id": "Q6",
+      "question": "Production Aurora PostgreSQL holds resort_stats as the authoritative relational store. Which compute/storage pairing is inappropriate for the database layer?",
+      "options": {
+        "A": "Aurora Multi-AZ cluster with automated backups enabled",
+        "B": "RDS on gp3 volumes with Multi-AZ failover",
+        "C": "Spot EC2 with Instance Store as the only copy of database files",
+        "D": "Aurora Serverless v2 with RDS Proxy in front of Lambda"
+      }
+    },
+    {
+      "id": "Q7",
+      "question": "You must capture a consistent point-in-time copy of an EBS data volume for disaster recovery and later restore to a new volume in another Region. Which mechanism?",
+      "options": {
+        "A": "Enable S3 Transfer Acceleration on the attached bucket",
+        "B": "EBS snapshot stored in S3 — copy snapshot cross-Region if needed",
+        "C": "Detach the live volume and attach it read-only to a second instance",
+        "D": "Convert the gp3 volume to sc1 in place without downtime"
+      }
+    },
+    {
+      "id": "Q8",
+      "question": "A video transcoding worker caches temporary frames on local disk. Data loss on instance stop is acceptable and you want the lowest latency local disk. What should you use?",
+      "options": {
+        "A": "gp3 root volume with maximum provisioned throughput",
+        "B": "EFS Elastic throughput mode mounted on all workers",
+        "C": "io2 volume with Multi-Attach in three subnets",
+        "D": "Instance Store volumes included with the instance family"
+      }
+    },
+    {
+      "id": "Q9",
+      "question": "Ten EC2 instances in one Region must read and write the same application configuration files concurrently without a custom sync layer. Which storage service?",
+      "options": {
+        "A": "Amazon EFS — shared NFS file system across instances",
+        "B": "Single gp3 EBS volume attached to all ten instances by default",
+        "C": "S3 objects mounted as a native POSIX block device on each host",
+        "D": "ElastiCache Redis strings holding entire configuration files"
+      }
+    },
+    {
+      "id": "Q10",
+      "question": "Your Spot Fleet runs stateless render workers. AWS may reclaim capacity with about two minutes of warning. Which allocation strategy tends to lower interruption rates at similar discount?",
+      "options": {
+        "A": "Lowest-price allocation across all instance pools regardless of capacity",
+        "B": "Capacity-optimized allocation — pick pools with available Spot capacity",
+        "C": "Dedicated Host affinity — bind jobs to a specific physical server",
+        "D": "On-Demand base capacity only — no Spot instances in the fleet"
+      }
+    },
+    {
+      "id": "Q11",
+      "question": "A gp3 data volume attached to a running EC2 instance needs higher provisioned IOPS for a nightly batch window. What is usually required?",
+      "options": {
+        "A": "Stop the instance, detach the volume, and create a snapshot first",
+        "B": "Migrate the workload to Instance Store before changing IOPS",
+        "C": "Use modify-volume to raise IOPS/throughput — typically no detach",
+        "D": "Convert the volume to S3 Intelligent-Tiering for automatic scaling"
+      }
+    },
+    {
+      "id": "Q12",
+      "question": "WORLD_SCALE PMTiles generation shards thousands of tile builds that write results to S3. Work is parallel and fault-tolerant. Which AWS service commonly orchestrates Spot compute for this pattern?",
+      "options": {
+        "A": "Amazon Cognito user pools — authenticate each tile worker",
+        "B": "AWS DataSync — scheduled sync from on-premises tile storage",
+        "C": "Amazon ElastiCache — cache finished PMTiles in Redis",
+        "D": "AWS Batch with a Spot-based compute environment"
+      }
+    },
+    {
+      "id": "Q13",
+      "question": "You want to enable EC2 hibernation so a dev instance resumes in-memory state after stop. Which root volume constraint applies?",
+      "options": {
+        "A": "Encrypted root volume up to 150 GiB on supported instance types",
+        "B": "sc1 cold HDD root volume with Multi-AZ attachment",
+        "C": "Unencrypted Instance Store root with T2 unlimited enabled",
+        "D": "EFS root mount with Provisioned Throughput mode only"
+      }
+    },
+    {
+      "id": "Q14",
+      "question": "An exam question asks which EBS volume types are generally suitable only as additional data volumes, not as root boot volumes on standard AMIs. Which pair?",
+      "options": {
+        "A": "gp3 and io2 — both block general-purpose and IOPS SSD",
+        "B": "st1 and sc1 — throughput and cold HDD types",
+        "C": "EFS and FSx — shared file systems instead of block",
+        "D": "Instance Store and S3 — object and ephemeral stores"
+      }
+    },
+    {
+      "id": "Q15",
+      "question": "After the Iceland Fargate task finishes, durable GeoParquet output must survive task stop and instance termination. Where should the pipeline write final artifacts?",
+      "options": {
+        "A": "Fargate ephemeral storage only — fastest and durable by default",
+        "B": "EBS gp3 scratch volume without snapshot — primary system of record",
+        "C": "S3 bucket prefix such as iceland/YYYY-MM/ — durable object store",
+        "D": "ElastiCache Redis with AOF persistence for Parquet blobs"
+      }
+    }
+  ]
+}
