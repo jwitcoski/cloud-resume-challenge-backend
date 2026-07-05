@@ -100,7 +100,7 @@ EVENT_PATTERN=$(jq -n \
       stopCode: ["EssentialContainerExited"],
       clusterArn: [$cluster],
       taskDefinitionArn: [{ prefix: $prefix }],
-      containers: { exitCode: [{ numeric: ["!=", 0] }] }
+      containers: { exitCode: [{ "anything-but": [0] }] }
     }
   }')
 

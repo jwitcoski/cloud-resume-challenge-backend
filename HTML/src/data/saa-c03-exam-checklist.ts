@@ -784,6 +784,18 @@ export const studyNights: StudyNight[] = [
     reviewedServiceIds: ["ec2", "ebs", "efs", "batch"],
     completedCheckpointIds: ["d4-t1-cp-2", "d4-t2-cp-0", "d4-t2-cp-1"],
   },
+  {
+    night: 28,
+    week: 4,
+    title: "Integration services",
+    completedDate: "2026-07-04",
+    lab: "Read-only GSA integration audit (8/8 after Night 14 redeploy) — night-28-lab-integration-audit.ps1",
+    practiceScore: "11/15",
+    notes:
+      "Quiz (night-28-quiz.json): 11/15 — missed Q1 (worker buffer → SQS standard, not empty EventBridge bus), Q8 (high-volume short flows no audit → Step Functions Express, not Standard), Q9 (ECS success → EventBridge rule → SQS, not SNS), Q10 (every team gets every order → SNS fan-out to three SQS queues, not one shared queue), Q14 (cross-account event patterns → EventBridge buses/rules, not SQS). Solid on AppSync subscriptions (Q2), Kinesis Streams vs Firehose (Q3/Q4), EventBridge schedule (Q5), Step Functions Standard capstone (Q6), SNS failure fan-out (Q7), FailedInvocations IAM trap (Q11), Kinesis Video Streams (Q12), SQS before Lambda (Q13), FIFO dedup (Q15). Fixed Night 14 failure rule (anything-but exit code + PS em-dash parse bug). Created night-28-integration-services.md + gsa-integration-map.md + audit/quiz. Night 29 — Week 4 review.",
+    reviewedServiceIds: ["eventbridge", "sqs", "sns", "kinesis", "step-functions", "appsync"],
+    completedCheckpointIds: ["d2-t1-cp-1", "d3-t5-cp-0"],
+  },
 ];
 
 /** Merge all completed nights into default checklist state for first-time visitors. */

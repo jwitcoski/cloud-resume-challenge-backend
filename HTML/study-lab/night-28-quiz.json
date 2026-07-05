@@ -1,0 +1,160 @@
+{
+  "night": 28,
+  "title": "Integration services",
+  "topic": "EventBridge vs SQS vs SNS vs Kinesis Streams/Firehose vs Step Functions vs AppSync; GSA Nights 12–14 synthesis; Night 32 Step Functions capstone preview",
+  "format": "15 timed scenario questions (~24 min, ~96 sec each). Reinforces night-28-integration-services.md and gsa-integration-map.md. Answer without peeking at night-28-quiz-answers.json first.",
+  "answerKey": "night-28-quiz-answers.json",
+  "answerDistribution": "A×4 B×4 C×4 D×3 — options shuffled so correct letter varies",
+  "questions": [
+    {
+      "id": "Q1",
+      "question": "A stats-uploader fleet processes Iceland pipeline completions. Producers burst after monthly batch runs; workers must absorb spikes and poll at their own pace with at-least-once delivery. Order between months does not matter. Which service is the best buffer?",
+      "options": {
+        "A": "Amazon SNS topic with one email subscription per worker",
+        "B": "Amazon EventBridge custom bus with no targets attached yet",
+        "C": "Amazon SQS standard queue between producer and worker tier",
+        "D": "AWS Step Functions Express workflow invoked synchronously from each producer"
+      }
+    },
+    {
+      "id": "Q2",
+      "question": "A mobile ski-resort app needs GraphQL queries and live WebSocket subscriptions when lift status changes — minimal custom WebSocket infrastructure. Which AWS service is purpose-built?",
+      "options": {
+        "A": "Amazon API Gateway REST API with Lambda proxy integration only",
+        "B": "AWS AppSync with GraphQL resolvers and subscription fields",
+        "C": "Amazon SQS FIFO queue polled every second by the mobile client",
+        "D": "Amazon EventBridge Scheduler with HTTPS targets to each device token"
+      }
+    },
+    {
+      "id": "Q3",
+      "question": "A gaming company ingests millions of click events per hour. Multiple teams run independent real-time aggregators and need replay from a 24-hour retention window. Which ingestion service fits?",
+      "options": {
+        "A": "Amazon Kinesis Data Streams with custom consumers or Lambda event source mappings",
+        "B": "Amazon Kinesis Data Firehose delivering batched objects to S3 only",
+        "C": "Amazon SQS standard queue with long polling from twenty Lambda functions",
+        "D": "Amazon SNS FIFO topic fanning out to one Lambda per game shard"
+      }
+    },
+    {
+      "id": "Q4",
+      "question": "Security logs must stream from producers to an S3 data lake for Athena queries. You want AWS to handle batching, compression, and scaling without writing consumer application code. Which service?",
+      "options": {
+        "A": "Amazon Kinesis Data Streams with a custom KCL consumer writing to S3",
+        "B": "Amazon MSK with Kafka Connect configured manually for each AZ",
+        "C": "Amazon EventBridge rules targeting S3 PutObject on every log line",
+        "D": "Amazon Kinesis Data Firehose with an S3 destination and optional Lambda transform"
+      }
+    },
+    {
+      "id": "Q5",
+      "question": "Global Ski Atlas runs the Iceland OSM pipeline on the 1st of each month as a one-shot Fargate task in private subnets — no HTTP trigger. Which integration pattern from Night 12 is correct?",
+      "options": {
+        "A": "SQS delay queue that auto-launches ECS when message retention expires",
+        "B": "EventBridge schedule rule with ecs:RunTask target and dedicated IAM role",
+        "C": "SNS topic publish on a rate(30 days) EventBridge rule without ECS target",
+        "D": "Step Functions Express state machine polling ecs:DescribeTasks in a loop"
+      }
+    },
+    {
+      "id": "Q6",
+      "question": "Night 32 will orchestrate Iceland RunTask, wait for completion, enqueue stats work, invoke Lambda, and route failures to SNS with different retry policies per step. Which workflow service is the best fit?",
+      "options": {
+        "A": "Amazon SNS alone — chain subscriptions so each step triggers the next",
+        "B": "Amazon EventBridge default bus with five identical schedule expressions",
+        "C": "AWS Step Functions Standard state machine with Retry and Catch states",
+        "D": "Amazon SQS FIFO queue with message group IDs representing workflow steps"
+      }
+    },
+    {
+      "id": "Q7",
+      "question": "Iceland exits with code 1 after an S3 permission error. Ops wants email and a ticketing SQS inbox notified from the same failure signal without each channel polling one shared work queue. What fits?",
+      "options": {
+        "A": "Amazon SNS topic with email and SQS subscriptions — Night 14 fan-out pattern",
+        "B": "Single SQS standard queue — all channels call ReceiveMessage on the same URL",
+        "C": "Amazon Kinesis Data Firehose with SNS as the only supported destination",
+        "D": "AWS AppSync mutation that writes failure records to DynamoDB streams only"
+      }
+    },
+    {
+      "id": "Q8",
+      "question": "A payment processor runs millions of short orchestrations per day. Each flow completes in under two minutes and does not require durable execution history for audit. Cost and throughput matter most. Which Step Functions type?",
+      "options": {
+        "A": "Standard workflows — full history retained up to one year for every execution",
+        "B": "AWS Batch job queue with Spot instances replacing Step Functions entirely",
+        "C": "Amazon EventBridge Pipes connecting each step without a state machine",
+        "D": "Express workflows — high volume, short duration, optional discard of execution history"
+      }
+    },
+    {
+      "id": "Q9",
+      "question": "You want SQS messages when Iceland tasks stop successfully without modifying the container image. Night 13 uses ECS Task State Change events. Which producer pattern is correct?",
+      "options": {
+        "A": "CloudWatch Logs subscription filter on the container stdout stream only",
+        "B": "EventBridge rule matching STOPPED + exitCode 0 targeting the completion queue",
+        "C": "SNS topic subscribed to the ECS cluster — SNS pushes directly into SQS without policy",
+        "D": "Kinesis Data Streams shard per task — Lambda polls shards for exit codes"
+      }
+    },
+    {
+      "id": "Q10",
+      "question": "An e-commerce checkout service publishes order-placed events. Three internal teams each need their own durable queue receiving every order; producers must not know team queue URLs. Best pattern?",
+      "options": {
+        "A": "One SQS queue shared by all teams competing for the same messages",
+        "B": "Three Lambda functions round-robin polling one DynamoDB stream shard",
+        "C": "SNS topic with three SQS queue subscriptions — classic fan-out",
+        "D": "EventBridge archive replaying the same event to one queue three times serially"
+      }
+    },
+    {
+      "id": "Q11",
+      "question": "CloudWatch alarm saa-study-gsa-iceland-task-failed fires on FailedInvocations for the monthly schedule rule. Invocations metric is zero. What most likely failed?",
+      "options": {
+        "A": "EventBridge could not invoke ecs:RunTask — IAM, PassRole, or invalid target before a task started",
+        "B": "The Iceland container exited with code 1 after uploading partial data to S3",
+        "C": "SQS completion queue visibility timeout was shorter than Fargate wall-clock time",
+        "D": "SNS email subscription remained PendingConfirmation after the first publish"
+      }
+    },
+    {
+      "id": "Q12",
+      "question": "An exam scenario describes ingesting video from thousands of IoT cameras for later ML analysis — not batch monthly GeoParquet. Which service is most relevant at awareness level?",
+      "options": {
+        "A": "Amazon SQS FIFO with video chunks as message bodies",
+        "B": "AWS Step Functions Map state over S3 objects only",
+        "C": "Amazon EventBridge Scheduler with one-off cron per camera",
+        "D": "Amazon Kinesis Video Streams for video ingest and time-indexed playback"
+      }
+    },
+    {
+      "id": "Q13",
+      "question": "In the Night 32 capstone design, after Iceland ECS succeeds, a Lambda stats uploader should process completions asynchronously with DLQ support. What component sits between ECS success and that Lambda?",
+      "options": {
+        "A": "Amazon SNS topic only — Lambda subscribes with synchronous invoke",
+        "B": "Amazon SQS completion queue — same decoupling pattern as Night 13",
+        "C": "Amazon Kinesis Data Firehose direct PUT from the ECS task ENI",
+        "D": "Amazon API Gateway WebSocket route integrated with the ECS service discovery"
+      }
+    },
+    {
+      "id": "Q14",
+      "question": "Multiple AWS accounts send custom application events to a central account. Rules must match detail fields and invoke different Lambda functions without point-to-point coupling. Which service?",
+      "options": {
+        "A": "Amazon SQS with raw message delivery from each account's IAM user",
+        "B": "Amazon SNS SMS subscriptions filtered by message attributes only",
+        "C": "Amazon EventBridge event buses and rules with event patterns and cross-account policies",
+        "D": "AWS Direct Connect VIF broadcasting application events to on-premises brokers"
+      }
+    },
+    {
+      "id": "Q15",
+      "question": "A stock-trading platform must process orders in strict sequence per symbol with deduplication — duplicates would double-execute trades. Which queue type?",
+      "options": {
+        "A": "Amazon SQS FIFO queue with content-based deduplication enabled",
+        "B": "Amazon SQS standard queue — highest throughput with best-effort ordering",
+        "C": "Amazon SNS standard topic with Lambda subscribers for each symbol",
+        "D": "Amazon EventBridge default bus with rate(1 second) schedule per symbol"
+      }
+    }
+  ]
+}

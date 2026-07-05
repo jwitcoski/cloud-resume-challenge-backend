@@ -98,7 +98,7 @@ const nightlyPlan: NightPlan[] = [
   { night: 25, week: 4, title: "Lab 3C — Route 53 advanced", minutes: [30, 60, 30], blocks: ["Weighted / failover / latency routing", "Health check on witcoskitech.com", "Test subdomain routing lab"], lab: "Cloud Resume Challenge DNS" },
   { night: 26, week: 4, title: "CloudFront + API performance", minutes: [30, 60, 30], blocks: ["Cache behaviors for /api/* paths", "API Gateway throttling", "Build CloudWatch dashboard"], lab: "Global Ski Atlas frontend — wiki-api-production.md" },
   { night: 27, week: 4, title: "EC2 + EBS + Spot", minutes: [40, 50, 30], blocks: ["EBS gp3/io2/st1/sc1 matrix", "Optional: Spot EC2 PMTiles job vs Fargate", "Cost table from AWS_ECS_DEPLOYMENT.md"], lab: "Global Ski Atlas backend — WORLD_SCALE.md" },
-  { night: 28, week: 4, title: "Integration services", minutes: [50, 40, 30], blocks: ["EventBridge vs SQS vs Kinesis vs Step Functions", "AppSync awareness", "25 practice questions (performance)"], lab: undefined },
+  { night: 28, week: 4, title: "Integration services", minutes: [50, 40, 30], blocks: ["EventBridge vs SQS vs Kinesis vs Step Functions", "AppSync awareness", "Draw Night 32 Step Functions capstone"], lab: "Read-only GSA integration audit — night-28-lab-integration-audit.ps1" },
   { night: 29, week: 4, title: "Week 4 review", minutes: [20, 40, 60], blocks: ["Storage class decision tree (S3/EBS/EFS)", "30 practice questions", "Update architecture notes"], lab: undefined },
 
   { night: 30, week: 5, title: "Lab 4A — S3 lifecycle + cost", minutes: [30, 60, 30], blocks: ["Lifecycle rules on old pipeline prefixes", "Cost Explorer top services", "AWS Budget alert"], lab: "globalskiatlas-backend-k8s-output" },

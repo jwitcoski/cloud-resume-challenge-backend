@@ -1,0 +1,82 @@
+{
+  "night": 28,
+  "title": "Integration services",
+  "answerDistribution": { "A": 4, "B": 4, "C": 4, "D": 3 },
+  "answers": [
+    {
+      "id": "Q1",
+      "correct": "C",
+      "explanation": "SQS standard = pull buffer for worker pools — Night 13 Iceland completion pattern."
+    },
+    {
+      "id": "Q2",
+      "correct": "B",
+      "explanation": "AppSync = managed GraphQL + real-time subscriptions — awareness section Night 28."
+    },
+    {
+      "id": "Q3",
+      "correct": "A",
+      "explanation": "Kinesis Data Streams = custom consumers + replay — vs Firehose managed delivery."
+    },
+    {
+      "id": "Q4",
+      "correct": "D",
+      "explanation": "Firehose = managed streaming delivery to S3/OpenSearch without custom consumers."
+    },
+    {
+      "id": "Q5",
+      "correct": "B",
+      "explanation": "Monthly one-shot Fargate → EventBridge schedule + ecs:RunTask — Night 12."
+    },
+    {
+      "id": "Q6",
+      "correct": "C",
+      "explanation": "Multi-step retry/Catch orchestration → Step Functions Standard — Night 32 capstone."
+    },
+    {
+      "id": "Q7",
+      "correct": "A",
+      "explanation": "Failure fan-out to email + SQS inbox → SNS — Night 14 pattern."
+    },
+    {
+      "id": "Q8",
+      "correct": "D",
+      "explanation": "High-volume short flows without long audit history → Step Functions Express."
+    },
+    {
+      "id": "Q9",
+      "correct": "B",
+      "explanation": "ECS Task State Change → EventBridge rule → SQS — Night 13 without container changes."
+    },
+    {
+      "id": "Q10",
+      "correct": "C",
+      "explanation": "One publish, many durable queues → SNS fan-out to multiple SQS subscriptions."
+    },
+    {
+      "id": "Q11",
+      "correct": "A",
+      "explanation": "FailedInvocations with zero Invocations = target invoke failed — Night 12/14 alarm trap."
+    },
+    {
+      "id": "Q12",
+      "correct": "D",
+      "explanation": "IoT video ingest awareness → Kinesis Video Streams — not GSA batch pipeline."
+    },
+    {
+      "id": "Q13",
+      "correct": "B",
+      "explanation": "Night 32 capstone keeps SQS buffer between ECS success and Lambda uploader — gsa-integration-map.md."
+    },
+    {
+      "id": "Q14",
+      "correct": "C",
+      "explanation": "Cross-account event routing with patterns → EventBridge buses and rules."
+    },
+    {
+      "id": "Q15",
+      "correct": "A",
+      "explanation": "Strict order + dedup → SQS FIFO — contrast standard queue Night 13 completions."
+    }
+  ]
+}

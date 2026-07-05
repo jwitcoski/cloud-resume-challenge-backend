@@ -98,7 +98,7 @@ $emailSubArn = $null
 if ($Email) {
     $emailSubArn = aws sns subscribe --topic-arn $topicArn --protocol email `
         --notification-endpoint $Email --region $Region --query 'SubscriptionArn' --output text
-    Write-Host "Email subscription pending confirmation for $Email — check inbox."
+    Write-Host "Email subscription pending confirmation for $Email - check inbox."
 }
 
 # --- EventBridge failure rule ---
@@ -111,7 +111,7 @@ $patternObj = @{
         stopCode = @('EssentialContainerExited')
         clusterArn = @($ClusterArn)
         taskDefinitionArn = @(@{ prefix = $TaskDefPrefix })
-        containers = @{ exitCode = @(@{ numeric = @('!=', 0) }) }
+        containers = @{ exitCode = @(@{ 'anything-but' = @(0) }) }
     }
 }
 $patternFile = Join-Path $TmpDir 'failure-pattern.json'
@@ -151,7 +151,7 @@ if ($alarmExists -and $alarmExists -ne 'None') {
         --region $Region | Out-Null
     Write-Host "CloudWatch alarm $AlarmName now publishes to SNS."
 } else {
-    Write-Host "Alarm $AlarmName not found — run Night 12 setup first to wire FailedInvocations."
+    Write-Host "Alarm $AlarmName not found - run Night 12 setup first to wire FailedInvocations."
 }
 
 if ($TestPublish) {
