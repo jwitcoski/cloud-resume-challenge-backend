@@ -1,0 +1,157 @@
+{
+  "night": 29,
+  "title": "Week 4 review — storage, analytics, edge, compute, integration",
+  "answerDistribution": { "A": 8, "B": 7, "C": 8, "D": 7 },
+  "answers": [
+    {
+      "id": "Q1",
+      "correct": "A",
+      "explanation": "Durable Iceland pipeline output belongs in S3; local EBS/Instance Store is scratch only — Night 27 storage tree."
+    },
+    {
+      "id": "Q2",
+      "correct": "B",
+      "explanation": "Cache-aside: app GET Redis → miss → SELECT Aurora → SETEX — Night 23; not read-through."
+    },
+    {
+      "id": "Q3",
+      "correct": "C",
+      "explanation": "Redis replication group for sessions, sorted sets, and Multi-AZ failover — Night 23 Redis vs Memcached."
+    },
+    {
+      "id": "Q4",
+      "correct": "D",
+      "explanation": "CloudFront = edge HTTP; ElastiCache = in-VPC app objects — Nights 23 + 26 layer table."
+    },
+    {
+      "id": "Q5",
+      "correct": "A",
+      "explanation": "Analytics snapshot SQL on S3/Iceberg via Athena; Aurora stays OLTP — Night 24 decision table."
+    },
+    {
+      "id": "Q6",
+      "correct": "B",
+      "explanation": "Iceberg snapshots enable time travel in Athena — Night 24; not PITR (DynamoDB) or backtrack."
+    },
+    {
+      "id": "Q7",
+      "correct": "C",
+      "explanation": "Partition pruning on country_code reduces TB scanned — Night 24 cost section."
+    },
+    {
+      "id": "Q8",
+      "correct": "D",
+      "explanation": "Redshift for petabyte warehouse BI; Athena for ad hoc lake — Night 24 vs Redshift table."
+    },
+    {
+      "id": "Q9",
+      "correct": "A",
+      "explanation": "Route 53 failover requires health check on PRIMARY — Night 25 routing policy table."
+    },
+    {
+      "id": "Q10",
+      "correct": "B",
+      "explanation": "Latency routing picks lowest latency among defined Regional records — Night 25; not geolocation."
+    },
+    {
+      "id": "Q11",
+      "correct": "C",
+      "explanation": "Alias A/AAAA at apex to CloudFront — CNAME forbidden at zone apex — Night 25."
+    },
+    {
+      "id": "Q12",
+      "correct": "D",
+      "explanation": "Global Accelerator anycast for TCP/UDP non-HTTP — Night 25 vs CloudFront contrast."
+    },
+    {
+      "id": "Q13",
+      "correct": "A",
+      "explanation": "Prod api/wiki* uses CachingDisabled — every request hits origin — Night 26 wiki-api-production.md."
+    },
+    {
+      "id": "Q14",
+      "correct": "B",
+      "explanation": "Per-partner limits → usage plan + API key — Night 26 throttling layers."
+    },
+    {
+      "id": "Q15",
+      "correct": "C",
+      "explanation": "Edge-cache anonymous GETs safely; Authorization in cache key only when variants are safe — Night 26 trap."
+    },
+    {
+      "id": "Q16",
+      "correct": "D",
+      "explanation": "gp3 default general-purpose SSD boot/data — Night 27 volume matrix."
+    },
+    {
+      "id": "Q17",
+      "correct": "A",
+      "explanation": "io2 for highest random IOPS DB on EC2 — Night 27; managed DB questions use RDS/Aurora."
+    },
+    {
+      "id": "Q18",
+      "correct": "B",
+      "explanation": "st1 for large sequential throughput HDD — Night 27 IOPS vs throughput table."
+    },
+    {
+      "id": "Q19",
+      "correct": "C",
+      "explanation": "EFS shared NFS across many Batch workers — Night 27 EFS vs EBS table."
+    },
+    {
+      "id": "Q20",
+      "correct": "D",
+      "explanation": "Spot with S3 checkpoints for interruptible stateless batch — Night 27 purchasing options."
+    },
+    {
+      "id": "Q21",
+      "correct": "A",
+      "explanation": "EventBridge cron schedule → ECS RunTask — Night 12 / gsa-integration-map.md."
+    },
+    {
+      "id": "Q22",
+      "correct": "B",
+      "explanation": "SQS buffers producer faster than consumer — Night 28 / Night 13 pattern."
+    },
+    {
+      "id": "Q23",
+      "correct": "C",
+      "explanation": "SNS fan-out to three SQS queues — one durable queue per team — Night 28 combo #3."
+    },
+    {
+      "id": "Q24",
+      "correct": "D",
+      "explanation": "Firehose managed near-real-time S3 delivery without custom consumers — Night 28 Kinesis table."
+    },
+    {
+      "id": "Q25",
+      "correct": "A",
+      "explanation": "Kinesis Data Streams for multiple custom consumers with replay — Night 28 Streams vs Firehose."
+    },
+    {
+      "id": "Q26",
+      "correct": "B",
+      "explanation": "Step Functions Express for high-volume short flows without audit history — Night 28."
+    },
+    {
+      "id": "Q27",
+      "correct": "C",
+      "explanation": "ECS success → EventBridge rule → SQS completion queue — Night 13 / gsa-integration-map.md."
+    },
+    {
+      "id": "Q28",
+      "correct": "D",
+      "explanation": "FailedInvocations with Invocations=0 = rule could not call target (IAM/config) — Night 28 traps."
+    },
+    {
+      "id": "Q29",
+      "correct": "A",
+      "explanation": "Rarely accessed compliance archives → Glacier via lifecycle — Night 29 storage tree / Night 30 preview."
+    },
+    {
+      "id": "Q30",
+      "correct": "C",
+      "explanation": "DAX is DynamoDB-specific microsecond cache — Night 23 ElastiCache vs DAX table."
+    }
+  ]
+}
