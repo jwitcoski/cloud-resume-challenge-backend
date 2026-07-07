@@ -1,0 +1,20 @@
+{
+  "ID": "saa-study-night30-iceland-archive",
+  "Status": "Enabled",
+  "Filter": {
+    "Prefix": "iceland/"
+  },
+  "Transitions": [
+    {
+      "Days": 90,
+      "StorageClass": "STANDARD_IA"
+    },
+    {
+      "Days": 365,
+      "StorageClass": "GLACIER"
+    }
+  ],
+  "AbortIncompleteMultipartUpload": {
+    "DaysAfterInitiation": 7
+  }
+}

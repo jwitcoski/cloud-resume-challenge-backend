@@ -796,6 +796,30 @@ export const studyNights: StudyNight[] = [
     reviewedServiceIds: ["eventbridge", "sqs", "sns", "kinesis", "step-functions", "appsync"],
     completedCheckpointIds: ["d2-t1-cp-1", "d3-t5-cp-0"],
   },
+  {
+    night: 29,
+    week: 4,
+    title: "Week 4 review",
+    completedDate: "2026-07-04",
+    lab: "Paper architecture + storage decision tree — night-29-week-4-review.md",
+    practiceScore: undefined,
+    notes:
+      "Week 4 synthesis (Nights 23–28): storage class decision tree, three-layer cache + analytics map, 30-question timed quiz (night-29-quiz.json). $0 deploy night. Target ≥24/30 before Night 30. Night 30 — Lab 4A S3 lifecycle + cost.",
+    reviewedServiceIds: ["s3", "athena", "cloudfront", "elasticache", "route53", "ec2"],
+    completedCheckpointIds: ["d4-t1-cp-0", "d3-t1-cp-0"],
+  },
+  {
+    night: 30,
+    week: 5,
+    title: "Lab 4A — S3 lifecycle + cost",
+    completedDate: "2026-07-06",
+    lab: "Lifecycle on globalskiatlas-backend-k8s-output iceland/ + Cost Explorer — night-30-lab-s3-lifecycle-setup.ps1",
+    practiceScore: undefined,
+    notes:
+      "Created night-30-s3-lifecycle-cost.md + gsa-s3-lifecycle-map.md + lifecycle lab (merge rule saa-study-night30-iceland-archive, Cost Explorer top services, optional Budget). Quiz night-30-quiz.json (15 Q). Applies Night 29 storage tree to real GSA bucket prefixes. Night 31 — Fargate right-sizing.",
+    reviewedServiceIds: ["s3", "glacier", "cost-explorer", "budgets"],
+    completedCheckpointIds: ["d4-t1-cp-1", "d4-t1-cp-2"],
+  },
 ];
 
 /** Merge all completed nights into default checklist state for first-time visitors. */

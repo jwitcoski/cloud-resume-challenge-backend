@@ -1,0 +1,82 @@
+{
+  "night": 30,
+  "title": "Lab 4A — S3 lifecycle + cost",
+  "answerDistribution": { "A": 4, "B": 4, "C": 4, "D": 3 },
+  "answers": [
+    {
+      "id": "Q1",
+      "correct": "C",
+      "explanation": "Age-based lifecycle on iceland/ prefix → Standard-IA → Glacier — Night 30 lab + gsa-s3-lifecycle-map.md."
+    },
+    {
+      "id": "Q2",
+      "correct": "B",
+      "explanation": "30-day minimum in current class before transition to Standard-IA — Night 30 Block 1 exam minimums."
+    },
+    {
+      "id": "Q3",
+      "correct": "A",
+      "explanation": "Intelligent-Tiering auto-moves unknown access patterns — storage class ladder Night 29/30."
+    },
+    {
+      "id": "Q4",
+      "correct": "D",
+      "explanation": "AWS Budgets sends threshold/forecast email alerts — Cost Explorer visualizes only."
+    },
+    {
+      "id": "Q5",
+      "correct": "B",
+      "explanation": "CUR exports detailed billing line items to S3 for Athena/custom analysis."
+    },
+    {
+      "id": "Q6",
+      "correct": "A",
+      "explanation": "One Zone-IA cheaper but single-AZ risk — OK when data is reproducible."
+    },
+    {
+      "id": "Q7",
+      "correct": "C",
+      "explanation": "Lifecycle lowers storage $; Glacier restore still billed — Night 30 flashcard #3."
+    },
+    {
+      "id": "Q8",
+      "correct": "D",
+      "explanation": "AbortIncompleteMultipartUpload after N days — Night 30 lifecycle rule + cost hygiene."
+    },
+    {
+      "id": "Q9",
+      "correct": "B",
+      "explanation": "Lifecycle prefix filters are exact — typo = no matching objects transitioned."
+    },
+    {
+      "id": "Q10",
+      "correct": "A",
+      "explanation": "Hot current-month pipeline output stays S3 Standard — IA adds retrieval fees."
+    },
+    {
+      "id": "Q11",
+      "correct": "C",
+      "explanation": "NoncurrentVersionTransitions require versioning enabled on the bucket."
+    },
+    {
+      "id": "Q12",
+      "correct": "B",
+      "explanation": "VPC endpoints reduce NAT Gateway processed bytes — Nights 8–10 egress pattern."
+    },
+    {
+      "id": "Q13",
+      "correct": "D",
+      "explanation": "Expiration without replication/backup = data loss risk — pair with DR (Night 19)."
+    },
+    {
+      "id": "Q14",
+      "correct": "A",
+      "explanation": "Glacier Deep Archive lowest archive $; retrieval in hours — exam archive tier."
+    },
+    {
+      "id": "Q15",
+      "correct": "C",
+      "explanation": "Durable Iceland output is S3 — EBS/Instance Store is ephemeral scratch (Nights 27/29)."
+    }
+  ]
+}
