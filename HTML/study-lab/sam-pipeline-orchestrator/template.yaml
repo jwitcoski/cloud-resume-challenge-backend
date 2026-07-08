@@ -1,0 +1,125 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: GSA Night 32 — Step Functions capstone orchestrating Iceland ECS → SQS → Lambda → SNS
+
+Parameters:
+  StudyPrefix:
+    Type: String
+    Default: saa-study-gsa
+    Description: Study-lab resource prefix (matches Nights 12–17)
+  ClusterName:
+    Type: String
+    Default: globalskiatlas-backend-k8s
+  TaskDefinitionFamily:
+    Type: String
+    Default: globalskiatlas-backend-k8s-iceland
+  PrivateSubnetA:
+    Type: String
+    Description: First private subnet for Fargate awsvpc
+  PrivateSubnetB:
+    Type: String
+    Description: Second private subnet for Fargate awsvpc
+  FargateSecurityGroupId:
+    Type: String
+    Description: Security group for Iceland Fargate tasks
+  CompletionQueueUrl:
+    Type: String
+    Description: Night 13 completion queue URL
+  AlertsTopicArn:
+    Type: String
+    Description: Night 14 SNS alerts topic ARN
+  StatsUploaderFunctionArn:
+    Type: String
+    Description: Night 17 stats uploader Lambda ARN
+  EcsExecutionRoleArn:
+    Type: String
+    Description: ECS task execution role ARN (iam:PassRole)
+  EcsTaskRoleArn:
+    Type: String
+    Description: ECS task role ARN (iam:PassRole)
+  ScheduleExpression:
+    Type: String
+    Default: 'cron(0 6 1 * ? *)'
+    Description: Monthly Iceland pipeline schedule (UTC)
+
+Resources:
+  PipelineOrchestrator:
+    Type: AWS::Serverless::StateMachine
+    Properties:
+      Name: !Sub '${StudyPrefix}-iceland-pipeline'
+      Type: STANDARD
+      DefinitionUri: statemachine/pipeline.asl.json
+      DefinitionSubstitutions:
+        ClusterArn: !Sub 'arn:aws:ecs:${AWS::Region}:${AWS::AccountId}:cluster/${ClusterName}'
+        TaskDefinitionArn: !Sub 'arn:aws:ecs:${AWS::Region}:${AWS::AccountId}:task-definition/${TaskDefinitionFamily}'
+        PrivateSubnetA: !Ref PrivateSubnetA
+        PrivateSubnetB: !Ref PrivateSubnetB
+        FargateSecurityGroupId: !Ref FargateSecurityGroupId
+        CompletionQueueUrl: !Ref CompletionQueueUrl
+        AlertsTopicArn: !Ref AlertsTopicArn
+        StatsUploaderFunctionArn: !Ref StatsUploaderFunctionArn
+      Policies:
+        - Statement:
+            - Effect: Allow
+              Action:
+                - ecs:RunTask
+                - ecs:StopTask
+                - ecs:DescribeTasks
+              Resource: '*'
+            - Effect: Allow
+              Action: iam:PassRole
+              Resource:
+                - !Ref EcsExecutionRoleArn
+                - !Ref EcsTaskRoleArn
+            - Effect: Allow
+              Action: sqs:SendMessage
+              Resource: !Sub 'arn:aws:sqs:${AWS::Region}:${AWS::AccountId}:${StudyPrefix}-iceland-completion'
+            - Effect: Allow
+              Action: lambda:InvokeFunction
+              Resource: !Ref StatsUploaderFunctionArn
+            - Effect: Allow
+              Action: sns:Publish
+              Resource: !Ref AlertsTopicArn
+
+  PipelineScheduleRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub '${StudyPrefix}-sfn-schedule'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: events.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: start-pipeline
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: states:StartExecution
+                Resource: !Ref PipelineOrchestrator
+
+  PipelineMonthlySchedule:
+    Type: AWS::Events::Rule
+    Properties:
+      Name: !Sub '${StudyPrefix}-iceland-monthly-sfn'
+      Description: Night 32 — trigger Iceland Step Functions pipeline monthly
+      ScheduleExpression: !Ref ScheduleExpression
+      State: ENABLED
+      Targets:
+        - Id: iceland-sfn
+          Arn: !Ref PipelineOrchestrator
+          RoleArn: !GetAtt PipelineScheduleRole.Arn
+
+Outputs:
+  StateMachineArn:
+    Description: Iceland pipeline Step Functions state machine ARN
+    Value: !Ref PipelineOrchestrator
+  StateMachineName:
+    Description: State machine name
+    Value: !Sub '${StudyPrefix}-iceland-pipeline'
+  ScheduleRuleName:
+    Description: EventBridge schedule rule that starts the state machine
+    Value: !Sub '${StudyPrefix}-iceland-monthly-sfn'

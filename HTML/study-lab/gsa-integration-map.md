@@ -57,6 +57,8 @@ CloudWatch alarm (Night 12/14)
 
 ## Night 32 capstone target (Step Functions)
 
+**Night 32 deploys** `sam-pipeline-orchestrator` in `study-lab/sam-pipeline-orchestrator/` — see `gsa-stepfunctions-map.md` and `night-32-stepfunctions-capstone.md`.
+
 Tonight you **design** this; Night 32 **deploys** `sam-pipeline-orchestrator`:
 
 ```

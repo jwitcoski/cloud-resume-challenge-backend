@@ -1,0 +1,82 @@
+{
+  "night": 32,
+  "title": "Lab 4C — Step Functions capstone",
+  "answerDistribution": { "A": 4, "B": 4, "C": 4, "D": 3 },
+  "answers": [
+    {
+      "id": "Q1",
+      "correct": "C",
+      "explanation": "Multi-step orchestration with per-step Retry/Catch → Step Functions Standard — gsa-stepfunctions-map.md capstone."
+    },
+    {
+      "id": "Q2",
+      "correct": "A",
+      "explanation": "runTask.sync blocks until ECS task STOPPED — Night 32 Block 1 integration table."
+    },
+    {
+      "id": "Q3",
+      "correct": "B",
+      "explanation": "After Retry exhausts, Catch transitions to PublishFailureAlert → SNS — ASL error handling."
+    },
+    {
+      "id": "Q4",
+      "correct": "B",
+      "explanation": "Two enabled schedules → double RunTask — lab disables legacy rule by default."
+    },
+    {
+      "id": "Q5",
+      "correct": "C",
+      "explanation": "RunTask requires iam:PassRole on ECS execution + task roles — SAM template Policies block."
+    },
+    {
+      "id": "Q6",
+      "correct": "B",
+      "explanation": "High-volume sub-5-min flows with optional discarded history → Express — exam contrast with Standard."
+    },
+    {
+      "id": "Q7",
+      "correct": "B",
+      "explanation": "SQS keeps durable buffer and Night 17 consumer path — integration map Night 32 target."
+    },
+    {
+      "id": "Q8",
+      "correct": "C",
+      "explanation": "Lambda invoke succeeds on 200 response; Catch only on thrown/task failure — not business errors in payload."
+    },
+    {
+      "id": "Q9",
+      "correct": "A",
+      "explanation": "Standard workflows bill per state transition — Night 32 exam minimums."
+    },
+    {
+      "id": "Q10",
+      "correct": "B",
+      "explanation": "Disable Night 13 success rule when SFN sendMessage owns enqueue — -DisableSuccessRule flag."
+    },
+    {
+      "id": "Q11",
+      "correct": "B",
+      "explanation": "Human approval → .waitForTaskToken + SendTaskSuccess — Night 28 Step Functions preview."
+    },
+    {
+      "id": "Q12",
+      "correct": "B",
+      "explanation": "Non-zero exit fails runTask.sync state → Catch → SNS; FailedInvocations is for target never invoked."
+    },
+    {
+      "id": "Q13",
+      "correct": "C",
+      "explanation": "PublishSuccess uses arn:aws:states:::sns:publish — pipeline.asl.json."
+    },
+    {
+      "id": "Q14",
+      "correct": "B",
+      "explanation": "Express max 5 minutes — Iceland batch up to ~2 hours needs Standard."
+    },
+    {
+      "id": "Q15",
+      "correct": "B",
+      "explanation": "Single cron RunTask loses orchestration visibility and per-step error routing — why Night 32 exists."
+    }
+  ]
+}

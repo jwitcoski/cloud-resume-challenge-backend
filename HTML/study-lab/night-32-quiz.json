@@ -1,0 +1,160 @@
+{
+  "night": 32,
+  "title": "Lab 4C — Step Functions capstone",
+  "topic": "Step Functions Standard vs Express, ECS runTask.sync, SQS/Lambda/SNS service integrations, Retry/Catch, iam:PassRole, GSA Iceland pipeline orchestration, migration from EventBridge chain",
+  "format": "15 timed scenario questions (~24 min, ~96 sec each). Reinforces night-32-stepfunctions-capstone.md and gsa-stepfunctions-map.md. Answer without peeking at night-32-quiz-answers.json first.",
+  "answerKey": "night-32-quiz-answers.json",
+  "answerDistribution": "A×4 B×4 C×4 D×3 — options shuffled so correct letter varies",
+  "questions": [
+    {
+      "id": "Q1",
+      "question": "Global Ski Atlas needs a monthly workflow: run Iceland Fargate for up to two hours, enqueue completion to SQS, invoke a stats Lambda, and route failures to SNS with different retry counts per step. Which service is the best orchestration fit?",
+      "options": {
+        "A": "EventBridge schedule with five separate rules only",
+        "B": "SQS FIFO queue with a single consumer",
+        "C": "Step Functions Standard workflow",
+        "D": "Kinesis Data Firehose delivery stream"
+      }
+    },
+    {
+      "id": "Q2",
+      "question": "The capstone uses `arn:aws:states:::ecs:runTask.sync` for Iceland. What does the `.sync` suffix mean for the state machine?",
+      "options": {
+        "A": "Step Functions waits until the ECS task reaches STOPPED before advancing",
+        "B": "ECS pushes a callback token when the container starts",
+        "C": "The task runs synchronously inside the Lambda runtime",
+        "D": "EventBridge forwards ECS events without waiting"
+      }
+    },
+    {
+      "id": "Q3",
+      "question": "A Step Functions `RunTask` state fails with `ECS.AmazonECSException` after two retries. The ASL has a `Catch` to `PublishFailureAlert` (SNS). What happens next?",
+      "options": {
+        "A": "The execution ends successfully because Retry ran",
+        "B": "The Catch state runs and publishes to the Night 14 alerts topic",
+        "C": "SQS automatically moves the message to the DLQ",
+        "D": "EventBridge disables the monthly schedule rule"
+      }
+    },
+    {
+      "id": "Q4",
+      "question": "Night 32 deploys a new EventBridge rule `saa-study-gsa-iceland-monthly-sfn` targeting the state machine. The legacy `saa-study-gsa-iceland-monthly` rule still targets ECS directly. What is the operational risk?",
+      "options": {
+        "A": "SNS subscriptions are deleted",
+        "B": "Two Iceland Fargate tasks may start on the same schedule",
+        "C": "Step Functions Express history is truncated",
+        "D": "SQS FIFO ordering is violated"
+      }
+    },
+    {
+      "id": "Q5",
+      "question": "Which IAM permission must the Step Functions execution role have for `ecs:RunTask` on the Iceland task definition?",
+      "options": {
+        "A": "s3:PutObject on the output bucket only",
+        "B": "lambda:InvokeFunction on the stats uploader",
+        "C": "iam:PassRole to the ECS execution role and task role",
+        "D": "events:PutTargets on the legacy monthly rule"
+      }
+    },
+    {
+      "id": "Q6",
+      "question": "An exam scenario needs sub-minute fan-out of thousands of short payment authorizations with optional discarded execution history. Which Step Functions type fits?",
+      "options": {
+        "A": "Standard — full audit trail for every authorization",
+        "B": "Express — high volume, short duration, lower per-execution overhead",
+        "C": "Standard with `.waitForTaskToken` on every step",
+        "D": "SQS standard queue without orchestration"
+      }
+    },
+    {
+      "id": "Q7",
+      "question": "After `RunIcelandTask` succeeds, the capstone sends a message to `saa-study-gsa-iceland-completion` via `sqs:sendMessage`. Why keep SQS instead of only synchronous Lambda invoke?",
+      "options": {
+        "A": "SQS is required because Lambda cannot be invoked from Step Functions",
+        "B": "Durable buffer + existing Night 17 event source mapping / decoupled replay path",
+        "C": "SQS schedules cron expressions for monthly runs",
+        "D": "SNS fan-out is slower than SQS for all workloads"
+      }
+    },
+    {
+      "id": "Q8",
+      "question": "In the Night 32 ASL, `InvokeStatsUploader` has Retry on `Lambda.ServiceException` but Catch on `States.ALL` to SNS. Lambda returns a handled error in the payload with HTTP 200. What happens?",
+      "options": {
+        "A": "Catch runs immediately because the function returned JSON",
+        "B": "Retry runs because ServiceException was not thrown",
+        "C": "The Task state succeeds and the workflow continues to PublishSuccess",
+        "D": "The execution pauses until the DLQ redrives"
+      }
+    },
+    {
+      "id": "Q9",
+      "question": "How does AWS primarily bill Step Functions Standard workflows?",
+      "options": {
+        "A": "Per state transition (and duration for some integrations)",
+        "B": "Per ECS cluster hour regardless of executions",
+        "C": "Per SNS email delivery only",
+        "D": "Flat monthly fee per state machine definition"
+      }
+    },
+    {
+      "id": "Q10",
+      "question": "Night 28 used EventBridge `saa-study-gsa-iceland-success-to-sqs` on ECS Task State Change. Night 32 Step Functions also `sendMessage`s to the same queue. What should you do to avoid duplicate completion messages?",
+      "options": {
+        "A": "Delete the SQS queue and recreate it",
+        "B": "Disable the legacy success EventBridge rule or remove its target when SFN owns enqueue",
+        "C": "Switch the queue to FIFO with content-based deduplication only",
+        "D": "Replace SNS with Kinesis Data Streams"
+      }
+    },
+    {
+      "id": "Q11",
+      "question": "A human approval gate is required mid-workflow before publishing ski stats to production Aurora. Which Step Functions pattern applies?",
+      "options": {
+        "A": "Express workflow with `ecs:runTask` only",
+        "B": "Task state with `.waitForTaskToken` until an operator calls `SendTaskSuccess`",
+        "C": "SQS long polling from the state machine definition",
+        "D": "CloudWatch alarm action on FailedInvocations"
+      }
+    },
+    {
+      "id": "Q12",
+      "question": "The Iceland container exits with code 1 after starting. With `runTask.sync`, how should the capstone surface failure to operators?",
+      "options": {
+        "A": "CloudWatch FailedInvocations on the schedule rule — container ran",
+        "B": "The RunTask state fails; Catch routes to SNS failure publish",
+        "C": "SQS redrive policy sends email automatically",
+        "D": "Step Functions Express discards the error"
+      }
+    },
+    {
+      "id": "Q13",
+      "question": "Which integration ARN publishes a success notification to the existing `saa-study-gsa-iceland-alerts` topic at the end of a happy path?",
+      "options": {
+        "A": "arn:aws:states:::sqs:sendMessage",
+        "B": "arn:aws:states:::ecs:runTask",
+        "C": "arn:aws:states:::sns:publish",
+        "D": "arn:aws:states:::events:putEvents"
+      }
+    },
+    {
+      "id": "Q14",
+      "question": "Why is Step Functions Standard (not Express) correct for the Iceland capstone?",
+      "options": {
+        "A": "Express cannot integrate with SNS",
+        "B": "Express max duration is five minutes — Iceland may run two hours",
+        "C": "Standard cannot use Catch states",
+        "D": "Express requires FIFO SQS as the first state"
+      }
+    },
+    {
+      "id": "Q15",
+      "question": "A teammate suggests replacing the entire Night 32 state machine with a single EventBridge cron → `ecs:RunTask` like Night 12. What capability would they lose?",
+      "options": {
+        "A": "Ability to run Fargate in private subnets",
+        "B": "Per-step Retry/Catch, synchronous wait for STOPPED, and visible multi-step execution graph",
+        "C": "Writing output to S3",
+        "D": "Using IAM roles on ECS tasks"
+      }
+    }
+  ]
+}
