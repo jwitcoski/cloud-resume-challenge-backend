@@ -820,6 +820,18 @@ export const studyNights: StudyNight[] = [
     reviewedServiceIds: ["s3", "glacier", "cost-explorer", "budgets"],
     completedCheckpointIds: ["d4-t1-cp-1", "d4-t1-cp-2"],
   },
+  {
+    night: 31,
+    week: 5,
+    title: "Lab 4B — Fargate right-sizing",
+    completedDate: "2026-07-07",
+    lab: "Read-only Iceland task def audit + cost table — night-31-lab-fargate-rightsizing-setup.ps1",
+    practiceScore: "11/15",
+    notes:
+      "Quiz (night-31-quiz.json): 11/15 — missed Q3 (flexible 1-yr Fargate+Lambda+EC2 commit → Compute Savings Plan, not RDS RI), Q5 (2 vCPU + 512 MiB fails Fargate CPU/memory minimums, not task-role name), Q7 (planet-scale PMTiles → AWS Batch on Spot, not single 24/7 Fargate), Q12 (Savings Plans flexible spend commit vs RIs lock EC2 attributes — not SP requiring identical instance/AZ). Solid on right-size before purchase models (Q1), Fargate Spot (Q2), vCPU-GB-second billing (Q4), OOM fix (Q6), Compute Optimizer RunTask gap (Q8), monthly cron cost (Q9), S3 durable output (Q10), NAT vs endpoints (Q11), ephemeral GiB-hour (Q13), CloudWatch percentiles (Q14), public IP trap (Q15). Live task def already 1 vCPU / 2 GiB. Night 32 — Step Functions capstone.",
+    reviewedServiceIds: ["fargate", "ecs", "cloudwatch", "cost-explorer"],
+    completedCheckpointIds: ["d4-t1-cp-2"],
+  },
 ];
 
 /** Merge all completed nights into default checklist state for first-time visitors. */

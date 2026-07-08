@@ -1,0 +1,78 @@
+{
+  "description": "Night 31 study scenarios — compare CPU/memory for GSA pipeline tasks. Refresh iceland-current from: aws ecs describe-task-definition --task-definition globalskiatlas-backend-k8s-iceland",
+  "region": "us-east-1",
+  "platform": "LINUX/X86_64",
+  "assumedRunHours": 2.0,
+  "scenarios": [
+    {
+      "id": "iceland-current",
+      "label": "Iceland monthly pipeline (live task def — refresh via describe-task-definition)",
+      "taskFamily": "globalskiatlas-backend-k8s-iceland",
+      "cpu": 1024,
+      "memoryMiB": 2048,
+      "vcpu": 1,
+      "memoryGiB": 2,
+      "ephemeralStorageGiB": 21,
+      "launchType": "FARGATE",
+      "notes": "Live as of Night 31 lab — was 2048/4096 in early Night 10 notes; verify before further downsizing"
+    },
+    {
+      "id": "iceland-legacy-prod",
+      "label": "Iceland previous sizing (study baseline)",
+      "taskFamily": "globalskiatlas-backend-k8s-iceland",
+      "cpu": 2048,
+      "memoryMiB": 4096,
+      "vcpu": 2,
+      "memoryGiB": 4,
+      "ephemeralStorageGiB": 21,
+      "launchType": "FARGATE",
+      "notes": "Night 10 / iceland-pipeline-compute.md original estimate — compare savings after rightsizing"
+    },
+    {
+      "id": "iceland-rightsized",
+      "label": "Iceland further-downsize candidate",
+      "taskFamily": "globalskiatlas-backend-k8s-iceland",
+      "cpu": 512,
+      "memoryMiB": 1024,
+      "vcpu": 0.5,
+      "memoryGiB": 1,
+      "ephemeralStorageGiB": 21,
+      "launchType": "FARGATE",
+      "notes": "Only if CloudWatch p95 CPU and memory stay under ~40% for several runs at 1 vCPU / 2 GiB"
+    },
+    {
+      "id": "pmtiles-heavy",
+      "label": "PMTiles / WORLD_SCALE parallel build",
+      "taskFamily": "globalskiatlas-backend-k8s-pmtiles",
+      "cpu": 4096,
+      "memoryMiB": 8192,
+      "vcpu": 4,
+      "memoryGiB": 8,
+      "ephemeralStorageGiB": 50,
+      "launchType": "FARGATE",
+      "notes": "CPU-heavy embarrassingly parallel — consider AWS Batch + Spot (Night 27), not monthly Iceland cron"
+    }
+  ],
+  "fargateRatesUsEast1LinuxX86": {
+    "vcpuPerHour": 0.04048,
+    "gbPerHour": 0.004445,
+    "source": "AWS public list price — verify in Pricing Calculator"
+  },
+  "purchaseModels": [
+    {
+      "id": "fargate-on-demand",
+      "discountFactor": 1.0,
+      "examFit": "First deploy, hard deadline, no retry"
+    },
+    {
+      "id": "fargate-spot",
+      "discountFactor": 0.35,
+      "examFit": "Retryable monthly Iceland — ~65% off Fargate OD"
+    },
+    {
+      "id": "compute-savings-plan",
+      "discountFactor": 0.34,
+      "examFit": "Steady Fargate+Lambda+EC2 hours — 1- or 3-year commit"
+    }
+  ]
+}
