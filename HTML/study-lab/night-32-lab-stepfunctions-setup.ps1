@@ -153,8 +153,7 @@ $paramOverrides = @(
     "AlertsTopicArn=$topicArn",
     "StatsUploaderFunctionArn=$statsArn",
     "EcsExecutionRoleArn=$execRoleArn",
-    "EcsTaskRoleArn=$taskRoleArn",
-    'ScheduleExpression=cron(0 6 1 * ? *)'
+    "EcsTaskRoleArn=$taskRoleArn"
 )
 
 Write-Host ''

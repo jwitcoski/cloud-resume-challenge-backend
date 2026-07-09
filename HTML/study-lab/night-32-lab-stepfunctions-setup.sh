@@ -145,8 +145,7 @@ sam deploy --no-confirm-changeset --no-fail-on-empty-changeset \
     "AlertsTopicArn=${TOPIC_ARN}" \
     "StatsUploaderFunctionArn=${STATS_ARN}" \
     "EcsExecutionRoleArn=${EXEC_ROLE_ARN}" \
-    "EcsTaskRoleArn=${TASK_ROLE_ARN}" \
-    "ScheduleExpression=cron(0 6 1 * ? *)"
+    "EcsTaskRoleArn=${TASK_ROLE_ARN}"
 popd >/dev/null
 
 SM_ARN=$(aws_text stepfunctions describe-state-machine \

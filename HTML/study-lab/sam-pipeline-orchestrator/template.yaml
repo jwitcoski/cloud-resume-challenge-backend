@@ -80,6 +80,14 @@ Resources:
             - Effect: Allow
               Action: sns:Publish
               Resource: !Ref AlertsTopicArn
+            - Effect: Allow
+              Action:
+                - events:PutTargets
+                - events:PutRule
+                - events:DescribeRule
+              Resource: !Sub 'arn:${AWS::Partition}:events:${AWS::Region}:${AWS::AccountId}:rule/StepFunctionsGetEventsForECSTaskRule'
+      Logging:
+        Level: 'OFF'
 
   PipelineScheduleRole:
     Type: AWS::IAM::Role
