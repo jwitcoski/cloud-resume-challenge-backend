@@ -832,6 +832,18 @@ export const studyNights: StudyNight[] = [
     reviewedServiceIds: ["fargate", "ecs", "cloudwatch", "cost-explorer"],
     completedCheckpointIds: ["d4-t1-cp-2"],
   },
+  {
+    night: 32,
+    week: 5,
+    title: "Lab 4C — Step Functions capstone",
+    completedDate: "2026-07-08",
+    lab: "Deploy sam-pipeline-orchestrator — night-32-lab-stepfunctions-setup.ps1",
+    practiceScore: "14/15",
+    notes:
+      "Quiz (night-32-quiz.json): 14/15 — missed Q8 (Lambda returns handled error in JSON with HTTP 200 → InvokeStatsUploader Task succeeds and continues to PublishSuccess; Retry/Catch only on integration failure, not business errors in payload). Live execution failed at Lambda invoke because saa-study-gsa-stats-uploader not deployed (Night 17). Deployed saa-study-gsa-iceland-pipeline + saa-study-gsa-iceland-monthly-sfn; disabled legacy Night 12 cron. ECS runTask.sync required events:PutRule on StepFunctionsGetEventsForECSTaskRule. Night 33 — architecture write-up.",
+    reviewedServiceIds: ["step-functions", "eventbridge", "sqs", "sns", "lambda", "ecs"],
+    completedCheckpointIds: ["d2-t1-cp-1"],
+  },
 ];
 
 /** Merge all completed nights into default checklist state for first-time visitors. */
