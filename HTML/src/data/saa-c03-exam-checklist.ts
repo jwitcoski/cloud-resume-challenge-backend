@@ -844,6 +844,18 @@ export const studyNights: StudyNight[] = [
     reviewedServiceIds: ["step-functions", "eventbridge", "sqs", "sns", "lambda", "ecs"],
     completedCheckpointIds: ["d2-t1-cp-1"],
   },
+  {
+    night: 33,
+    week: 5,
+    title: "Architecture write-up + Well-Architected",
+    completedDate: "2026-07-08",
+    lab: "Read-only GSA full-stack tier audit — night-33-lab-architecture-audit.ps1",
+    practiceScore: "13/15",
+    notes:
+      "Quiz (night-33-quiz.json): 13/15 — missed Q5 (edge security → Cognito JWT on mutating wiki methods, not CachingDisabled as attack-surface control), Q13 (trap pairing → public S3 + Config NON_COMPLIANT while CloudFront works → OAC + private bucket, not Athena for live UPSERT / Instance Store / ElastiCache as source of truth). Architecture audit 4/6 tiers live (edge, application, pipeline, network). Both legacy and SFN Iceland schedules present — document double-RunTask risk. Night 34 — Week 5 review + mock exam block.",
+    reviewedServiceIds: ["well-architected", "cloudfront", "api-gateway", "cognito", "ecs", "s3"],
+    completedCheckpointIds: ["d4-t1-cp-0", "d4-t4-cp-0"],
+  },
 ];
 
 /** Merge all completed nights into default checklist state for first-time visitors. */
