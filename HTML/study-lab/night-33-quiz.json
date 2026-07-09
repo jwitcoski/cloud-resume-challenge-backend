@@ -1,0 +1,160 @@
+{
+  "night": 33,
+  "title": "Architecture write-up — GSA full stack + Well-Architected",
+  "topic": "Six architectural tiers, Well-Architected pillars, security/resilience/cost wins per tier, OLTP vs analytics, edge vs in-VPC cache, integration vs orchestration, portfolio synthesis",
+  "format": "15 timed scenario questions (~24 min, ~96 sec each). Reinforces night-33-architecture-writeup.md and gsa-architecture-map.md. Answer without peeking at night-33-quiz-answers.json first.",
+  "answerKey": "night-33-quiz-answers.json",
+  "answerDistribution": "A×4 B×4 C×4 D×3 — options shuffled so correct letter varies",
+  "questions": [
+    {
+      "id": "Q1",
+      "question": "An interviewer asks which Well-Architected pillar is best demonstrated by Step Functions execution history, per-step Catch routing, and the Night 26 CloudWatch dashboard for CloudFront cache hit rate. Which pillar fits both?",
+      "options": {
+        "A": "Cost Optimization — because Step Functions charges per transition",
+        "B": "Operational Excellence — runbooks, observability, and controlled change",
+        "C": "Sustainability — fewer EC2 instances running overnight",
+        "D": "Performance Efficiency — faster state transitions at the edge"
+      }
+    },
+    {
+      "id": "Q2",
+      "question": "Global Ski Atlas wiki static HTML is served from S3 via CloudFront with CachingOptimized, while resort_stats JSON is cached in ElastiCache Redis inside the VPC. A junior architect proposes replacing Redis with CloudFront for DB rows. What is the best response?",
+      "options": {
+        "A": "Agree — one CDN layer is always simpler",
+        "B": "Use DynamoDB DAX instead of both layers",
+        "C": "Reject — CloudFront caches HTTP responses at the edge; Redis caches application objects near Aurora in the VPC",
+        "D": "Move Aurora into CloudFront as a custom origin"
+      }
+    },
+    {
+      "id": "Q3",
+      "question": "For the GSA pipeline tier, which combination best satisfies Security, Reliability, and Cost in one design?",
+      "options": {
+        "A": "Public subnet Fargate with 0.0.0.0/0 on the task SG, EBS for durable output, 24/7 ECS service",
+        "B": "Private subnet scheduled Fargate, task role scoped to S3 output prefix, SQS DLQ + SNS failure fan-out, lifecycle on old iceland/ months",
+        "C": "Lambda with 15-minute timeout for the full Iceland download, Instance Store for GeoParquet",
+        "D": "Single-AZ NAT in two AZs with no endpoints — simplest networking"
+      }
+    },
+    {
+      "id": "Q4",
+      "question": "A report asks 'average resorts per country for the last three years.' Live wiki counters update in DynamoDB; historical aggregates live in S3 Iceberg. Which query path matches the analytics tier?",
+      "options": {
+        "A": "Aurora writer endpoint with INSERT … SELECT",
+        "B": "Athena SQL on the Glue-cataloged Iceberg table in S3",
+        "C": "ElastiCache GET resort_stats:all-countries",
+        "D": "CloudFront invalidation on /api/wiki*"
+      }
+    },
+    {
+      "id": "Q5",
+      "question": "Which control is the strongest Security-pillar example on the edge/frontend tier of globalskiatlas.com?",
+      "options": {
+        "A": "CachingDisabled on all CloudFront behaviors to reduce attack surface",
+        "B": "Cognito JWT validation on mutating wiki API methods behind API Gateway",
+        "C": "Storing the Cognito client secret in a public S3 config.json for Lambda cold start speed",
+        "D": "Disabling TLS at CloudFront to inspect traffic in the origin"
+      }
+    },
+    {
+      "id": "Q6",
+      "question": "Night 9 VPC uses one NAT Gateway in public subnet AZ-a. Private subnets exist in two AZs. What Reliability caveat belongs in the network-tier write-up?",
+      "options": {
+        "A": "NAT Gateway is global — AZ loss has no effect",
+        "B": "If AZ-a is impaired, private workloads may lose outbound internet until NAT is restored or replaced",
+        "C": "S3 gateway endpoints eliminate all NAT failure modes",
+        "D": "Security groups are stateless — NAT return traffic requires NACL edits per flow"
+      }
+    },
+    {
+      "id": "Q7",
+      "question": "Exam scenario: monthly Iceland batch runs up to two hours, must enqueue SQS on success, invoke Lambda, and route failures to SNS with different retries per step. Which orchestration choice matches the pipeline tier capstone?",
+      "options": {
+        "A": "SQS FIFO with content-based deduplication only",
+        "B": "Kinesis Data Firehose direct to S3",
+        "C": "Step Functions Standard with ecs:runTask.sync and Catch states",
+        "D": "EventBridge schedule with one rule per step and no shared execution history"
+      }
+    },
+    {
+      "id": "Q8",
+      "question": "Which Cost Optimization win spans both the analytics tier and the pipeline tier in GSA?",
+      "options": {
+        "A": "Store current-month Iceland output in Glacier Deep Archive for fastest retrieval",
+        "B": "Lifecycle aging prefixes on globalskiatlas-backend-k8s-output plus Athena partition filters on lake tables",
+        "C": "Replace S3 with EBS gp3 for all pipeline and lake data",
+        "D": "Run Aurora Serverless v2 at minimum ACU 24/7 for Athena federation"
+      }
+    },
+    {
+      "id": "Q9",
+      "question": "Aurora Multi-AZ for resort_stats, DynamoDB PITR for wiki tables, and Route 53 failover with a health check on the PRIMARY record. Which Well-Architected pillar do these primarily support?",
+      "options": {
+        "A": "Reliability — failover, backup, and recovery objectives",
+        "B": "Performance Efficiency — lower query latency only",
+        "C": "Cost Optimization — fewer read replicas",
+        "D": "Sustainability — reduced carbon from edge caching"
+      }
+    },
+    {
+      "id": "Q10",
+      "question": "Secrets Manager stores the Cognito client secret; Lambda decrypts via KMS; wiki Lambda runs with least-privilege IAM. Which tier does this primarily document?",
+      "options": {
+        "A": "Network — VPC endpoint policy for Secrets Manager",
+        "B": "Application — identity, secrets, and function permissions",
+        "C": "Analytics — encrypting Parquet files at rest in S3",
+        "D": "Pipeline — ECS task role for ECR image pull"
+      }
+    },
+    {
+      "id": "Q11",
+      "question": "A partner needs per-API-key rate limits on wiki reads. Which edge/application control is the exam-correct first choice?",
+      "options": {
+        "A": "API Gateway usage plan with API key and throttle settings",
+        "B": "Security group rule on the CloudFront distribution",
+        "C": "S3 bucket policy Condition on aws:Referer",
+        "D": "Disable CloudFront and expose API Gateway URL directly without throttling"
+      }
+    },
+    {
+      "id": "Q12",
+      "question": "Fargate task definition is 1 vCPU / 2 GiB but CloudWatch p95 CPU is 20% for monthly Iceland runs. Night 31 already rightsized. The bill still shows high NAT Gateway data processing. What tier should the write-up address next?",
+      "options": {
+        "A": "Application — increase Lambda memory",
+        "B": "Network — S3 gateway and ECR interface endpoints to reduce NAT egress",
+        "C": "Analytics — switch Athena engine version",
+        "D": "Edge — enable CachingOptimized on /api/wiki*"
+      }
+    },
+    {
+      "id": "Q13",
+      "question": "Which pairing correctly maps a GSA exam trap to the right tier?",
+      "options": {
+        "A": "Athena for live wiki counter UPSERT — analytics tier best practice",
+        "B": "Durable Iceland GeoParquet on Instance Store — pipeline tier best practice",
+        "C": "Public S3 bucket flagged by Config while CloudFront still serves content — edge/security modernization to OAC + private bucket",
+        "D": "ElastiCache as source of truth for resort_stats — data tier best practice"
+      }
+    },
+    {
+      "id": "Q14",
+      "question": "Sustainability lens (awareness): which GSA design choice best reduces wasted compute compared to a always-on EC2 worker polling for monthly work?",
+      "options": {
+        "A": "EventBridge schedule triggering RunTask only on the first of the month",
+        "B": "m6i.2xlarge On-Demand running 24/7 with cron inside the OS",
+        "C": "Two NAT Gateways per AZ without endpoints",
+        "D": "Glacier retrieval for every wiki page view"
+      }
+    },
+    {
+      "id": "Q15",
+      "question": "You are documenting the full stack for Night 33. Which order is the best interview narrative?",
+      "options": {
+        "A": "Start with DynamoDB streams, then VPN, then Glacier vault locks",
+        "B": "Start with user traffic at Route 53/CloudFront, walk through app and data paths, then batch pipeline and VPC underneath",
+        "C": "Start with AWS Backup vault policies only",
+        "D": "Start with Step Functions ASL, ignore edge and OLTP"
+      }
+    }
+  ]
+}

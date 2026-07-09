@@ -1,0 +1,82 @@
+{
+  "night": 33,
+  "title": "Architecture write-up — GSA full stack + Well-Architected",
+  "answerDistribution": { "A": 4, "B": 4, "C": 4, "D": 3 },
+  "answers": [
+    {
+      "id": "Q1",
+      "correct": "B",
+      "explanation": "Observability, runbooks, and execution history → Operational Excellence — gsa-architecture-map.md pillar index."
+    },
+    {
+      "id": "Q2",
+      "correct": "C",
+      "explanation": "CloudFront = edge HTTP; ElastiCache = in-VPC cache-aside — Nights 23 + 26 cross-tier trap."
+    },
+    {
+      "id": "Q3",
+      "correct": "B",
+      "explanation": "Private scheduled Fargate + scoped task role + SQS/SNS resilience + S3 lifecycle — pipeline tier wins matrix."
+    },
+    {
+      "id": "Q4",
+      "correct": "B",
+      "explanation": "Historical aggregates on S3 Iceberg → Athena — OLTP vs analytics split (Nights 16–17 vs 24)."
+    },
+    {
+      "id": "Q5",
+      "correct": "B",
+      "explanation": "Cognito JWT on writes is the application/edge auth boundary — week1-security-architecture.md Site B."
+    },
+    {
+      "id": "Q6",
+      "correct": "B",
+      "explanation": "Single NAT in one AZ — outbound risk on AZ impairment — Night 9 quiz trap."
+    },
+    {
+      "id": "Q7",
+      "correct": "C",
+      "explanation": "Multi-step Retry/Catch + runTask.sync → Step Functions Standard — Night 32 capstone."
+    },
+    {
+      "id": "Q8",
+      "correct": "B",
+      "explanation": "Lifecycle on pipeline prefixes + Athena partitions — Nights 30 + 24 cost wins."
+    },
+    {
+      "id": "Q9",
+      "correct": "A",
+      "explanation": "Multi-AZ, PITR, Route 53 failover → Reliability pillar — Nights 15, 18, 19, 25."
+    },
+    {
+      "id": "Q10",
+      "correct": "B",
+      "explanation": "Secrets Manager + KMS + Lambda IAM → application tier security — Nights 2–3."
+    },
+    {
+      "id": "Q11",
+      "correct": "A",
+      "explanation": "Per-partner throttling → API Gateway usage plan + API key — Night 26."
+    },
+    {
+      "id": "Q12",
+      "correct": "B",
+      "explanation": "NAT GB tax is network tier — VPC endpoints for S3/ECR — Nights 8–9."
+    },
+    {
+      "id": "Q13",
+      "correct": "C",
+      "explanation": "Public S3 + CloudFront legacy vs OAC private bucket — Night 1 security modernization."
+    },
+    {
+      "id": "Q14",
+      "correct": "A",
+      "explanation": "Scheduled batch vs 24/7 polling — sustainability/cost awareness — Night 12 schedule."
+    },
+    {
+      "id": "Q15",
+      "correct": "B",
+      "explanation": "Interview narrative: users in → app/data → pipeline → network — Night 33 Block 1 drawing order."
+    }
+  ]
+}
