@@ -1,0 +1,157 @@
+{
+  "night": 34,
+  "title": "Week 5 review + practice exam warmup",
+  "answerDistribution": { "A": 8, "B": 7, "C": 8, "D": 7 },
+  "answers": [
+    {
+      "id": "Q1",
+      "correct": "A",
+      "explanation": "Lifecycle transitions evaluate object age — nothing moves on rule create night unless objects already meet day thresholds — Night 30."
+    },
+    {
+      "id": "Q2",
+      "correct": "B",
+      "explanation": "AWS Budgets sends ACTUAL/FORECASTED alerts; Cost Explorer is analysis without built-in email caps — Night 30."
+    },
+    {
+      "id": "Q3",
+      "correct": "B",
+      "explanation": "Right-size task CPU/memory from p95 metrics before Savings Plans or Spot — Night 31 order of operations."
+    },
+    {
+      "id": "Q4",
+      "correct": "B",
+      "explanation": "Interruptible monthly Iceland batch → Fargate Spot — Night 31 GSA map."
+    },
+    {
+      "id": "Q5",
+      "correct": "B",
+      "explanation": "Legacy EventBridge cron + SFN schedule both ENABLED → double RunTask — Nights 32–33 audit finding."
+    },
+    {
+      "id": "Q6",
+      "correct": "B",
+      "explanation": "Non-zero exit after Retries exhausted → Catch to SNS PublishFailureAlert — Night 32 ASL."
+    },
+    {
+      "id": "Q7",
+      "correct": "B",
+      "explanation": "Cognito JWT on mutating wiki methods is a Security-pillar edge control — Night 33 tier table."
+    },
+    {
+      "id": "Q8",
+      "correct": "C",
+      "explanation": "OAC + block public access fixes public bucket while keeping CloudFront — Night 33 Q13 trap pairing."
+    },
+    {
+      "id": "Q9",
+      "correct": "A",
+      "explanation": "CloudFront = edge HTTP; ElastiCache = in-VPC cache-aside near Aurora — Nights 23 + 26 + 33."
+    },
+    {
+      "id": "Q10",
+      "correct": "D",
+      "explanation": "OLTP live writes → DynamoDB; analytics snapshot SQL → Athena on Iceberg — Nights 17 + 24 + 33."
+    },
+    {
+      "id": "Q11",
+      "correct": "C",
+      "explanation": "Glacier retrieval is billed separately from storage-class savings — Night 30 exam minimums."
+    },
+    {
+      "id": "Q12",
+      "correct": "A",
+      "explanation": "NAT Gateway hourly + per-GB is the largest idle VPC tax — Nights 8–9, 31, 34 teardown."
+    },
+    {
+      "id": "Q13",
+      "correct": "D",
+      "explanation": "Lambda HTTP 200 with business error in JSON — Task succeeds; Night 32 Q8 trap."
+    },
+    {
+      "id": "Q14",
+      "correct": "D",
+      "explanation": "Flexible cross-service compute commit → Compute Savings Plan — Night 31."
+    },
+    {
+      "id": "Q15",
+      "correct": "D",
+      "explanation": "Route 53 failover requires health check on PRIMARY — Night 25."
+    },
+    {
+      "id": "Q16",
+      "correct": "A",
+      "explanation": "Cache-aside: app GET Redis → miss → Aurora → SETEX — Night 23."
+    },
+    {
+      "id": "Q17",
+      "correct": "D",
+      "explanation": "FailedInvocations = invoke/config failure; exit 1 = task ran and failed — Nights 12 + 28."
+    },
+    {
+      "id": "Q18",
+      "correct": "C",
+      "explanation": "Durable pipeline output → S3; EBS/Instance Store = scratch — Nights 27 + 30 storage tree."
+    },
+    {
+      "id": "Q19",
+      "correct": "C",
+      "explanation": "ECS success durable handoff → EventBridge rule → SQS → Lambda — Night 28 integration map."
+    },
+    {
+      "id": "Q20",
+      "correct": "C",
+      "explanation": "2-hour monthly workflow with Retry/Catch + history → Step Functions Standard — Night 32."
+    },
+    {
+      "id": "Q21",
+      "correct": "A",
+      "explanation": "CUR exports hourly line items to S3 for custom analysis — Night 30 Cost Explorer vs Budgets vs CUR table."
+    },
+    {
+      "id": "Q22",
+      "correct": "C",
+      "explanation": "Fargate CPU/memory pairing minimums — 512 MiB invalid for 2 vCPU — Night 31 Q5."
+    },
+    {
+      "id": "Q23",
+      "correct": "C",
+      "explanation": "WAF on CloudFront = Secure architectures / edge threat protection — Night 4."
+    },
+    {
+      "id": "Q24",
+      "correct": "D",
+      "explanation": "Ongoing CDC after bulk load → DMS full load + CDC — Night 20."
+    },
+    {
+      "id": "Q25",
+      "correct": "A",
+      "explanation": "Writer failover in Region → Aurora Multi-AZ — Nights 15–16."
+    },
+    {
+      "id": "Q26",
+      "correct": "A",
+      "explanation": "Versioning + expire old versions → noncurrent lifecycle rules — Night 30 versioning section."
+    },
+    {
+      "id": "Q27",
+      "correct": "A",
+      "explanation": "S3 gateway + ECR interface endpoints cut NAT GB for image pull and output PUT — Nights 8–9, 31."
+    },
+    {
+      "id": "Q28",
+      "correct": "B",
+      "explanation": "High-volume sub-5-min flows without audit history → Step Functions Express — Night 28."
+    },
+    {
+      "id": "Q29",
+      "correct": "C",
+      "explanation": "night-34 master teardown removes study NAT/Aurora/ElastiCache — keep prod CloudFront/wiki — Night 34 Block 5."
+    },
+    {
+      "id": "Q30",
+      "correct": "D",
+      "explanation": "Below ~72% on Practice Exam 1 → Night 35 weak-area drill before Exam 2 and real scheduling — Night 34 Block 4."
+    }
+  ]
+}

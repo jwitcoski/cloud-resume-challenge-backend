@@ -1,0 +1,310 @@
+{
+  "night": 34,
+  "title": "Week 5 review + practice exam warmup",
+  "topic": "Week 5 synthesis: S3 lifecycle, Cost Explorer/Budgets/CUR, Fargate right-sizing and Spot, Step Functions capstone, Well-Architected tiers, cross-week exam traps (security, OLTP vs analytics, integration, NAT cost)",
+  "format": "30 timed scenario questions (~48 min, ~96 sec each). Reinforces night-34-week-5-review.md and Nights 30–33. Complete before external 65-question Practice Exam 1. Answer without peeking at night-34-quiz-answers.json first.",
+  "answerKey": "night-34-quiz-answers.json",
+  "answerDistribution": "A×8 B×7 C×8 D×7 — options shuffled so correct letter varies",
+  "questions": [
+    {
+      "id": "Q1",
+      "question": "Night 30 applied lifecycle to globalskiatlas-backend-k8s-output/iceland/ with transitions at 90 and 365 days. Objects uploaded to iceland/2026-07/ this week remain S3 Standard. Which concept explains why nothing moved on deploy night?",
+      "options": {
+        "A": "Lifecycle transitions run on object age — not immediately when the rule is created",
+        "B": "Glacier Flexible Retrieval blocks all transitions for 30 days globally",
+        "C": "S3 lifecycle applies only to objects in us-west-2",
+        "D": "Intelligent-Tiering must be enabled before any lifecycle rule works"
+      }
+    },
+    {
+      "id": "Q2",
+      "question": "Finance needs an email when forecasted monthly spend crosses 80% of a $25 study-account cap. Which service sends that alert?",
+      "options": {
+        "A": "Cost Explorer saved report with no notification channel",
+        "B": "AWS Budgets with FORECASTED threshold notifications",
+        "C": "S3 Storage Lens dashboard export",
+        "D": "CloudWatch alarm on the NAT Gateway BytesOut metric only"
+      }
+    },
+    {
+      "id": "Q3",
+      "question": "CloudWatch shows Iceland Fargate tasks at p95 24% CPU and 38% memory on 2 vCPU / 4 GiB. The team wants to cut compute cost before any 1-year commit. Best first step?",
+      "options": {
+        "A": "Buy Compute Savings Plan for the current oversized task size",
+        "B": "Register a lower CPU/memory task definition revision aligned to utilization",
+        "C": "Move the batch to Aurora Serverless v2",
+        "D": "Enable S3 Transfer Acceleration on the output bucket"
+      }
+    },
+    {
+      "id": "Q4",
+      "question": "The Iceland monthly batch tolerates a two-minute Spot interruption warning and retries next month. Which Fargate option best reduces per-run cost?",
+      "options": {
+        "A": "Fargate On-Demand with assignPublicIp ENABLED",
+        "B": "Fargate Spot capacity on the RunTask / capacity provider strategy",
+        "C": "EC2 Dedicated Hosts for license compliance",
+        "D": "Lambda with 15-minute timeout for the full OSM download"
+      }
+    },
+    {
+      "id": "Q5",
+      "question": "Night 32 deploys Step Functions while legacy EventBridge rule saa-study-gsa-iceland-monthly still targets ECS directly. Both remain ENABLED. What is the operational risk?",
+      "options": {
+        "A": "SQS FIFO ordering is violated for all wiki traffic",
+        "B": "Two Iceland Fargate tasks may start on the same schedule",
+        "C": "CloudFront invalidates all /api/* paths",
+        "D": "Cognito JWTs expire twice as fast"
+      }
+    },
+    {
+      "id": "Q6",
+      "question": "The capstone state uses arn:aws:states:::ecs:runTask.sync. The container exits with code 1 after two Step Functions Retries. Catch routes to PublishFailureAlert (SNS). What happens?",
+      "options": {
+        "A": "The execution succeeds because Retry exhausted",
+        "B": "Catch runs and publishes to the failure topic — Night 14 pattern",
+        "C": "SQS moves the message to DLQ automatically",
+        "D": "EventBridge FailedInvocations metric increments"
+      }
+    },
+    {
+      "id": "Q7",
+      "question": "Which Well-Architected pillar is best demonstrated by Cognito JWT validation on mutating wiki API methods behind API Gateway?",
+      "options": {
+        "A": "Sustainability — fewer Lambda invocations",
+        "B": "Security — authenticate and authorize before business logic",
+        "C": "Cost Optimization — JWTs are free",
+        "D": "Performance Efficiency — JWT parsing is faster than SQL"
+      }
+    },
+    {
+      "id": "Q8",
+      "question": "Config reports NON_COMPLIANT on a public S3 bucket that still serves static HTML through CloudFront. Site works. Strongest Security-pillar fix for the edge tier?",
+      "options": {
+        "A": "Disable all CloudFront caching to reduce attack surface",
+        "B": "Run Athena queries on the bucket access logs nightly",
+        "C": "OAC + block public access — private bucket with CloudFront origin access",
+        "D": "Move wiki counters from DynamoDB to ElastiCache as source of truth"
+      }
+    },
+    {
+      "id": "Q9",
+      "question": "A portfolio reviewer asks where CloudFront ends and ElastiCache begins in GSA. Best answer?",
+      "options": {
+        "A": "CloudFront caches HTTP responses at the edge; Redis caches application objects near Aurora in the VPC",
+        "B": "They are interchangeable — pick one CDN layer",
+        "C": "ElastiCache replaces Aurora for resort_stats",
+        "D": "CloudFront runs inside private subnets next to Lambda"
+      }
+    },
+    {
+      "id": "Q10",
+      "question": "Live wiki visitor counter increments need millisecond writes with ACID. Historical 'resorts per country for three years' runs on S3 Iceberg. Which pairing is correct?",
+      "options": {
+        "A": "Athena INSERT for live counter; ElastiCache for the report",
+        "B": "Instance Store for live counter; Glacier for the report",
+        "C": "CloudFront invalidation for live counter; Route 53 geolocation for the report",
+        "D": "DynamoDB for live counter; Athena SQL on Iceberg for the report"
+      }
+    },
+    {
+      "id": "Q11",
+      "question": "After lifecycle moves old iceland/ objects to Glacier Flexible Retrieval, finance sees a spike when analysts restore one month for debugging. What exam line item explains the spike?",
+      "options": {
+        "A": "NAT Gateway data processing per GB",
+        "B": "Fargate Spot interruption fee",
+        "C": "Glacier retrieval charges — separate from storage class savings",
+        "D": "Intelligent-Tiering monitoring fee on archived objects"
+      }
+    },
+    {
+      "id": "Q12",
+      "question": "Night 9 VPC has one NAT Gateway in public subnet AZ-a. Private subnets span two AZs. Biggest Cost Optimization note while labs are idle but VPC remains?",
+      "options": {
+        "A": "NAT Gateway hourly + per-GB — tear down VPC or add endpoints when pausing",
+        "B": "CloudFront invalidation cost per path",
+        "C": "Route 53 hosted zone charge per wiki record",
+        "D": "Cognito MAU pricing for anonymous static readers"
+      }
+    },
+    {
+      "id": "Q13",
+      "question": "Step Functions InvokeStatsUploader calls Lambda; the function returns HTTP 200 with body {\"error\": \"no rows\"}. No Lambda service exception. What does the Task state do?",
+      "options": {
+        "A": "Fails immediately and routes to Catch without retry",
+        "B": "Retries until Lambda throws AWSLambdaException",
+        "C": "Waits for EventBridge FailedInvocations",
+        "D": "Succeeds — Retry/Catch apply to integration failures, not business errors in payload"
+      }
+    },
+    {
+      "id": "Q14",
+      "question": "Teams want flexible 1-year spend commit across Fargate, Lambda, and EC2 in multiple Regions. Which purchase model fits?",
+      "options": {
+        "A": "RDS Reserved Instance for the ECS cluster",
+        "B": "S3 One Zone-IA for all pipeline output",
+        "C": "EC2 Instance Savings Plan locked to m6i.large in us-east-1a only",
+        "D": "Compute Savings Plan"
+      }
+    },
+    {
+      "id": "Q15",
+      "question": "Exam scenario: Route 53 failover from PRIMARY ALB in us-east-1 to SECONDARY in us-west-2. Users must flip automatically when primary is unhealthy. What must exist on the PRIMARY record?",
+      "options": {
+        "A": "Geolocation policy only — no health check",
+        "B": "Weighted routing 50/50 without health checks",
+        "C": "Latency-based routing among four Regions",
+        "D": "Health check associated with the PRIMARY failover record"
+      }
+    },
+    {
+      "id": "Q16",
+      "question": "Night 23 cache-aside Lambda on cache miss for resort_stats. Correct sequence?",
+      "options": {
+        "A": "GET Redis → miss → SELECT Aurora → SETEX Redis → return JSON",
+        "B": "Redis read-through proxy pulls Aurora without application code",
+        "C": "CloudFront invalidates then Aurora pushes to Redis",
+        "D": "SNS fan-out triggers Aurora write on every miss"
+      }
+    },
+    {
+      "id": "Q17",
+      "question": "EventBridge rule targeting ECS shows FailedInvocations alarm. Same night, ECS task logs show container exit code 1. How do you classify the two signals?",
+      "options": {
+        "A": "Both mean the container failed identically",
+        "B": "Both mean IAM denied ecs:RunTask",
+        "C": "Both require SQS DLQ configuration",
+        "D": "FailedInvocations = rule could not invoke target; exit 1 = task ran and failed"
+      }
+    },
+    {
+      "id": "Q18",
+      "question": "Iceland pipeline durable GeoJSON must survive Spot interruption and AZ failure. Temp sort files on the worker can be discarded. Where should durable output live?",
+      "options": {
+        "A": "EBS gp3 volume attached for the full task lifetime",
+        "B": "Instance Store for maximum sequential throughput",
+        "C": "S3 Standard in the pipeline bucket — system of record",
+        "D": "EFS mounted by every Fargate task for shared output"
+      }
+    },
+    {
+      "id": "Q19",
+      "question": "Which integration pattern matches ECS task success → durable handoff → Lambda consumer at human-scale throughput?",
+      "options": {
+        "A": "SNS alone — no queue",
+        "B": "Kinesis Video Streams",
+        "C": "EventBridge rule on task success → SQS → Lambda poller",
+        "D": "AppSync subscription on every S3 PUT"
+      }
+    },
+    {
+      "id": "Q20",
+      "question": "A 2-hour monthly workflow needs per-step Retry/Catch and full execution history for operators. Sub-5-minute Express volume is not required. Pick orchestration.",
+      "options": {
+        "A": "Step Functions Express",
+        "B": "SQS FIFO with deduplication only",
+        "C": "Step Functions Standard",
+        "D": "EventBridge schedule with five independent rules and no shared history"
+      }
+    },
+    {
+      "id": "Q21",
+      "question": "Hourly line-item billing exports to S3 for custom Athena cost SQL. Which tool is purpose-built?",
+      "options": {
+        "A": "AWS Cost and Usage Report (CUR)",
+        "B": "AWS Budgets with SNS only",
+        "C": "CloudWatch Logs Insights on the billing console",
+        "D": "Macie classification jobs"
+      }
+    },
+    {
+      "id": "Q22",
+      "question": "Developer registers Fargate task definition with 2048 CPU units (2 vCPU) and 512 MiB memory. Registration fails. Most likely cause?",
+      "options": {
+        "A": "Task role must equal execution role name",
+        "B": "EventBridge cannot target tasks above 1 vCPU",
+        "C": "512 MiB is below the minimum memory allowed for 2 vCPU on Fargate",
+        "D": "awsvpc mode requires assignPublicIp ENABLED for cost savings"
+      }
+    },
+    {
+      "id": "Q23",
+      "question": "Night 4 attached AWS WAF to the CloudFront distribution for globalskiatlas.com. Which exam domain does this primarily reinforce?",
+      "options": {
+        "A": "Cost Optimization — WAF reduces S3 GET charges",
+        "B": "Database — WAF caches Aurora queries",
+        "C": "Secure architectures — edge HTTP threat protection with managed rule groups",
+        "D": "Migration — WAF replaces DMS"
+      }
+    },
+    {
+      "id": "Q24",
+      "question": "Ongoing replication from on-prem PostgreSQL to Aurora with low-latency CDC. One-time bulk load already finished. Which DMS mode?",
+      "options": {
+        "A": "Snowball Edge import only",
+        "B": "Athena CTAS on the source database",
+        "C": "S3 Transfer Acceleration",
+        "D": "Full load + CDC task"
+      }
+    },
+    {
+      "id": "Q25",
+      "question": "Aurora cluster needs automatic failover for writer failure in the same Region. Read scaling for reporting is secondary. Minimum configuration?",
+      "options": {
+        "A": "Multi-AZ Aurora with writer + reader in different AZs",
+        "B": "Single-AZ Aurora with daily manual snapshot only",
+        "C": "DynamoDB global tables for resort_stats",
+        "D": "Athena partitioned table as OLTP store"
+      }
+    },
+    {
+      "id": "Q26",
+      "question": "S3 versioning is enabled on a compliance prefix. You want to expire old versions after 90 days but keep current version indefinitely. Which lifecycle feature?",
+      "options": {
+        "A": "Noncurrent version transition and expiration rules",
+        "B": "Abort incomplete multipart upload only",
+        "C": "Cross-Region Replication without lifecycle",
+        "D": "Disable versioning and use Intelligent-Tiering only"
+      }
+    },
+    {
+      "id": "Q27",
+      "question": "Private subnet Fargate tasks pull container images and write pipeline output without public IPs. Which networking combination reduces NAT data processing?",
+      "options": {
+        "A": "VPC gateway endpoints for S3 and interface endpoint for ECR — plus NAT only for other internet",
+        "B": "0.0.0.0/0 on task security group for simplicity",
+        "C": "Public subnet tasks with assignPublicIp DISABLED",
+        "D": "Remove all route tables — tasks use Instance Store routing"
+      }
+    },
+    {
+      "id": "Q28",
+      "question": "Millions of sub-3-minute payment authorization flows per day; no requirement to retain execution history beyond minutes. Orchestration pick?",
+      "options": {
+        "A": "Step Functions Standard with 1-year retention",
+        "B": "Step Functions Express",
+        "C": "ECS service always-on with Step Functions Map over 10,000 states",
+        "D": "SQS standard queue without consumers"
+      }
+    },
+    {
+      "id": "Q29",
+      "question": "You pause all study labs for three weeks. Which teardown step saves the most idle spend while keeping prod CloudFront and wiki API running?",
+      "options": {
+        "A": "Delete WAF on production distribution first",
+        "B": "Remove Cognito user pool used by production wiki",
+        "C": "Run night-34 master teardown through Aurora/ElastiCache/NAT — keep prod edge stacks",
+        "D": "Delete all S3 objects in globalskiatlas-backend-k8s-output including current month"
+      }
+    },
+    {
+      "id": "Q30",
+      "question": "Practice Exam 1 tonight: 65 questions in 130 minutes. You score 44/65. Best next move before scheduling the real SAA-C03?",
+      "options": {
+        "A": "Schedule the real exam tomorrow — close enough",
+        "B": "Skip Night 35 and take Practice Exam 2 immediately",
+        "C": "Memorize every AWS service name alphabetically",
+        "D": "Night 35 weak-area drill on top 3 missed domains — target ≥75% on Exam 2"
+      }
+    }
+  ]
+}
