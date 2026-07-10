@@ -1,7 +1,12 @@
 {
   "night": 1,
   "title": "Baseline + Domain 1 intro — IAM audit",
-  "answerDistribution": { "A": 3, "B": 2, "C": 3, "D": 2 },
+  "answerDistribution": {
+    "A": 3,
+    "B": 2,
+    "C": 3,
+    "D": 2
+  },
   "answers": [
     {
       "id": "Q1",
@@ -11,16 +16,16 @@
     {
       "id": "Q2",
       "correct": "A",
-      "explanation": "GitHub Actions → IAM user/role with scoped policy (github-actions-globalskiatlas v3/v4 audit)."
+      "explanation": "GitHub Actions → IAM user/role with scoped policy or OIDC federation (deploy principal pattern)."
     },
     {
       "id": "Q3",
-      "correct": "A",
+      "correct": "C",
       "explanation": "ECR pull uses execution role; task role is for app runtime (S3 output). CannotPullContainerError = execution role gap."
     },
     {
       "id": "Q4",
-      "correct": "B",
+      "correct": "D",
       "explanation": "Identity Center for workforce SSO to accounts/SaaS — not RAM (Night 1 Q4 miss: RAM vs Identity Center)."
     },
     {
@@ -30,7 +35,7 @@
     },
     {
       "id": "Q6",
-      "correct": "B",
+      "correct": "C",
       "explanation": "simulate-principal-policy tests Allow/Deny before deploy — Night 1 CLI lab."
     },
     {
@@ -40,7 +45,7 @@
     },
     {
       "id": "Q8",
-      "correct": "B",
+      "correct": "D",
       "explanation": "RAM shares network resources (TGW, subnets) — distinct from Identity Center SSO."
     },
     {

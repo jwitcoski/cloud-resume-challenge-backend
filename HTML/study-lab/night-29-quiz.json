@@ -12,8 +12,8 @@
       "options": {
         "A": "S3 Standard in the pipeline bucket — durable object store is the system of record",
         "B": "EBS gp3 data volume attached to the Fargate task for the full pipeline lifetime",
-        "C": "EFS file system mounted by every Fargate task for shared pipeline output",
-        "D": "Instance Store on the underlying host for maximum sequential write throughput"
+        "C": "EFS file system mounted by every Fargate task as shared durable pipeline output",
+        "D": "Instance Store on the underlying host claimed as durable sequential write storage"
       }
     },
     {
@@ -30,18 +30,18 @@
       "id": "Q3",
       "question": "A mobile app needs server-side session state with automatic Multi-AZ failover and sorted-set leaderboards. Which ElastiCache engine?",
       "options": {
-        "A": "Memcached cluster — multithreaded horizontal scale with no data structures",
-        "B": "Memcached with DAX in front for session persistence across restarts",
+        "A": "Memcached cluster — multithreaded horizontal scale without Redis data structures",
+        "B": "Memcached with DAX in front for session persistence across node restarts",
         "C": "Redis replication group — structures, optional persistence, automatic failover",
-        "D": "CloudFront edge cache with session cookies in the cache key"
+        "D": "CloudFront edge cache with session cookies included in the viewer cache key"
       }
     },
     {
       "id": "Q4",
       "question": "GSA serves static wiki HTML globally and caches resort_stats JSON inside the Night 9 VPC. Which pairing matches each layer?",
       "options": {
-        "A": "ElastiCache at CloudFront edge POPs; Aurora in public subnets for faster reads",
-        "B": "CloudFront caches Aurora rows; ElastiCache replaces Route 53 DNS answers",
+        "A": "ElastiCache at CloudFront edge POPs; Aurora placed in public subnets for faster reads",
+        "B": "CloudFront caches Aurora rows; ElastiCache replaces Route 53 DNS answer selection",
         "C": "S3 Intelligent-Tiering caches HTTP GET responses at the edge for api/wiki* paths",
         "D": "CloudFront caches HTTP at the edge; ElastiCache Redis holds app objects near Lambda in VPC"
       }
@@ -51,19 +51,19 @@
       "question": "Executives want a one-time report: count of resorts grouped by country_code from last month's snapshot. Live wiki bookings must stay on Aurora with millisecond UPSERTs. Where do you run the report SQL?",
       "options": {
         "A": "Athena on the Iceberg/Parquet snapshot in S3 via Glue catalog — not Aurora OLTP",
-        "B": "Aurora reader endpoint with a heavy GROUP BY during peak booking hours",
-        "C": "DynamoDB Scan with FilterExpression on the wiki counter table",
-        "D": "CloudFront origin request to aggregate JSON at the edge on every page view"
+        "B": "Aurora reader endpoint with a heavy GROUP BY during peak booking traffic hours",
+        "C": "DynamoDB Scan with FilterExpression across the entire wiki counter table partition",
+        "D": "CloudFront origin request that aggregates JSON at the edge on every page view hit"
       }
     },
     {
       "id": "Q6",
       "question": "Auditors ask: 'What did resort_snapshot look like before yesterday's bad ETL?' The table is Apache Iceberg on S3. Which feature answers without restoring a separate backup bucket?",
       "options": {
-        "A": "DynamoDB PITR restore to a new table at yesterday's timestamp",
+        "A": "DynamoDB PITR restore to a new table at yesterday's timestamp for the snapshot",
         "B": "Iceberg snapshot / time travel — query an earlier table snapshot in Athena",
-        "C": "Aurora backtrack to rewind the writer instance in place",
-        "D": "EBS snapshot rollback mounted read-only on a new EC2 instance"
+        "C": "Aurora backtrack to rewind the writer instance in place to yesterday's state",
+        "D": "EBS snapshot rollback mounted read-only on a new EC2 instance for the table"
       }
     },
     {
@@ -81,8 +81,8 @@
       "question": "A retailer runs petabyte-scale nightly BI with hundreds of concurrent complex JOINs across curated marts. Unpredictable ad hoc SQL on raw S3 is a separate team. Best primary warehouse?",
       "options": {
         "A": "Athena engine v3 with Iceberg only — no cluster to manage for all BI workloads",
-        "B": "Aurora Global Database with read replicas for every analyst connection",
-        "C": "ElastiCache Redis storing pre-joined rows from every fact table",
+        "B": "Aurora Global Database with read replicas for every concurrent analyst connection",
+        "C": "ElastiCache Redis storing pre-joined rows from every warehouse fact table",
         "D": "Amazon Redshift for the heavy warehouse; Athena remains for ad hoc lake queries"
       }
     },
@@ -91,18 +91,18 @@
       "question": "globalskiatlas.com uses Route 53 failover: PRIMARY alias to us-east-1 ALB, SECONDARY to S3 static site. PRIMARY ALB fails health checks. What must be configured for automatic DNS failover?",
       "options": {
         "A": "Health check associated with the PRIMARY failover record — not optional for auto flip",
-        "B": "Weighted routing 50/50 between PRIMARY and SECONDARY without any health check",
-        "C": "Geolocation policy sending US users to PRIMARY and EU users to SECONDARY",
-        "D": "CNAME at the zone apex pointing to the ALB DNS name for faster propagation"
+        "B": "Weighted routing 50/50 between PRIMARY and SECONDARY without attaching any health check",
+        "C": "Geolocation policy sending US users to PRIMARY and EU users to SECONDARY always",
+        "D": "CNAME at the zone apex pointing to the ALB DNS name for faster DNS propagation"
       }
     },
     {
       "id": "Q10",
       "question": "You operate identical API stacks in us-east-1 and eu-west-1. Each user should hit the Region with lowest network latency among those two. Which Route 53 policy?",
       "options": {
-        "A": "Geolocation routing based on the user's country compliance requirements",
+        "A": "Geolocation routing based on the user's country compliance and residency rules",
         "B": "Latency routing — Route 53 picks lowest latency among defined Regional records",
-        "C": "Simple routing with one A record listing both Regional IP addresses",
+        "C": "Simple routing with one A record listing both Regional endpoint IP addresses",
         "D": "Failover routing with PRIMARY in us-east-1 and passive SECONDARY in eu-west-1"
       }
     },
@@ -110,19 +110,19 @@
       "id": "Q11",
       "question": "You must point the apex domain witcoskitech.com directly to a CloudFront distribution. Which DNS record type is valid at the zone apex?",
       "options": {
-        "A": "CNAME from apex to d111111abcdef8.cloudfront.net — standard alias pattern",
-        "B": "TXT record with the CloudFront domain as the RDATA value for HTTPS",
+        "A": "CNAME from apex to d111111abcdef8.cloudfront.net — treated as a standard alias",
+        "B": "TXT record with the CloudFront domain as the RDATA value for HTTPS validation",
         "C": "A alias record to the CloudFront distribution — CNAME is forbidden at apex",
-        "D": "NS record delegating the apex to CloudFront's hosted zone automatically"
+        "D": "NS record delegating the apex hostname to CloudFront's hosted zone automatically"
       }
     },
     {
       "id": "Q12",
       "question": "A gaming company needs static anycast IP addresses for UDP game traffic with automatic steering to healthy Regional endpoint groups. HTTP caching is irrelevant. Best service?",
       "options": {
-        "A": "CloudFront with CachingOptimized policy on the default behavior",
-        "B": "Route 53 latency routing to EC2 Elastic IPs in each Region",
-        "C": "API Gateway WebSocket API with stage-level throttling per player",
+        "A": "CloudFront with CachingOptimized policy on the default distribution behavior path",
+        "B": "Route 53 latency routing to EC2 Elastic IPs registered in each game Region endpoint",
+        "C": "API Gateway WebSocket API with stage-level throttling configured per player session",
         "D": "AWS Global Accelerator with endpoint groups — anycast IPs for TCP/UDP workloads"
       }
     },
@@ -150,10 +150,10 @@
       "id": "Q15",
       "question": "You enable CloudFront caching on anonymous GET /api/wiki/pages with a 60-second TTL. Which cache-key design avoids serving one user's private draft to another?",
       "options": {
-        "A": "Omit Authorization from the cache key and cache all variants under one URL",
-        "B": "Cache POST and PUT in CachedMethods so writes invalidate GET automatically",
+        "A": "Omit Authorization from the cache key and cache all variants under one shared URL",
+        "B": "Cache POST and PUT in CachedMethods so writes invalidate GET responses automatically",
         "C": "Cache only anonymous public reads; exclude Authorization from key OR include it per safe variant",
-        "D": "Use Origin Shield as the only cache layer and disable API Gateway throttling"
+        "D": "Use Origin Shield as the only cache layer and disable API Gateway stage throttling rules"
       }
     },
     {
@@ -171,19 +171,19 @@
       "question": "MySQL runs on EC2 (not RDS) with sustained 80,000 random IOPS on the data volume. Which EBS type?",
       "options": {
         "A": "io2 or io2 Block Express — highest random IOPS for latency-sensitive DB on EC2",
-        "B": "st1 — throughput HDD optimized for large sequential log writes",
-        "C": "sc1 — lowest cost cold HDD for infrequently accessed database files",
-        "D": "gp2 legacy with IOPS tied to volume size only — no provisioned IOPS knob"
+        "B": "st1 — throughput-optimized HDD for large sequential database log write streams",
+        "C": "sc1 — lowest-cost cold HDD for infrequently accessed database data files",
+        "D": "gp2 legacy with IOPS tied to volume size only — no independent provisioned IOPS knob"
       }
     },
     {
       "id": "Q18",
       "question": "A log aggregation EC2 instance writes one 400 GB sequential file per night. Cost-sensitive; random IOPS irrelevant. Best EBS data volume?",
       "options": {
-        "A": "gp3 with 16,000 provisioned IOPS for the nightly sequential append",
+        "A": "gp3 with 16,000 provisioned IOPS dedicated to the nightly sequential append job",
         "B": "st1 throughput-optimized HDD — cheap sequential throughput, not random IOPS",
-        "C": "io2 Multi-Attach shared across six instances in one Availability Zone",
-        "D": "EFS One Zone-IA for block-level random database page reads"
+        "C": "io2 Multi-Attach shared across six instances inside a single Availability Zone",
+        "D": "EFS One Zone-IA mounted for block-level random database page read workloads"
       }
     },
     {
@@ -200,9 +200,9 @@
       "id": "Q20",
       "question": "A stateless image-encoding fleet runs 6 hours nightly. Two-minute interruption notice is acceptable; checkpoint to S3 every 15 minutes. Best EC2 purchasing model?",
       "options": {
-        "A": "Dedicated Hosts for socket-level license compliance on every encoder",
-        "B": "On-Demand only — Spot never suitable for any batch processing workload",
-        "C": "Reserved Instances one-year all upfront for a job that runs 6 hours per day",
+        "A": "Dedicated Hosts for socket-level license compliance on every encoder instance type",
+        "B": "On-Demand only — Spot is never suitable for any batch processing workload pattern",
+        "C": "Reserved Instances one-year all upfront for a job that runs only 6 hours per day",
         "D": "Spot Instances with capacity-optimized allocation — stateless with S3 checkpoints"
       }
     },
@@ -230,19 +230,19 @@
       "id": "Q23",
       "question": "One order-placed event must reach billing, shipping, and analytics teams. Each team processes at its own pace with isolated retry/DLQ. Best pattern?",
       "options": {
-        "A": "One shared SQS queue — all three workers compete for the same messages",
-        "B": "EventBridge schedule publishes directly to three Lambda functions in sync",
+        "A": "One shared SQS queue — all three workers compete for the same order messages",
+        "B": "EventBridge schedule publishes directly to three Lambda functions synchronously",
         "C": "SNS topic fan-out to three separate SQS queues — one durable queue per team",
-        "D": "Kinesis Data Firehose delivering the same record to only one S3 prefix"
+        "D": "Kinesis Data Firehose delivering the same record to only one S3 prefix destination"
       }
     },
     {
       "id": "Q24",
       "question": "Clickstream events must land in S3 within minutes for Athena queries. No custom consumer code or shard management. Best ingest path?",
       "options": {
-        "A": "Kinesis Data Streams with a custom Lambda consumer writing batches to S3",
-        "B": "SQS FIFO queue with long polling workers uploading each message to S3",
-        "C": "AppSync subscriptions pushing events directly into the S3 bucket API",
+        "A": "Kinesis Data Streams with a custom Lambda consumer writing batches of events to S3",
+        "B": "SQS FIFO queue with long-polling workers uploading each message body into S3 objects",
+        "C": "AppSync GraphQL subscriptions pushing events directly into the S3 bucket PutObject API",
         "D": "Kinesis Data Firehose — managed delivery and batching to S3 without custom consumers"
       }
     },
@@ -260,10 +260,10 @@
       "id": "Q26",
       "question": "Millions of payment authorization flows per day; each workflow completes in under 30 seconds. Full execution history and audit trail are not required. Step Functions type?",
       "options": {
-        "A": "Standard — always required when more than one Lambda is in the workflow",
+        "A": "Standard — always required when more than one Lambda function is in the workflow",
         "B": "Express — high volume, short duration, optional discard of execution history",
-        "C": "Standard with Wait states up to one year for each authorization callback",
-        "D": "EventBridge Scheduler replacing Step Functions for any multi-step workflow"
+        "C": "Standard with Wait states lasting up to one year for each authorization callback",
+        "D": "EventBridge Scheduler replacing Step Functions for any multi-step payment workflow"
       }
     },
     {
@@ -291,9 +291,9 @@
       "question": "Seven years of monthly Iceland pipeline GeoJSON prefixes are accessed once a year for compliance audits. Retrieval can take hours. Lowest-cost S3 tier?",
       "options": {
         "A": "S3 Glacier Flexible Retrieval or Deep Archive with lifecycle from Standard",
-        "B": "S3 Standard with CloudFront caching disabled on the compliance prefix",
-        "C": "EFS Infrequent Access mounted by auditors' EC2 instances in the VPC",
-        "D": "EBS sc1 snapshots exported monthly to S3 Standard for long-term retention"
+        "B": "S3 Standard with CloudFront caching disabled on the long-term compliance prefix",
+        "C": "EFS Infrequent Access mounted by auditors' EC2 instances inside the study VPC",
+        "D": "EBS sc1 snapshots exported monthly to S3 Standard for long-term object retention"
       }
     },
     {

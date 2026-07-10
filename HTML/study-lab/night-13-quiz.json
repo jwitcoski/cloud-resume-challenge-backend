@@ -10,20 +10,20 @@
       "id": "Q1",
       "question": "Global Ski Atlas runs Iceland as a monthly Fargate batch job (Night 12). A separate stats-uploader worker should process completions without polling ecs:DescribeTasks in a loop. What integration service best buffers completion events between the batch job and the uploader?",
       "options": {
-        "A": "Amazon SNS — fan-out push to email and Lambda subscribers when the batch completes",
-        "B": "AWS Step Functions Express — synchronous Express workflow invoked from inside the Iceland container on exit",
+        "A": "Amazon SNS — fan-out push to email and Lambda when the batch job completes",
+        "B": "AWS Step Functions Express — sync workflow invoked from the Iceland container on exit",
         "C": "Amazon SQS — producer sends or EventBridge routes; consumer polls at its own pace",
-        "D": "Amazon API Gateway REST API with VPC Link and ECS service integration for completion callbacks"
+        "D": "Amazon API Gateway REST with VPC Link and ECS integration for completion callbacks"
       }
     },
     {
       "id": "Q2",
       "question": "A Lambda consumer processes SQS messages that take up to 3 minutes. The queue visibility timeout is 30 seconds. What problem will you see in production?",
       "options": {
-        "A": "Messages are permanently deleted from the queue after 30 seconds regardless of processing outcome",
+        "A": "Messages are permanently deleted from the queue after 30 seconds regardless of outcome",
         "B": "The same message becomes visible again while Lambda still runs — duplicate processing",
-        "C": "SQS extends visibility automatically for all Lambda functions without event source mapping configuration",
-        "D": "FIFO message ordering is corrupted because visibility timeout must be at least 60 seconds on standard queues"
+        "C": "SQS extends visibility automatically for all Lambdas without event source mapping setup",
+        "D": "FIFO ordering breaks because visibility timeout must be at least 60 seconds on standard"
       }
     },
     {
@@ -31,59 +31,59 @@
       "question": "The Iceland completion queue receives one message per successful monthly run. Order between months does not matter; maximum throughput is desired. Which queue type should you create?",
       "options": {
         "A": "SQS standard queue — at-least-once delivery, best-effort ordering, highest throughput",
-        "B": "SQS FIFO queue without content-based deduplication — strict order for monthly batch completions",
+        "B": "SQS FIFO queue without content-based deduplication — strict order for monthly runs",
         "C": "Amazon MQ for RabbitMQ — managed broker with durable queues and dead-letter exchanges",
-        "D": "DynamoDB stream with Lambda event source mapping — stream records trigger the stats uploader"
+        "D": "DynamoDB stream with Lambda event source mapping — stream records trigger the uploader"
       }
     },
     {
       "id": "Q4",
       "question": "night-13-lab-sqs-setup.sh sets maxReceiveCount to 3 on the main queue with a redrive policy pointing at saa-study-gsa-iceland-completion-dlq. What does this accomplish?",
       "options": {
-        "A": "Silently deletes poison messages from the main queue after three ReceiveMessage calls without a DLQ",
-        "B": "Automatically retries failed EventBridge rule invocations and resends events to the main queue",
-        "C": "Guarantees exactly-once delivery of every message that reaches the DLQ after three receive attempts",
-        "D": "Moves messages to the DLQ after three unsuccessful processing attempts (consumer received but did not delete)"
+        "A": "Silently deletes poison messages from the main queue after three receives without configuring any DLQ",
+        "B": "Automatically retries failed EventBridge rule invocations and resends every event to the main queue",
+        "C": "Guarantees exactly-once delivery of every message that reaches the DLQ after three tries",
+        "D": "Moves messages to the DLQ after three failed processing attempts (received but not deleted)"
       }
     },
     {
       "id": "Q5",
       "question": "An EventBridge rule targets an SQS queue with FailedInvocations in CloudWatch. The rule event pattern is correct. What is the most common fix on the queue side?",
       "options": {
-        "A": "Enable SSE-SQS server-side encryption on the queue and attach a KMS key policy for EventBridge",
-        "B": "Attach the AWS managed policy AmazonSQSFullAccess to the default event bus resource policy",
-        "C": "Queue policy allowing events.amazonaws.com sqs:SendMessage with aws:SourceArn matching the rule ARN",
-        "D": "Rename the queue with a .fifo suffix and enable content-based deduplication for EventBridge targets"
+        "A": "Enable SSE-SQS encryption on the queue and attach a customer-managed KMS key policy for EventBridge",
+        "B": "Attach the AmazonSQSFullAccess managed policy to the default event bus resource policy for the account",
+        "C": "Queue policy allowing events.amazonaws.com sqs:SendMessage with aws:SourceArn = rule ARN",
+        "D": "Rename the queue with a .fifo suffix and enable content-based deduplication for targets"
       }
     },
     {
       "id": "Q6",
       "question": "A stats-uploader worker polls an empty completion queue thousands of times per hour, increasing cost and API throttling risk. Which ReceiveMessage parameter reduces empty responses?",
       "options": {
-        "A": "DelaySeconds set to 900 on SendMessage — delays visibility of new messages for fifteen minutes",
+        "A": "DelaySeconds set to 900 on SendMessage — delays new message visibility for 15 minutes",
         "B": "WaitTimeSeconds long polling (up to 20) — SQS holds the request until a message arrives",
-        "C": "MessageGroupId on a standard queue — groups empty polls into a single long-poll batch per group",
-        "D": "CloudWatch alarm on ApproximateNumberOfMessages — suppresses ReceiveMessage when the queue is empty"
+        "C": "MessageGroupId on a standard queue — groups empty polls into one long-poll batch per group",
+        "D": "CloudWatch alarm on ApproximateNumberOfMessages — suppresses ReceiveMessage when empty"
       }
     },
     {
       "id": "Q7",
       "question": "You need a single worker pool to absorb spikes from many producers without push delivery to every worker. SNS already fans out to five Lambdas. What should sit in front of one consolidated worker tier?",
       "options": {
-        "A": "SQS standard queue — workers pull; buffer absorbs producer bursts",
-        "B": "A second SNS topic subscribed to the first — chains fan-out so all five Lambdas forward to one worker",
+        "A": "SQS standard queue — workers pull messages; the buffer absorbs producer bursts safely",
+        "B": "A second SNS topic subscribed to the first — chains fan-out so five Lambdas forward to one",
         "C": "EventBridge custom event bus with no targets — buffers events until a rule is attached later",
-        "D": "AWS AppSync GraphQL subscription — WebSocket push from producers to a single consolidated worker pool"
+        "D": "AWS AppSync GraphQL subscription — WebSocket push from producers to one consolidated pool"
       }
     },
     {
       "id": "Q8",
       "question": "A malformed JSON message causes the consumer to throw on every attempt. The operator wants to inspect failures without blocking the main queue forever. Which configuration pair is required?",
       "options": {
-        "A": "Message retention period of 60 seconds on the main queue only — old poison messages expire quickly",
-        "B": "SNS topic subscribed to the main queue with email protocol — failure notifications to operators",
-        "C": "Visibility timeout set to 0 — messages return to the queue immediately on every failed receive",
-        "D": "DLQ plus RedrivePolicy maxReceiveCount on the source queue"
+        "A": "Message retention of 60 seconds on the main queue only — poison messages expire quickly",
+        "B": "SNS topic subscribed to the main queue with email — failure notifications to operators",
+        "C": "Visibility timeout set to 0 — messages return to the queue immediately on every receive",
+        "D": "DLQ plus RedrivePolicy maxReceiveCount on the source queue for poison-message isolation"
       }
     },
     {
@@ -100,19 +100,19 @@
       "id": "Q10",
       "question": "A consumer receives a message, crashes before calling DeleteMessage, and visibility timeout is 60 seconds. What happens to the message?",
       "options": {
-        "A": "The message is permanently removed from the queue — unacknowledged receives count as processed",
-        "B": "After visibility timeout expires it becomes visible again for another consumer — at-least-once semantics",
-        "C": "SQS immediately moves the message to a DLQ even when no redrive policy is configured on the queue",
-        "D": "EventBridge detects the consumer crash and republishes a duplicate ECS Task State Change event"
+        "A": "The message is permanently removed — unacknowledged receives count as fully processed",
+        "B": "After visibility timeout it becomes visible again for another consumer — at-least-once",
+        "C": "SQS immediately moves the message to a DLQ even when no redrive policy is configured",
+        "D": "EventBridge detects the consumer crash and republishes a duplicate ECS Task State Change"
       }
     },
     {
       "id": "Q11",
       "question": "Night 12 EventBridge schedule triggers Iceland RunTask. Night 13 adds an ECS Task State Change rule → SQS. How does that split responsibilities?",
       "options": {
-        "A": "Night 12 answers when to run; Night 13 decouples what happens after success from the batch container",
+        "A": "Night 12 answers when to run; Night 13 decouples post-success work from the batch container",
         "B": "Night 13 replaces the Night 12 schedule rule — only one EventBridge rule may exist per event bus",
-        "C": "SQS becomes the scheduler and calls ecs:RunTask directly instead of the EventBridge cron rule",
+        "C": "SQS becomes the scheduler and calls ecs:RunTask directly instead of relying on the EventBridge cron",
         "D": "Night 13 removes the need for iam:PassRole on the ECS execution and task roles for RunTask"
       }
     },
@@ -120,19 +120,19 @@
       "id": "Q12",
       "question": "An exam question shows producers in us-east-1 and a consumer in eu-west-1 that must share a work queue with minimal latency to the consumer. What is the best answer?",
       "options": {
-        "A": "Single SQS queue in us-east-1 — cross-Region ReceiveMessage polling is free and adds negligible latency",
+        "A": "Single SQS queue in us-east-1 — cross-Region ReceiveMessage is free with negligible latency",
         "B": "FIFO queue with a global endpoint — AWS routes polls to the nearest Region automatically",
-        "C": "EventBridge default bus in us-east-1 — replicates all events automatically to every AWS Region",
-        "D": "SQS queue in the consumer Region (or replicate events) — SQS is Regional; cross-Region polling adds latency and data-transfer cost"
+        "C": "EventBridge default bus in us-east-1 — replicates all events automatically to every Region",
+        "D": "SQS queue near the consumer (or replicate events) — SQS is Regional; cross-Region adds cost"
       }
     },
     {
       "id": "Q13",
       "question": "After sending ten messages you call GetQueueAttributes for ApproximateNumberOfMessages and see 7, then 10 a few seconds later without new sends. Why?",
       "options": {
-        "A": "SQS lost three messages due to the approximate counter rounding down during high send volume",
-        "B": "The DLQ redrive policy absorbed three messages automatically without any consumer receive calls",
-        "C": "The attribute is approximate — eventually consistent; not a real-time exact count for exam scenarios",
+        "A": "SQS lost three messages due to the approximate counter rounding down under high send volume",
+        "B": "The DLQ redrive policy absorbed three messages automatically without any consumer receives",
+        "C": "The attribute is approximate — eventually consistent; not a real-time exact count for exams",
         "D": "Visibility timeout expired on three in-flight messages and SQS deleted them from the queue"
       }
     },
@@ -140,20 +140,20 @@
       "id": "Q14",
       "question": "night-13-lab-sqs-setup uses an event pattern on ECS Task State Change with containers.exitCode [0] and taskDefinitionArn prefix for globalskiatlas-backend-k8s-iceland. A task exits 1 after S3 upload fails. What happens?",
       "options": {
-        "A": "The failed message is sent directly to the DLQ because exit code 1 matches the redrive policy",
-        "B": "No completion message is enqueued — pattern requires exit code 0; monitor ECS logs or add a failure rule (Night 14 SNS)",
-        "C": "EventBridge retries ecs:RunTask automatically until the container exits with code 0",
-        "D": "SQS receives the ECS event anyway with exitCode 1 in the body because the rule matches all STOPPED tasks"
+        "A": "The failed message is sent directly to the DLQ because exit code 1 matches the redrive policy filter",
+        "B": "No completion message is enqueued — pattern requires exit 0; add a failure path (Night 14 SNS)",
+        "C": "EventBridge retries ecs:RunTask automatically until the container exits successfully with code 0",
+        "D": "SQS receives the ECS event anyway with exitCode 1 because the rule matches all STOPPED tasks"
       }
     },
     {
       "id": "Q15",
       "question": "Night 14 will add SNS so one Iceland failure alert reaches email and a Lambda simultaneously. Why is SNS a better fit than a single SQS queue for that requirement?",
       "options": {
-        "A": "SNS fan-out push model delivers one published event to many subscribers without each subscriber polling the same queue",
-        "B": "SQS cannot integrate with Lambda — only SNS supports Lambda as an event target for notifications",
-        "C": "SNS guarantees strict FIFO ordering across all email and Lambda subscribers for the same topic",
-        "D": "SQS standard queues natively support the email protocol — one queue delivers to inbox and Lambda alike"
+        "A": "SNS fan-out push delivers one publish to many subscribers without shared-queue polling",
+        "B": "SQS cannot integrate with Lambda — only SNS supports Lambda as an event notification target",
+        "C": "SNS guarantees strict FIFO ordering across all email and Lambda subscribers for the topic",
+        "D": "SQS standard queues natively support email protocol — one queue delivers to inbox and Lambda"
       }
     }
   ]

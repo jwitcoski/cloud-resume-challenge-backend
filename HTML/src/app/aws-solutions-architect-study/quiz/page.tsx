@@ -39,6 +39,25 @@ export default function StudyQuizIndexPage() {
             , embedded when the site is built. Answers stay hidden until you submit.
             Progress is saved in your browser per night.
           </p>
+
+          {quizzes.length > 0 && (
+            <div className="mb-8 rounded-lg border border-emerald-200 bg-emerald-50/60 p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <div>
+                <p className="font-semibold text-[#444]">Quiz gauntlet</p>
+                <p className="text-sm text-[#555] mt-0.5 leading-relaxed">
+                  One correct answer clears a night. Miss and you stay on that night
+                  until you get one right — progress through every quiz.
+                </p>
+              </div>
+              <Link
+                href="/aws-solutions-architect-study/quiz/gauntlet/"
+                className="inline-flex shrink-0 items-center justify-center rounded-md bg-emerald-700 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-800 transition-colors"
+              >
+                Start gauntlet →
+              </Link>
+            </div>
+          )}
+
           {guideNights.length > 0 && (
             <p className="leading-relaxed text-[#555] mb-8">
               <Link

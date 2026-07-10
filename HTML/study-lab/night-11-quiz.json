@@ -10,80 +10,80 @@
       "id": "Q1",
       "question": "A microservices team runs HTTP APIs on ECS Fargate. They need path-based routing (/orders/* vs /catalog/*), AWS WAF, and OIDC authentication at the load balancer. Which load balancer type fits?",
       "options": {
-        "A": "Application Load Balancer — Layer 7 routing, WAF, and authenticate actions",
-        "B": "Network Load Balancer — lowest latency for HTTP path rules",
-        "C": "Gateway Load Balancer — distributes HTTP across Fargate tasks",
-        "D": "Classic Load Balancer — required for ECS service discovery"
+        "A": "Application Load Balancer — Layer 7 routing, WAF, and auth actions",
+        "B": "Network Load Balancer — lowest latency for HTTP path-based rules",
+        "C": "Gateway Load Balancer — distributes HTTP across Fargate task targets",
+        "D": "Classic Load Balancer — required for ECS service discovery routing"
       }
     },
     {
       "id": "Q2",
       "question": "A financial app must expose TCP port 443 with a fixed Elastic IP per Availability Zone for partner allowlisting. TLS terminates on the EC2 instances, not the load balancer. Which service should front the fleet?",
       "options": {
-        "A": "Application Load Balancer with HTTPS listener and ACM certificate",
-        "B": "Network Load Balancer with TCP listener — TLS passthrough, static IP/EIP per AZ",
-        "C": "Gateway Load Balancer with GENEVE listeners",
-        "D": "CloudFront distribution with TCP origin"
+        "A": "Application Load Balancer with HTTPS listener and an ACM certificate",
+        "B": "Network Load Balancer with TCP listener — TLS passthrough and EIP",
+        "C": "Gateway Load Balancer with GENEVE listeners to appliance target groups",
+        "D": "CloudFront distribution configured with a raw TCP origin protocol"
       }
     },
     {
       "id": "Q3",
       "question": "Security wants all east-west traffic between application tiers to pass through third-party firewall appliances before reaching databases. Appliances run as scaled EC2 instances. Which AWS load balancing service is purpose-built for this?",
       "options": {
-        "A": "Application Load Balancer with listener rules per tier",
-        "B": "Network Load Balancer with Proxy Protocol v2",
-        "C": "Gateway Load Balancer — GENEVE encapsulation to appliance target group",
-        "D": "Internal Application Load Balancer with AWS WAF"
+        "A": "Application Load Balancer with listener rules per application tier",
+        "B": "Network Load Balancer with Proxy Protocol v2 enabled on the targets",
+        "C": "Gateway Load Balancer — GENEVE encapsulation to appliance targets",
+        "D": "Internal Application Load Balancer with AWS WAF REGIONAL rule sets"
       }
     },
     {
       "id": "Q4",
       "question": "An ALB target group health check uses HTTP on port 8080 path /health. Targets show unhealthy. Curl from a bastion in the VPC to the instance private IP:8080/health returns 200. The instance security group allows inbound 443 from 0.0.0.0/0 but has no rule for port 8080. What is the most likely fix?",
       "options": {
-        "A": "Change health check to TCP only on port 443",
-        "B": "Add inbound on the instance SG for port 8080 from the ALB security group",
-        "C": "Disable cross-zone load balancing on the NLB",
-        "D": "Move targets to a public subnet so the health checker can reach them"
+        "A": "Change the health check to TCP-only probes on listener port 443",
+        "B": "Disable cross-zone load balancing on the associated load balancer",
+        "C": "Move targets to a public subnet so health checkers can reach them",
+        "D": "Allow inbound 8080 on the instance SG from the ALB security group"
       }
     },
     {
       "id": "Q5",
       "question": "You attach an Auto Scaling group to an ALB target group. New instances register as healthy only after the grace period. During the first two minutes after launch, health checks fail while the app boots. What ASG setting addresses this without changing the target group?",
       "options": {
-        "A": "Increase deregistration delay on the target group to 600 seconds",
-        "B": "Set HealthCheckGracePeriod on the Auto Scaling group to cover boot time",
-        "C": "Switch the load balancer to Network Load Balancer",
-        "D": "Enable sticky sessions on the ALB listener"
+        "A": "Set HealthCheckGracePeriod on the ASG to cover application boot time",
+        "B": "Increase deregistration delay on the target group to 600 seconds",
+        "C": "Switch the front-end load balancer type from ALB over to Network LB",
+        "D": "Enable sticky sessions on the ALB listener for duration-based cookies"
       }
     },
     {
       "id": "Q6",
       "question": "Route 53 failover routing uses a primary record pointing to an ALB DNS name. The secondary record points to an S3 static site. What must be configured for automatic failover when the primary app is down?",
       "options": {
-        "A": "A Route 53 health check on the primary endpoint (or child health checks on ALB targets)",
-        "B": "Weighted routing with equal weights",
-        "C": "Latency-based routing only — failover is automatic without health checks",
-        "D": "A CNAME from the ALB to the S3 website endpoint"
+        "A": "Weighted routing with equal weights on primary and secondary records",
+        "B": "A Route 53 health check on the primary endpoint (or child checks)",
+        "C": "Latency-based routing only — failover works without health checks",
+        "D": "A CNAME from the ALB hostname pointing at the S3 website endpoint"
       }
     },
     {
       "id": "Q7",
       "question": "A UDP-based telemetry protocol (not HTTP) must be load-balanced across EC2 instances in three AZs with minimal latency. Which load balancer is appropriate?",
       "options": {
-        "A": "Application Load Balancer with UDP target groups",
-        "B": "Network Load Balancer — supports UDP at Layer 4",
-        "C": "Gateway Load Balancer with UDP GENEVE",
-        "D": "Application Load Balancer with WebSocket upgrade"
+        "A": "Application Load Balancer with UDP target groups for telemetry",
+        "B": "Gateway Load Balancer with UDP GENEVE to application targets",
+        "C": "Network Load Balancer — supports UDP listeners at Layer 4",
+        "D": "Application Load Balancer with WebSocket upgrade for UDP frames"
       }
     },
     {
       "id": "Q8",
       "question": "During an Auto Scaling scale-in event, the ASG terminates an EC2 instance registered with an ALB target group. In-flight HTTP requests to that instance should complete before the connection is cut. Which setting controls this behavior?",
       "options": {
-        "A": "Target group deregistration delay (connection draining)",
-        "B": "ALB idle timeout only",
-        "C": "HealthCheckGracePeriod on the ASG",
-        "D": "Route 53 TTL on the alias record"
+        "A": "ALB idle timeout alone without changing any target group settings",
+        "B": "HealthCheckGracePeriod on the Auto Scaling group at instance launch",
+        "C": "Route 53 TTL on the alias record that points at the ALB DNS name",
+        "D": "Target group deregistration delay (connection draining) setting"
       }
     },
     {
@@ -91,119 +91,119 @@
       "question": "Fargate tasks in awsvpc mode sit behind an internal ALB. Tasks are in private subnets; the ALB is in public subnets. Which security group pattern is correct?",
       "options": {
         "A": "Task SG: inbound app port from ALB SG; ALB SG: inbound 443 from clients",
-        "B": "Task SG: inbound 0.0.0.0/0 on app port; no ALB SG needed",
-        "C": "Task SG: outbound only; ALB connects without SG rules",
-        "D": "Single shared SG for ALB and tasks with inbound 0.0.0.0/0"
+        "B": "Task SG: inbound 0.0.0.0/0 on app port; no ALB security group needed",
+        "C": "Task SG: outbound only; ALB connects without any inbound SG rules set",
+        "D": "Single shared SG for ALB and tasks with inbound 0.0.0.0/0 everywhere"
       }
     },
     {
       "id": "Q10",
       "question": "A company compares ALB and NLB cross-zone load balancing defaults. They want to minimize cross-AZ data transfer charges while still having load balancer nodes in every AZ. Which statement is correct?",
       "options": {
-        "A": "ALB has cross-zone on by default; NLB has cross-zone off by default",
-        "B": "Both ALB and NLB always force cross-zone on with no option to disable",
+        "A": "Both ALB and NLB always force cross-zone on with no disable option",
+        "B": "ALB has cross-zone on by default; NLB has cross-zone off by default",
         "C": "NLB has cross-zone on by default; ALB has cross-zone off by default",
-        "D": "Cross-zone applies only to Gateway Load Balancer"
+        "D": "Cross-zone load balancing applies only to Gateway Load Balancer nodes"
       }
     },
     {
       "id": "Q11",
       "question": "An NLB target group uses TCP health checks on port 8080. Targets are healthy in the console but clients receive connection resets. Application logs show the app listens on 8080 but requires an HTTP GET /ping. What should you change?",
       "options": {
-        "A": "Switch health check protocol to HTTP with path /ping on port 8080",
-        "B": "Use Gateway Load Balancer health checks instead",
-        "C": "Disable health checks — NLB does not support them",
-        "D": "Change listener to UDP"
+        "A": "Use Gateway Load Balancer health checks instead of the NLB checks",
+        "B": "Disable health checks entirely — NLB does not support target checks",
+        "C": "Switch health check protocol to HTTP with path /ping on port 8080",
+        "D": "Change the NLB listener protocol from TCP to UDP for this application"
       }
     },
     {
       "id": "Q12",
       "question": "You need Lambda functions as targets for HTTP POST requests from the internet, with path-based routing shared with EC2 targets on the same hostname. Which combination works?",
       "options": {
-        "A": "NLB TCP listener forwarding to Lambda",
-        "B": "ALB listener rule forwarding to a target group with Lambda targets",
-        "C": "GWLB endpoint invoking Lambda directly",
-        "D": "Classic Load Balancer with Lambda plugin"
+        "A": "NLB TCP listener forwarding directly to Lambda function ARNs as targets",
+        "B": "GWLB endpoint invoking Lambda as an inline inspection appliance target",
+        "C": "Classic Load Balancer with a Lambda plugin for HTTP path-based routing",
+        "D": "ALB listener rule forwarding to a target group with Lambda targets"
       }
     },
     {
       "id": "Q13",
       "question": "Multi-AZ resilience: An Application Load Balancer serves traffic in us-east-1. One AZ loses power; ALB nodes in the other AZ remain. What happens to new client connections if clients use the ALB DNS name?",
       "options": {
-        "A": "All traffic fails until the impaired AZ is restored",
-        "B": "Route 53 automatically replaces the ALB DNS with NLB DNS",
-        "C": "Clients resolve to healthy ALB nodes in remaining AZs — ALB is inherently multi-AZ",
-        "D": "Targets in the impaired AZ continue receiving traffic via cross-region replication"
+        "A": "Clients resolve to healthy ALB nodes in remaining AZs — ALB is multi-AZ",
+        "B": "All client traffic fails until the impaired Availability Zone is restored",
+        "C": "Route 53 automatically replaces the ALB DNS name with an NLB DNS name",
+        "D": "Targets in the impaired AZ keep traffic via cross-Region replication"
       }
     },
     {
       "id": "Q14",
       "question": "A legacy shopping cart stores session state in memory on EC2. Users must stick to the same instance until the session cookie expires. Which ALB feature helps without changing the application?",
       "options": {
-        "A": "Duration-based stickiness (ALB cookie)",
-        "B": "NLB static IP stickiness",
-        "C": "GWLB flow stickiness by GENEVE VNI",
-        "D": "Route 53 geolocation routing"
+        "A": "NLB static IP stickiness based on the destination Elastic IP address",
+        "B": "Duration-based stickiness using the ALB-generated session cookie",
+        "C": "GWLB flow stickiness keyed by the GENEVE virtual network identifier",
+        "D": "Route 53 geolocation routing pinning users to one backend instance"
       }
     },
     {
       "id": "Q15",
       "question": "Gateway Load Balancer is deployed with firewall appliances in a dedicated subnet. Application VPCs must send traffic through inspection before reaching the internet. What must exist in each application VPC subnet that routes outbound traffic?",
       "options": {
-        "A": "Internet Gateway attachment on the appliance subnet only",
-        "B": "GWLB endpoint — traffic is redirected to the Gateway Load Balancer",
-        "C": "Application Load Balancer in transparent mode",
-        "D": "NAT Gateway in the appliance VPC only"
+        "A": "Internet Gateway attachment only on the central appliance subnet",
+        "B": "Application Load Balancer operating in transparent proxy inspection mode",
+        "C": "GWLB endpoint — traffic is redirected to the Gateway Load Balancer",
+        "D": "NAT Gateway placed only inside the central appliance VPC CIDR block"
       }
     },
     {
       "id": "Q16",
       "question": "An ALB listener rule forwards HTTPS traffic to a target group of Fargate tasks on HTTP port 8080. This pattern is often called:",
       "options": {
-        "A": "TLS passthrough — encrypted traffic forwarded unchanged to targets",
-        "B": "SSL offloading / TLS termination at the load balancer — ALB decrypts, backends speak HTTP",
-        "C": "GENEVE encapsulation at Layer 7",
-        "D": "TCP proxy mode on Network Load Balancer"
+        "A": "TLS passthrough — encrypted bytes forwarded unchanged to the targets",
+        "B": "GENEVE encapsulation applied at Layer 7 for HTTP backend target groups",
+        "C": "TCP proxy mode identical to Network Load Balancer TLS passthrough",
+        "D": "SSL offloading / TLS termination at the ALB — backends speak HTTP"
       }
     },
     {
       "id": "Q17",
       "question": "Auto Scaling detects unhealthy instances via the ALB target group. Instances fail health checks and are replaced. Which two components together provide this loop? (Pick the best single answer describing the integration.)",
       "options": {
-        "A": "ASG uses ELB health check type; replaces instances marked unhealthy by the target group",
-        "B": "CloudWatch alarm on ALB only — ASG does not read target health",
-        "C": "Route 53 health check terminates EC2 instances directly",
-        "D": "GWLB marks ASG instances for retirement"
+        "A": "ASG uses ELB health check type; replaces instances marked unhealthy by TG",
+        "B": "CloudWatch alarm on ALB only — ASG never reads target group health status",
+        "C": "Route 53 health check terminates EC2 instances in the ASG automatically",
+        "D": "GWLB marks Auto Scaling group instances for forced retirement events"
       }
     },
     {
       "id": "Q18",
       "question": "A partner requires your service IP to never change when you replace underlying EC2 instances. The protocol is raw TCP on port 9000, not HTTP. Which architecture satisfies allowlisting?",
       "options": {
-        "A": "ALB DNS name — partners allowlist the ALB hostname",
-        "B": "NLB with Elastic IP addresses per AZ — partners allowlist those static IPs",
-        "C": "Single EC2 Elastic IP on one instance — no load balancer",
-        "D": "CloudFront distribution in front of TCP port 9000"
+        "A": "ALB DNS name — partners allowlist the ALB hostname in their firewalls",
+        "B": "NLB with Elastic IP addresses per AZ — partners allowlist those IPs",
+        "C": "Single EC2 Elastic IP on one instance with no load balancer in front",
+        "D": "CloudFront distribution in front of raw TCP listeners on port 9000"
       }
     },
     {
       "id": "Q19",
-      "question": "You run an internal-only API: ALB scheme is internal, placed in private subnets of your study VPC (Night 9). Corporate users reach it via VPN into the VPC. Can you attach a CloudFront-scoped WAF Web ACL directly to this internal ALB?",
+      "question": "You run an internal-only API: ALB scheme is internal, placed in private subnets. Corporate users reach it via VPN into the VPC. Can you attach a CloudFront-scoped WAF Web ACL directly to this internal ALB?",
       "options": {
-        "A": "Yes — WAF CLOUDFRONT scope works on any ALB",
-        "B": "Yes — internal ALBs use GLOBAL WAF scope",
-        "C": "Use WAF REGIONAL scope on the ALB in the same Region — CLOUDFRONT scope is for CloudFront only",
-        "D": "WAF cannot attach to ALB — only API Gateway"
+        "A": "Yes — WAF CLOUDFRONT scope attaches to any ALB in any AWS Region",
+        "B": "Yes — internal ALBs use GLOBAL WAF scope instead of REGIONAL scope",
+        "C": "Use WAF REGIONAL scope on the ALB — CLOUDFRONT scope is CloudFront-only",
+        "D": "WAF cannot attach to ALB at all — only API Gateway and CloudFront"
       }
     },
     {
       "id": "Q20",
       "question": "After a deployment, half of targets in an ALB target group return HTTP 502 to clients. New targets pass health checks but the application log shows \"connection refused\" from the load balancer nodes only. What is the most likely cause?",
       "options": {
-        "A": "Target group registered wrong port — health check port differs from traffic port and app listens on traffic port only",
-        "B": "Route 53 failover flipped to secondary",
-        "C": "NLB cross-zone disabled",
-        "D": "GWLB endpoint missing in the VPC"
+        "A": "Route 53 failover flipped traffic over to the secondary static endpoint",
+        "B": "NLB cross-zone load balancing was disabled on a sibling load balancer",
+        "C": "GWLB endpoint is missing from the application VPC subnet route tables",
+        "D": "Target group traffic port differs from the port the app process listens on"
       }
     }
   ]

@@ -5,47 +5,47 @@
   "answers": [
     {
       "id": "Q1",
-      "correct": "B",
+      "correct": "A",
       "explanation": "DB SG inbound from app SG on DB port 5432 — Night 8/15 callback; night-16-lab wires lambda-stats-sg → aurora-sg."
     },
     {
       "id": "Q2",
-      "correct": "C",
+      "correct": "B",
       "explanation": "DB subnet group must span ≥2 AZs for Aurora/RDS HA placement. night-16 uses Night 9 private-a + private-b."
     },
     {
       "id": "Q3",
-      "correct": "B",
+      "correct": "C",
       "explanation": "Aurora Serverless v2 does not scale to zero — min ACU (0.5 here) bills while cluster exists. Night 15 trap."
     },
     {
       "id": "Q4",
-      "correct": "A",
+      "correct": "D",
       "explanation": "RDS Data API + Secrets Manager secret + cluster ARN — setup -InitSchema path in night-16-lab-aurora-setup.ps1."
     },
     {
       "id": "Q5",
-      "correct": "C",
+      "correct": "A",
       "explanation": "Private subnet + no public accessibility = no direct laptop psql. Use Data API or in-VPC Lambda (Night 17)."
     },
     {
       "id": "Q6",
-      "correct": "C",
+      "correct": "B",
       "explanation": "Writes use cluster writer endpoint. Reader endpoint is for read replicas only."
     },
     {
       "id": "Q7",
-      "correct": "B",
+      "correct": "C",
       "explanation": "ManageMasterUserPassword stores secret; describe-db-clusters returns MasterUserSecret.SecretArn."
     },
     {
       "id": "Q8",
-      "correct": "C",
+      "correct": "D",
       "explanation": "Databases in private subnets; NAT for outbound maintenance; SG rules for app access — Night 9/16 pattern."
     },
     {
       "id": "Q9",
-      "correct": "B",
+      "correct": "A",
       "explanation": "ServerlessV2ScalingConfiguration is on the DB cluster; instance class is db.serverless."
     },
     {
@@ -60,22 +60,22 @@
     },
     {
       "id": "Q12",
-      "correct": "C",
+      "correct": "D",
       "explanation": "SQS decouples batch completion; stats uploader (Night 17) persists aggregates to Aurora resort_stats."
     },
     {
       "id": "Q13",
-      "correct": "B",
+      "correct": "A",
       "explanation": "Never 0.0.0.0/0 on DB port — use SG reference or Data API/Lambda in VPC."
     },
     {
       "id": "Q14",
-      "correct": "A",
+      "correct": "B",
       "explanation": "Lambda initiates outbound connections; no inbound listeners required on lambda-stats-sg."
     },
     {
       "id": "Q15",
-      "correct": "B",
+      "correct": "C",
       "explanation": "Add a reader instance first; then reader endpoint load-balances SELECTs. With only a writer, reader endpoint still hits primary but adding replica is the scale-out pattern."
     }
   ]

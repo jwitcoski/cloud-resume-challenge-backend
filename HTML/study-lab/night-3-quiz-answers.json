@@ -1,11 +1,16 @@
 {
   "night": 3,
   "title": "Lab 1B — Secrets Manager + Cognito config",
-  "answerDistribution": { "A": 3, "B": 2, "C": 2, "D": 3 },
+  "answerDistribution": {
+    "A": 3,
+    "B": 2,
+    "C": 2,
+    "D": 3
+  },
   "answers": [
     {
       "id": "Q1",
-      "correct": "B",
+      "correct": "D",
       "explanation": "Avoid plaintext secrets in env vars — Night 3 lab pattern mirrors Night 17 DB_SECRET_ARN."
     },
     {
@@ -20,27 +25,27 @@
     },
     {
       "id": "Q4",
-      "correct": "B",
-      "explanation": "Night 3 contrast path /saa-study/gsa-wiki-cognito in SSM vs Secrets Manager secret."
+      "correct": "C",
+      "explanation": "Night 3 contrast — both encrypt with KMS; Secrets Manager adds rotation/integration for secrets."
     },
     {
       "id": "Q5",
-      "correct": "B",
+      "correct": "A",
       "explanation": "Env holds secret ARN only — fetch value at runtime via GetSecretValue."
     },
     {
       "id": "Q6",
-      "correct": "B",
+      "correct": "D",
       "explanation": "Night 3 missed Q6 — KMS manages keys, not application secret payloads."
     },
     {
       "id": "Q7",
-      "correct": "B",
+      "correct": "C",
       "explanation": "wiki-api validates JWT using Cognito config loaded from secret — week1-security-architecture.md."
     },
     {
       "id": "Q8",
-      "correct": "B",
+      "correct": "D",
       "explanation": "simulate confirms IAM Allow — still verify KMS key policy for decrypt."
     },
     {

@@ -10,17 +10,17 @@
     },
     {
       "id": "Q2",
-      "correct": "C",
+      "correct": "B",
       "explanation": "KEYS_ONLY omits attribute values — no old/new viewCount in the stream record."
     },
     {
       "id": "Q3",
-      "correct": "A",
+      "correct": "C",
       "explanation": "StartingPosition LATEST skips history before mapping creation — bump after mapping to test (night-18 setup -VerifyStream)."
     },
     {
       "id": "Q4",
-      "correct": "C",
+      "correct": "D",
       "explanation": "ADD is atomic increment; read-modify-write SET races under concurrent wiki traffic."
     },
     {
@@ -30,12 +30,12 @@
     },
     {
       "id": "Q6",
-      "correct": "C",
+      "correct": "B",
       "explanation": "Night 18 DynamoDB Streams vs Night 17 SQS event source mapping — different decoupling sources."
     },
     {
       "id": "Q7",
-      "correct": "A",
+      "correct": "C",
       "explanation": "Global tables for multi-Region DynamoDB active-active — awareness read in Night 18 block 3."
     },
     {
@@ -45,12 +45,12 @@
     },
     {
       "id": "Q9",
-      "correct": "C",
+      "correct": "A",
       "explanation": "PAY_PER_REQUEST fits spiky wiki views — no RCU/WCU planning (Night 18 lab table)."
     },
     {
       "id": "Q10",
-      "correct": "D",
+      "correct": "B",
       "explanation": "AWS Backup centralizes policies across DynamoDB, RDS, EBS — Night 19 preview; PITR is per-table only."
     },
     {
@@ -60,22 +60,22 @@
     },
     {
       "id": "Q12",
-      "correct": "C",
+      "correct": "D",
       "explanation": "GSA split from Night 15–17 — Aurora JOIN reports vs DynamoDB hot counters."
     },
     {
       "id": "Q13",
-      "correct": "B",
+      "correct": "A",
       "explanation": "Standard Lambda logging permissions — night-18-lab Ensure-Role policy pattern."
     },
     {
       "id": "Q14",
-      "correct": "C",
+      "correct": "B",
       "explanation": "DynamoDB PITR max 35 days — Night 15 quiz Q10 trap (not 14 or 365)."
     },
     {
       "id": "Q15",
-      "correct": "B",
+      "correct": "C",
       "explanation": "Night 18 teardown is isolated study stack — Aurora and SQS unchanged (mirrors Night 17 Q12 logic)."
     }
   ]

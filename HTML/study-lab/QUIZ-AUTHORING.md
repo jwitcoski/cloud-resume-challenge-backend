@@ -32,9 +32,9 @@ When creating or editing `night-*-quiz.json` / `night-*-quiz-answers.json`:
 ## Quiz taker (web UI)
 
 - Quizzes render at `/aws-solutions-architect-study/quiz/` — auto-discovers `night-N-quiz.json` + `night-N-quiz-answers.json` at build time.
+- **Gauntlet** at `/aws-solutions-architect-study/quiz/gauntlet/` — one correct answer clears a night; wrong stays on that night with explanation + a new question until every quiz is cleared. Progress is localStorage `saa-quiz-gauntlet-v1`.
 - Add a new night: drop both JSON files in `study-lab/` and redeploy; no code changes required.
 
 ## Existing quizzes to rebalance (backlog)
 
-- `night-5-quiz.json` — audit answer distribution when next edited.
-- `night-6-quiz.json` — audit answer distribution when next edited.
+- None — nights 1–34 rebalanced 2026-07-10 (option length + A/B/C/D distribution).

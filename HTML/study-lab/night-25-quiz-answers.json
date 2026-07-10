@@ -10,7 +10,7 @@
     },
     {
       "id": "Q2",
-      "correct": "C",
+      "correct": "B",
       "explanation": "Failover PRIMARY needs health check; SECONDARY has no check — Night 11 Q6 + Night 25 failover section."
     },
     {
@@ -20,28 +20,28 @@
     },
     {
       "id": "Q4",
-      "correct": "C",
+      "correct": "D",
       "explanation": "DNS TTL caching delays client cutover even after Route 53 stops returning PRIMARY — Night 25 health check + TTL note."
     },
     {
       "id": "Q5",
-      "correct": "D",
+      "correct": "A",
       "explanation": "Geolocation routes by user location (country/continent), not measured latency — Night 25 policy table."
     },
     {
       "id": "Q6",
-      "correct": "A",
+      "correct": "B",
       "explanation": "CNAME at zone apex is invalid; alias to CloudFront/S3/ALB is standard — Night 25 alias vs CNAME table."
     },
     {
       "id": "Q7",
-      "correct": "B",
+      "correct": "C",
       "explanation": "ALB DNS is multi-AZ — surviving AZ nodes serve traffic without Route 53 failover — Night 25 vs ELB section."
     },
     {
       "id": "Q8",
-      "correct": "C",
-      "explanation": "Z2FDTNDATAQYW2 is the global CloudFront alias hosted zone ID — Night 25 lab reference."
+      "correct": "D",
+      "explanation": "CloudFront origin groups fail over between origins on 4xx/5xx without DNS changes — exam edge DR vs Route 53 failover."
     },
     {
       "id": "Q9",
@@ -55,27 +55,27 @@
     },
     {
       "id": "Q11",
-      "correct": "B",
-      "explanation": "Teardown removes night25-* records and lab health check only — Night 25 teardown section."
+      "correct": "C",
+      "explanation": "Active-active multi-Region uses latency/weighted records with health checks so unhealthy endpoints are omitted — Night 25 DR patterns."
     },
     {
       "id": "Q12",
-      "correct": "A",
+      "correct": "D",
       "explanation": "Global Accelerator = anycast IP + edge steering; Route 53 latency = DNS answer selection — exam checklist week 4."
     },
     {
       "id": "Q13",
-      "correct": "B",
+      "correct": "A",
       "explanation": "Private hosted zone for VPC-internal DNS — Night 25 exam traps; public zone for internet names."
     },
     {
       "id": "Q14",
-      "correct": "A",
+      "correct": "B",
       "explanation": "Route 53 can use calculated/child checks tied to endpoint health — exam nuance; ALB target unhealthy ≠ automatic DNS failover without check design."
     },
     {
       "id": "Q15",
-      "correct": "B",
+      "correct": "C",
       "explanation": "Routing policy applies per record set FQDN — lab subdomains do not alter apex simple record — Night 25 lab safety section."
     }
   ]

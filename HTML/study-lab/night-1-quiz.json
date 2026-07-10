@@ -10,18 +10,18 @@
       "id": "Q1",
       "question": "An organization SCP denies s3:DeleteBucket for all accounts. A power-user IAM policy in a member account allows s3:DeleteBucket on arn:aws:s3:::prod-data. Can the power user delete the bucket?",
       "options": {
-        "A": "Yes — IAM Allow in the account overrides organization defaults",
+        "A": "Yes — IAM Allow in the member account overrides organization SCP defaults",
         "B": "No — an explicit SCP Deny applies even when IAM allows the action",
         "C": "Yes — but only if the user assumes a role in the management account",
-        "D": "No — unless the bucket has a resource policy that explicitly allows DeleteBucket"
+        "D": "No — unless the bucket resource policy explicitly allows DeleteBucket"
       }
     },
     {
       "id": "Q2",
-      "question": "Night 1 audit: github-actions-globalskiatlas needs ecs:RunTask on the Iceland task definition. Which IAM principal type is the usual GitHub Actions deploy pattern?",
+      "question": "A CI/CD pipeline needs ecs:RunTask on a Fargate task definition. Which IAM principal type is the usual GitHub Actions deploy pattern?",
       "options": {
-        "A": "IAM user or role with access keys stored in GitHub Secrets",
-        "B": "Cognito user pool app client with client credentials grant",
+        "A": "IAM user or role with credentials or OIDC federation from GitHub",
+        "B": "Cognito user pool app client with client credentials grant only",
         "C": "AWS STS root account access key rotated monthly in Parameter Store",
         "D": "CloudFront origin access control mapped to the ECS cluster ARN"
       }
@@ -30,9 +30,9 @@
       "id": "Q3",
       "question": "An ECS Fargate task fails with CannotPullContainerError from ECR. The task role has s3:PutObject to the output bucket. What is the first IAM fix?",
       "options": {
-        "A": "Add ecr:GetDownloadUrlForLayer to the task execution role, not the task role",
-        "B": "Attach AmazonS3FullAccess to the task role for pipeline output",
-        "C": "Move the container image to a public Docker Hub repository",
+        "A": "Attach AmazonS3FullAccess to the task role for pipeline output writes",
+        "B": "Move the container image to a public Docker Hub repository instead",
+        "C": "Add ECR pull permissions to the task execution role, not the task role",
         "D": "Enable ECS Exec on the service so the task can pull images interactively"
       }
     },
@@ -40,10 +40,10 @@
       "id": "Q4",
       "question": "A company wants single sign-on for employees into multiple AWS accounts and SaaS apps with centralized permission sets. Which service fits?",
       "options": {
-        "A": "AWS Resource Access Manager (RAM) sharing subnets across accounts",
-        "B": "AWS IAM Identity Center (successor to AWS SSO)",
-        "C": "Amazon Cognito user pools with a federated identity provider only",
-        "D": "AWS Organizations consolidated billing without SCPs"
+        "A": "AWS Resource Access Manager sharing subnets across member accounts",
+        "B": "Amazon Cognito user pools with a federated identity provider only",
+        "C": "AWS Organizations consolidated billing without SCPs or permission sets",
+        "D": "AWS IAM Identity Center for workforce SSO and permission sets"
       }
     },
     {
@@ -51,58 +51,58 @@
       "question": "Traffic to an EC2 instance is blocked even though the instance security group allows inbound TCP 443 from 10.0.0.0/16. The subnet NACL denies inbound TCP 443. What happens?",
       "options": {
         "A": "Security group Allow wins because it is evaluated after the NACL",
-        "B": "Traffic is blocked — stateless NACL deny applies before the stateful security group",
+        "B": "Traffic is blocked — NACL deny applies before the stateful security group",
         "C": "Only return traffic is blocked; inbound HTTPS still reaches the instance",
         "D": "The instance security group automatically updates the NACL to match"
       }
     },
     {
       "id": "Q6",
-      "question": "You run aws iam simulate-principal-policy on the wiki Lambda role before deploying a tighter GetSecretValue scope. What does simulate help you verify?",
+      "question": "You run aws iam simulate-principal-policy on a Lambda role before deploying a tighter GetSecretValue scope. What does simulate help you verify?",
       "options": {
         "A": "Whether CloudTrail will log the next API call at delivery time",
-        "B": "Whether the principal is allowed or denied an action on a resource before live invocation",
-        "C": "Whether AWS Config will mark the role NON_COMPLIANT overnight",
-        "D": "Whether KMS will rotate the CMK when the policy changes"
+        "B": "Whether AWS Config will mark the role NON_COMPLIANT overnight",
+        "C": "Whether the principal is allowed or denied an action before live use",
+        "D": "Whether KMS will rotate the CMK when the IAM policy changes"
       }
     },
     {
       "id": "Q7",
-      "question": "Night 1 separation check: the Iceland Fargate task writes GeoParquet to S3. Which role should hold s3:PutObject on the output prefix?",
+      "question": "An ECS Fargate task writes application output to S3. Which role should hold s3:PutObject on the output prefix?",
       "options": {
         "A": "Task role — application permissions the container code uses at runtime",
-        "B": "Execution role — ECR pull and CloudWatch Logs only, never S3",
-        "C": "CloudFront origin access identity — for static pipeline artifacts",
+        "B": "Execution role — ECR pull and CloudWatch Logs only, never S3 writes",
+        "C": "CloudFront origin access identity — for static pipeline artifacts only",
         "D": "GitHub Actions OIDC provider role in the management account only"
       }
     },
     {
       "id": "Q8",
-      "question": "Two AWS accounts need to share a Transit Gateway attachment for hub-and-spoke networking. Which service shares the TGW resource across accounts?",
+      "question": "Two AWS accounts need to share a Transit Gateway for hub-and-spoke networking. Which service shares the TGW resource across accounts?",
       "options": {
-        "A": "AWS IAM Identity Center permission sets",
-        "B": "AWS Resource Access Manager (RAM)",
-        "C": "Amazon Route 53 private hosted zone association",
-        "D": "AWS Organizations SCP allowing ec2:AttachTransitGateway"
+        "A": "AWS IAM Identity Center permission sets for workforce SSO access",
+        "B": "Amazon Route 53 private hosted zone association across accounts",
+        "C": "AWS Organizations SCP allowing ec2:AttachTransitGateway only",
+        "D": "AWS Resource Access Manager (RAM) for cross-account resource share"
       }
     },
     {
       "id": "Q9",
       "question": "A security group attached to a Lambda ENI allows outbound TCP 5432 to an Aurora security group. No inbound rules are defined on the Lambda SG. Is that valid?",
       "options": {
-        "A": "Invalid — Lambda requires inbound TCP 443 for CloudWatch Logs",
+        "A": "Invalid — Lambda requires inbound TCP 443 for CloudWatch Logs delivery",
         "B": "Invalid — security groups must have symmetric inbound and outbound rules",
-        "C": "Valid — Lambda initiates outbound connections; nothing needs to call Lambda on a listener port",
+        "C": "Valid — Lambda initiates outbound; nothing needs to call Lambda on a port",
         "D": "Valid only if the Lambda runs in a public subnet with an internet gateway"
       }
     },
     {
       "id": "Q10",
-      "question": "Night 1 baseline: which pair best describes the difference between identity policies and resource-based policies on S3?",
+      "question": "Which pair best describes the difference between identity policies and resource-based policies on S3?",
       "options": {
-        "A": "Identity policies attach to users/roles; bucket policies attach to the S3 bucket resource",
+        "A": "Identity policies attach to users/roles; bucket policies attach to the bucket",
         "B": "Identity policies are optional; bucket policies replace IAM for all S3 access",
-        "C": "Resource policies apply only to DynamoDB; S3 uses SCPs exclusively",
+        "C": "Resource policies apply only to DynamoDB; S3 access uses SCPs exclusively",
         "D": "Both policy types attach to IAM groups and cannot reference external accounts"
       }
     }

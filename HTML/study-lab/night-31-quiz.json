@@ -10,150 +10,150 @@
       "id": "Q1",
       "question": "Global Ski Atlas runs the Iceland pipeline monthly via EventBridge → ecs:RunTask on Fargate (2 vCPU, 4 GiB) for about two hours. CloudWatch shows CPUUtilization p95 at 22% and MemoryUtilization p95 at 35% across three runs. What is the best next cost step before changing purchase models?",
       "options": {
-        "A": "Register a new task definition revision with lower CPU and memory aligned to actual use",
-        "B": "Replace Fargate with Aurora Serverless v2 for the batch transform",
-        "C": "Buy EC2 Reserved Instances for the Fargate tasks",
-        "D": "Enable S3 Transfer Acceleration on the output bucket"
+        "A": "Register a new task definition with lower CPU and memory matched to measured use",
+        "B": "Replace the Fargate batch transform with Aurora Serverless v2 for the same job",
+        "C": "Purchase EC2 Reserved Instances expecting them to discount Fargate RunTask spend",
+        "D": "Enable S3 Transfer Acceleration on the pipeline output bucket to cut compute cost"
       }
     },
     {
       "id": "Q2",
       "question": "The Iceland batch job can retry next month if interrupted and tolerates a two-minute warning. Which Fargate purchase option best reduces per-run cost?",
       "options": {
-        "A": "Fargate On-Demand — simplest and always cheapest for batch",
-        "B": "EC2 Dedicated Hosts for compliance isolation",
-        "C": "Fargate Spot capacity provider on the RunTask / capacity strategy",
-        "D": "Lambda Provisioned Concurrency for the entire OSM download"
+        "A": "Fargate On-Demand — simplest path and always cheapest for monthly batch work",
+        "B": "Fargate Spot capacity provider on the RunTask / capacity strategy",
+        "C": "EC2 Dedicated Hosts to isolate the batch for compliance and license control",
+        "D": "Lambda Provisioned Concurrency sized to cover the entire OSM download window"
       }
     },
     {
       "id": "Q3",
       "question": "Finance sees steady Fargate, Lambda, and EC2 spend across multiple teams and wants a flexible 1-year commit that applies across instance families and Regions. Which option fits?",
       "options": {
-        "A": "S3 Intelligent-Tiering monitoring fee waiver",
-        "B": "Compute Savings Plan",
-        "C": "EC2 Instance Savings Plan locked to m6i.large in us-east-1a only",
-        "D": "RDS Reserved Instance for the ECS cluster"
+        "A": "S3 Intelligent-Tiering monitoring fee waiver for all pipeline prefixes",
+        "B": "EC2 Instance Savings Plan locked to m6i.large in us-east-1a only",
+        "C": "Compute Savings Plan covering Fargate, Lambda, and EC2 spend flexibly",
+        "D": "RDS Reserved Instance attached to the ECS cluster for Fargate discount"
       }
     },
     {
       "id": "Q4",
       "question": "How does AWS bill a Fargate task while it is in RUNNING state in us-east-1 Linux x86?",
       "options": {
-        "A": "Per ECS cluster hour regardless of task count",
-        "B": "Per NAT Gateway hour attached to the task ENI",
-        "C": "Per vCPU-second and per GiB-second of configured task CPU and memory",
-        "D": "Per EventBridge rule invocation only"
+        "A": "Per ECS cluster hour regardless of how many tasks are running",
+        "B": "Per NAT Gateway hour for each ENI the task attaches in the VPC",
+        "C": "Per EventBridge rule invocation that started the task, with no compute meter",
+        "D": "Per vCPU-second and per GiB-second of the configured task CPU and memory"
       }
     },
     {
       "id": "Q5",
       "question": "A developer registers an ECS Fargate task definition with 2048 CPU units (2 vCPU) and 512 MiB memory. Registration fails. What is the most likely cause?",
       "options": {
-        "A": "Fargate requires awsvpc network mode with assignPublicIp ENABLED",
-        "B": "512 MiB is below the minimum memory allowed for 2 vCPU on Fargate",
-        "C": "Task role must equal execution role name",
-        "D": "EventBridge cannot target task definitions above 1 vCPU"
+        "A": "512 MiB is below the minimum memory allowed for 2 vCPU on Fargate",
+        "B": "Fargate requires awsvpc mode with assignPublicIp ENABLED for registration",
+        "C": "The task role ARN must exactly match the execution role name string",
+        "D": "EventBridge cannot target any task definition configured above 1 vCPU"
       }
     },
     {
       "id": "Q6",
       "question": "After right-sizing Iceland from 2 vCPU / 4 GiB to 1 vCPU / 2 GiB, a task stops with exit code 137 and stoppedReason mentioning OutOfMemoryError. What should you do?",
       "options": {
-        "A": "Increase memory in the task definition — CPU may be fine but RAM was undersized",
-        "B": "Switch to S3 Glacier Deep Archive for container logs",
-        "C": "Disable the execution role so the task cannot pull ECR images",
-        "D": "Move the task to a public subnet with assignPublicIp ENABLED"
+        "A": "Switch container logs to S3 Glacier Deep Archive hoping to free task RAM",
+        "B": "Increase memory in the task definition — RAM was undersized for the job",
+        "C": "Disable the execution role so the task cannot pull container images from ECR",
+        "D": "Move the task to a public subnet and enable assignPublicIp for more memory"
       }
     },
     {
       "id": "Q7",
       "question": "night-31-lab compares ecs-task-pipeline-sizing.json scenarios. The pmtiles-heavy row uses 4 vCPU / 8 GiB for embarrassingly parallel tile builds. Which compute pattern from Night 27 is usually cheaper at planet scale?",
       "options": {
-        "A": "Single Fargate On-Demand task running 24/7",
-        "B": "AWS Batch on Spot compute environment with parallel jobs writing to S3",
-        "C": "Aurora Multi-AZ as the tile renderer",
-        "D": "ElastiCache Redis as durable tile storage"
+        "A": "A single Fargate On-Demand task left running continuously for tile builds",
+        "B": "Aurora Multi-AZ writer used as the primary tile rendering engine",
+        "C": "AWS Batch on Spot compute with parallel jobs writing finished tiles to S3",
+        "D": "ElastiCache Redis configured as the durable long-term tile storage layer"
       }
     },
     {
       "id": "Q8",
       "question": "Compute Optimizer returns no ECS recommendations for globalskiatlas-backend-k8s-iceland even though tasks ran last month. What is the most plausible explanation?",
       "options": {
-        "A": "Fargate tasks cannot be analyzed until converted to Lambda",
-        "B": "RunTask-only workloads without an ECS service may lack enough enrolled service history for recommendations",
-        "C": "Compute Optimizer only supports EC2 Classic",
-        "D": "S3 lifecycle rules block Compute Optimizer enrollment"
+        "A": "Fargate tasks cannot be analyzed until every workload is converted to Lambda",
+        "B": "Compute Optimizer only supports EC2 Classic networking for ECS recommendations",
+        "C": "S3 lifecycle rules on the output bucket block Compute Optimizer enrollment paths",
+        "D": "RunTask-only workloads may lack enrolled ECS service history for recommendations"
       }
     },
     {
       "id": "Q9",
       "question": "Night 12 schedules Iceland with cron(0 6 1 * ? *) instead of rate(1 minute). Which cost statement is correct?",
       "options": {
-        "A": "EventBridge per-invocation fees dominate — cron is always more expensive",
-        "B": "Fargate compute during each run dominates — monthly cron runs the expensive task ~once per month",
-        "C": "Fargate is free when started by EventBridge",
-        "D": "NAT Gateway charges stop when using EventBridge schedules"
+        "A": "Fargate compute dominates — monthly cron runs the expensive task about once per month",
+        "B": "EventBridge per-invocation fees dominate — cron schedules are always more expensive",
+        "C": "Fargate compute is free whenever the task is started by an EventBridge schedule rule",
+        "D": "NAT Gateway hourly charges stop automatically when EventBridge schedules start tasks"
       }
     },
     {
       "id": "Q10",
       "question": "Durable GeoParquet output from Iceland must survive task stop. Where should final artifacts live to optimize cost and durability?",
       "options": {
-        "A": "Fargate ephemeral storage only — no S3 PUT charges",
-        "B": "EC2 Instance Store on a Spot worker",
-        "C": "S3 Standard (with Night 30 lifecycle for older prefixes)",
-        "D": "CloudWatch Logs log streams"
+        "A": "Fargate ephemeral storage only — avoids S3 PUT charges for pipeline output",
+        "B": "S3 Standard (with Night 30 lifecycle aging older iceland/ prefixes)",
+        "C": "EC2 Instance Store on a Spot worker as the only durable copy of output",
+        "D": "CloudWatch Logs streams as the long-term system of record for GeoParquet"
       }
     },
     {
       "id": "Q11",
       "question": "Your account runs Fargate tasks in private subnets. The monthly bill shows NAT Gateway data processing far exceeds Fargate vCPU charges. What network change best attacks that line item?",
       "options": {
-        "A": "Shrink task CPU from 2 vCPU to 0.25 vCPU",
-        "B": "Add an internet-facing ALB in front of the batch task",
-        "C": "S3 gateway endpoint and ECR interface endpoints so image/pull traffic avoids NAT",
-        "D": "Enable S3 Object Lock on the output bucket"
+        "A": "Shrink task CPU from 2 vCPU to 0.25 vCPU hoping to cut NAT data processing",
+        "B": "Place an internet-facing ALB in front of the monthly batch Fargate RunTask",
+        "C": "Add S3 gateway and ECR interface endpoints so pull/PUT traffic avoids NAT",
+        "D": "Enable S3 Object Lock on the output bucket to eliminate NAT Gateway charges"
       }
     },
     {
       "id": "Q12",
       "question": "Which statement best contrasts Compute Savings Plans with EC2 Reserved Instances for a team using mostly Fargate RunTask?",
       "options": {
-        "A": "RIs automatically apply to Fargate vCPU-seconds without configuration",
-        "B": "Savings Plans require identical instance type and AZ for all compute",
-        "C": "Savings Plans offer flexible compute spend commitment; standard RIs target specific EC2 instance attributes",
-        "D": "Neither reduces Fargate — only S3 lifecycle rules do"
+        "A": "Reserved Instances automatically discount Fargate vCPU-seconds with no setup needed",
+        "B": "Savings Plans require identical instance type and AZ for every compute workload run",
+        "C": "Neither purchase model reduces Fargate — only S3 lifecycle rules lower compute cost",
+        "D": "Savings Plans commit flexible compute spend; standard RIs lock specific EC2 attributes"
       }
     },
     {
       "id": "Q13",
       "question": "A task definition sets ephemeralStorage sizeInGiB to 100 for large local scratch during OSM extract. How is extra ephemeral storage beyond the default billed on Fargate?",
       "options": {
-        "A": "Included free up to 1 TiB for all tasks",
-        "B": "Billed per additional GiB-hour of configured ephemeral storage",
-        "C": "Billed only when objects are transitioned to Glacier",
-        "D": "Charged as EBS io2 IOPS independent of task CPU"
+        "A": "Billed per additional GiB-hour of configured ephemeral storage beyond default",
+        "B": "Included free up to 1 TiB for every Fargate task definition revision registered",
+        "C": "Billed only when scratch objects are later transitioned into Glacier storage classes",
+        "D": "Charged as EBS io2 provisioned IOPS independent of the configured task CPU setting"
       }
     },
     {
       "id": "Q14",
       "question": "An ops lead wants CloudWatch to justify downsizing Iceland. Which metrics pair best supports a rightsizing decision?",
       "options": {
-        "A": "S3 NumberOfObjects and BucketSizeBytes",
-        "B": "ECS CPUUtilization and MemoryUtilization percentiles over multiple task runs",
-        "C": "Route 53 HealthCheckStatus and DNS query count",
-        "D": "AWS Budgets forecasted spend only — no runtime metrics needed"
+        "A": "S3 NumberOfObjects and BucketSizeBytes on the pipeline output bucket",
+        "B": "ECS CPUUtilization and MemoryUtilization percentiles across multiple task runs",
+        "C": "Route 53 HealthCheckStatus combined with DNS query count for the apex domain",
+        "D": "AWS Budgets forecasted spend alone — runtime utilization metrics are unnecessary"
       }
     },
     {
       "id": "Q15",
       "question": "Night 10 proved Iceland in private subnets with assignPublicIp DISABLED. A teammate suggests enabling a public IP to reduce Fargate cost. What is correct?",
       "options": {
-        "A": "Public IP removes vCPU charges entirely",
-        "B": "Public IP reduces memory requirements by half",
-        "C": "Public IP does not change Fargate CPU/memory billing — it weakens the private-tier design from Night 9",
-        "D": "Public IP is required for Fargate Spot capacity providers"
+        "A": "Public IP removes Fargate vCPU charges for the full duration of each task run",
+        "B": "Public IP halves the memory the task definition must request for the same workload",
+        "C": "Public IP does not change Fargate CPU/memory billing and weakens private-tier design",
+        "D": "Public IP is required before any Fargate Spot capacity provider strategy can be used"
       }
     }
   ]

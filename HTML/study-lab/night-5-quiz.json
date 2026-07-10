@@ -2,107 +2,108 @@
   "night": 5,
   "title": "CloudTrail + Config + Access Analyzer",
   "topic": "Management & Governance / Security observability",
-  "format": "Scenario → best service → why not the others",
+  "format": "10 timed scenario questions (~16 min, ~96 sec each). Scenario → best service → why not the others. Answer without night-5-quiz-answers.json first.",
   "answerKey": "night-5-quiz-answers.json",
+  "answerDistribution": "A×3 B×2 C×3 D×2 — options shuffled so correct letter varies",
   "questions": [
     {
       "id": "Q1",
       "question": "A security team needs to investigate which IAM user deleted an S3 object from a production bucket three days ago. Which service should they use first?",
       "options": {
-        "A": "AWS Config",
-        "B": "AWS CloudTrail",
-        "C": "Amazon GuardDuty",
-        "D": "AWS Security Hub"
+        "A": "AWS CloudTrail — API activity history with caller, time, and source IP",
+        "B": "AWS Config — current resource configuration state and compliance rules",
+        "C": "Amazon GuardDuty — threat findings from VPC Flow, DNS, and CloudTrail",
+        "D": "AWS Security Hub — aggregated severity-scored findings across accounts"
       }
     },
     {
       "id": "Q2",
       "question": "You need continuous evaluation of whether any S3 bucket in the account currently allows public read access. Which service is purpose-built for this?",
       "options": {
-        "A": "AWS CloudTrail",
-        "B": "Amazon GuardDuty",
-        "C": "AWS Config managed rule",
-        "D": "IAM Access Analyzer"
+        "A": "AWS CloudTrail — records when bucket policies changed, not continuous state",
+        "B": "Amazon GuardDuty — detects threats, not configuration compliance posture",
+        "C": "AWS Config managed rule — evaluates current public-read bucket policy state",
+        "D": "IAM Access Analyzer — maps external access paths, not continuous Config rules"
       }
     },
     {
       "id": "Q3",
       "question": "A company with 20 AWS accounts needs a single dashboard showing Config compliance status across all accounts and regions. What is the best approach?",
       "options": {
-        "A": "Enable a multi-Region CloudTrail in each account",
-        "B": "AWS Config aggregator",
-        "C": "Enable GuardDuty in the management account only",
-        "D": "IAM Access Analyzer organization-wide"
+        "A": "Enable a multi-Region CloudTrail trail separately in each member account",
+        "B": "Enable GuardDuty detectors in the management account only for org coverage",
+        "C": "Turn on IAM Access Analyzer organization-wide without a Config aggregator",
+        "D": "AWS Config aggregator — collect compliance from accounts and regions in one view"
       }
     },
     {
       "id": "Q4",
       "question": "An auditor requires proof that CloudTrail log files have not been tampered with after delivery to S3. Which CloudTrail feature addresses this?",
       "options": {
-        "A": "Multi-Region trail",
-        "B": "Log file validation",
-        "C": "Data event logging",
-        "D": "CloudTrail Insights"
+        "A": "Multi-Region trail — expands Region coverage but does not prove delivered log integrity",
+        "B": "Log file validation — digest files with hashes to verify delivered log integrity",
+        "C": "Data event logging — records object-level S3 API calls, not tamper proof",
+        "D": "CloudTrail Insights — flags unusual API activity volume, not file integrity"
       }
     },
     {
       "id": "Q5",
       "question": "You discover an S3 bucket policy that grants s3:GetObject to Principal \"*\". Which tool identifies whether this resource is accessible from outside your AWS account?",
       "options": {
-        "A": "AWS Config",
-        "B": "IAM Access Analyzer (external access)",
-        "C": "AWS CloudTrail",
-        "D": "Amazon Inspector"
+        "A": "AWS Config — flags public read via rules but does not map external principals",
+        "B": "AWS CloudTrail — shows past API calls, not who can access via the policy",
+        "C": "Amazon Inspector — scans EC2/ECR for CVEs, not S3 resource policy exposure",
+        "D": "IAM Access Analyzer — evaluates resource policies for external/cross-account access"
       }
     },
     {
       "id": "Q6",
       "question": "Which statement correctly distinguishes CloudTrail and AWS Config?",
       "options": {
-        "A": "CloudTrail records resource configuration; Config records API calls",
-        "B": "CloudTrail records API activity; Config records resource configuration history and rule compliance",
-        "C": "Both services require GuardDuty to be enabled first",
-        "D": "Config replaces CloudTrail for IAM audit requirements"
+        "A": "CloudTrail records resource configuration; Config records API call history exclusively",
+        "B": "CloudTrail records API activity; Config records configuration history and compliance",
+        "C": "Both services require GuardDuty to be enabled before they can collect any data",
+        "D": "Config replaces CloudTrail entirely for IAM audit and API accountability needs"
       }
     },
     {
       "id": "Q7",
       "question": "An EC2 instance is communicating with a known command-and-control IP address. Which service would most likely generate this finding?",
       "options": {
-        "A": "AWS Config",
-        "B": "Amazon GuardDuty",
-        "C": "AWS CloudTrail",
-        "D": "AWS Config rule IAM_USER_MFA_ENABLED"
+        "A": "AWS Config — evaluates configuration compliance, not malicious network behavior",
+        "B": "AWS CloudTrail — logs management API calls, not C2 traffic to external IPs",
+        "C": "Amazon GuardDuty — ML threat detection using VPC Flow, DNS, and CloudTrail",
+        "D": "AWS Config rule IAM_USER_MFA_ENABLED — checks MFA, not network C2 indicators"
       }
     },
     {
       "id": "Q8",
       "question": "You want a unified view of findings from GuardDuty, Inspector, and Config in one place with severity scoring. Which service should you enable?",
       "options": {
-        "A": "AWS Security Hub",
-        "B": "AWS CloudTrail",
-        "C": "Amazon CloudWatch",
-        "D": "AWS Config aggregator alone"
+        "A": "AWS Security Hub — aggregates and prioritizes findings from multiple security services",
+        "B": "AWS CloudTrail — API audit log only; not a multi-service severity findings dashboard",
+        "C": "Amazon CloudWatch — metrics and logs; not a cross-service security findings hub",
+        "D": "AWS Config aggregator alone — compliance view, not full severity-scored findings"
       }
     },
     {
       "id": "Q9",
       "question": "A team wants automated malware scanning of EBS volumes attached to EC2 instances when suspicious behavior is detected. Which GuardDuty feature addresses this?",
       "options": {
-        "A": "GuardDuty S3 Protection",
-        "B": "GuardDuty Malware Protection for EC2",
-        "C": "AWS Config managed rule",
-        "D": "IAM Access Analyzer"
+        "A": "GuardDuty Malware Protection for EC2 — scans EBS volumes from threat findings",
+        "B": "GuardDuty S3 Protection — monitors object-level S3 API activity for threats",
+        "C": "AWS Config managed rule — continuous configuration compliance, not malware scans",
+        "D": "IAM Access Analyzer — external access findings, not EBS volume malware scanning"
       }
     },
     {
       "id": "Q10",
-      "question": "After enabling AWS Config, the dashboard shows globalskiatlas.com bucket as NON_COMPLIANT on S3_BUCKET_PUBLIC_READ_PROHIBITED, but the static site works correctly via CloudFront. What is the most accurate interpretation?",
+      "question": "After enabling AWS Config, a static-site bucket is NON_COMPLIANT on S3_BUCKET_PUBLIC_READ_PROHIBITED, but the site works via CloudFront. What is the most accurate interpretation?",
       "options": {
-        "A": "The site is hacked — CloudFront is serving malicious content",
-        "B": "Config is broken because the bucket must be private for CloudFront",
-        "C": "The bucket policy allows public read, which violates the rule; the site may still work if public read is intentional (OAC migration would fix compliance)",
-        "D": "CloudTrail will automatically fix the bucket policy overnight"
+        "A": "The site is compromised — CloudFront is serving malicious content from the public bucket",
+        "B": "Config is broken because CloudFront origins must always use public bucket policies",
+        "C": "Bucket allows public read, failing the rule; private bucket + OAC restores compliance",
+        "D": "CloudTrail will automatically rewrite the bucket policy overnight to restore compliance"
       }
     }
   ]

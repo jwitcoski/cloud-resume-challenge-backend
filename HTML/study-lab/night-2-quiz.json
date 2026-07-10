@@ -8,70 +8,70 @@
   "questions": [
     {
       "id": "Q1",
-      "question": "Night 2 lab: witcoskitech.com bucket default encryption is SSE-S3 (AES256). Objects under study-lab/kms-test/ use SSE-KMS with alias/saa-study-witcoskitech. A reader gets AccessDenied on one kms-test object. What must be true for READ access?",
+      "question": "A bucket default encryption is SSE-S3. Objects under a prefix use SSE-KMS with a customer CMK. A reader gets AccessDenied on one SSE-KMS object. What must be true for READ access?",
       "options": {
-        "A": "Only s3:GetObject on the bucket — SSE-KMS objects decrypt automatically",
-        "B": "s3:GetObject on the object plus kms:Decrypt on the CMK used to encrypt it",
-        "C": "kms:Encrypt on the CMK plus s3:ListBucket on the whole bucket",
+        "A": "Only s3:GetObject on the bucket — SSE-KMS objects decrypt with no KMS grant needed",
+        "B": "s3:GetObject on the object plus kms:Decrypt on the CMK that encrypted it",
+        "C": "kms:Encrypt on the CMK plus s3:ListBucket on the whole bucket only",
         "D": "CloudFront OAC on the distribution — KMS permissions are not required"
       }
     },
     {
       "id": "Q2",
-      "question": "A developer uploads to study-lab/kms-test/ with aws s3 cp --sse aws:kms --sse-kms-key-id alias/saa-study-witcoskitech. github-actions-globalskiatlas simulate shows implicitDeny on kms:Decrypt. What is the likely gap?",
+      "question": "A developer uploads with aws s3 cp --sse aws:kms --sse-kms-key-id alias/my-cmk. IAM simulate shows implicitDeny on kms:Decrypt for the deploy role. What is the likely gap?",
       "options": {
-        "A": "The deploy IAM policy lacks kms:Decrypt (and often s3:GetObject) on that CMK and prefix",
-        "B": "SSE-KMS requires a dedicated S3 VPC endpoint in every VPC",
-        "C": "Bucket default encryption must be changed to SSE-KMS for the whole bucket first",
-        "D": "CloudTrail must log data events before KMS grants decrypt permissions"
+        "A": "SSE-KMS requires a dedicated S3 gateway VPC endpoint in every application VPC",
+        "B": "Bucket default encryption must be changed to SSE-KMS for the whole bucket first",
+        "C": "The deploy IAM policy lacks kms:Decrypt (and often s3:GetObject) on that CMK",
+        "D": "CloudTrail must log data events before KMS will grant any decrypt permissions"
       }
     },
     {
       "id": "Q3",
       "question": "Which statement correctly compares SSE-S3 and SSE-KMS for objects in the same bucket?",
       "options": {
-        "A": "SSE-S3 uses S3-managed keys; SSE-KMS uses a KMS CMK with separate key policy and IAM controls",
+        "A": "SSE-S3 uses S3-managed keys; SSE-KMS uses a CMK with key policy and IAM",
         "B": "SSE-S3 requires a customer CMK in every Region; SSE-S3 is deprecated",
-        "C": "SSE-KMS cannot coexist with SSE-S3 objects in one bucket",
-        "D": "SSE-S3 provides CloudTrail data events for every key usage; SSE-KMS does not"
+        "C": "SSE-KMS cannot coexist with SSE-S3 objects in the same S3 bucket",
+        "D": "SSE-S3 logs every key use in CloudTrail; SSE-KMS never emits key events"
       }
     },
     {
       "id": "Q4",
       "question": "You enable S3 Bucket Key on a bucket using SSE-KMS. What is the primary benefit?",
       "options": {
-        "A": "Eliminates the need for kms:Decrypt on readers entirely",
-        "B": "Reduces KMS API request costs by using a bucket-level key for SSE-KMS objects",
+        "A": "Eliminates the need for kms:Decrypt on any reader of SSE-KMS encrypted objects",
+        "B": "Reduces KMS API request costs via a bucket-level key for SSE-KMS objects",
         "C": "Automatically rotates the CMK every 24 hours without AWS KMS support",
-        "D": "Replaces CloudFront OAC for private S3 origin access"
+        "D": "Replaces CloudFront OAC for private S3 origin access control entirely"
       }
     },
     {
       "id": "Q5",
       "question": "Account B must decrypt objects encrypted with Account A's CMK. Which two policy layers typically need to allow decrypt?",
       "options": {
-        "A": "S3 bucket policy only — KMS key policy is not evaluated for cross-account S3",
-        "B": "KMS key policy in Account A plus IAM policy on Account B's principal",
-        "C": "IAM policy in Account A only — cross-account decrypt never uses key policy",
+        "A": "S3 bucket policy only — KMS key policy is not evaluated cross-account",
+        "B": "IAM policy in Account A only — cross-account decrypt never uses key policy",
+        "C": "KMS key policy in Account A plus IAM policy on Account B's principal",
         "D": "AWS Organizations SCP in Account B only — KMS ignores resource policies"
       }
     },
     {
       "id": "Q6",
-      "question": "A new CMK is created with alias/saa-study-witcoskitech. The default key policy grants the account root full access. Why keep the root statement?",
+      "question": "A new CMK is created with an alias. The default key policy grants the account root full access. Why keep the root statement?",
       "options": {
-        "A": "Root is required so IAM policies in the account can delegate CMK use to roles and users",
-        "B": "Root statement disables automatic key rotation permanently",
-        "C": "Without root, SSE-S3 default encryption cannot be enabled on any bucket",
-        "D": "Root replaces the need for bucket policies on encrypted prefixes"
+        "A": "Root statement disables automatic key rotation permanently for that customer CMK",
+        "B": "Without root, SSE-S3 default encryption cannot be enabled on any bucket",
+        "C": "Root replaces the need for bucket policies on encrypted object prefixes",
+        "D": "Root lets IAM policies in the account delegate CMK use to roles and users"
       }
     },
     {
       "id": "Q7",
       "question": "An auditor asks where envelope encryption happens when S3 stores an SSE-KMS object. What is the accurate answer?",
       "options": {
-        "A": "S3 generates a data key; KMS encrypts that data key; S3 stores ciphertext object plus encrypted data key",
-        "B": "KMS stores the entire object ciphertext inside the CMK material",
+        "A": "S3 generates a data key; KMS encrypts it; S3 stores ciphertext plus encrypted key",
+        "B": "KMS stores the entire object ciphertext inside the CMK key material itself",
         "C": "CloudFront edge locations hold the plaintext object key in memory forever",
         "D": "IAM encrypts the object at the client before upload using simulate-principal-policy"
       }
@@ -80,30 +80,30 @@
       "id": "Q8",
       "question": "You want a bucket policy that denies any s3:PutObject unless the request uses aws:kms with a specific CMK ARN. Which condition key helps?",
       "options": {
-        "A": "s3:x-amz-server-side-encryption and s3:x-amz-server-side-encryption-aws-kms-key-id",
-        "B": "kms:ViaService only — bucket policies cannot inspect encryption headers",
-        "C": "aws:PrincipalOrgID — encryption type is always org-wide",
-        "D": "cloudfront:ViewerCountry — geo block replaces encryption enforcement"
+        "A": "kms:ViaService only — bucket policies cannot inspect encryption headers",
+        "B": "aws:PrincipalOrgID — encryption type is always enforced org-wide by SCPs",
+        "C": "s3:x-amz-server-side-encryption and s3:x-amz-server-side-encryption-aws-kms-key-id",
+        "D": "cloudfront:ViewerCountry — geo block replaces encryption enforcement rules"
       }
     },
     {
       "id": "Q9",
-      "question": "Night 2 contrast: which service stores encryption keys vs which stores application secrets like Cognito client IDs?",
+      "question": "Which service stores encryption keys vs which stores application secrets like Cognito client IDs?",
       "options": {
-        "A": "Secrets Manager stores CMKs; KMS stores Cognito client secrets",
-        "B": "KMS manages encryption keys; Secrets Manager stores secret values (passwords, API keys, config JSON)",
-        "C": "Both services store only IAM access keys for GitHub Actions",
-        "D": "SSM Parameter Store replaces KMS for all SSE-KMS workloads"
+        "A": "Secrets Manager stores CMKs; KMS stores Cognito client secrets as key material",
+        "B": "KMS manages encryption keys; Secrets Manager stores secret values and config",
+        "C": "Both services store only IAM access keys for CI/CD deploy principals",
+        "D": "SSM Parameter Store replaces KMS for all SSE-KMS object encryption workloads"
       }
     },
     {
       "id": "Q10",
-      "question": "CloudTrail logs show kms:Decrypt from the wiki Lambda role on alias/saa-study-witcoskitech. The role also needs GetSecretValue on a Secrets Manager secret encrypted with that CMK. Why both permissions?",
+      "question": "A Lambda role calls GetSecretValue on a Secrets Manager secret encrypted with a CMK. CloudTrail also shows kms:Decrypt. Why both permissions?",
       "options": {
-        "A": "Secrets Manager returns ciphertext; Lambda must call kms:Decrypt to read the secret value",
-        "B": "GetSecretValue automatically grants kms:Encrypt but never kms:Decrypt",
-        "C": "KMS decrypt is only needed for S3 objects, not Secrets Manager",
-        "D": "CMK alias changes every invoke so decrypt must be re-authorized each time"
+        "A": "GetSecretValue automatically grants kms:Encrypt but never kms:Decrypt",
+        "B": "KMS decrypt is only needed for S3 objects, not Secrets Manager secrets",
+        "C": "CMK alias changes every invoke so decrypt must be re-authorized each time",
+        "D": "Secrets Manager returns ciphertext; Lambda needs kms:Decrypt to read the value"
       }
     }
   ]

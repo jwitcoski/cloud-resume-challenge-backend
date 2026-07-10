@@ -82,3 +82,13 @@ export function listQuizSummaries(): QuizSummary[] {
   }
   return summaries;
 }
+
+/** All nights with questions + answers for gauntlet / cross-night modes. */
+export function loadAllQuizzes(): LoadedQuiz[] {
+  const quizzes: LoadedQuiz[] = [];
+  for (const night of listQuizNights()) {
+    const quiz = loadQuiz(night);
+    if (quiz) quizzes.push(quiz);
+  }
+  return quizzes;
+}

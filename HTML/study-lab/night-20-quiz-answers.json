@@ -1,7 +1,12 @@
 {
   "night": 20,
   "title": "Migration & Transfer — DMS + S3 staging for database moves",
-  "answerDistribution": { "A": 4, "B": 4, "C": 4, "D": 3 },
+  "answerDistribution": {
+    "A": 4,
+    "B": 4,
+    "C": 4,
+    "D": 3
+  },
   "answers": [
     {
       "id": "Q1",
@@ -10,7 +15,7 @@
     },
     {
       "id": "Q2",
-      "correct": "D",
+      "correct": "B",
       "explanation": "Full load + CDC keeps target synced via transaction logs until cutover — classic DMS migration window."
     },
     {
@@ -35,7 +40,7 @@
     },
     {
       "id": "Q7",
-      "correct": "B",
+      "correct": "C",
       "explanation": "Postgres→Aurora Postgres is homogeneous — no SCT needed; DMS homogeneous full load + CDC."
     },
     {
@@ -55,7 +60,7 @@
     },
     {
       "id": "Q11",
-      "correct": "B",
+      "correct": "C",
       "explanation": "Migration bucket stages DynamoDB export JSON for analytics or downstream import — night-20-lab pattern."
     },
     {

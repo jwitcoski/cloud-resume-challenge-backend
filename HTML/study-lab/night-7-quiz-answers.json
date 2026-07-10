@@ -1,7 +1,12 @@
 {
   "night": 7,
   "title": "Week 1 consolidation",
-  "answerDistribution": { "A": 4, "B": 3, "C": 4, "D": 4 },
+  "answerDistribution": {
+    "A": 4,
+    "B": 3,
+    "C": 4,
+    "D": 4
+  },
   "answers": [
     {
       "id": "Q1",

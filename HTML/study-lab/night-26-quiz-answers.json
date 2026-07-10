@@ -5,12 +5,12 @@
   "answers": [
     {
       "id": "Q1",
-      "correct": "B",
+      "correct": "A",
       "explanation": "Prod api/wiki* uses CachingDisabled — dynamic Cognito-backed API should not edge-cache until designed — night-26-cloudfront-api-caching.md + cf-dist-config.json."
     },
     {
       "id": "Q2",
-      "correct": "C",
+      "correct": "B",
       "explanation": "CloudFront needs origin Cache-Control/Expires when policy allows caching — Night 26 cache probe section."
     },
     {
@@ -20,7 +20,7 @@
     },
     {
       "id": "Q4",
-      "correct": "B",
+      "correct": "D",
       "explanation": "CloudFront = HTTP at edge; ElastiCache = VPC object cache — Night 23 vs 26 contrast table."
     },
     {
@@ -30,17 +30,17 @@
     },
     {
       "id": "Q6",
-      "correct": "C",
+      "correct": "B",
       "explanation": "API Gateway returns 429 when throttle exceeded — Block 1 throttling layers."
     },
     {
       "id": "Q7",
-      "correct": "B",
+      "correct": "C",
       "explanation": "CloudFront matches most specific path pattern — api/iceberg-stats behavior in wiki-api-production.md."
     },
     {
       "id": "Q8",
-      "correct": "B",
+      "correct": "D",
       "explanation": "Short TTL / origin max-age avoids constant invalidations — Block 1 exam traps."
     },
     {
@@ -50,22 +50,22 @@
     },
     {
       "id": "Q10",
-      "correct": "A",
+      "correct": "B",
       "explanation": "CachedMethods typically GET/HEAD — mutating verbs reach origin — cf-dist-config.json api/wiki* behavior."
     },
     {
       "id": "Q11",
-      "correct": "B",
+      "correct": "C",
       "explanation": "Account-level API Gateway limits apply Region-wide — Block 1 throttling table."
     },
     {
       "id": "Q12",
-      "correct": "A",
+      "correct": "D",
       "explanation": "REGIONAL WAF ACL in ALB Region — contrast Night 4 CLOUDFRONT scope in us-east-1."
     },
     {
       "id": "Q13",
-      "correct": "C",
+      "correct": "A",
       "explanation": "Fix Lambda latency and cache cacheable GETs at edge before adding Redis — performance layering."
     },
     {
@@ -75,7 +75,7 @@
     },
     {
       "id": "Q15",
-      "correct": "A",
+      "correct": "C",
       "explanation": "Edge cache for identical GETs reduces origin/DynamoDB load; ElastiCache optional deeper — Nights 23+26 stack."
     }
   ]

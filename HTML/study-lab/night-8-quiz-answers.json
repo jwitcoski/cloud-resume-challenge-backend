@@ -1,7 +1,12 @@
 {
   "night": 8,
   "title": "VPC fundamentals",
-  "answerDistribution": { "A": 3, "B": 2, "C": 3, "D": 2 },
+  "answerDistribution": {
+    "A": 3,
+    "B": 2,
+    "C": 3,
+    "D": 2
+  },
   "answers": [
     {
       "id": "Q1",

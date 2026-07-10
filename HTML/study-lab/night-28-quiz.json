@@ -31,18 +31,18 @@
       "question": "A gaming company ingests millions of click events per hour. Multiple teams run independent real-time aggregators and need replay from a 24-hour retention window. Which ingestion service fits?",
       "options": {
         "A": "Amazon Kinesis Data Streams with custom consumers or Lambda event source mappings",
-        "B": "Amazon Kinesis Data Firehose delivering batched objects to S3 only",
-        "C": "Amazon SQS standard queue with long polling from twenty Lambda functions",
-        "D": "Amazon SNS FIFO topic fanning out to one Lambda per game shard"
+        "B": "Amazon Kinesis Data Firehose delivering batched compressed objects to S3 only",
+        "C": "Amazon SQS standard queue with long polling from twenty independent Lambda functions",
+        "D": "Amazon SNS FIFO topic fanning out to one Lambda subscriber per game shard"
       }
     },
     {
       "id": "Q4",
       "question": "Security logs must stream from producers to an S3 data lake for Athena queries. You want AWS to handle batching, compression, and scaling without writing consumer application code. Which service?",
       "options": {
-        "A": "Amazon Kinesis Data Streams with a custom KCL consumer writing to S3",
-        "B": "Amazon MSK with Kafka Connect configured manually for each AZ",
-        "C": "Amazon EventBridge rules targeting S3 PutObject on every log line",
+        "A": "Amazon Kinesis Data Streams with a custom KCL consumer application writing to S3",
+        "B": "Amazon MSK with Kafka Connect connectors configured manually for each Availability Zone",
+        "C": "Amazon EventBridge rules targeting S3 PutObject API calls on every individual log line",
         "D": "Amazon Kinesis Data Firehose with an S3 destination and optional Lambda transform"
       }
     },
@@ -80,9 +80,9 @@
       "id": "Q8",
       "question": "A payment processor runs millions of short orchestrations per day. Each flow completes in under two minutes and does not require durable execution history for audit. Cost and throughput matter most. Which Step Functions type?",
       "options": {
-        "A": "Standard workflows — full history retained up to one year for every execution",
-        "B": "AWS Batch job queue with Spot instances replacing Step Functions entirely",
-        "C": "Amazon EventBridge Pipes connecting each step without a state machine",
+        "A": "Standard workflows — full execution history retained up to one year for every run",
+        "B": "AWS Batch job queue with Spot compute replacing Step Functions for every payment flow",
+        "C": "Amazon EventBridge Pipes connecting each payment step without a state machine definition",
         "D": "Express workflows — high volume, short duration, optional discard of execution history"
       }
     },
@@ -111,18 +111,18 @@
       "question": "CloudWatch alarm saa-study-gsa-iceland-task-failed fires on FailedInvocations for the monthly schedule rule. Invocations metric is zero. What most likely failed?",
       "options": {
         "A": "EventBridge could not invoke ecs:RunTask — IAM, PassRole, or invalid target before a task started",
-        "B": "The Iceland container exited with code 1 after uploading partial data to S3",
-        "C": "SQS completion queue visibility timeout was shorter than Fargate wall-clock time",
-        "D": "SNS email subscription remained PendingConfirmation after the first publish"
+        "B": "The Iceland container exited with code 1 after uploading only partial GeoParquet data to S3",
+        "C": "SQS completion queue visibility timeout was shorter than the Fargate task wall-clock runtime",
+        "D": "SNS email subscription remained in PendingConfirmation status after the first failure publish"
       }
     },
     {
       "id": "Q12",
       "question": "An exam scenario describes ingesting video from thousands of IoT cameras for later ML analysis — not batch monthly GeoParquet. Which service is most relevant at awareness level?",
       "options": {
-        "A": "Amazon SQS FIFO with video chunks as message bodies",
-        "B": "AWS Step Functions Map state over S3 objects only",
-        "C": "Amazon EventBridge Scheduler with one-off cron per camera",
+        "A": "Amazon SQS FIFO queues carrying large video chunks as individual message bodies",
+        "B": "AWS Step Functions Map state iterating S3 objects for offline batch analysis only",
+        "C": "Amazon EventBridge Scheduler with a one-off cron expression registered per camera",
         "D": "Amazon Kinesis Video Streams for video ingest and time-indexed playback"
       }
     },
@@ -140,10 +140,10 @@
       "id": "Q14",
       "question": "Multiple AWS accounts send custom application events to a central account. Rules must match detail fields and invoke different Lambda functions without point-to-point coupling. Which service?",
       "options": {
-        "A": "Amazon SQS with raw message delivery from each account's IAM user",
-        "B": "Amazon SNS SMS subscriptions filtered by message attributes only",
+        "A": "Amazon SQS with raw message delivery from each account's IAM user credentials",
+        "B": "Amazon SNS SMS subscriptions filtered only by message attributes on each publish",
         "C": "Amazon EventBridge event buses and rules with event patterns and cross-account policies",
-        "D": "AWS Direct Connect VIF broadcasting application events to on-premises brokers"
+        "D": "AWS Direct Connect VIF broadcasting application events to on-premises message brokers"
       }
     },
     {

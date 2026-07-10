@@ -1,31 +1,36 @@
 {
   "night": 32,
   "title": "Lab 4C — Step Functions capstone",
-  "answerDistribution": { "A": 4, "B": 4, "C": 4, "D": 3 },
+  "answerDistribution": {
+    "A": 4,
+    "B": 4,
+    "C": 4,
+    "D": 3
+  },
   "answers": [
     {
       "id": "Q1",
-      "correct": "C",
+      "correct": "A",
       "explanation": "Multi-step orchestration with per-step Retry/Catch → Step Functions Standard — gsa-stepfunctions-map.md capstone."
     },
     {
       "id": "Q2",
-      "correct": "A",
+      "correct": "B",
       "explanation": "runTask.sync blocks until ECS task STOPPED — Night 32 Block 1 integration table."
     },
     {
       "id": "Q3",
-      "correct": "B",
+      "correct": "C",
       "explanation": "After Retry exhausts, Catch transitions to PublishFailureAlert → SNS — ASL error handling."
     },
     {
       "id": "Q4",
-      "correct": "B",
+      "correct": "D",
       "explanation": "Two enabled schedules → double RunTask — lab disables legacy rule by default."
     },
     {
       "id": "Q5",
-      "correct": "C",
+      "correct": "A",
       "explanation": "RunTask requires iam:PassRole on ECS execution + task roles — SAM template Policies block."
     },
     {
@@ -35,12 +40,12 @@
     },
     {
       "id": "Q7",
-      "correct": "B",
+      "correct": "C",
       "explanation": "SQS keeps durable buffer and Night 17 consumer path — integration map Night 32 target."
     },
     {
       "id": "Q8",
-      "correct": "C",
+      "correct": "D",
       "explanation": "Lambda invoke succeeds on 200 response; Catch only on thrown/task failure — not business errors in payload."
     },
     {
@@ -55,17 +60,17 @@
     },
     {
       "id": "Q11",
-      "correct": "B",
+      "correct": "C",
       "explanation": "Human approval → .waitForTaskToken + SendTaskSuccess — Night 28 Step Functions preview."
     },
     {
       "id": "Q12",
-      "correct": "B",
+      "correct": "D",
       "explanation": "Non-zero exit fails runTask.sync state → Catch → SNS; FailedInvocations is for target never invoked."
     },
     {
       "id": "Q13",
-      "correct": "C",
+      "correct": "A",
       "explanation": "PublishSuccess uses arn:aws:states:::sns:publish — pipeline.asl.json."
     },
     {
@@ -75,7 +80,7 @@
     },
     {
       "id": "Q15",
-      "correct": "B",
+      "correct": "C",
       "explanation": "Single cron RunTask loses orchestration visibility and per-step error routing — why Night 32 exists."
     }
   ]

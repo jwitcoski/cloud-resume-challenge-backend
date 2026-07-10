@@ -11,18 +11,18 @@
       "question": "You are sketching GSA's exam architecture on paper. Users browse the wiki over HTTPS. An ALB terminates TLS and forwards to Fargate tasks. Aurora holds resort_stats in private subnets. Where should the ALB sit relative to the NAT Gateway?",
       "options": {
         "A": "ALB in public subnets with route to IGW; Fargate and Aurora in private subnets",
-        "B": "ALB and Aurora in public subnets; only Fargate stays private",
+        "B": "ALB and Aurora in public subnets; only Fargate stays private for this workload",
         "C": "ALB in private subnets only — NAT Gateway replaces the need for public subnets",
-        "D": "ALB attached directly to the Aurora writer endpoint on port 5432"
+        "D": "ALB attached directly to the Aurora writer endpoint on port 5432 for this workload"
       }
     },
     {
       "id": "Q2",
       "question": "Night 17 Lambda saa-study-gsa-stats-uploader times out on first invoke but succeeds on the second. Aurora security groups are correct. Most likely cause?",
       "options": {
-        "A": "Lambda must use the Aurora reader endpoint for UPSERT operations",
         "B": "Cold-start ENI attachment in the VPC before outbound TCP to Aurora completes",
-        "C": "SQS FIFO queue is required for any Lambda in a VPC",
+        "A": "Lambda must use the Aurora reader endpoint for UPSERT operations for this workload",
+        "C": "SQS FIFO queue is required for any Lambda in a VPC for this workload",
         "D": "Secrets Manager blocks all connections until Multi-AZ failover finishes"
       }
     },
@@ -30,9 +30,9 @@
       "id": "Q3",
       "question": "Leadership asks for automatic Aurora writer failover in the same Region with minimal write loss. BI dashboards must not hit the standby during normal operations. Best pattern?",
       "options": {
-        "A": "Aurora cluster Multi-AZ with synchronous storage failover to a standby instance",
-        "B": "Point all SELECT queries at the synchronous Multi-AZ standby endpoint",
-        "C": "Single-AZ Aurora with weekly manual snapshots only",
+        "C": "Aurora cluster Multi-AZ with synchronous storage failover to a standby",
+        "A": "Point all SELECT queries at the synchronous Multi-AZ standby endpoint",
+        "B": "Single-AZ Aurora with weekly manual snapshots only for this workload",
         "D": "Three cross-Region read replicas with Route 53 weighted routing to all writers"
       }
     },
@@ -40,18 +40,18 @@
       "id": "Q4",
       "question": "A wiki counter table needs restore to any second within the last month after a bad script. The original table must remain untouched for comparison. Which DynamoDB feature?",
       "options": {
-        "A": "On-demand backup that overwrites the existing table in place",
-        "B": "AWS Backup vault lock that replays CloudTrail PutItem events",
-        "C": "PITR — restore to a new table at a chosen timestamp within 35 days",
-        "D": "DynamoDB Streams with TRIM_HORIZON that rewinds the live table"
+        "D": "PITR — restore to a new table at a chosen timestamp within 35 days",
+        "A": "On-demand backup that overwrites the existing table in place for this workload",
+        "B": "AWS Backup vault lock that replays CloudTrail PutItem events for this workload",
+        "C": "DynamoDB Streams with TRIM_HORIZON that rewinds the live table"
       }
     },
     {
       "id": "Q5",
       "question": "After a Region-wide outage, executives accept four hours to rebuild infrastructure from recovery points stored in a DR Region. Lowest-cost DR tier?",
       "options": {
-        "A": "Multi-site active-active with DynamoDB global tables in every Region",
-        "B": "Backup and restore — AWS Backup recovery points plus IaC redeploy",
+        "A": "Backup and restore — AWS Backup recovery points plus IaC redeploy",
+        "B": "Multi-site active-active with DynamoDB global tables in every Region",
         "C": "Warm standby with min=2 Auto Scaling in the DR Region at all times",
         "D": "Aurora Global Database with active writes in both Regions 24×7"
       }
@@ -60,9 +60,9 @@
       "id": "Q6",
       "question": "On-prem resort_stats PostgreSQL must replicate ongoing INSERTs to Aurora in saa-study-gsa-vpc while production stays on-prem until cutover. Which DMS task type?",
       "options": {
+        "B": "Full load plus CDC — initial copy then tail the source WAL/binlog",
         "A": "Full load only — one-time table scan with no transaction log tailing",
-        "B": "CDC only — assumes the target already has every historical row",
-        "C": "Full load plus CDC — initial copy then tail the source WAL/binlog",
+        "C": "CDC only — assumes the target already has every historical row",
         "D": "DynamoDB export to S3 — streams live writes to Parquet automatically"
       }
     },
@@ -70,20 +70,20 @@
       "id": "Q7",
       "question": "Resort HQ (192.168.0.0/16) needs encrypted connectivity to the Night 9 VPC (10.0.0.0/16) within days. No dedicated fiber yet. Fastest AWS option?",
       "options": {
-        "A": "VPC peering between the on-premises LAN and the VPC",
+        "A": "VPC peering between the on-premises LAN and the VPC CIDR blocks",
         "B": "AWS PrivateLink interface endpoint installed in the on-prem rack",
-        "C": "Direct Connect 10 Gbps port provisioned this afternoon",
-        "D": "AWS Site-to-Site VPN — IPSec tunnels to a virtual private gateway or Transit Gateway"
+        "C": "AWS Site-to-Site VPN — IPSec tunnels to a virtual private gateway or TGW",
+        "D": "Direct Connect 10 Gbps port provisioned this afternoon for hybrid use for this workload"
       }
     },
     {
       "id": "Q8",
       "question": "Night 18 stream Lambda should log both the old and new viewCount on every MODIFY. Which DynamoDB stream view type?",
       "options": {
-        "A": "KEYS_ONLY — partition and sort keys without attribute values",
-        "B": "NEW_IMAGE only — previous attribute values are never included",
-        "C": "OLD_IMAGE only — post-change state is omitted from each record",
-        "D": "NEW_AND_OLD_IMAGES — both versions of the item in each stream record"
+        "D": "NEW_AND_OLD_IMAGES — both versions of the item in each stream record",
+        "A": "KEYS_ONLY — partition and sort keys without attribute values for this workload",
+        "B": "NEW_IMAGE only — previous attribute values are never included for this workload",
+        "C": "OLD_IMAGE only — post-change state is omitted from each record for this workload"
       }
     },
     {
@@ -100,89 +100,89 @@
       "id": "Q10",
       "question": "500 concurrent Lambdas each open a new MySQL connection to RDS at peak. Secrets Manager is already in use. Minimal-change fix from Night 15 theory?",
       "options": {
-        "A": "Enable Multi-AZ — doubles the connection limit on the standby",
         "B": "Deploy RDS Proxy — pool connections; Lambdas target the proxy endpoint",
-        "C": "Switch all relational tables to DynamoDB with GSIs for JOINs",
-        "D": "Use Aurora Backtrack on PostgreSQL to rewind connection storms"
+        "A": "Enable Multi-AZ — doubles the connection limit on the standby for this workload",
+        "C": "Switch all relational tables to DynamoDB with GSIs for JOINs for this workload",
+        "D": "Use Aurora Backtrack on PostgreSQL to rewind connection storms for this workload"
       }
     },
     {
       "id": "Q11",
       "question": "Dev, Staging, and Logging VPCs must all reach each other and on-prem. Full mesh VPC peering is rejected. Hub design?",
       "options": {
-        "A": "One Site-to-Site VPN per VPC without a shared gateway",
-        "B": "Transit Gateway with attachments per VPC and centralized route tables",
-        "C": "PrivateLink interface endpoint in every spoke for every resource",
-        "D": "Inter-Region VPC peering only — no hybrid connectivity"
+        "C": "Transit Gateway with attachments per VPC and centralized route tables",
+        "A": "One Site-to-Site VPN per VPC without a shared gateway for this workload",
+        "B": "PrivateLink interface endpoint in every spoke for every resource",
+        "D": "Inter-Region VPC peering only — no hybrid connectivity for this workload"
       }
     },
     {
       "id": "Q12",
       "question": "night-19-lab tags saa-study-gsa-wiki-views with saa-study-backup=night-19. A new study table gets the same tag tomorrow. What happens?",
       "options": {
-        "A": "AWS Backup disables DynamoDB PITR on all tagged tables",
-        "B": "Tags are cosmetic — only ARNs listed in the plan can be backed up",
-        "C": "The new table auto-enrolls in the backup plan without editing the selection",
-        "D": "The vault name must exactly match the tag value or jobs fail"
+        "D": "The new table auto-enrolls in the backup plan without editing the selection",
+        "A": "AWS Backup disables DynamoDB PITR on all tagged tables for this workload",
+        "B": "Tags are cosmetic — only ARNs listed in the plan can be backed up for this workload",
+        "C": "The vault name must exactly match the tag value or jobs fail for this workload"
       }
     },
     {
       "id": "Q13",
       "question": "A vendor SaaS API runs in another AWS account. GSA consumers need private access without merging VPC route tables or peering entire CIDRs. Best fit?",
       "options": {
-        "A": "VPC peering between GSA and vendor VPCs",
-        "B": "S3 Gateway endpoint in the consumer VPC",
-        "C": "AWS PrivateLink — consumer interface endpoint to the provider NLB service",
-        "D": "Public internet with IP allow lists on the vendor ALB"
+        "A": "AWS PrivateLink — consumer interface endpoint to the provider NLB service",
+        "B": "VPC peering between GSA and vendor VPCs merging entire CIDR tables",
+        "C": "S3 Gateway endpoint in the consumer VPC for SaaS API private access",
+        "D": "Public internet with IP allow lists on the vendor Application Load Balancer"
       }
     },
     {
       "id": "Q14",
       "question": "Night 20 lab exports saa-study-gsa-wiki-views to S3 for Athena staging. A teammate calls this live CDC replication. Correct?",
       "options": {
-        "A": "Yes — export streams every PutItem to S3 in real time like DMS",
-        "B": "Yes — export and DMS CDC are identical for DynamoDB sources",
-        "C": "Partially — export is CDC if PITR is enabled on the table",
-        "D": "No — export is a point-in-time snapshot to S3; ongoing changes need DMS or Streams"
+        "B": "No — export is a point-in-time snapshot to S3; ongoing changes need DMS or Streams",
+        "A": "Yes — export streams every PutItem to S3 in real time like DMS for this workload for this workload",
+        "C": "Yes — export and DMS CDC are identical for DynamoDB sources for this workload",
+        "D": "Partially — export is CDC if PITR is enabled on the table for this workload"
       }
     },
     {
       "id": "Q15",
       "question": "Direct Connect is the primary hybrid link. Leadership wants resilience when the DX circuit fails. Standard companion?",
       "options": {
-        "A": "Second Internet Gateway in the VPC for automatic failover",
-        "B": "Site-to-Site VPN as backup terminating on the same Transit Gateway or VGW",
-        "C": "Replace private VIF with public VIF only during outages",
-        "D": "VPC peering to a second Direct Connect location in another Region"
+        "C": "Site-to-Site VPN as backup terminating on the same Transit Gateway or VGW",
+        "A": "Second Internet Gateway in the VPC for automatic failover for this workload",
+        "B": "Replace private VIF with public VIF only during outages for this workload",
+        "D": "VPC peering to a second Direct Connect location in another Region for this workload"
       }
     },
     {
       "id": "Q16",
       "question": "GSA needs sub-second cross-Region RPO on Aurora PostgreSQL with a managed global topology. Which feature?",
       "options": {
-        "A": "RDS automated backup copy every five minutes as live replication",
-        "B": "Promote a cross-Region read replica after manual health check",
-        "C": "Aurora Global Database — primary and secondary Region with low replication lag",
-        "D": "RDS Multi-AZ synchronous standby in the same Region only"
+        "D": "Aurora Global Database — primary and secondary Region with low replication lag",
+        "A": "RDS automated backup copy every five minutes as live replication for this workload",
+        "B": "Promote a cross-Region read replica after manual health check for this workload",
+        "C": "RDS Multi-AZ synchronous standby in the same Region only for this workload"
       }
     },
     {
       "id": "Q17",
       "question": "VPC A peers with VPC B. VPC B peers with VPC C. Can VPC A reach VPC C through VPC B?",
       "options": {
-        "A": "Yes — peering is transitive across unlimited hops",
-        "B": "Yes — if all three VPCs share the same /16 CIDR block",
-        "C": "No — VPC peering is non-transitive; need A↔C peering or Transit Gateway",
-        "D": "Only if an Internet Gateway is attached to VPC B as a hub"
+        "A": "No — VPC peering is non-transitive; need A↔C peering or Transit Gateway",
+        "B": "Yes — peering is transitive across unlimited hops for this workload",
+        "C": "Yes — if all three VPCs share the same /16 CIDR block for this workload",
+        "D": "Only if an Internet Gateway is attached to VPC B as a hub for this workload"
       }
     },
     {
       "id": "Q18",
       "question": "Night 16 Aurora sits in Night 9 private subnets. Which ingress rule belongs on aurora-sg for the stats Lambda?",
       "options": {
-        "A": "Allow TCP 5432 from the Lambda security group ID as source",
-        "B": "Allow TCP 5432 from 0.0.0.0/0 — Lambda has no fixed IP",
-        "C": "Allow all traffic from the VPC CIDR 10.0.0.0/16",
+        "B": "Allow TCP 5432 from the Lambda security group ID as source",
+        "A": "Allow TCP 5432 from 0.0.0.0/0 — Lambda has no fixed IP",
+        "C": "Allow all traffic from the VPC CIDR 10.0.0.0/16 for this workload",
         "D": "No inbound — Aurora initiates connections to Lambda on 5432"
       }
     },
@@ -190,20 +190,20 @@
       "id": "Q19",
       "question": "Terabytes of on-prem file shares must seed S3 before a narrow maintenance window. No sustained 10 Gbps link. Offline bulk transfer?",
       "options": {
-        "A": "AWS DataSync agent over a 1 Mbps VPN",
-        "B": "DMS full load plus CDC from NFS mount points",
         "C": "AWS Snowball Edge device — ship drives, import into S3",
-        "D": "DynamoDB export to S3 with PITR enabled"
+        "A": "AWS DataSync agent over a 1 Mbps VPN for this workload",
+        "B": "DMS full load plus CDC from NFS mount points for this workload",
+        "D": "DynamoDB export to S3 with PITR enabled for this workload"
       }
     },
     {
       "id": "Q20",
       "question": "Compare warm standby and pilot light for the same RPO. Which statement is accurate?",
       "options": {
-        "A": "Pilot light runs full production ASG capacity in DR at all times",
-        "B": "Warm standby never runs database instances until failover",
-        "C": "Both have identical RTO because neither uses Route 53 health checks",
-        "D": "Warm standby keeps a scaled-down live DR stack — typically lower RTO than pilot light"
+        "D": "Warm standby keeps a scaled-down live DR stack — typically lower RTO than",
+        "A": "Pilot light runs full production ASG capacity in DR at all times for this workload",
+        "B": "Warm standby never runs database instances until failover for this workload",
+        "C": "Both have identical RTO because neither uses Route 53 health checks for this workload"
       }
     },
     {
@@ -211,18 +211,18 @@
       "question": "Oracle on-prem must land on Aurora PostgreSQL with schema conversion before DMS cutover. Which AWS tool?",
       "options": {
         "A": "AWS Schema Conversion Tool (SCT) — heterogeneous assessment and conversion",
-        "B": "AWS DataSync — converts PL/SQL packages during file sync",
-        "C": "Snowball Edge — runs Oracle inside the appliance for conversion",
-        "D": "RDS Proxy — translates Oracle wire protocol to PostgreSQL"
+        "B": "AWS DataSync — converts PL/SQL packages during file sync for this workload",
+        "C": "Snowball Edge — runs Oracle inside the appliance for conversion for this workload",
+        "D": "RDS Proxy — translates Oracle wire protocol to PostgreSQL for this workload"
       }
     },
     {
       "id": "Q22",
       "question": "On-prem and the VPC both use 10.0.0.0/16. Site-to-Site VPN tunnels are up but routes never work. Root cause?",
       "options": {
-        "A": "VPN requires Direct Connect before BGP sessions establish",
         "B": "Overlapping CIDR blocks — hybrid routing cannot disambiguate addresses",
-        "C": "Virtual private gateway only supports /8 networks",
+        "A": "VPN requires Direct Connect before BGP sessions establish for this workload",
+        "C": "Virtual private gateway only supports /8 networks for this workload",
         "D": "Client VPN must be enabled before Site-to-Site VPN routes propagate"
       }
     },
@@ -230,60 +230,60 @@
       "id": "Q23",
       "question": "Night 13 SQS visibility timeout is 60 seconds. Night 17 Lambda timeout is 30 seconds. Why is this pairing valid?",
       "options": {
-        "A": "Visibility timeout must equal Lambda timeout exactly",
+        "C": "Visibility timeout ≥ Lambda timeout — message stays hidden while Lambda runs",
+        "A": "Visibility timeout must equal Lambda timeout exactly for this workload",
         "B": "Lambda timeout must exceed visibility timeout to prevent duplicate processing",
-        "C": "Visibility timeout should be at least six times the Lambda timeout",
-        "D": "Visibility timeout ≥ Lambda timeout — message stays hidden while Lambda runs"
+        "D": "Visibility timeout should be at least six times the Lambda timeout for this workload"
       }
     },
     {
       "id": "Q24",
       "question": "Compliance auditor asks whether CloudTrail replaces AWS Backup for wiki tables. Accurate response?",
       "options": {
-        "A": "Yes — CloudTrail stores full table snapshots in the trail S3 bucket",
-        "B": "Yes — enabling data events on DynamoDB equals PITR plus AWS Backup",
-        "C": "Partially — CloudTrail replaces backup when S3 Object Lock is enabled",
-        "D": "No — CloudTrail records API activity; it is not a backup and restore service"
+        "D": "No — CloudTrail records API activity; it is not a backup and restore service",
+        "A": "Yes — CloudTrail stores full table snapshots in the trail S3 bucket for this workload",
+        "B": "Yes — enabling data events on DynamoDB equals PITR plus AWS Backup for this workload",
+        "C": "Partially — CloudTrail replaces backup when S3 Object Lock is enabled for this workload"
       }
     },
     {
       "id": "Q25",
       "question": "Aurora Serverless v2 dev cluster should eliminate overnight idle cost by scaling to zero ACUs like Serverless v1. Accurate for v2?",
       "options": {
-        "A": "Yes — v2 pauses after ten minutes without connections",
-        "B": "Yes — but only for Aurora MySQL, not PostgreSQL",
-        "C": "Only when RDS Proxy holds open connections overnight",
-        "D": "No — v2 maintains a configurable minimum ACU; tear down dev stacks when idle"
+        "A": "No — v2 maintains a configurable minimum ACU; tear down dev stacks when idle",
+        "B": "Yes — v2 pauses after ten minutes without connections for this workload for this workload",
+        "C": "Yes — but only for Aurora MySQL, not PostgreSQL Serverless v2 clusters",
+        "D": "Only when RDS Proxy holds open connections overnight for this workload"
       }
     },
     {
       "id": "Q26",
       "question": "Direct Connect private VIF carries production ETL to Aurora. Security asks whether DX encrypts traffic by default. Correct?",
       "options": {
-        "A": "Yes — AES-256 on every private VIF automatically",
-        "B": "Yes — but only when Transit Gateway is the attachment target",
-        "C": "No — dedicated circuit is private, not encrypted; add VPN over DX if required",
-        "D": "No — DX only supports unencrypted public VIF; private VIF requires VPN"
+        "B": "No — dedicated circuit is private, not encrypted; add VPN over DX if required",
+        "A": "Yes — AES-256 on every private VIF automatically without extra config",
+        "C": "Yes — but only when Transit Gateway is the attachment target for this workload",
+        "D": "No — DX only supports unencrypted public VIF; private VIF requires VPN for this workload"
       }
     },
     {
       "id": "Q27",
       "question": "GSA wiki page views need unpredictable scale with simple ADD increments. resort_stats needs SQL JOINs for BI. Store pairing?",
       "options": {
-        "A": "DynamoDB for page-view counters; Aurora for relational stats and reports",
-        "B": "Aurora for both — one cluster simplifies operations",
-        "C": "DynamoDB for both — model JOINs as multiple GetItem calls",
-        "D": "S3 Iceberg only — eliminate databases for both workloads"
+        "C": "DynamoDB for page-view counters; Aurora for relational stats and reports",
+        "A": "Aurora for both — one cluster simplifies operations for this workload",
+        "B": "DynamoDB for both — model JOINs as multiple GetItem calls for this workload",
+        "D": "S3 Iceberg only — eliminate databases for both workloads for this workload"
       }
     },
     {
       "id": "Q28",
       "question": "Before cutover, DMS shows replication lag dropping after writes stop to the on-prem source. What are you waiting for?",
       "options": {
-        "A": "Lag ≈ 0 so the target matches the source before DNS points to Aurora",
-        "B": "Lag to exceed 24 hours so full load runs again automatically",
-        "C": "SCT to reconvert the schema after every committed transaction",
-        "D": "Snowball return shipment confirmation from the DR Region"
+        "D": "Lag ≈ 0 so the target matches the source before DNS points to Aurora",
+        "A": "Lag to exceed 24 hours so full load runs again automatically for this workload",
+        "B": "SCT to reconvert the schema after every committed transaction for this workload",
+        "C": "Snowball return shipment confirmation from the DR Region for this workload"
       }
     },
     {
@@ -292,17 +292,17 @@
       "options": {
         "A": "AWS Client VPN — per-user OpenVPN/WireGuard into the VPC",
         "B": "Another Site-to-Site VPN tunnel per laptop public IP",
-        "C": "VPC peering from the laptop to the VPC",
-        "D": "Direct Connect from each hotel broadband circuit"
+        "C": "VPC peering from the laptop to the VPC for this workload",
+        "D": "Direct Connect from each hotel broadband circuit for this workload"
       }
     },
     {
       "id": "Q30",
       "question": "You finished Week 3 database labs and want to stop Aurora charges but keep Night 9 VPC for Week 4 ElastiCache. Correct teardown order?",
       "options": {
-        "A": "Delete VPC first — Aurora auto-deletes with the subnet group",
-        "B": "Night 17 Lambda teardown, then Night 16 Aurora teardown — keep Night 9 VPC",
-        "C": "Night 16 Aurora first while Lambda is still connected — fastest cleanup",
+        "C": "Night 17 Lambda teardown, then Night 16 Aurora teardown — keep Night 9 VPC",
+        "A": "Delete VPC first — Aurora auto-deletes with the subnet group for this workload",
+        "B": "Night 16 Aurora first while Lambda is still connected — fastest cleanup",
         "D": "Delete NAT Gateway only — Aurora Serverless v2 scales to zero automatically"
       }
     }

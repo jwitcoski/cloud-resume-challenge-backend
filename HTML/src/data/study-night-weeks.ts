@@ -1,0 +1,43 @@
+/** Study-plan week for each night (matches aws-solutions-architect-study nightlyPlan). */
+export const NIGHT_WEEK: Record<number, number> = {
+  1: 1,
+  2: 1,
+  3: 1,
+  4: 1,
+  5: 1,
+  6: 1,
+  7: 1,
+  8: 2,
+  9: 2,
+  10: 2,
+  11: 2,
+  12: 2,
+  13: 2,
+  14: 2,
+  15: 3,
+  16: 3,
+  17: 3,
+  18: 3,
+  19: 3,
+  20: 3,
+  21: 3,
+  22: 3,
+  23: 4,
+  24: 4,
+  25: 4,
+  26: 4,
+  27: 4,
+  28: 4,
+  29: 4,
+  30: 5,
+  31: 5,
+  32: 5,
+  33: 5,
+  34: 5,
+  35: 5,
+  36: 5,
+};
+
+export function weekForNight(night: number): number {
+  return NIGHT_WEEK[night] ?? Math.ceil(night / 7);
+}

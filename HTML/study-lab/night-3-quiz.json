@@ -8,102 +8,102 @@
   "questions": [
     {
       "id": "Q1",
-      "question": "Night 3 lab stores GSA wiki Cognito pool ID, client ID, and region in Secrets Manager secret saa-study/gsa-wiki-cognito. Why not paste those values directly into Lambda environment variables?",
+      "question": "A wiki API stores Cognito pool ID, client ID, and region in Secrets Manager. Why not paste those values directly into Lambda environment variables?",
       "options": {
-        "A": "Lambda environment variables cannot exceed 128 characters total",
-        "B": "Plaintext env vars appear in the console and logs; Secrets Manager supports rotation and audit",
-        "C": "Cognito rejects tokens when client IDs are supplied via environment variables",
-        "D": "CloudFront requires Secrets Manager for all origin custom headers"
+        "A": "Lambda environment variables cannot exceed 128 characters total per function",
+        "B": "Cognito rejects tokens when client IDs are supplied via environment variables",
+        "C": "CloudFront requires Secrets Manager for all origin custom header values",
+        "D": "Plaintext env vars appear in console/logs; Secrets Manager supports rotation and audit"
       }
     },
     {
       "id": "Q2",
-      "question": "The wiki-api Lambda role has WikiCognitoSecretRead: secretsmanager:GetSecretValue on one secret ARN plus kms:Decrypt on alias/saa-study-witcoskitech. GetSecretValue still fails with AccessDeniedException. What is the first check?",
+      "question": "A Lambda role has GetSecretValue on one secret ARN plus kms:Decrypt on the CMK. GetSecretValue still fails with AccessDeniedException. What is the first check?",
       "options": {
-        "A": "Whether the secret's KMS key policy allows the Lambda role to use the CMK for decrypt",
-        "B": "Whether API Gateway must assume the Lambda role before each GET request",
-        "C": "Whether Cognito user pool requires MFA for all anonymous wiki reads",
-        "D": "Whether DynamoDB streams must be enabled on WikiPages first"
+        "A": "Whether the secret's KMS key policy allows the Lambda role to decrypt with the CMK",
+        "B": "Whether API Gateway must assume the Lambda role before each GET request arrives",
+        "C": "Whether Cognito user pool requires MFA for all anonymous wiki page read traffic",
+        "D": "Whether DynamoDB streams must be enabled on the wiki table before GetSecretValue"
       }
     },
     {
       "id": "Q3",
       "question": "When should you pick Secrets Manager over SSM Parameter Store Standard String?",
       "options": {
-        "A": "Always — Parameter Store cannot hold JSON config",
+        "A": "Always — Parameter Store cannot hold JSON configuration documents at all",
         "B": "When you need automatic rotation hooks and native secret versioning for credentials",
-        "C": "When the value is public CloudFront cache metadata",
-        "D": "When you need free unlimited API calls with no encryption option"
+        "C": "When the value is public CloudFront cache metadata that never changes",
+        "D": "When you need free unlimited API calls with no encryption option available"
       }
     },
     {
       "id": "Q4",
-      "question": "SSM Parameter Store SecureString with a KMS CMK is contrasted with Secrets Manager in Night 3. Which statement is accurate?",
+      "question": "SSM Parameter Store SecureString with a KMS CMK is contrasted with Secrets Manager. Which statement is accurate?",
       "options": {
-        "A": "SecureString cannot use KMS encryption",
-        "B": "Both can encrypt values with KMS; Secrets Manager adds rotation/integration purpose-built for secrets",
-        "C": "Parameter Store replaces Cognito for wiki JWT validation",
-        "D": "SecureString requires a VPC endpoint; Secrets Manager does not"
+        "A": "SecureString cannot use KMS encryption for parameter values stored at rest",
+        "B": "Parameter Store replaces Cognito for wiki JWT validation end to end",
+        "C": "Both can encrypt with KMS; Secrets Manager adds rotation built for secrets",
+        "D": "SecureString requires a VPC endpoint; Secrets Manager never needs one"
       }
     },
     {
       "id": "Q5",
-      "question": "sam-app-WikiApiFunction sets COGNITO_SECRET_ARN in environment variables. At runtime the handler calls GetSecretValue. What does the env var hold?",
+      "question": "A Lambda sets COGNITO_SECRET_ARN in environment variables and calls GetSecretValue at runtime. What does the env var hold?",
       "options": {
-        "A": "The Cognito client secret plaintext for JWT validation",
-        "B": "The ARN identifier of the secret — not the password or client secret itself",
-        "C": "The KMS CMK plaintext key material for envelope encryption",
-        "D": "The DynamoDB stream ARN for WikiPages change capture"
+        "A": "The ARN of the secret — not the password or Cognito client secret itself",
+        "B": "The Cognito client secret plaintext used directly for JWT signature validation",
+        "C": "The KMS CMK plaintext key material for envelope encryption of responses",
+        "D": "The DynamoDB stream ARN for wiki page change capture and fan-out"
       }
     },
     {
       "id": "Q6",
       "question": "An engineer says KMS already stores the Cognito client secret because the secret is encrypted with a CMK. What is wrong with that statement?",
       "options": {
-        "A": "Nothing — KMS stores all application secrets when SSE-KMS is enabled",
-        "B": "KMS stores and manages encryption keys; Secrets Manager stores the secret value encrypted with those keys",
-        "C": "Cognito stores secrets only in user pool Lambda triggers, not KMS",
-        "D": "CloudTrail stores secrets in log files encrypted with the CMK"
+        "A": "Nothing — KMS stores all application secrets whenever SSE-KMS encryption is enabled",
+        "B": "Cognito stores secrets only in user pool Lambda triggers, not in KMS",
+        "C": "CloudTrail stores secrets in log files encrypted with the CMK instead",
+        "D": "KMS manages encryption keys; Secrets Manager stores the secret value itself"
       }
     },
     {
       "id": "Q7",
       "question": "Anonymous users GET wiki pages; POST/PUT/PATCH/DELETE require a valid Cognito JWT. Where does the Lambda validate the token?",
       "options": {
-        "A": "CloudFront Function at the edge — Lambda never sees auth headers",
-        "B": "wiki-api Lambda using Cognito JWKS after reading pool config from Secrets Manager",
-        "C": "S3 bucket policy Condition on cognito:username for each object key",
-        "D": "DynamoDB fine-grained access control on the partition key only"
+        "A": "CloudFront Function at the edge — Lambda never receives Authorization headers at all",
+        "B": "S3 bucket policy Condition on cognito:username for each object key path",
+        "C": "API Lambda using Cognito JWKS after reading pool config from Secrets Manager",
+        "D": "DynamoDB fine-grained access control on the partition key only for writers"
       }
     },
     {
       "id": "Q8",
       "question": "You tighten GetSecretValue from secretsmanager:* on * to one secret ARN. aws iam simulate-principal-policy shows allowed. What does this prove?",
       "options": {
-        "A": "The secret value is now rotated automatically every hour",
-        "B": "The role can fetch that secret under current policies — live calls should succeed if KMS also allows",
-        "C": "CloudWatch Logs will no longer record GetSecretValue API calls",
-        "D": "Cognito will reject tokens from other user pools automatically"
+        "A": "The secret value is now rotated automatically every hour by AWS without further setup",
+        "B": "CloudWatch Logs will no longer record GetSecretValue API calls at all",
+        "C": "Cognito will reject tokens from other user pools automatically after the change",
+        "D": "The role can fetch that secret under current policies if KMS also allows decrypt"
       }
     },
     {
       "id": "Q9",
-      "question": "A bastion EC2 instance in a private subnet is used for admin SSH. Night 3 notes mention replacing it. Which service provides shell access without a bastion or open SSH port?",
+      "question": "A bastion EC2 instance in a private subnet is used for admin SSH. Which service provides shell access without a bastion or open SSH port?",
       "options": {
-        "A": "AWS Systems Manager Session Manager",
-        "B": "Amazon Cognito hosted UI",
-        "C": "AWS Secrets Manager rotation Lambda",
-        "D": "CloudFront signed URLs"
+        "A": "AWS Systems Manager Session Manager — shell via SSM agent without inbound SSH",
+        "B": "Amazon Cognito hosted UI — browser login replaces SSH and EC2 instance shell access",
+        "C": "AWS Secrets Manager rotation Lambda — injects SSH keys into the instance",
+        "D": "CloudFront signed URLs — temporary links open an SSH tunnel to the host"
       }
     },
     {
       "id": "Q10",
-      "question": "The secret saa-study/gsa-wiki-cognito is encrypted with CMK alias/saa-study-witcoskitech from Night 2. Deleting the CMK immediately would cause what?",
+      "question": "A Secrets Manager secret is encrypted with a customer CMK. Deleting the CMK immediately would cause what?",
       "options": {
-        "A": "Only CloudFront cache miss — Secrets Manager keeps plaintext copies in RAM",
-        "B": "GetSecretValue fails — secret ciphertext cannot be decrypted until a valid CMK exists",
-        "C": "Cognito user pool is deleted automatically with the CMK",
-        "D": "Lambda environment variables revert to legacy COGNITO_* names only"
+        "A": "Only CloudFront cache miss — Secrets Manager keeps plaintext secret copies in memory",
+        "B": "GetSecretValue fails — secret ciphertext cannot be decrypted without a valid CMK",
+        "C": "Cognito user pool is deleted automatically when the CMK enters pending deletion",
+        "D": "Lambda environment variables revert to legacy plaintext Cognito config names"
       }
     }
   ]

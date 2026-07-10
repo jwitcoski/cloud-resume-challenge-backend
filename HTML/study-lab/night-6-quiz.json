@@ -2,257 +2,258 @@
   "night": 6,
   "title": "Week 1 review",
   "topic": "Security + Management & Governance — full Week 1 recap",
-  "format": "25 timed scenario questions (aim for ~40 min, ~96 sec each)",
+  "format": "25 timed scenario questions (aim for ~40 min, ~96 sec each). Answer without night-6-quiz-answers.json first.",
   "answerKey": "night-6-quiz-answers.json",
+  "answerDistribution": "A×7 B×6 C×6 D×6 — options shuffled so correct letter varies",
   "questions": [
     {
       "id": "Q1",
       "question": "An IAM administrator has AdministratorAccess but cannot create an EC2 instance. The organization uses AWS Organizations. What is the most likely cause?",
       "options": {
-        "A": "The IAM user lacks an MFA device",
-        "B": "A Service Control Policy (SCP) denies ec2:RunInstances",
-        "C": "CloudTrail is not enabled",
-        "D": "The VPC has no internet gateway"
+        "A": "A Service Control Policy (SCP) denies ec2:RunInstances in the account",
+        "B": "The IAM user lacks an MFA device attached to the console login profile",
+        "C": "CloudTrail is not enabled so EC2 API calls are rejected by the control plane",
+        "D": "The VPC has no internet gateway, so RunInstances is denied by IAM"
       }
     },
     {
       "id": "Q2",
       "question": "Account A needs to share a private subnet with Account B for a Transit Gateway attachment. Which service enables cross-account subnet sharing?",
       "options": {
-        "A": "AWS IAM Identity Center",
-        "B": "AWS Resource Access Manager (RAM)",
-        "C": "AWS Organizations consolidated billing",
-        "D": "AWS Config aggregator"
+        "A": "AWS IAM Identity Center — workforce SSO, not cross-account resource sharing",
+        "B": "AWS Resource Access Manager (RAM) — share subnets and TGW across accounts",
+        "C": "AWS Organizations consolidated billing — cost rollup without resource share",
+        "D": "AWS Config aggregator — multi-account compliance view, not subnet sharing"
       }
     },
     {
       "id": "Q3",
       "question": "A company wants single sign-on for employees to access 15 AWS accounts and Salesforce. Which service is purpose-built for this?",
       "options": {
-        "A": "Amazon Cognito user pools",
-        "B": "AWS IAM Identity Center",
-        "C": "AWS Resource Access Manager",
-        "D": "AWS Directory Service Simple AD"
+        "A": "Amazon Cognito user pools — customer app auth, not workforce multi-account SSO",
+        "B": "AWS Resource Access Manager — shares AWS resources, not employee SSO portals",
+        "C": "AWS IAM Identity Center — workforce SSO to AWS accounts and SaaS apps",
+        "D": "AWS Directory Service Simple AD — directory only, not multi-account SSO hub"
       }
     },
     {
       "id": "Q4",
       "question": "An ECS Fargate task fails with CannotPullContainerError. The task role has AmazonS3FullAccess. What should you fix first?",
       "options": {
-        "A": "Add ECR permissions to the task role",
-        "B": "Add ECR and CloudWatch Logs permissions to the task execution role",
-        "C": "Enable GuardDuty Malware Protection",
-        "D": "Attach a WAF Web ACL to the task ENI"
+        "A": "Add ECR pull permissions to the task role used by application code at runtime",
+        "B": "Enable GuardDuty Malware Protection on the cluster before retrying the task",
+        "C": "Attach a WAF Web ACL to the task ENI to allow ECR registry HTTPS traffic",
+        "D": "Add ECR and CloudWatch Logs permissions to the task execution role"
       }
     },
     {
       "id": "Q5",
       "question": "Traffic is allowed inbound on port 443 in a security group but blocked by the subnet NACL. After the connection is established, return traffic fails. Why?",
       "options": {
-        "A": "Security groups are stateless; NACLs are stateful",
-        "B": "NACLs are stateless and must allow ephemeral return ports explicitly",
-        "C": "CloudFront is caching the denial",
-        "D": "KMS is blocking TLS handshake"
+        "A": "NACLs are stateless and must allow ephemeral return ports explicitly",
+        "B": "Security groups are stateless while NACLs automatically track return flows",
+        "C": "CloudFront edge caches the NACL denial and replays it on return packets",
+        "D": "KMS key policy blocks the TLS handshake after the TCP connection opens"
       }
     },
     {
       "id": "Q6",
       "question": "Account B must decrypt objects encrypted with Account A's KMS CMK. Which combination is required?",
       "options": {
-        "A": "IAM policy on Account B user only",
-        "B": "KMS key policy on the CMK granting Account B + IAM policy on Account B principal",
-        "C": "S3 bucket policy only",
-        "D": "Secrets Manager rotation"
+        "A": "IAM policy on Account B user only — key policy is never evaluated cross-account",
+        "B": "KMS key policy on the CMK granting Account B plus IAM on Account B's principal",
+        "C": "S3 bucket policy only — KMS permissions are not required for SSE-KMS reads",
+        "D": "Secrets Manager rotation Lambda — automatically grants cross-account decrypt"
       }
     },
     {
       "id": "Q7",
       "question": "You enable SSE-KMS on a high-traffic S3 bucket and costs spike from KMS API calls. Which feature reduces KMS request charges?",
       "options": {
-        "A": "S3 Transfer Acceleration",
-        "B": "S3 Bucket Key",
-        "C": "CloudFront OAC",
-        "D": "Macie classification"
+        "A": "S3 Transfer Acceleration — speeds uploads via edge, does not cut KMS API cost",
+        "B": "CloudFront OAC — private origin access, does not reduce per-object KMS calls",
+        "C": "S3 Bucket Key — bucket-level key reduces KMS API requests for SSE-KMS objects",
+        "D": "Macie classification jobs — discover PII, unrelated to KMS request pricing"
       }
     },
     {
       "id": "Q8",
       "question": "A developer asks where to store database passwords with automatic rotation and Lambda integration. What do you recommend?",
       "options": {
-        "A": "AWS KMS",
-        "B": "AWS Secrets Manager",
-        "C": "SSM Parameter Store String parameter",
-        "D": "CloudTrail log files"
+        "A": "AWS Secrets Manager — stores credentials with optional automatic rotation hooks",
+        "B": "AWS KMS alone — manages encryption keys, not application password values",
+        "C": "SSM Parameter Store String — config storage without native secret rotation",
+        "D": "CloudTrail log files — audit history only, never a secrets store for apps"
       }
     },
     {
       "id": "Q9",
       "question": "Which statement correctly distinguishes KMS and Secrets Manager?",
       "options": {
-        "A": "KMS stores application secrets; Secrets Manager stores encryption keys",
-        "B": "KMS manages encryption keys; Secrets Manager stores and rotates secret values",
-        "C": "Both services are interchangeable for password storage",
-        "D": "Secrets Manager replaces IAM policies"
+        "A": "KMS stores application secrets; Secrets Manager stores encryption key material",
+        "B": "Both services are interchangeable for password storage and key management",
+        "C": "Secrets Manager replaces IAM policies for authorizing API access to resources",
+        "D": "KMS manages encryption keys; Secrets Manager stores and rotates secret values"
       }
     },
     {
       "id": "Q10",
-      "question": "You need a free TLS certificate for CloudFront distribution d123.cloudfront.net. In which Region must you request the ACM certificate?",
+      "question": "You need a free TLS certificate for a CloudFront distribution. In which Region must you request the ACM certificate?",
       "options": {
-        "A": "Same Region as the origin S3 bucket",
-        "B": "us-east-1 (N. Virginia) only for CloudFront",
-        "C": "eu-west-1 for global edge",
-        "D": "Any Region — ACM is global"
+        "A": "Same Region as the origin S3 bucket — ACM follows the origin Region always",
+        "B": "us-east-1 (N. Virginia) only — required for certificates used with CloudFront",
+        "C": "eu-west-1 for global edge — CloudFront prefers Ireland for ACM issuance",
+        "D": "Any Region — ACM certificates for CloudFront are global and Region-agnostic"
       }
     },
     {
       "id": "Q11",
       "question": "You attach a WAF Web ACL to an Application Load Balancer in eu-west-1. What WAF scope must the Web ACL use?",
       "options": {
-        "A": "CLOUDFRONT",
-        "B": "REGIONAL",
-        "C": "GLOBAL",
-        "D": "EDGE"
+        "A": "CLOUDFRONT — only valid for distributions created in us-east-1",
+        "B": "GLOBAL — Shield Advanced scope that replaces WAF for all ALB listeners",
+        "C": "REGIONAL — Web ACL created in the same Region as the ALB resource",
+        "D": "EDGE — Lambda@Edge scope used when attaching WAF to ALB target groups"
       }
     },
     {
       "id": "Q12",
       "question": "SQL injection probes hit your CloudFront distribution. Shield Standard is already active. What additional service blocks L7 application attacks?",
       "options": {
-        "A": "AWS Network Firewall",
-        "B": "AWS WAF with managed rule groups",
-        "C": "Security groups on CloudFront",
-        "D": "AWS Config rule"
+        "A": "AWS WAF with managed rule groups — inspects HTTP for SQLi/XSS at the edge",
+        "B": "AWS Network Firewall — VPC east-west filtering, not CloudFront L7 inspection",
+        "C": "Security groups on CloudFront — CloudFront does not use VPC security groups",
+        "D": "AWS Config managed rules — compliance evaluation, not live HTTP attack blocking"
       }
     },
     {
       "id": "Q13",
       "question": "A security architect needs stateful inspection of east-west traffic between subnets in the same VPC. Which service fits?",
       "options": {
-        "A": "AWS WAF on CloudFront",
-        "B": "AWS Network Firewall in the VPC",
-        "C": "AWS Shield Advanced only",
-        "D": "IAM permission boundary"
+        "A": "AWS WAF on CloudFront — HTTP edge filtering, not VPC subnet-to-subnet traffic",
+        "B": "AWS Shield Advanced only — DDoS protection, not east-west traffic inspection",
+        "C": "IAM permission boundary — limits max permissions, not network packet filtering",
+        "D": "AWS Network Firewall in the VPC — stateful inspection between subnets"
       }
     },
     {
       "id": "Q14",
       "question": "An organization with 50 accounts wants to deploy a baseline WAF rule set to all CloudFront distributions automatically. Which service?",
       "options": {
-        "A": "AWS Firewall Manager",
-        "B": "Amazon GuardDuty",
-        "C": "AWS Security Hub",
-        "D": "VPC NACL"
+        "A": "Amazon GuardDuty — threat detection findings, not org-wide WAF rule deployment",
+        "B": "AWS Security Hub — aggregates findings, does not push WAF policies to accounts",
+        "C": "AWS Firewall Manager — centrally deploys WAF policies across Organizations",
+        "D": "VPC network ACL — subnet filtering only, cannot protect CloudFront distributions"
       }
     },
     {
       "id": "Q15",
       "question": "Which service answers: 'Which IAM user called DeleteBucket yesterday at 3 PM?'",
       "options": {
-        "A": "AWS Config",
-        "B": "AWS CloudTrail",
-        "C": "Amazon GuardDuty",
-        "D": "AWS Trusted Advisor"
+        "A": "AWS Config — configuration history and compliance, not a searchable API who/when log",
+        "B": "AWS CloudTrail — API audit log with principal, time, and request details",
+        "C": "Amazon GuardDuty — threat findings, not a full chronological API audit trail",
+        "D": "AWS Trusted Advisor — best-practice checks, not per-API-call accountability"
       }
     },
     {
       "id": "Q16",
       "question": "An auditor needs cryptographic proof that CloudTrail logs were not modified after S3 delivery. Which feature?",
       "options": {
-        "A": "Data event logging",
-        "B": "Log file validation",
-        "C": "CloudTrail Insights",
-        "D": "Multi-Region trail only"
+        "A": "Log file validation — digest hashes prove delivered CloudTrail logs were not altered",
+        "B": "Data event logging — records object-level API calls, not log-file integrity proof",
+        "C": "CloudTrail Insights — unusual activity detection, not cryptographic tamper evidence",
+        "D": "Multi-Region trail only — expands coverage without proving log file integrity"
       }
     },
     {
       "id": "Q17",
       "question": "You need continuous monitoring of whether any S3 bucket currently allows public read. Best approach?",
       "options": {
-        "A": "Enable GuardDuty S3 Protection only",
-        "B": "AWS Config managed rule S3_BUCKET_PUBLIC_READ_PROHIBITED",
-        "C": "CloudTrail management events",
-        "D": "CloudWatch metric alarm"
+        "A": "Enable GuardDuty S3 Protection only — threat detection, not public-read compliance",
+        "B": "CloudTrail management events — show past changes, not continuous current state",
+        "C": "CloudWatch metric alarm alone — needs a custom metric; not a managed public-read rule",
+        "D": "AWS Config managed rule S3_BUCKET_PUBLIC_READ_PROHIBITED — continuous evaluation"
       }
     },
     {
       "id": "Q18",
       "question": "An EC2 instance is mining cryptocurrency and communicating with a known malicious IP. Which service generates this finding?",
       "options": {
-        "A": "AWS Config",
-        "B": "Amazon GuardDuty",
-        "C": "IAM Access Analyzer",
-        "D": "AWS Audit Manager"
+        "A": "AWS Config — configuration compliance rules, not crypto-mining threat detection",
+        "B": "Amazon GuardDuty — ML threat detection from CloudTrail, VPC Flow, and DNS logs",
+        "C": "IAM Access Analyzer — external access paths on policies, not malware C2 findings",
+        "D": "AWS Audit Manager — evidence collection for audits, not live threat findings"
       }
     },
     {
       "id": "Q19",
       "question": "An S3 bucket policy grants s3:GetObject to Principal '*'. Which tool identifies external access paths?",
       "options": {
-        "A": "AWS Config compliance dashboard",
-        "B": "IAM Access Analyzer",
-        "C": "Amazon Macie",
-        "D": "AWS Control Tower"
+        "A": "AWS Config compliance dashboard — rule status, not a map of external principals",
+        "B": "Amazon Macie — discovers sensitive data in S3, not external access path analysis",
+        "C": "IAM Access Analyzer — evaluates resource policies for external/cross-account access",
+        "D": "AWS Control Tower — landing zone guardrails, not per-bucket external access findings"
       }
     },
     {
       "id": "Q20",
       "question": "Developers need shell access to private EC2 instances without opening SSH port 22 to the internet. Recommended approach?",
       "options": {
-        "A": "Bastion host in public subnet",
-        "B": "AWS Systems Manager Session Manager",
-        "C": "CloudTrail data events",
-        "D": "AWS Artifact reports"
+        "A": "AWS Systems Manager Session Manager — shell via SSM agent without inbound SSH",
+        "B": "Bastion host in a public subnet — still requires managing SSH and bastion hardening",
+        "C": "CloudTrail data events — audit object access, does not provide interactive shell",
+        "D": "AWS Artifact reports — compliance documents, unrelated to instance shell access"
       }
     },
     {
       "id": "Q21",
       "question": "You must discover and classify PII in S3 buckets automatically. Which service?",
       "options": {
-        "A": "Amazon Macie",
-        "B": "AWS KMS",
-        "C": "AWS WAF",
-        "D": "Amazon Inspector"
+        "A": "AWS KMS — manages encryption keys, does not classify sensitive data in objects",
+        "B": "AWS WAF — filters HTTP requests at the edge, not S3 object content classification",
+        "C": "Amazon Inspector — vulnerability scanning for EC2/ECR, not S3 PII discovery",
+        "D": "Amazon Macie — discovers and classifies sensitive data such as PII in S3"
       }
     },
     {
       "id": "Q22",
       "question": "A static website uses a public S3 bucket behind CloudFront. Config shows NON_COMPLIANT on S3_BUCKET_PUBLIC_READ_PROHIBITED but the site works. Best interpretation?",
       "options": {
-        "A": "Config is broken — public buckets cannot work with CloudFront",
-        "B": "The bucket policy allows public read, violating the rule; migrate to private bucket + OAC for compliance",
-        "C": "GuardDuty will automatically make the bucket private",
-        "D": "CloudTrail disables public access overnight"
+        "A": "Config is broken — public buckets cannot work correctly with CloudFront origins",
+        "B": "The bucket allows public read, failing the rule; migrate to private bucket + OAC",
+        "C": "GuardDuty will automatically make the bucket private when it sees public GetObject",
+        "D": "CloudTrail disables public access overnight when a Config rule is NON_COMPLIANT"
       }
     },
     {
       "id": "Q23",
       "question": "A wiki API Lambda needs Cognito client credentials. Where should secrets live with least privilege?",
       "options": {
-        "A": "Hard-coded in Lambda environment variables as plain text",
-        "B": "Secrets Manager with IAM policy scoped to secretsmanager:GetSecretValue and kms:Decrypt",
-        "C": "CloudTrail log stream",
-        "D": "S3 bucket policy"
+        "A": "Hard-coded in Lambda environment variables as plaintext Cognito client secrets",
+        "B": "CloudTrail log stream — audit storage only, never a runtime secrets source",
+        "C": "Secrets Manager with IAM scoped to GetSecretValue and kms:Decrypt on the CMK",
+        "D": "S3 bucket policy alone — grants object access, does not store Cognito credentials"
       }
     },
     {
       "id": "Q24",
       "question": "A multi-account landing zone with guardrails and automated account vending is required. Which service provides this?",
       "options": {
-        "A": "AWS Control Tower",
-        "B": "Amazon Cognito",
-        "C": "AWS Batch",
-        "D": "AWS DataSync"
+        "A": "AWS Control Tower — multi-account landing zone with guardrails and account factory",
+        "B": "Amazon Cognito — customer identity for apps, not org landing-zone provisioning",
+        "C": "AWS Batch — managed batch compute jobs, unrelated to account vending",
+        "D": "AWS DataSync — data transfer between storage, not multi-account governance"
       }
     },
     {
       "id": "Q25",
-      "question": "After completing Week 1 security labs, which resource should you tear down first to stop ongoing Config charges while keeping CloudTrail?",
+      "question": "A team enabled AWS Config recording all resources and now wants to stop Config charges while keeping the account's first CloudTrail trail for audit. What should they do?",
       "options": {
-        "A": "Delete the KMS CMK",
-        "B": "Run study-lab/week1-teardown-config.sh (Config recorder, rules, delivery bucket)",
-        "C": "Delete all IAM users",
-        "D": "Remove CloudFront distributions"
+        "A": "Delete the KMS CMK used by Secrets Manager — stops Config but breaks encryption",
+        "B": "Delete all IAM users in the account — removes principals but not Config recording",
+        "C": "Remove CloudFront distributions — cuts CDN cost, not Config configuration-item charges",
+        "D": "Stop/delete the Config recorder, rules, and delivery channel; leave CloudTrail enabled"
       }
     }
   ]

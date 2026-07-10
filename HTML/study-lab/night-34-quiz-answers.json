@@ -1,7 +1,12 @@
 {
   "night": 34,
   "title": "Week 5 review + practice exam warmup",
-  "answerDistribution": { "A": 8, "B": 7, "C": 8, "D": 7 },
+  "answerDistribution": {
+    "A": 8,
+    "B": 7,
+    "C": 8,
+    "D": 7
+  },
   "answers": [
     {
       "id": "Q1",

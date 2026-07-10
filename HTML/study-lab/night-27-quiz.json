@@ -60,10 +60,10 @@
       "id": "Q6",
       "question": "Production Aurora PostgreSQL holds resort_stats as the authoritative relational store. Which compute/storage pairing is inappropriate for the database layer?",
       "options": {
-        "A": "Aurora Multi-AZ cluster with automated backups enabled",
-        "B": "RDS on gp3 volumes with Multi-AZ failover",
+        "A": "Aurora Multi-AZ writer/reader cluster with automated backups enabled",
+        "B": "RDS on gp3 volumes with Multi-AZ automatic failover enabled",
         "C": "Spot EC2 with Instance Store as the only copy of database files",
-        "D": "Aurora Serverless v2 with RDS Proxy in front of Lambda"
+        "D": "Aurora Serverless v2 with RDS Proxy in front of the Lambda tier"
       }
     },
     {

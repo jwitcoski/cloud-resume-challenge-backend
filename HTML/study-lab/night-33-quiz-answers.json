@@ -1,31 +1,36 @@
 {
   "night": 33,
   "title": "Architecture write-up — GSA full stack + Well-Architected",
-  "answerDistribution": { "A": 4, "B": 4, "C": 4, "D": 3 },
+  "answerDistribution": {
+    "A": 4,
+    "B": 4,
+    "C": 4,
+    "D": 3
+  },
   "answers": [
     {
       "id": "Q1",
-      "correct": "B",
+      "correct": "A",
       "explanation": "Observability, runbooks, and execution history → Operational Excellence — gsa-architecture-map.md pillar index."
     },
     {
       "id": "Q2",
-      "correct": "C",
+      "correct": "B",
       "explanation": "CloudFront = edge HTTP; ElastiCache = in-VPC cache-aside — Nights 23 + 26 cross-tier trap."
     },
     {
       "id": "Q3",
-      "correct": "B",
+      "correct": "C",
       "explanation": "Private scheduled Fargate + scoped task role + SQS/SNS resilience + S3 lifecycle — pipeline tier wins matrix."
     },
     {
       "id": "Q4",
-      "correct": "B",
+      "correct": "D",
       "explanation": "Historical aggregates on S3 Iceberg → Athena — OLTP vs analytics split (Nights 16–17 vs 24)."
     },
     {
       "id": "Q5",
-      "correct": "B",
+      "correct": "A",
       "explanation": "Cognito JWT on writes is the application/edge auth boundary — week1-security-architecture.md Site B."
     },
     {
@@ -40,7 +45,7 @@
     },
     {
       "id": "Q8",
-      "correct": "B",
+      "correct": "D",
       "explanation": "Lifecycle on pipeline prefixes + Athena partitions — Nights 30 + 24 cost wins."
     },
     {
@@ -55,27 +60,27 @@
     },
     {
       "id": "Q11",
-      "correct": "A",
+      "correct": "C",
       "explanation": "Per-partner throttling → API Gateway usage plan + API key — Night 26."
     },
     {
       "id": "Q12",
-      "correct": "B",
+      "correct": "D",
       "explanation": "NAT GB tax is network tier — VPC endpoints for S3/ECR — Nights 8–9."
     },
     {
       "id": "Q13",
-      "correct": "C",
+      "correct": "A",
       "explanation": "Public S3 + CloudFront legacy vs OAC private bucket — Night 1 security modernization."
     },
     {
       "id": "Q14",
-      "correct": "A",
+      "correct": "B",
       "explanation": "Scheduled batch vs 24/7 polling — sustainability/cost awareness — Night 12 schedule."
     },
     {
       "id": "Q15",
-      "correct": "B",
+      "correct": "C",
       "explanation": "Interview narrative: users in → app/data → pipeline → network — Night 33 Block 1 drawing order."
     }
   ]

@@ -1,7 +1,12 @@
 {
   "night": 10,
   "title": "Lab 2A — private Fargate (part 2)",
-  "answerDistribution": { "A": 3, "B": 2, "C": 3, "D": 2 },
+  "answerDistribution": {
+    "A": 3,
+    "B": 2,
+    "C": 3,
+    "D": 2
+  },
   "answers": [
     {
       "id": "Q1",
@@ -16,7 +21,7 @@
     {
       "id": "Q3",
       "answer": "D",
-      "explanation": "S3 writes use task role credentials (S3WriteGlobalskiatlasOutput). Execution role is for ECS infrastructure, not app data plane."
+      "explanation": "S3 writes use task role credentials. Execution role is for ECS infrastructure (pull/logs), not app data plane."
     },
     {
       "id": "Q4",
@@ -46,12 +51,12 @@
     {
       "id": "Q9",
       "answer": "A",
-      "explanation": "RunTask caller must iam:PassRole so ECS can assume execution and task roles. github-actions-policy-v4.json PassRole stmt + Night 5 scoped RunTask."
+      "explanation": "RunTask caller must iam:PassRole so ECS can assume execution and task roles. Exam: PassRole for ecs-tasks.amazonaws.com."
     },
     {
       "id": "Q10",
       "answer": "A",
-      "explanation": "night-10-lab-fargate-run.sh tails logs and lists S3 — confirms pipeline ran end-to-end in private networking."
+      "explanation": "End-to-end validation: task wrote CloudWatch logs and produced S3 output — confirms pipeline ran in private networking."
     }
   ]
 }

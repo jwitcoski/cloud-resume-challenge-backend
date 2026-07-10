@@ -8,102 +8,102 @@
   "questions": [
     {
       "id": "Q1",
-      "question": "Night 4 lab attached Web ACL saa-study-globalskiatlas-waf to CloudFront distribution E3BDMTLYF8G4VB for globalskiatlas.com. In which Region must you create a CLOUDFRONT-scoped Web ACL?",
+      "question": "You attach a WAF Web ACL with CLOUDFRONT scope to a CloudFront distribution. In which Region must you create that Web ACL?",
       "options": {
-        "A": "Any Region where the S3 bucket resides",
+        "A": "Any Region where the origin S3 bucket or API Gateway currently resides",
         "B": "us-east-1 (N. Virginia) only for WAF resources used with CloudFront",
-        "C": "eu-west-1 to match the closest viewers in Europe",
-        "D": "The same Region as the API Gateway REST API backing /api/wiki*"
+        "C": "eu-west-1 to match the closest viewers serving European edge traffic",
+        "D": "The same Region as the API Gateway REST API behind the /api/* paths"
       }
     },
     {
       "id": "Q2",
       "question": "You later add an Application Load Balancer in us-east-1 for a new API. Which WAF scope applies to that ALB?",
       "options": {
-        "A": "CLOUDFRONT — all WAF ACLs are global regardless of resource",
-        "B": "REGIONAL — created in the same Region as the ALB or API Gateway Regional resource",
-        "C": "GLOBAL — Shield Advanced scope replaces WAF for ALBs",
-        "D": "EDGE — only CloudFront Functions can attach WAF to ALBs"
+        "A": "CLOUDFRONT — all WAF ACLs are global regardless of the protected resource",
+        "B": "GLOBAL — Shield Advanced scope replaces WAF for Application Load Balancers",
+        "C": "REGIONAL — created in the same Region as the ALB or API Gateway Regional",
+        "D": "EDGE — only CloudFront Functions can attach WAF rules to ALB listeners"
       }
     },
     {
       "id": "Q3",
-      "question": "Night 4 managed rules included AWSManagedRulesCommonRuleSet, KnownBadInputs, and SQLiRuleSet. A legitimate wiki POST to /api/wiki/pages returns 403 after attach. What is the first troubleshooting step?",
+      "question": "Managed rules include CommonRuleSet, KnownBadInputs, and SQLiRuleSet. A legitimate wiki POST returns 403 after attach. What is the first troubleshooting step?",
       "options": {
-        "A": "Delete the Cognito user pool so all requests become anonymous GET",
-        "B": "Inspect WAF sampled requests / CloudWatch metrics to see which rule blocked the request",
-        "C": "Disable TLS on CloudFront so WAF can inspect plaintext bodies",
-        "D": "Move DynamoDB tables to Aurora so SQLi rules no longer apply"
+        "A": "Delete the Cognito user pool so all write requests become anonymous GET traffic",
+        "B": "Disable TLS on CloudFront so WAF can inspect plaintext request bodies",
+        "C": "Move DynamoDB tables to Aurora so SQLi managed rules no longer apply",
+        "D": "Inspect WAF sampled requests / CloudWatch metrics for the blocking rule"
       }
     },
     {
       "id": "Q4",
       "question": "Which AWS service provides free automatic protection against common network and transport layer DDoS on CloudFront?",
       "options": {
-        "A": "AWS WAF SQLi managed rule group only",
-        "B": "AWS Shield Standard (included at no extra charge for CloudFront and Route 53)",
-        "C": "AWS Network Firewall on the VPC subnet",
-        "D": "Amazon GuardDuty S3 Protection"
+        "A": "AWS WAF SQLi managed rule group alone cannot stop L3/L4 volumetric floods",
+        "B": "AWS Shield Standard — included at no extra charge for CloudFront and Route 53",
+        "C": "AWS Network Firewall on the VPC subnet behind the CloudFront origin path",
+        "D": "Amazon GuardDuty S3 Protection watching object-level API activity patterns"
       }
     },
     {
       "id": "Q5",
       "question": "You need stateful inspection and filtering of east-west traffic between subnets inside a VPC (not HTTP at CloudFront). Which service fits?",
       "options": {
-        "A": "AWS WAF Web ACL with CLOUDFRONT scope",
-        "B": "AWS Network Firewall deployed in VPC subnets",
-        "C": "Security group allowing 0.0.0.0/0 on all ports",
-        "D": "CloudFront Function redirect-to-canonical"
+        "A": "AWS WAF Web ACL with CLOUDFRONT scope attached to the CloudFront distribution",
+        "B": "Security group allowing 0.0.0.0/0 on all ports for east-west flows",
+        "C": "CloudFront Function redirecting viewers to a canonical hostname",
+        "D": "AWS Network Firewall deployed in VPC subnets for traffic inspection"
       }
     },
     {
       "id": "Q6",
-      "question": "Night 4 lab: GET wiki pages and POST with valid Cognito JWT should pass; a curl probe with SQL injection in the body should be blocked. Which layer enforces the SQLi block?",
+      "question": "GET wiki pages and POST with valid Cognito JWT should pass; a curl probe with SQL injection in the body should be blocked. Which layer enforces the SQLi block?",
       "options": {
-        "A": "S3 bucket policy Deny on suspicious object keys",
-        "B": "AWS WAF inspecting HTTP request at CloudFront before origin forward",
-        "C": "DynamoDB condition expression on WikiPages partition key",
-        "D": "Cognito PreventUserExistenceErrors setting"
+        "A": "S3 bucket policy Deny on suspicious object keys matching injection patterns",
+        "B": "AWS WAF inspecting HTTP requests at CloudFront before origin forward",
+        "C": "DynamoDB condition expression on the wiki table partition key for writers",
+        "D": "Cognito PreventUserExistenceErrors setting on the user pool client"
       }
     },
     {
       "id": "Q7",
-      "question": "After the lab, the Web ACL was detached and deleted to avoid ongoing cost (~$96/yr). What still protects globalskiatlas.com at L3/L4?",
+      "question": "After a lab, the Web ACL is detached and deleted to avoid ongoing WAF cost. What still protects the CloudFront distribution at L3/L4?",
       "options": {
-        "A": "Nothing — CloudFront is fully public without any AWS DDoS mitigation",
-        "B": "AWS Shield Standard on CloudFront distribution automatically",
-        "C": "WAF continues blocking SQLi even after Web ACL deletion via cache",
-        "D": "API Gateway resource policy replaces all edge security"
+        "A": "Nothing — CloudFront is fully public without any AWS DDoS mitigation left",
+        "B": "WAF continues blocking SQLi even after Web ACL deletion via edge cache",
+        "C": "API Gateway resource policy replaces all edge security for the distribution",
+        "D": "AWS Shield Standard on the CloudFront distribution remains automatically"
       }
     },
     {
       "id": "Q8",
       "question": "A company with 50 AWS accounts wants one central team to deploy the same WAF managed rule groups to all CloudFront distributions. Which service?",
       "options": {
-        "A": "AWS Firewall Manager with WAF policies",
-        "B": "IAM Access Analyzer external access findings",
-        "C": "AWS Config aggregator for CloudFront distributions",
-        "D": "Replace WAF with security group rules on the S3 bucket"
+        "A": "AWS Firewall Manager with organization-wide WAF security policies",
+        "B": "IAM Access Analyzer external access findings across member accounts",
+        "C": "AWS Config aggregator listing CloudFront distributions for compliance",
+        "D": "Replace WAF with security group rules attached to the S3 origin bucket"
       }
     },
     {
       "id": "Q9",
       "question": "Rate-based rules in AWS WAF are commonly used to mitigate which threat on a public wiki API?",
       "options": {
-        "A": "Brute-force or abusive HTTP request floods from a single IP",
-        "B": "Cross-Region Aurora failover during AZ outage",
-        "C": "KMS key rotation scheduled every 365 days",
-        "D": "S3 Intelligent-Tiering cost optimization"
+        "A": "Brute-force or abusive HTTP request floods from a single source IP",
+        "B": "Cross-Region Aurora failover during an Availability Zone outage event",
+        "C": "KMS customer master key rotation scheduled every 365 days by policy",
+        "D": "S3 Intelligent-Tiering moving objects to lower-cost storage classes"
       }
     },
     {
       "id": "Q10",
-      "question": "Night 4 vs Night 8 callback: WAF on an internal ALB in a VPC serving HTTPS from clients in the same Region uses which scope and attachment point?",
+      "question": "WAF on an internal ALB in a VPC serving HTTPS from clients in the same Region uses which scope and attachment point?",
       "options": {
         "A": "CLOUDFRONT scope attached in us-east-1 to the ALB listener ARN",
-        "B": "REGIONAL scope Web ACL associated directly with the ALB or API Gateway Regional",
-        "C": "GLOBAL scope on Route 53 hosted zone only — ALBs cannot use WAF",
-        "D": "EDGE scope via Lambda@Edge on S3 origin only"
+        "B": "GLOBAL scope on the Route 53 hosted zone only — ALBs cannot use WAF",
+        "C": "REGIONAL scope Web ACL associated directly with the ALB or API Gateway",
+        "D": "EDGE scope via Lambda@Edge attached only to the S3 origin behavior"
       }
     }
   ]

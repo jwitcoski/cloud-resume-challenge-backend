@@ -11,48 +11,48 @@
       "question": "GSA dashboard hammers SELECT resort_stats for IS-001 thousands of times per minute. Aurora CPU spikes. You add ElastiCache in the same VPC. Which pattern does night-23-lab implement?",
       "options": {
         "A": "Cache-aside — app reads Redis first; on miss queries Aurora then SETEX with TTL",
-        "B": "Write-through — every Aurora UPSERT also writes Redis before commit",
-        "C": "Read-through — ElastiCache service pulls Aurora rows without app code",
-        "D": "Write-behind — Redis batches async flushes to Aurora every hour"
+        "B": "Write-through — every Aurora UPSERT also writes Redis before commit for this workload",
+        "C": "Read-through — ElastiCache service pulls Aurora rows without app code for this workload",
+        "D": "Write-behind — Redis batches async flushes to Aurora every hour for this workload"
       }
     },
     {
       "id": "Q2",
       "question": "An exam scenario needs session storage with sorted-set leaderboards and optional Multi-AZ automatic failover. Memcached or Redis?",
       "options": {
-        "A": "Memcached — multithreaded horizontal scale with no data types",
-        "B": "S3 Standard — session objects with 11 nines durability",
-        "C": "DynamoDB DAX — in-memory accelerator for DynamoDB only",
-        "D": "ElastiCache Redis — richer types, replication groups, failover options"
+        "B": "ElastiCache Redis — richer types, replication groups, failover options",
+        "A": "Memcached — multithreaded horizontal scale with no data types for this workload",
+        "C": "S3 Standard — session objects with 11 nines durability for this workload",
+        "D": "DynamoDB DAX — in-memory accelerator for DynamoDB only for this workload"
       }
     },
     {
       "id": "Q3",
       "question": "night-23-lab places saa-study-gsa-redis in Night 9 private subnets. Which ingress rule belongs on saa-study-gsa-redis-sg?",
       "options": {
-        "A": "TCP 5432 from lambda-stats-sg — Redis uses the PostgreSQL port",
-        "B": "TCP 6379 from saa-study-gsa-lambda-stats-sg — source is the app security group",
-        "C": "TCP 443 from the internet gateway for TLS termination at Redis",
-        "D": "TCP 6379 from 0.0.0.0/0 so operators can redis-cli from home"
+        "C": "TCP 6379 from saa-study-gsa-lambda-stats-sg — source is the app security group",
+        "A": "TCP 5432 from lambda-stats-sg — Redis uses the PostgreSQL port for this workload",
+        "B": "TCP 443 from the internet gateway for TLS termination at Redis for this workload",
+        "D": "TCP 6379 from 0.0.0.0/0 so operators can redis-cli from home for this workload"
       }
     },
     {
       "id": "Q4",
       "question": "saa-study-gsa-cache-reader runs in private subnets like Night 17 stats-uploader. First invoke after idle takes 30+ seconds. Primary cause?",
       "options": {
-        "A": "ElastiCache Redis scales to zero and must cold-boot from S3",
-        "B": "Lambda VPC ENI attach on cold start before private Redis/Aurora paths work",
-        "C": "Aurora Serverless v2 pauses the writer until cache-reader pings it",
-        "D": "Secrets Manager throttles GetSecretValue to one call per minute"
+        "D": "Lambda VPC ENI attach on cold start before private Redis/Aurora paths work",
+        "A": "ElastiCache Redis scales to zero and must cold-boot from S3 for this workload",
+        "B": "Aurora Serverless v2 pauses the writer until cache-reader pings it for this workload",
+        "C": "Secrets Manager throttles GetSecretValue to one call per minute for this workload"
       }
     },
     {
       "id": "Q5",
       "question": "Static wiki HTML is cached at CloudFront POPs. Relational resort_stats rows are cached in Redis inside the VPC. What is the best distinction?",
       "options": {
-        "A": "CloudFront replaces Aurora; ElastiCache replaces DynamoDB",
-        "B": "Both are identical layers — pick whichever is cheaper that month",
-        "C": "CloudFront caches HTTP responses at the edge; ElastiCache caches app-chosen objects near compute",
+        "A": "CloudFront caches HTTP responses at the edge; ElastiCache caches app-chosen",
+        "B": "CloudFront replaces Aurora; ElastiCache replaces DynamoDB for this workload",
+        "C": "Both are identical layers — pick whichever is cheaper that month for this workload",
         "D": "CloudFront requires VPC endpoints; ElastiCache requires an internet gateway"
       }
     },
@@ -60,49 +60,49 @@
       "id": "Q6",
       "question": "Wiki viewCount hot reads already live on DynamoDB (Night 18). Which AWS cache targets DynamoDB specifically?",
       "options": {
-        "A": "DAX — DynamoDB Accelerator for microsecond DynamoDB reads",
-        "B": "CloudFront origin shield in the database subnet",
+        "B": "DAX — DynamoDB Accelerator for microsecond DynamoDB reads",
+        "A": "CloudFront origin shield in the database subnet for this workload",
         "C": "ElastiCache Memcached cluster in front of the wiki table",
-        "D": "Aurora read replica in front of the WikiPages table"
+        "D": "Aurora read replica in front of the WikiPages table for this workload"
       }
     },
     {
       "id": "Q7",
       "question": "Night 17 stats-uploader UPSERTs monthly_runs in Aurora. Night 23 cache-reader may return stale counts until TTL expires. Exam-aligned mitigation?",
       "options": {
-        "A": "Disable Aurora automated backups so writes propagate faster",
-        "B": "Delete or update the Redis key on successful write (cache invalidation)",
-        "C": "Move Redis to a public subnet for lower latency invalidation",
-        "D": "Switch to Memcached because it never caches relational rows"
+        "C": "Delete or update the Redis key on successful write (cache invalidation)",
+        "A": "Disable Aurora automated backups so writes propagate faster for this workload",
+        "B": "Move Redis to a public subnet for lower latency invalidation for this workload",
+        "D": "Switch to Memcached because it never caches relational rows for this workload"
       }
     },
     {
       "id": "Q8",
       "question": "You need the simplest horizontal in-memory cache for opaque JSON blobs — no failover, no lists or sets. Best fit?",
       "options": {
-        "A": "ElastiCache Redis with cluster mode and AOF persistence enabled",
-        "B": "Aurora Global Database for sub-millisecond wiki reads",
-        "C": "DMS CDC task streaming cache entries into Redis",
-        "D": "ElastiCache Memcached — multithreaded key-value without advanced structures"
+        "D": "ElastiCache Memcached — multithreaded key-value without advanced structures",
+        "A": "ElastiCache Redis with cluster mode and AOF persistence enabled for this workload",
+        "B": "Aurora Global Database for sub-millisecond wiki reads for this workload",
+        "C": "DMS CDC task streaming cache entries into Redis from the source database"
       }
     },
     {
       "id": "Q9",
       "question": "An operator asks whether saa-study-gsa-redis is the system of record for resort_stats. Correct answer?",
       "options": {
-        "A": "Yes — ElastiCache persists all writes to EBS like RDS",
-        "B": "Yes — Redis snapshots replace Aurora automated backups",
-        "C": "No — Aurora remains source of truth; Redis is ephemeral acceleration",
-        "D": "No — only DynamoDB can be a source of truth in AWS"
+        "A": "No — Aurora remains source of truth; Redis is ephemeral acceleration",
+        "B": "Yes — ElastiCache persists all writes to EBS like RDS for this workload",
+        "C": "Yes — Redis snapshots replace Aurora automated backups for this workload",
+        "D": "No — only DynamoDB can be a source of truth in AWS for this workload"
       }
     },
     {
       "id": "Q10",
       "question": "night-23-lab creates saa-study-gsa-redis-subnets spanning private-a and private-b. Why is a cache subnet group required?",
       "options": {
-        "A": "ElastiCache nodes must launch in subnets you designate — typically private DB/cache tiers",
-        "B": "Subnet groups encrypt Redis traffic with KMS at the subnet boundary",
-        "C": "Subnet groups replace security groups for port 6379 authorization",
+        "B": "ElastiCache nodes must launch in subnets you designate — typically private",
+        "A": "Subnet groups encrypt Redis traffic with KMS at the subnet boundary for this workload",
+        "C": "Subnet groups replace security groups for port 6379 authorization for this workload",
         "D": "Redis clusters cannot use security groups — subnet group is the only firewall"
       }
     },
@@ -110,49 +110,49 @@
       "id": "Q11",
       "question": "Bench invoke clears the key then calls GET twice. Second response shows cache_hit true and lower latency_ms. What happened?",
       "options": {
-        "A": "Aurora read replica served the second call from another Region",
-        "B": "CloudFront edge cached the Lambda response between invokes",
         "C": "First call populated Redis via cache-aside; second call read RAM only",
-        "D": "DAX intercepted the second call before DynamoDB"
+        "A": "Aurora read replica served the second call from another Region for this workload",
+        "B": "CloudFront edge cached the Lambda response between invokes for this workload",
+        "D": "DAX intercepted the second call before DynamoDB for this workload"
       }
     },
     {
       "id": "Q12",
       "question": "Production Redis often enables in-transit encryption and AUTH tokens. night-23 study lab skips them. Why still deploy redis-sg?",
       "options": {
+        "D": "SGs enforce which ENIs may open TCP 6379 — defense in depth inside the VPC",
         "A": "Security groups are optional decoration when Redis is in a private subnet",
-        "B": "Network ACLs alone block all east-west traffic in the VPC",
-        "C": "IAM policies on the Lambda role replace SG rules for port 6379",
-        "D": "SGs enforce which ENIs may open TCP 6379 — defense in depth inside the VPC"
+        "B": "Network ACLs alone block all east-west traffic in the VPC for this workload",
+        "C": "IAM policies on the Lambda role replace SG rules for port 6379 for this workload"
       }
     },
     {
       "id": "Q13",
       "question": "High availability Redis with automatic failover to a replica in another AZ. Which ElastiCache construct?",
       "options": {
-        "A": "Single-node cache.t4g.micro cluster with no replica — tonight's lab",
-        "B": "Redis replication group with Multi-AZ and automatic failover enabled",
+        "A": "Redis replication group with Multi-AZ and automatic failover enabled",
+        "B": "Single-node cache.t4g.micro cluster with no replica — tonight's lab",
         "C": "Memcached cluster with one node per AZ and client-side hashing only",
-        "D": "Aurora Serverless v2 reader endpoint in front of Redis"
+        "D": "Aurora Serverless v2 reader endpoint in front of Redis for this workload"
       }
     },
     {
       "id": "Q14",
       "question": "saa-study-gsa-cache-reader reuses saa-study-gsa-lambda-stats-sg from Night 16/17. Which connections does that SG need to initiate?",
       "options": {
+        "B": "Outbound TCP 6379 to redis-sg and outbound TCP 5432 to aurora-sg",
         "A": "Inbound TCP 6379 from redis-sg and inbound 5432 from aurora-sg",
-        "B": "Inbound TCP 443 from API Gateway for cache warming webhooks",
-        "C": "Outbound TCP 6379 to redis-sg and outbound TCP 5432 to aurora-sg",
-        "D": "Outbound ICMP to the NAT gateway for Redis health probes"
+        "C": "Inbound TCP 443 from API Gateway for cache warming webhooks",
+        "D": "Outbound ICMP to the NAT gateway for Redis health probes for this workload"
       }
     },
     {
       "id": "Q15",
       "question": "You run night-23-lab-elasticache-teardown.ps1. Correct resource order concept?",
       "options": {
-        "A": "Delete Lambda then ElastiCache cluster then subnet group and redis-sg — keep VPC and Aurora",
-        "B": "Delete Night 9 VPC first so Redis loses its subnets automatically",
-        "C": "Delete Aurora cluster before ElastiCache to flush cache keys",
+        "C": "Delete Lambda then ElastiCache cluster then subnet group and redis-sg",
+        "A": "Delete Night 9 VPC first so Redis loses its subnets automatically",
+        "B": "Delete Aurora cluster before ElastiCache to flush cache keys for this workload",
         "D": "Delete redis-sg while the cluster is running to force immediate eviction"
       }
     }

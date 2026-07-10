@@ -1,7 +1,12 @@
 {
   "night": 12,
   "title": "Lab 2B — EventBridge schedule",
-  "answerDistribution": { "A": 4, "B": 4, "C": 4, "D": 3 },
+  "answerDistribution": {
+    "A": 4,
+    "B": 4,
+    "C": 4,
+    "D": 3
+  },
   "answers": [
     {
       "id": "Q1",
@@ -56,27 +61,27 @@
     {
       "id": "Q11",
       "answer": "B",
-      "explanation": "Cluster condition in eventbridge-ecs-run-policy.json limits RunTask blast radius — least privilege for exam and production."
+      "explanation": "Cluster condition limits RunTask blast radius — least privilege for exam and production."
     },
     {
       "id": "Q12",
       "answer": "D",
-      "explanation": "ECS Task State Change on default bus = event pattern rule. Iceland monthly rule = schedule expression rule."
+      "explanation": "ECS Task State Change on default bus = event pattern rule. Monthly pipeline rule = schedule expression rule."
     },
     {
       "id": "Q13",
       "answer": "C",
-      "explanation": "Fargate cost dominates; rate(1 minute) would run Iceland constantly. Restore monthly cron after --test-fire validation."
+      "explanation": "Fargate cost dominates; rate(1 minute) would run the batch constantly. Restore monthly cron after validation."
     },
     {
       "id": "Q14",
       "answer": "A",
-      "explanation": "PassRole to ECS tasks requires iam:PassedToService = ecs-tasks.amazonaws.com — same as github-actions-policy-v4.json Night 5."
+      "explanation": "PassRole to ECS tasks requires iam:PassedToService = ecs-tasks.amazonaws.com — same pattern as CI PassRole for Fargate."
     },
     {
       "id": "Q15",
       "answer": "B",
-      "explanation": "Night 12 kicks off batch on schedule; Night 13 SQS decouples completion handling from the runner — classic integration pattern split."
+      "explanation": "EventBridge kicks off batch on schedule; SQS decouples completion handling from the runner — classic integration pattern split."
     }
   ]
 }

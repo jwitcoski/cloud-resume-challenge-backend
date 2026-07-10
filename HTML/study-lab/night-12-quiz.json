@@ -8,152 +8,152 @@
   "questions": [
     {
       "id": "Q1",
-      "question": "Global Ski Atlas runs the Iceland OSM pipeline monthly as a one-shot Fargate task in private subnets — no HTTP endpoint. Night 10 proved manual ecs:RunTask works. What is the best way to trigger it on the 1st of each month without a always-on EC2 instance?",
+      "question": "A monthly one-shot Fargate batch job runs in private subnets with no HTTP endpoint. Manual ecs:RunTask already works. What is the best way to trigger it on the 1st of each month without an always-on EC2 instance?",
       "options": {
-        "A": "Application Load Balancer health check that calls RunTask",
-        "B": "EventBridge schedule rule with an ECS cluster target and cron expression",
-        "C": "NAT Gateway scheduled maintenance window",
-        "D": "CloudFront origin request trigger on the S3 output bucket"
+        "A": "Application Load Balancer health check that invokes ecs:RunTask",
+        "B": "EventBridge schedule rule with an ECS RunTask target and cron",
+        "C": "NAT Gateway scheduled maintenance window that starts the Fargate task",
+        "D": "CloudFront origin request trigger writing to the S3 output bucket"
       }
     },
     {
       "id": "Q2",
-      "question": "You create an EventBridge rule targeting ecs:RunTask on cluster globalskiatlas-backend-k8s. The rule shows FailedInvocations in CloudWatch. The task definition and cluster names are correct. What is the most common IAM fix?",
+      "question": "You create an EventBridge rule targeting ecs:RunTask. The rule shows FailedInvocations in CloudWatch. The task definition and cluster names are correct. What is the most common IAM fix?",
       "options": {
-        "A": "Attach AmazonEC2FullAccess to the default bus",
-        "B": "Grant the EventBridge rule permission to assume the task role directly",
-        "C": "Add a target IAM role trusted by events.amazonaws.com with ecs:RunTask and iam:PassRole on the execution and task roles",
-        "D": "Move the rule to a custom event bus named ecs.amazonaws.com"
+        "A": "Attach AmazonEC2FullAccess to the default event bus IAM resource",
+        "B": "Grant the rule permission to assume the task role directly only",
+        "C": "Target IAM role trusted by events.amazonaws.com with RunTask + PassRole",
+        "D": "Move the schedule rule to a custom event bus named ecs.amazonaws.com"
       }
     },
     {
       "id": "Q3",
-      "question": "night-12-lab-eventbridge-schedule.sh sets AssignPublicIp to DISABLED and passes private subnet IDs from night-9-vpc-ids.json. Why must the EventBridge ECS target include the same networkConfiguration as Night 10 manual RunTask?",
+      "question": "An EventBridge ECS target sets AssignPublicIp to DISABLED and passes private subnet IDs. Why must the scheduled target include the same networkConfiguration as a manual RunTask?",
       "options": {
-        "A": "Scheduled RunTask still creates an awsvpc ENI — without subnets/SG the task cannot pull from ECR or reach S3",
-        "B": "EventBridge always launches tasks in the default VPC public subnet unless overridden",
-        "C": "AssignPublicIp ENABLED is required for EventBridge-triggered tasks only",
-        "D": "The schedule expression must match the subnet CIDR block"
+        "A": "Scheduled RunTask still creates an awsvpc ENI — needs subnets and SG",
+        "B": "EventBridge always launches tasks in the default VPC public subnet",
+        "C": "AssignPublicIp ENABLED is required only for EventBridge-started tasks",
+        "D": "The cron schedule expression must match the private subnet CIDR block"
       }
     },
     {
       "id": "Q4",
-      "question": "Which schedule expression runs the Iceland pipeline at 06:00 UTC on the first day of every month?",
+      "question": "Which schedule expression runs a batch pipeline at 06:00 UTC on the first day of every month?",
       "options": {
-        "A": "cron(0 6 1 * ? *)",
-        "B": "rate(1 month)",
-        "C": "cron(6 0 1 * * *)",
-        "D": "cron(0 0 ? * 1 *)"
+        "A": "cron(0 6 1 * ? *) — 06:00 UTC on day 1 each month",
+        "B": "rate(1 month) — EventBridge monthly rate expression",
+        "C": "cron(6 0 1 * * *) — hour and minute fields swapped from UTC",
+        "D": "cron(0 0 ? * 1 *) — every Monday at midnight UTC only"
       }
     },
     {
       "id": "Q5",
-      "question": "GitHub Actions already has ecs:RunTask and iam:PassRole for Iceland. After adding EventBridge, why can the rule not reuse the GitHub Actions IAM user credentials?",
+      "question": "CI already has ecs:RunTask and iam:PassRole for a Fargate task. After adding EventBridge, why can the rule not reuse the CI IAM user credentials?",
       "options": {
-        "A": "EventBridge invokes targets by assuming a dedicated IAM role attached to the rule target — not CI user keys",
-        "B": "Fargate rejects tasks started by human IAM users",
-        "C": "PassRole is only valid for Lambda targets",
-        "D": "GitHub Actions credentials expire every 15 minutes"
+        "A": "EventBridge assumes a dedicated target role — not CI long-lived keys",
+        "B": "Fargate rejects any task started by a human IAM user principal",
+        "C": "PassRole is valid only when the target type is Lambda, not ECS",
+        "D": "CI credentials always expire every 15 minutes and cannot be reused"
       }
     },
     {
       "id": "Q6",
       "question": "An exam question describes decoupling microservices so a spike in orders does not overwhelm the inventory API. The inventory team wants to process at their own pace with at-least-once delivery. Which service fits better than an EventBridge schedule rule?",
       "options": {
-        "A": "EventBridge cron targeting ECS RunTask",
-        "B": "AWS Config conformance pack",
+        "A": "EventBridge cron expression targeting ECS RunTask monthly",
+        "B": "AWS Config conformance pack evaluating inventory API drift",
         "C": "Amazon SQS standard queue between producer and consumer",
-        "D": "VPC peering"
+        "D": "VPC peering between the orders VPC and inventory VPC only"
       }
     },
     {
       "id": "Q7",
-      "question": "CloudWatch alarm saa-study-gsa-iceland-task-failed watches FailedInvocations on the EventBridge rule. The alarm fires. Invocations metric is zero. What most likely happened?",
+      "question": "A CloudWatch alarm watches FailedInvocations on an EventBridge rule and fires. The Invocations metric is zero. What most likely happened?",
       "options": {
-        "A": "The container exited with code 1 after starting successfully",
-        "B": "S3 rejected the upload",
-        "C": "NAT Gateway billing threshold exceeded",
-        "D": "EventBridge could not invoke the ECS target (IAM, permissions, or invalid target config) before a task was created"
+        "A": "The container exited with code 1 after the task started successfully",
+        "B": "S3 rejected the upload after the Fargate task began writing output",
+        "C": "NAT Gateway billing threshold was exceeded for the private subnet path",
+        "D": "EventBridge could not invoke the ECS target (IAM or invalid config)"
       }
     },
     {
       "id": "Q8",
       "question": "What is the trust policy principal for the IAM role used by an EventBridge rule that calls ecs:RunTask?",
       "options": {
-        "A": "ecs-tasks.amazonaws.com",
-        "B": "events.amazonaws.com",
-        "C": "lambda.amazonaws.com",
-        "D": "scheduler.amazonaws.com only — classic EventBridge rules cannot assume roles"
+        "A": "ecs-tasks.amazonaws.com — same trust as the Fargate task role",
+        "B": "events.amazonaws.com — EventBridge assumes the target role",
+        "C": "lambda.amazonaws.com — required for any EventBridge rule target",
+        "D": "scheduler.amazonaws.com only — classic rules cannot assume roles"
       }
     },
     {
       "id": "Q9",
       "question": "You need a one-time reminder to run a migration at 2026-07-01 03:00 UTC with flexible delivery within a 15-minute window and automatic retries. Which option is most purpose-built?",
       "options": {
-        "A": "Classic EventBridge rate(1 day) rule",
-        "B": "CloudWatch Logs subscription filter",
-        "C": "EC2 instance user-data cron",
-        "D": "Amazon EventBridge Scheduler schedule with flexible time window"
+        "A": "Classic EventBridge rate(1 day) rule repeating every day forever",
+        "B": "CloudWatch Logs subscription filter matching migration log lines",
+        "C": "EC2 instance user-data cron job waiting for that exact UTC timestamp",
+        "D": "Amazon EventBridge Scheduler with a flexible time window schedule"
       }
     },
     {
       "id": "Q10",
-      "question": "The Iceland pipeline is batch ETL, not a long-running web service. Which statement about load balancers is correct for Night 12?",
+      "question": "A batch ETL pipeline is not a long-running web service. Which statement about load balancers is correct for scheduled ECS RunTask?",
       "options": {
         "A": "An internal ALB is required so EventBridge can health-check the task",
-        "B": "Network Load Balancer must front Fargate for EventBridge triggers",
-        "C": "No load balancer is needed — RunTask starts the task directly; ALB applies when exposing HTTP services",
-        "D": "Gateway Load Balancer inspects scheduled ECS tasks by default"
+        "B": "Network Load Balancer must front Fargate for EventBridge RunTask triggers",
+        "C": "No load balancer is needed — RunTask starts the batch task directly",
+        "D": "Gateway Load Balancer inspects scheduled ECS Fargate tasks by default"
       }
     },
     {
       "id": "Q11",
-      "question": "eventbridge-ecs-run-policy.json scopes ecs:RunTask with a Condition on ecs:cluster. Why scope to cluster globalskiatlas-backend-k8s?",
+      "question": "An EventBridge target role scopes ecs:RunTask with a Condition on ecs:cluster. Why scope RunTask to one cluster ARN?",
       "options": {
-        "A": "Fargate tasks can only run in one cluster per account",
-        "B": "Least privilege — the role should not start arbitrary tasks on other clusters",
-        "C": "EventBridge ignores RunTask unless the cluster name matches the rule name",
-        "D": "PassRole requires identical cluster and role names"
+        "A": "Fargate tasks can only run in one ECS cluster per AWS account ever",
+        "B": "Least privilege — the role should not start tasks on other clusters",
+        "C": "EventBridge ignores RunTask unless cluster name equals the rule name",
+        "D": "PassRole requires the cluster name string to match the IAM role name"
       }
     },
     {
       "id": "Q12",
-      "question": "A rule on the default event bus matches {\"source\":[\"aws.ecs\"],\"detail-type\":[\"ECS Task State Change\"]}. What type of rule is this compared to the Iceland monthly pipeline rule?",
+      "question": "A rule on the default event bus matches {\"source\":[\"aws.ecs\"],\"detail-type\":[\"ECS Task State Change\"]}. What type of rule is this compared to a monthly cron pipeline rule?",
       "options": {
-        "A": "Schedule expression rule — same as cron(0 6 1 * ? *)",
-        "B": "API destination rule — calls an external HTTPS endpoint",
-        "C": "Cross-Region replication rule",
-        "D": "Event pattern rule — reacts to AWS service events, not a fixed timetable"
+        "A": "Schedule expression rule — identical to cron(0 6 1 * ? *) monthly",
+        "B": "API destination rule — calls an external HTTPS webhook endpoint",
+        "C": "Cross-Region replication rule copying events onto another event bus",
+        "D": "Event pattern rule — reacts to AWS service events, not a timetable"
       }
     },
     {
       "id": "Q13",
-      "question": "For immediate lab validation you run night-12-lab-eventbridge-schedule.sh --test-fire (temporary rate(1 minute)). After success you restore cron(0 6 1 * ? *). What cost should you expect compared to leaving rate(1 minute) enabled?",
+      "question": "For a quick validation you temporarily set an EventBridge rule to rate(1 minute), then restore cron(0 6 1 * ? *) after success. What cost should you expect compared to leaving rate(1 minute) enabled?",
       "options": {
-        "A": "Identical — schedule expression does not affect Fargate cost",
-        "B": "Higher — cron rules incur per-invocation charges that rate rules do not",
-        "C": "Lower — monthly cron runs the expensive Fargate task roughly once per month instead of every minute",
-        "D": "Zero in both cases — Fargate is free for EventBridge triggers"
+        "A": "Identical — schedule expression does not affect Fargate run cost",
+        "B": "Higher — cron rules incur per-invocation charges that rate rules skip",
+        "C": "Lower — monthly cron runs the expensive Fargate task far less often",
+        "D": "Zero in both cases — Fargate is free when EventBridge starts the task"
       }
     },
     {
       "id": "Q14",
-      "question": "Which iam:PassRole condition key should appear when EventBridge passes globalskiatlas-backend-k8s-ecs-execution to ECS?",
+      "question": "Which iam:PassRole condition key should appear when EventBridge passes an ECS execution role to ECS?",
       "options": {
-        "A": "iam:PassedToService = ecs-tasks.amazonaws.com",
-        "B": "iam:PassedToService = events.amazonaws.com",
-        "C": "iam:PassedToService = s3.amazonaws.com",
-        "D": "No condition — PassRole cannot be constrained"
+        "A": "iam:PassedToService = ecs-tasks.amazonaws.com for ECS task roles",
+        "B": "iam:PassedToService = events.amazonaws.com for the target role",
+        "C": "iam:PassedToService = s3.amazonaws.com for pipeline output uploads",
+        "D": "No condition is allowed — PassRole cannot be constrained by service"
       }
     },
     {
       "id": "Q15",
-      "question": "Night 13 will add SQS so the pipeline publishes a completion message instead of chaining synchronously. How does that differ from Night 12 EventBridge → RunTask?",
+      "question": "You later add SQS so the pipeline publishes a completion message instead of chaining synchronously. How does that differ from EventBridge schedule → RunTask?",
       "options": {
-        "A": "SQS replaces the need for ECS entirely",
-        "B": "EventBridge starts the batch job on a schedule; SQS buffers events/messages between decoupled producers and consumers",
-        "C": "EventBridge cannot target ECS if SQS exists in the same account",
-        "D": "SQS only works with API Gateway WebSocket APIs"
+        "A": "SQS replaces the need for ECS Fargate tasks in this architecture",
+        "B": "EventBridge schedules the batch; SQS buffers producers and consumers",
+        "C": "EventBridge cannot target ECS if an SQS queue exists in the account",
+        "D": "SQS only works with API Gateway WebSocket APIs, not with batch jobs"
       }
     }
   ]

@@ -1,7 +1,12 @@
 {
   "night": 11,
   "title": "ELB + resilience (ALB, NLB, GWLB)",
-  "answerDistribution": { "A": 5, "B": 5, "C": 5, "D": 5 },
+  "answerDistribution": {
+    "A": 5,
+    "B": 5,
+    "C": 5,
+    "D": 5
+  },
   "answers": [
     {
       "id": "Q1",
@@ -20,27 +25,27 @@
     },
     {
       "id": "Q4",
-      "answer": "B",
-      "explanation": "Health check uses port 8080 but instance SG only allows 443 — checks fail while manual curl on 8080 works from bastion. Allow ALB SG → target port 8080 (health check port must match SG)."
+      "answer": "D",
+      "explanation": "Health check uses port 8080 but instance SG only allows 443 — checks fail while manual curl on 8080 works from bastion. Allow ALB SG → target port 8080."
     },
     {
       "id": "Q5",
-      "answer": "B",
+      "answer": "A",
       "explanation": "HealthCheckGracePeriod suspends ASG health checks (including ELB) while instances boot. Deregistration delay is for scale-in draining, not launch."
     },
     {
       "id": "Q6",
-      "answer": "A",
+      "answer": "B",
       "explanation": "Failover routing requires health checks on the primary (or associated child checks). Without them Route 53 keeps sending traffic to a failed primary."
     },
     {
       "id": "Q7",
-      "answer": "B",
+      "answer": "C",
       "explanation": "NLB supports UDP (and TCP/TLS) at Layer 4. ALB is HTTP/HTTPS/WebSockets — not raw UDP telemetry."
     },
     {
       "id": "Q8",
-      "answer": "A",
+      "answer": "D",
       "explanation": "Deregistration delay (connection draining) lets in-flight requests complete when a target is deregistered during scale-in or deploy."
     },
     {
@@ -50,37 +55,37 @@
     },
     {
       "id": "Q10",
-      "answer": "A",
+      "answer": "B",
       "explanation": "ALB cross-zone ON by default; NLB cross-zone OFF by default. Disabling NLB cross-zone reduces cross-AZ transfer when clients hit NLB nodes in their own AZ."
     },
     {
       "id": "Q11",
-      "answer": "A",
+      "answer": "C",
       "explanation": "TCP health check only verifies port open, not HTTP semantics. If app needs GET /ping, use HTTP/HTTPS health check with that path."
     },
     {
       "id": "Q12",
-      "answer": "B",
+      "answer": "D",
       "explanation": "ALB supports Lambda as a target type with listener rules. NLB cannot invoke Lambda as an L7 target in the same way."
     },
     {
       "id": "Q13",
-      "answer": "C",
+      "answer": "A",
       "explanation": "ALB is a managed multi-AZ service — DNS resolves to nodes in healthy AZs. Individual target failures are handled by health checks, not whole-AZ ALB failure."
     },
     {
       "id": "Q14",
-      "answer": "A",
+      "answer": "B",
       "explanation": "ALB duration-based stickiness sets AWSALB cookie so sessions hit the same target. NLB has 5-tuple stickiness for TCP flows, not HTTP session cookies."
     },
     {
       "id": "Q15",
-      "answer": "B",
+      "answer": "C",
       "explanation": "GWLB endpoints in VPC subnets redirect traffic to the GWLB for inspection through appliances. Not IGW or ALB."
     },
     {
       "id": "Q16",
-      "answer": "B",
+      "answer": "D",
       "explanation": "HTTPS listener → HTTP target is TLS termination (SSL offloading) at ALB. Passthrough would forward encrypted bytes unchanged (NLB TCP or ALB TLS→TLS)."
     },
     {
@@ -100,7 +105,7 @@
     },
     {
       "id": "Q20",
-      "answer": "A",
+      "answer": "D",
       "explanation": "502 from ALB often means LB could not connect to target — wrong target port in TG registration vs process listen port is a classic post-deploy miss. Health check can pass on a different port/path than traffic."
     }
   ]

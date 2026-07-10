@@ -1,7 +1,12 @@
 {
   "night": 9,
   "title": "Lab 2A — VPC build",
-  "answerDistribution": { "A": 3, "B": 2, "C": 3, "D": 2 },
+  "answerDistribution": {
+    "A": 3,
+    "B": 2,
+    "C": 3,
+    "D": 2
+  },
   "answers": [
     {
       "id": "Q1",
@@ -15,7 +20,7 @@
     },
     {
       "id": "Q3",
-      "answer": "A",
+      "answer": "D",
       "explanation": "Single-NAT-in-one-AZ is a cost tradeoff — AZ-a outage kills outbound NAT for all private subnets. Exam: NAT per AZ for HA vs cost (d4-t4-cp-1)."
     },
     {
@@ -26,7 +31,7 @@
     {
       "id": "Q5",
       "answer": "C",
-      "explanation": "DNS resolves names but private subnets still need NAT or endpoints for traffic to reach AWS APIs on the internet. Night 9: modify-vpc-attribute DNS flags."
+      "explanation": "DNS resolves names but private subnets still need NAT or endpoints for traffic to reach AWS APIs. Night 9: modify-vpc-attribute DNS flags."
     },
     {
       "id": "Q6",
@@ -36,7 +41,7 @@
     {
       "id": "Q7",
       "answer": "A",
-      "explanation": "Subnet behavior is defined by route table association, not naming. Associate with rt-private (NAT route). Night 9 lab associate_rt calls."
+      "explanation": "Subnet behavior is defined by route table association, not naming. Associate with the private RT (NAT route). Night 9 lab associate_rt calls."
     },
     {
       "id": "Q8",
@@ -45,13 +50,13 @@
     },
     {
       "id": "Q9",
-      "answer": "A",
-      "explanation": "DISABLED = no public IP on the task ENI; private subnet egress via NAT or endpoints. Night 10 ecs:RunTask network config."
+      "answer": "D",
+      "explanation": "DISABLED = no public IP on the task ENI; private subnet egress via NAT or endpoints. Exam: awsvpc assignPublicIp behavior."
     },
     {
       "id": "Q10",
-      "answer": "B",
-      "explanation": "RunTask awsvpc config needs subnets[] and securityGroups[] — private subnets + fargate SG from night-9-vpc-ids.json night10 block."
+      "answer": "C",
+      "explanation": "RunTask awsvpc config needs subnets[] and securityGroups[] — private subnets + task SG. Exam networking for Fargate."
     }
   ]
 }

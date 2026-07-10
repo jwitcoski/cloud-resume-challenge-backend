@@ -225,6 +225,25 @@ export default function AwsSolutionsArchitectStudyPage() {
                   </Link>
                 </div>
               )}
+              {quizzes.length > 0 && (
+                <div className="rounded-lg border border-teal-200 bg-teal-50/50 p-4 flex flex-col gap-3 sm:col-span-2">
+                  <div>
+                    <h2 className="text-lg font-semibold text-[#444] mb-1">
+                      Quiz gauntlet
+                    </h2>
+                    <p className="text-sm text-[#555] leading-relaxed">
+                      One correct answer clears a night. Miss and you stay on that night
+                      until you get one right — progress through every quiz.
+                    </p>
+                  </div>
+                  <Link
+                    href="/aws-solutions-architect-study/quiz/gauntlet/"
+                    className="inline-flex shrink-0 items-center justify-center rounded-md bg-teal-700 px-4 py-2 text-sm font-medium text-white hover:bg-teal-800 transition-colors w-fit"
+                  >
+                    Start gauntlet →
+                  </Link>
+                </div>
+              )}
             </div>
           )}
 

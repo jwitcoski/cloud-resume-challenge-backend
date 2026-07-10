@@ -11,79 +11,79 @@
       "question": "After a bad deploy, GSA wiki counters are wrong. Leadership says losing more than 30 minutes of view data is unacceptable. Which metric are they defining?",
       "options": {
         "A": "RPO — maximum acceptable data loss measured in time",
-        "B": "RTO — maximum acceptable downtime before service returns",
-        "C": "MTTR — mean time to repair the Lambda deployment package",
-        "D": "TTL — DynamoDB item expiration for stale wiki pages"
+        "B": "RTO — maximum acceptable downtime before service returns online",
+        "C": "MTTR — mean time to repair the Lambda deployment package fully",
+        "D": "TTL — DynamoDB item expiration window for stale wiki page rows"
       }
     },
     {
       "id": "Q2",
       "question": "us-east-1 fails. Executives require the public wiki back online within 15 minutes. Which metric drives the architecture choice?",
       "options": {
-        "A": "RPO — how much wiki data can be missing after failover",
-        "B": "Backup vault retention — days recovery points are kept",
-        "C": "RTO — maximum acceptable outage duration before users can read wiki pages",
-        "D": "ACU floor — minimum Aurora capacity during disaster"
+        "B": "RTO — maximum acceptable outage before users can read wiki pages",
+        "A": "RPO — how much wiki data can be missing after failover completes",
+        "C": "Backup vault retention — days recovery points stay in the vault",
+        "D": "ACU floor — minimum Aurora capacity reserved during a disaster"
       }
     },
     {
       "id": "Q3",
       "question": "A startup accepts hours of downtime after a Region failure but wants the lowest monthly DR cost. Which strategy fits?",
       "options": {
+        "C": "Backup and restore — AWS Backup recovery points plus IaC redeploy in DR",
         "A": "Multi-site active-active with DynamoDB global tables in three Regions",
-        "B": "Backup and restore — AWS Backup recovery points plus IaC redeploy in DR Region",
-        "C": "Warm standby with Route 53 failover to a running ASG min=2 in us-west-2",
-        "D": "Pilot light with Aurora Global Database primary in both Regions"
+        "B": "Warm standby with Route 53 failover to a running ASG min=2 in DR for this workload",
+        "D": "Pilot light with Aurora Global Database primary in both Regions for this workload"
       }
     },
     {
       "id": "Q4",
       "question": "Compare pilot light and warm standby for the same RPO target. Which statement is correct?",
       "options": {
-        "A": "Pilot light keeps full production ASG capacity running in DR at all times",
+        "D": "Warm standby runs a scaled-down live DR stack — lower RTO than pilot light",
+        "A": "Pilot light keeps full production ASG capacity running in DR always for this workload",
         "B": "Warm standby never runs database instances until failover is declared",
-        "C": "Pilot light and warm standby have identical RTO because both use AWS Backup only",
-        "D": "Warm standby runs a scaled-down but live DR stack — lower RTO than pilot light"
+        "C": "Pilot light and warm standby share identical RTO using Backup only for this workload"
       }
     },
     {
       "id": "Q5",
       "question": "Compliance wants one nightly retention policy for DynamoDB wiki tables, Aurora resort_stats, and EBS volumes. Which approach?",
       "options": {
-        "A": "AWS Backup plan with tag-based selection (Night 19 lab pattern)",
-        "B": "Enable DynamoDB PITR only — it automatically backs up all account resources",
-        "C": "Extend RDS automated backup window to cover EBS and DynamoDB in the same job",
-        "D": "CloudTrail data events on every PutItem and INSERT for 90-day replay"
+        "A": "AWS Backup plan with tag-based selection across those resource types",
+        "B": "Enable DynamoDB PITR only — it backs up all account resources nightly",
+        "C": "Extend RDS automated backup window to cover EBS and DynamoDB too",
+        "D": "CloudTrail data events on PutItem and INSERT for 90-day replay for this workload"
       }
     },
     {
       "id": "Q6",
       "question": "night-19-lab tags saa-study-gsa-wiki-views with saa-study-backup=night-19 instead of listing the table ARN in the plan. Why?",
       "options": {
-        "A": "DynamoDB tables cannot be backed up by ARN — tags are mandatory",
-        "B": "Tags disable PITR so AWS Backup becomes the only restore path",
-        "C": "New resources with the same tag auto-enroll without editing the backup plan",
-        "D": "Tag keys must match the backup vault name or jobs fail IAM checks"
+        "B": "New resources with the same tag auto-enroll without editing the backup plan",
+        "A": "DynamoDB tables cannot be backed up by ARN — tags are mandatory always",
+        "C": "Tags disable PITR so AWS Backup becomes the only restore path left for this workload",
+        "D": "Tag keys must match the backup vault name or jobs fail IAM checks for this workload"
       }
     },
     {
       "id": "Q7",
       "question": "Aurora resort_stats needs sub-second cross-Region RPO with a managed global primary/secondary topology. Best fit?",
       "options": {
-        "A": "Promote a read replica in eu-west-1 after us-east-1 outage",
-        "B": "Aurora Global Database with primary in us-east-1 and secondary in eu-west-1",
-        "C": "RDS Multi-AZ synchronous standby in the same Region only",
-        "D": "AWS Backup cross-Region copy every five minutes as live replication"
+        "C": "Aurora Global Database with primary in us-east-1 and secondary in eu-west-1",
+        "A": "Promote a read replica in eu-west-1 after us-east-1 outage completes for this workload",
+        "B": "RDS Multi-AZ synchronous standby limited to the same Region only for this workload",
+        "D": "AWS Backup cross-Region copy every five minutes as live replication for this workload"
       }
     },
     {
       "id": "Q8",
       "question": "An auditor asks whether CloudTrail can replace AWS Backup for wiki tables. What is accurate?",
       "options": {
-        "A": "Yes — CloudTrail stores full table snapshots in the trail S3 bucket",
-        "B": "Yes — EnableCloudTrail on DynamoDB streams equals PITR plus AWS Backup",
-        "C": "Partially — CloudTrail replaces backup if S3 Object Lock is enabled",
-        "D": "No — CloudTrail records API activity; it is not a backup and restore service"
+        "D": "No — CloudTrail records API activity; it is not a backup and restore service",
+        "A": "Yes — CloudTrail stores full table snapshots in the trail S3 bucket for this workload",
+        "B": "Yes — EnableCloudTrail on DynamoDB streams equals PITR plus Backup for this workload",
+        "C": "Partially — CloudTrail replaces backup if S3 Object Lock is enabled for this workload"
       }
     },
     {
@@ -100,9 +100,9 @@
       "id": "Q10",
       "question": "A teammate confuses AWS Backup cross-Region copy with DynamoDB global tables. How do they differ?",
       "options": {
-        "A": "Global tables copy only manual snapshots; Backup copy handles PITR",
-        "B": "Both are identical — AWS Backup implements global tables internally",
-        "C": "Backup copy moves periodic recovery points; global tables replicate live writes",
+        "B": "Backup copy moves periodic recovery points; global tables replicate live",
+        "A": "Global tables copy only manual snapshots; Backup copy handles PITR logs for this workload",
+        "C": "Both are identical — AWS Backup implements global tables internally",
         "D": "Global tables require AWS Backup vault lock in the destination Region"
       }
     },
@@ -110,29 +110,29 @@
       "id": "Q11",
       "question": "night-19-lab creates saa-study-gsa-backup-vault. What is the vault's primary role?",
       "options": {
-        "A": "Run Lambda functions that poll DynamoDB Streams for backup triggers",
-        "B": "Encrypted container storing backup recovery points with optional vault lock",
-        "C": "Route 53 health check target for DR failover routing policies",
-        "D": "IAM boundary that replaces the AWSBackupDefaultServiceRole"
+        "C": "Encrypted container storing backup recovery points with optional vault lock",
+        "A": "Run Lambda functions that poll DynamoDB Streams for backup triggers for this workload",
+        "B": "Route 53 health check target for DR failover routing policy targets for this workload",
+        "D": "IAM boundary that replaces the AWSBackupDefaultServiceRole entirely for this workload"
       }
     },
     {
       "id": "Q12",
       "question": "Before a risky Aurora schema migration on resort_stats, ops wants a one-off snapshot they control. Best action tonight?",
       "options": {
-        "A": "Disable automated backups until migration completes successfully",
-        "B": "Switch the cluster to DynamoDB to avoid relational backup complexity",
-        "C": "Enable PITR on the EBS root volume of the Aurora writer instance",
-        "D": "Start an on-demand AWS Backup job or manual RDS snapshot before the change"
+        "D": "Start an on-demand AWS Backup job or manual RDS snapshot before the change",
+        "A": "Disable automated backups until the migration completes successfully for this workload",
+        "B": "Switch the cluster to DynamoDB to avoid relational backup complexity for this workload",
+        "C": "Enable PITR on the EBS root volume of the Aurora writer instance for this workload"
       }
     },
     {
       "id": "Q13",
       "question": "night-19-lab-backup-teardown.ps1 runs after the quiz. A teammate worries the wiki study table disappears. What is true?",
       "options": {
-        "A": "Teardown removes Backup resources only — Night 18 saa-study-gsa-wiki-views remains",
-        "B": "Teardown deletes any DynamoDB table tagged saa-study-backup=night-19",
-        "C": "Teardown disables PITR on prod WikiPages in the production account",
+        "A": "Teardown removes Backup resources only — Night 18 wiki study table remains",
+        "B": "Teardown deletes any DynamoDB table tagged saa-study-backup=night-19 for this workload",
+        "C": "Teardown disables PITR on prod WikiPages in the production account for this workload",
         "D": "Teardown drops Night 16 Aurora because backup plans reference the VPC"
       }
     },
@@ -140,20 +140,20 @@
       "id": "Q14",
       "question": "GSA needs near-zero RTO with active writes in us-east-1 and eu-west-1 for DynamoDB wiki pages. Which DR tier?",
       "options": {
-        "A": "Backup and restore with weekly recovery points in a second Region",
-        "B": "Pilot light — AMIs only, no database running until declared disaster",
-        "C": "Multi-site active-active — e.g. DynamoDB global tables plus regional endpoints",
-        "D": "Warm standby — single Region Multi-AZ with read replica for reports"
+        "B": "Multi-site active-active — DynamoDB global tables plus regional endpoints",
+        "A": "Backup and restore with weekly recovery points in a second Region for this workload",
+        "C": "Pilot light — AMIs only, no database running until declared disaster",
+        "D": "Warm standby — single Region Multi-AZ with read replica for reports for this workload"
       }
     },
     {
       "id": "Q15",
       "question": "Night 15 enabled Aurora automated backups. Night 19 enrolls the same cluster in AWS Backup by tag. Why keep both concepts straight?",
       "options": {
-        "A": "Automated backups are required to disable before any AWS Backup plan can run",
-        "B": "AWS Backup can centralize retention across Aurora, DynamoDB, and EBS; native backups are per-service",
-        "C": "Aurora automated backups only work when DynamoDB PITR is enabled on wiki tables",
-        "D": "AWS Backup replaces Aurora storage and removes the need for a writer instance"
+        "C": "AWS Backup centralizes multi-service retention; native backups stay",
+        "A": "Automated backups must be disabled before any AWS Backup plan can run",
+        "B": "Aurora automated backups only work when DynamoDB PITR is also enabled",
+        "D": "AWS Backup replaces Aurora storage and removes the need for a writer"
       }
     }
   ]

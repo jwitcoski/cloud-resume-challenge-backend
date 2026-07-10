@@ -11,79 +11,79 @@
       "question": "witcoskitech.com uses a single A alias to CloudFront with no routing policy. A stakeholder asks for 10% of DNS answers to hit a canary CloudFront distribution before full cutover. Which Route 53 policy fits?",
       "options": {
         "A": "Weighted routing — two records with SetId values and weights 90 and 10",
-        "B": "Failover routing — PRIMARY and SECONDARY without a health check",
-        "C": "Simple routing — add a second A record with the same name",
-        "D": "Geolocation routing — route 10% of countries to the canary"
+        "B": "Failover routing — PRIMARY and SECONDARY without attaching a health check",
+        "C": "Simple routing — add a second A record that shares the same DNS name",
+        "D": "Geolocation routing — send roughly 10% of countries toward the canary"
       }
     },
     {
       "id": "Q2",
       "question": "GSA prod designs DR: primary ALB in us-east-1 serves api.globalskiatlas.com; secondary is an S3 static maintenance site in us-west-2. Route 53 must stop sending users to the primary when the app is down. Minimum DNS configuration?",
       "options": {
-        "A": "Latency records in both Regions — failover is automatic",
-        "B": "Weighted 50/50 between ALB and S3 — health inferred from HTTP 503",
-        "C": "Failover PRIMARY alias to ALB with a Route 53 health check; SECONDARY to S3 — no check on secondary",
-        "D": "Multivalue answer returning both ALB and S3 A records simultaneously"
+        "A": "Latency records in both Regions — Route 53 fails over when latency spikes",
+        "B": "Failover PRIMARY alias to ALB with a health check; SECONDARY to S3 without one",
+        "C": "Weighted 50/50 between ALB and S3 — health inferred automatically from HTTP 503",
+        "D": "Multivalue answer returning both ALB and S3 endpoints in every DNS response"
       }
     },
     {
       "id": "Q3",
       "question": "You deploy identical API stacks in us-east-1 and eu-west-1. Users worldwide should hit the lowest-latency Region. Which Route 53 policy?",
       "options": {
-        "A": "Weighted routing with equal weights — latency is automatic",
-        "B": "Geolocation routing with Country=* only",
-        "C": "Latency routing — one latency record per Region pointing at each regional endpoint",
-        "D": "Simple routing — Route 53 measures all AWS Regions and picks the fastest"
+        "A": "Weighted routing with equal weights — latency selection happens automatically",
+        "B": "Geolocation routing with a single Country=* default record for all clients",
+        "C": "Latency routing — one latency record per Region pointing at each endpoint",
+        "D": "Simple routing — Route 53 measures all Regions and always picks the fastest"
       }
     },
     {
       "id": "Q4",
       "question": "night-25-lab creates night25-failover.witcoskitech.com. PRIMARY aliases CloudFront with an HTTPS health check; SECONDARY aliases www. The health check shows Unhealthy for 5 minutes but clients still resolve PRIMARY. Likely cause?",
       "options": {
-        "A": "SECONDARY record also needs the same health check ID attached",
-        "B": "Failover requires NLB — CloudFront aliases cannot use health checks",
-        "C": "Clients or recursive resolvers cache the prior DNS answer until TTL expires",
-        "D": "Health checks only work with private hosted zones associated to a VPC"
+        "A": "SECONDARY record also needs the same health check ID attached to fail over",
+        "B": "Failover requires NLB — CloudFront aliases cannot participate in health checks",
+        "C": "Health checks only work when the hosted zone is private and VPC-associated",
+        "D": "Clients or recursive resolvers cache the prior DNS answer until TTL expires"
       }
     },
     {
       "id": "Q5",
       "question": "EU privacy rules require EU visitors to resolve to an eu-west-1 CloudFront distribution; everyone else uses us-east-1. Which policy?",
       "options": {
-        "A": "Latency routing — EU is always lowest latency for EU users",
-        "B": "Weighted routing — set EU weight to 100 and US weight to 0",
-        "C": "Failover routing — EU is PRIMARY, US is SECONDARY",
-        "D": "Geolocation routing — Continent or Country records for EU plus a default record"
+        "A": "Geolocation routing — Continent or Country records for EU plus a default",
+        "B": "Latency routing — EU is always assumed the lowest-latency choice for EU users",
+        "C": "Weighted routing — set EU weight to 100 and US weight to zero for all clients",
+        "D": "Failover routing — EU is PRIMARY and US remains the passive SECONDARY endpoint"
       }
     },
     {
       "id": "Q6",
       "question": "Exam scenario: apex domain example.com must point at a CloudFront distribution. Why is an A/AAAA alias preferred over a CNAME at the zone apex?",
       "options": {
-        "A": "CNAME records are not permitted at the zone apex per DNS rules",
-        "B": "CloudFront only accepts CNAME targets, not alias records",
-        "C": "Alias records require a longer TTL than CNAME — better for apex",
-        "D": "CNAME at apex is allowed but costs more per query than alias"
+        "A": "CloudFront only accepts CNAME targets and rejects alias records entirely",
+        "B": "CNAME records are not permitted at the zone apex per DNS standards",
+        "C": "Alias records require a longer TTL than CNAME — better caching at apex",
+        "D": "CNAME at apex is allowed but costs more per query than an alias record"
       }
     },
     {
       "id": "Q7",
       "question": "An ALB in us-east-1 spans three AZs. One AZ loses power; targets in other AZs stay healthy. Clients use the ALB DNS name directly (no Route 53 routing policy). What happens?",
       "options": {
-        "A": "All traffic fails until Route 53 failover flips to secondary",
-        "B": "New connections reach healthy ALB nodes in remaining AZs — ALB is multi-AZ",
-        "C": "Route 53 automatically creates weighted records per AZ",
-        "D": "Clients must switch to the NLB DNS name manually"
+        "A": "All traffic fails until Route 53 failover flips clients over to a secondary",
+        "B": "Route 53 automatically creates weighted records for each surviving AZ node",
+        "C": "New connections reach healthy ALB nodes in remaining AZs — ALB is multi-AZ",
+        "D": "Clients must manually switch to the NLB DNS name to restore full connectivity"
       }
     },
     {
       "id": "Q8",
-      "question": "night-25-lab aliases lab subdomains to CloudFront using hosted zone ID Z2FDTNDATAQYW2. What does that constant represent?",
+      "question": "A public website behind CloudFront must fail over to a static S3 maintenance origin when the primary custom origin returns 5xx. You want edge-level origin failover without changing DNS. Which approach?",
       "options": {
-        "A": "The us-east-1 regional hosted zone for all S3 buckets",
-        "B": "Your account-specific CloudFront distribution ID encoded as a zone",
-        "C": "The global Route 53 hosted zone ID used for CloudFront alias targets",
-        "D": "The private hosted zone ID for VPC endpoint DNS names"
+        "A": "Route 53 geolocation records that switch origins whenever HTTP status is 5xx",
+        "B": "API Gateway stage cache that serves a maintenance page after origin timeouts",
+        "C": "Weighted Route 53 records that shift 100% of traffic after a short 60s TTL",
+        "D": "CloudFront origin group with primary/secondary origins and failover status codes"
       }
     },
     {
@@ -91,69 +91,69 @@
       "question": "Route 53 health check on https://witcoskitech.com/HTML/index.html reports Healthy while the ALB behind a separate api.example.com returns 502. Why can both be true?",
       "options": {
         "A": "One health check monitors the static site; ALB target health is separate",
-        "B": "Route 53 health checks always mirror ALB target group state",
-        "C": "HTTPS health checks cannot run against CloudFront distributions",
-        "D": "Health checks only apply to failover SECONDARY records"
+        "B": "Route 53 health checks always mirror ALB target-group health automatically",
+        "C": "HTTPS health checks cannot run against CloudFront distributions at all",
+        "D": "Health checks only apply to failover SECONDARY records, never PRIMARY"
       }
     },
     {
       "id": "Q10",
       "question": "You want Route 53 to return up to eight healthy A record IPs so clients pick one at random. No Application Load Balancer in the design. Which policy?",
       "options": {
-        "A": "Weighted routing with eight equal weights on the same name",
-        "B": "Multivalue answer routing with health checks on each record",
-        "C": "Latency routing with eight Regions in one account",
-        "D": "Geoproximity routing with bias zero in every Region"
+        "A": "Weighted routing with eight equal weights on the same DNS name",
+        "B": "Multivalue answer routing with health checks on each IP record",
+        "C": "Latency routing with eight Regions registered in a single account",
+        "D": "Geoproximity routing with bias set to zero in every AWS Region"
       }
     },
     {
       "id": "Q11",
-      "question": "You run night-25-lab-route53-teardown.ps1 after practice. What remains in AWS?",
+      "question": "You need active-active multi-Region API endpoints so healthy Regions keep receiving traffic, and unhealthy ones are removed from DNS answers. Which Route 53 design fits best?",
       "options": {
-        "A": "Entire witcoskitech.com hosted zone deleted — domain unregister required",
-        "B": "Apex witcoskitech.com and www records plus CloudFront — night25-* records and lab health check removed",
-        "C": "All Route 53 records deleted including production apex aliases",
-        "D": "CloudFront distribution deleted — S3 bucket becomes public website only"
+        "A": "Simple routing with one A record that lists every Regional ALB IP in the answer",
+        "B": "Failover PRIMARY/SECONDARY only — secondary stays completely idle until primary fails",
+        "C": "Latency or weighted records with health checks so unhealthy endpoints are skipped",
+        "D": "Private hosted zone associated to every VPC — public internet clients resolve internally"
       }
     },
     {
       "id": "Q12",
       "question": "GSA compares Route 53 latency routing vs AWS Global Accelerator for worldwide API traffic. Best differentiator for the exam?",
       "options": {
-        "A": "Global Accelerator provides static anycast IPs and TCP/UDP edge steering; Route 53 latency is DNS-level Region selection",
-        "B": "Route 53 latency routing works only with CloudFront; Global Accelerator only with ALB",
-        "C": "Global Accelerator cannot health-check endpoints; Route 53 always can",
-        "D": "Latency routing requires health checks; Global Accelerator does not use health at all"
+        "A": "Route 53 latency works only with CloudFront; Global Accelerator only with ALB",
+        "B": "Global Accelerator cannot health-check endpoints at all; Route 53 always can",
+        "C": "Latency routing requires health checks; Global Accelerator never evaluates health",
+        "D": "Global Accelerator uses static anycast IPs and edge steering; Route 53 is DNS-level"
       }
     },
     {
       "id": "Q13",
       "question": "Hybrid exam: on-prem servers must resolve internal-only hostnames like db.corp.local inside the VPC while public users resolve globalskiatlas.com on the internet. Which Route 53 feature for internal names?",
       "options": {
-        "A": "Public hosted zone with geolocation routing",
-        "B": "Private hosted zone associated with the VPC",
-        "C": "Latency routing on the apex domain",
-        "D": "CloudFront alternate domain name for db.corp.local"
+        "A": "Private hosted zone associated with the VPC for internal DNS names",
+        "B": "Public hosted zone with geolocation routing for corp.local records",
+        "C": "Latency routing on the apex domain to prefer on-premises resolvers",
+        "D": "CloudFront alternate domain name registered for db.corp.local hosts"
       }
     },
     {
       "id": "Q14",
       "question": "Failover PRIMARY points to an ALB alias. Operators want Route 53 to fail over when any single unhealthy target remains behind the ALB. What is the exam-accurate approach?",
       "options": {
-        "A": "Enable Route 53 child health checks that evaluate ALB target health, or monitor a composite condition",
-        "B": "Set ALB health check interval to 1 second — Route 53 inherits automatically",
-        "C": "Use weighted routing — unhealthy targets get weight 0 automatically",
-        "D": "Attach the health check only to the SECONDARY record"
+        "A": "Set ALB health-check interval to 1 second — Route 53 inherits it automatically",
+        "B": "Use calculated/child health checks that evaluate ALB target health conditions",
+        "C": "Use weighted routing — unhealthy targets automatically receive weight zero",
+        "D": "Attach the health check only to the SECONDARY record, never PRIMARY"
       }
     },
     {
       "id": "Q15",
       "question": "night-25-lab uses night25-simple.witcoskitech.com with simple routing (one alias). Production apex witcoskitech.com uses the same pattern. What changes when you add weighted records on a different subdomain?",
       "options": {
-        "A": "Simple routing on apex is replaced by weighted at the zone level",
-        "B": "Nothing on apex — routing policy is per record set name; lab subdomains are independent",
-        "C": "CloudFront requires a new distribution per routing policy type",
-        "D": "Health checks become mandatory for all records in the hosted zone"
+        "A": "Simple routing on the apex is replaced by weighted policy at the whole zone level",
+        "B": "CloudFront requires a new distribution for each routing policy type that you add",
+        "C": "Nothing on apex — routing policy is per record name; subdomains stay independent",
+        "D": "Health checks become mandatory for every record set defined in that hosted zone"
       }
     }
   ]

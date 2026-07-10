@@ -10,90 +10,90 @@
       "id": "Q1",
       "question": "Global Ski Atlas stores monthly Iceland pipeline output under globalskiatlas-backend-k8s-output/iceland/YYYY-MM/. Runs older than 90 days are read at most once per quarter; after one year they are pure archive. Which automation fits with minimal ops?",
       "options": {
-        "A": "Manually change storage class in the console each month per prefix",
-        "B": "Enable S3 Transfer Acceleration on the bucket for all PUT operations",
-        "C": "S3 lifecycle rules on the iceland/ prefix transitioning to Standard-IA then Glacier by age",
-        "D": "Migrate all objects to EBS gp3 volumes attached to the ECS task"
+        "A": "Manually change each object's storage class in the console every month by prefix",
+        "B": "Enable S3 Transfer Acceleration on the bucket for all iceland/ pipeline PUT calls",
+        "C": "Lifecycle on iceland/ prefix: age-based moves to Standard-IA then Glacier classes",
+        "D": "Migrate all pipeline objects onto EBS gp3 volumes attached to the ECS Fargate task"
       }
     },
     {
       "id": "Q2",
       "question": "You create a lifecycle rule to transition objects from S3 Standard to Standard-IA after 1 day. Objects uploaded yesterday remain Standard today. What exam concept explains the delay?",
       "options": {
-        "A": "Intelligent-Tiering requires 90 days before any move",
-        "B": "Minimum storage duration — objects must remain in the current class for at least 30 days before transition",
-        "C": "Glacier Vault Lock prevents transitions until legal hold expires",
-        "D": "S3 lifecycle runs only on the first Sunday of each month"
+        "A": "Intelligent-Tiering requires ninety days before any automatic tier move can occur",
+        "B": "Minimum storage duration — objects must stay in the current class at least 30 days",
+        "C": "Glacier Vault Lock prevents all transitions until the configured legal hold expires",
+        "D": "S3 lifecycle evaluation runs only on the first Sunday of each calendar month"
       }
     },
     {
       "id": "Q3",
       "question": "A new analytics prefix has unpredictable access — some objects hot for weeks, others cold for months. You want AWS to move tiers automatically without guessing Standard vs IA upfront. Which storage class?",
       "options": {
-        "A": "S3 Intelligent-Tiering with a small per-object monitoring fee",
-        "B": "S3 Glacier Deep Archive for all new uploads",
-        "C": "S3 One Zone-IA because it is always cheaper than Standard",
-        "D": "EBS sc1 attached to a Lambda function for object storage"
+        "A": "S3 Intelligent-Tiering with a small per-object monitoring and automation fee",
+        "B": "S3 Glacier Deep Archive applied immediately to every newly uploaded object",
+        "C": "S3 One Zone-IA because it is always cheaper than Standard for every workload",
+        "D": "EBS sc1 volumes attached to a Lambda function as a substitute for object storage"
       }
     },
     {
       "id": "Q4",
       "question": "Your study account needs an email when forecasted monthly spend exceeds 80% of a $25 cap. Which service sends that notification?",
       "options": {
-        "A": "AWS Cost and Usage Report delivered to S3 nightly",
-        "B": "Amazon CloudWatch alarm on the S3 NumberOfObjects metric",
-        "C": "AWS Cost Explorer saved report with no alerting",
-        "D": "AWS Budgets with ACTUAL or FORECASTED threshold notifications"
+        "A": "AWS Cost and Usage Report delivered nightly into an S3 analytics bucket",
+        "B": "Amazon CloudWatch alarm on the S3 NumberOfObjects bucket metric alone",
+        "C": "AWS Cost Explorer saved report that visualizes spend but sends no alerts",
+        "D": "AWS Budgets with ACTUAL or FORECASTED threshold email notifications"
       }
     },
     {
       "id": "Q5",
       "question": "Finance wants hourly line-item billing exports to a data lake for custom SQL in Athena. Which cost tool is purpose-built?",
       "options": {
-        "A": "S3 Storage Lens dashboard only — no export",
-        "B": "AWS Cost and Usage Report (CUR) published to S3",
-        "C": "AWS Budgets with SNS fan-out to three SQS queues",
-        "D": "Amazon Macie classification jobs on the billing console"
+        "A": "S3 Storage Lens dashboard only — no line-item export path for Athena SQL",
+        "B": "AWS Cost and Usage Report (CUR) published to S3 for custom Athena analysis",
+        "C": "AWS Budgets with SNS fan-out to three SQS queues for billing line items",
+        "D": "Amazon Macie classification jobs run against the billing console export UI"
       }
     },
     {
       "id": "Q6",
       "question": "Reproducible pipeline artifacts can be rebuilt from source if one Availability Zone fails. You want the cheapest infrequent-access S3 tier and accept AZ-level risk. Which class?",
       "options": {
-        "A": "S3 One Zone-IA — lower cost than Standard-IA, data in a single AZ",
-        "B": "S3 Standard with cross-Region replication to three Regions",
-        "C": "S3 Glacier Deep Archive with instant retrieval",
-        "D": "Amazon EFS Standard across all AZs in the Region"
+        "A": "S3 One Zone-IA — lower cost than Standard-IA, data stored in a single AZ",
+        "B": "S3 Standard with cross-Region replication configured to three backup Regions",
+        "C": "S3 Glacier Deep Archive advertised with instant millisecond object retrieval",
+        "D": "Amazon EFS Standard spanning all Availability Zones in the Region for objects"
       }
     },
     {
       "id": "Q7",
       "question": "After lifecycle moves old compliance PDFs to Glacier Flexible Retrieval, auditors request a 200 GB restore. Storage cost dropped, but finance sees a new charge. What happened?",
       "options": {
-        "A": "Lifecycle automatically upgrades objects to S3 Standard on GET",
-        "B": "Glacier eliminates all retrieval fees — charge must be a bug",
-        "C": "Glacier retrieval is billed separately from archive storage — lifecycle does not remove restore costs",
-        "D": "AWS Budgets charges $0.10 per lifecycle transition event"
+        "A": "Lifecycle automatically upgrades archived objects back to S3 Standard on every GET",
+        "B": "Glacier eliminates all retrieval fees — any new charge must be treated as a billing bug",
+        "C": "Glacier retrieval is billed separately — lifecycle lowers storage but not restore cost",
+        "D": "AWS Budgets charges a fixed fee for each lifecycle transition event that S3 executes"
       }
     },
     {
       "id": "Q8",
       "question": "Multipart uploads to a pipeline bucket stall during network outages, leaving incomplete uploads that accrue storage charges. Which lifecycle element fixes this with no manual sweeper?",
       "options": {
-        "A": "S3 Object Lock in compliance mode for 7 days",
-        "B": "Cross-Region Replication to a second bucket",
-        "C": "S3 Inventory report delivered weekly to SNS",
-        "D": "AbortIncompleteMultipartUpload rule after N days"
+        "A": "S3 Object Lock in compliance mode retaining incomplete parts for seven days",
+        "B": "Cross-Region Replication copying incomplete multipart uploads to a second bucket",
+        "C": "S3 Inventory report delivered weekly to SNS listing incomplete upload IDs",
+        "D": "AbortIncompleteMultipartUpload lifecycle rule that cleans up parts after N days"
       }
     },
     {
       "id": "Q9",
       "question": "You intended to archive iceland/2025-* prefixes but accidentally set the lifecycle filter to icland/ (typo). Six months later old pipeline data is still Standard. What failed?",
       "options": {
-        "A": "Glacier requires objects larger than 128 KiB — small GeoJSON skipped",
-        "B": "Lifecycle prefix filters are exact — typo meant no objects matched the rule",
-        "C": "Standard-IA cannot be targeted by lifecycle — only Glacier can",
-        "D": "Cost Explorer must approve transitions before S3 executes them"
+        "A": "Glacier requires objects larger than 128 KiB — small GeoJSON files were skipped",
+        "B": "Lifecycle prefix filters are exact — the typo meant no objects matched the rule",
+        "C": "Standard-IA cannot be targeted by lifecycle — only Glacier classes are allowed",
+        "D": "Cost Explorer must approve each transition before S3 is allowed to execute it"
       }
     },
     {
@@ -101,59 +101,59 @@
       "question": "The Iceland ECS task finished this morning and uploaded iceland/2026-07/ output. Downstream workers may re-read those objects all week. Which storage class should they remain in immediately after upload?",
       "options": {
         "A": "S3 Standard — frequent access, millisecond retrieval, no IA retrieval surcharge",
-        "B": "S3 Glacier Deep Archive — lowest storage cost for brand-new data",
-        "C": "S3 One Zone-IA — always correct for any object younger than 30 days",
-        "D": "EC2 Instance Store — durable system of record for pipeline output"
+        "B": "S3 Glacier Deep Archive — lowest storage cost even for brand-new hot pipeline data",
+        "C": "S3 One Zone-IA — always correct for any object younger than the 30-day minimum",
+        "D": "EC2 Instance Store — treated as the durable system of record for pipeline output"
       }
     },
     {
       "id": "Q11",
       "question": "A versioned bucket keeps overwritten wiki exports. You want lifecycle to move only older noncurrent versions to Standard-IA after 30 days. What must be true?",
       "options": {
-        "A": "Bucket must use S3 Object Lambda access points",
-        "B": "S3 Transfer Acceleration must be enabled on the bucket",
+        "A": "Bucket must use S3 Object Lambda access points before versions can transition",
+        "B": "S3 Transfer Acceleration must be enabled on the bucket for version transitions",
         "C": "Bucket versioning enabled and NoncurrentVersionTransitions defined in lifecycle",
-        "D": "AWS Backup plan must wrap the bucket — lifecycle cannot touch versions"
+        "D": "AWS Backup plan must wrap the bucket — lifecycle cannot transition object versions"
       }
     },
     {
       "id": "Q12",
       "question": "Cost Explorer shows Amazon EC2-Other (NAT Gateway) dominates the study VPC bill while S3 storage is under $1. Which cost optimization aligns with Nights 8–10?",
       "options": {
-        "A": "Transition all S3 objects to Glacier Deep Archive immediately",
-        "B": "Add VPC gateway endpoints for S3 (and interface endpoints for ECR) to reduce NAT-processed egress",
-        "C": "Replace S3 with EBS io2 volumes for Iceland output",
-        "D": "Disable S3 Block Public Access to avoid NAT charges"
+        "A": "Transition all S3 objects to Glacier Deep Archive immediately to eliminate NAT spend",
+        "B": "Add VPC gateway endpoints for S3 (and interface endpoints for ECR) to cut NAT egress",
+        "C": "Replace S3 with EBS io2 volumes for Iceland pipeline output to avoid NAT Gateway fees",
+        "D": "Disable S3 Block Public Access so clients bypass NAT Gateway for object downloads"
       }
     },
     {
       "id": "Q13",
       "question": "A junior engineer proposes a lifecycle expiration rule deleting iceland/ objects after 400 days — the only copy in one Region, no replication, no AWS Backup. What is the primary architecture risk?",
       "options": {
-        "A": "Expiration is free — no risk if objects are old",
-        "B": "Glacier Flexible Retrieval cannot be expired — rule will fail",
-        "C": "Intelligent-Tiering will block expiration until monitoring fee is paid",
-        "D": "Permanent data loss if no replica — expiration is not DR; pair with replication or backup first"
+        "A": "Expiration is free of charge — there is no meaningful risk if the objects are old",
+        "B": "Glacier Flexible Retrieval cannot be expired — the lifecycle rule will always fail",
+        "C": "Intelligent-Tiering blocks expiration until the monitoring fee invoice has been paid",
+        "D": "Permanent data loss if no replica — expiration is not DR; add replication or backup first"
       }
     },
     {
       "id": "Q14",
       "question": "Legal requires 7-year retention of rarely accessed audit logs with retrieval acceptable after half a day. Lowest storage cost is the priority. Which Glacier tier?",
       "options": {
-        "A": "S3 Glacier Deep Archive — lowest $/GB; retrieval in hours",
-        "B": "S3 Glacier Instant Retrieval — ms access like Standard",
-        "C": "S3 Standard-IA — cheapest option for all archive workloads",
-        "D": "S3 Intelligent-Tiering Frequent Access tier only"
+        "A": "S3 Glacier Deep Archive — lowest $/GB with retrieval measured in hours",
+        "B": "S3 Glacier Instant Retrieval — millisecond access similar to Standard class",
+        "C": "S3 Standard-IA — cheapest option for every long-term archive compliance workload",
+        "D": "S3 Intelligent-Tiering Frequent Access tier only for the full seven-year retention"
       }
     },
     {
       "id": "Q15",
       "question": "Night 30 applies lifecycle to iceland/ prefixes on globalskiatlas-backend-k8s-output. Where does durable Iceland pipeline output live before any transition — per Nights 10, 27, and 29?",
       "options": {
-        "A": "Attached EBS gp3 volume on the Fargate task — lifecycle moves blocks to Glacier",
-        "B": "ElastiCache Redis — lifecycle flushes cache keys to S3",
+        "A": "Attached EBS gp3 volume on the Fargate task — lifecycle moves EBS blocks into Glacier",
+        "B": "ElastiCache Redis — lifecycle flushes cache keys into S3 archive prefixes overnight",
         "C": "S3 object keys under the pipeline bucket — EBS/Instance Store is scratch only on compute",
-        "D": "Aurora resort_stats table — S3 lifecycle applies to SQL rows automatically"
+        "D": "Aurora resort_stats table — S3 lifecycle rules apply automatically to SQL row storage"
       }
     }
   ]

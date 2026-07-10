@@ -1,7 +1,12 @@
 {
   "night": 31,
   "title": "Lab 4B — Fargate right-sizing",
-  "answerDistribution": { "A": 4, "B": 4, "C": 4, "D": 3 },
+  "answerDistribution": {
+    "A": 4,
+    "B": 4,
+    "C": 4,
+    "D": 3
+  },
   "answers": [
     {
       "id": "Q1",
@@ -10,47 +15,47 @@
     },
     {
       "id": "Q2",
-      "correct": "C",
+      "correct": "B",
       "explanation": "Retryable monthly batch with 2-min interrupt → Fargate Spot capacity provider — gsa-fargate-rightsizing-map.md."
     },
     {
       "id": "Q3",
-      "correct": "B",
+      "correct": "C",
       "explanation": "Flexible 1-yr compute commit across Fargate/Lambda/EC2 → Compute Savings Plan — exam vs RI lock-in."
     },
     {
       "id": "Q4",
-      "correct": "C",
+      "correct": "D",
       "explanation": "Fargate bills per vCPU-second and GiB-second while running — Night 31 Block 1."
     },
     {
       "id": "Q5",
-      "correct": "B",
+      "correct": "A",
       "explanation": "2 vCPU requires higher minimum memory — invalid Fargate CPU/memory pairing fails registration."
     },
     {
       "id": "Q6",
-      "correct": "A",
+      "correct": "B",
       "explanation": "Exit 137 / OOM → increase memory — rightsizing went too far on RAM."
     },
     {
       "id": "Q7",
-      "correct": "B",
+      "correct": "C",
       "explanation": "Planet-scale parallel tiles → AWS Batch on Spot + S3 output — Night 27 iceland-pipeline-compute.md."
     },
     {
       "id": "Q8",
-      "correct": "B",
+      "correct": "D",
       "explanation": "Compute Optimizer ECS service recs need enrolled services/history — RunTask-only may show empty."
     },
     {
       "id": "Q9",
-      "correct": "B",
+      "correct": "A",
       "explanation": "Monthly cron vs rate(1 minute) — Fargate run time dominates; Night 12 quiz Q13 repeat."
     },
     {
       "id": "Q10",
-      "correct": "C",
+      "correct": "B",
       "explanation": "Durable pipeline output → S3 + lifecycle — not Fargate ephemeral disk (Nights 27/30)."
     },
     {
@@ -60,12 +65,12 @@
     },
     {
       "id": "Q12",
-      "correct": "C",
+      "correct": "D",
       "explanation": "Savings Plans flexible spend commit; RIs lock EC2 instance attributes — poor pure-Fargate RI fit."
     },
     {
       "id": "Q13",
-      "correct": "B",
+      "correct": "A",
       "explanation": "Extra Fargate ephemeral storage billed per GiB-hour beyond default — Night 31 exam minimum."
     },
     {

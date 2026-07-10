@@ -20,140 +20,140 @@
       "id": "Q2",
       "question": "night-18-lab enables StreamViewType NEW_AND_OLD_IMAGES on saa-study-gsa-wiki-views. The stub Lambda logs old and new viewCount on MODIFY. Which view type would hide the previous count?",
       "options": {
-        "A": "OLD_IMAGE only — emits the item before the change but not after",
-        "B": "NEW_IMAGE only — emits the item after the change but not before",
-        "C": "KEYS_ONLY — partition key only with no attribute payload",
-        "D": "NEW_AND_OLD_IMAGES — includes both images on every event type"
+        "A": "OLD_IMAGE only — emits the item before the change but not the new image after the update",
+        "B": "KEYS_ONLY — emits partition key fields only with no attribute payload in the record",
+        "C": "NEW_IMAGE only — emits the item after the change but not the previous image before it",
+        "D": "NEW_AND_OLD_IMAGES — includes both old and new images on every stream event type by default"
       }
     },
     {
       "id": "Q3",
       "question": "You create a DynamoDB stream event source mapping with StartingPosition=LATEST. You then run -BumpView on wiki/iceland. An earlier bump from before the mapping never invoked Lambda. Why?",
       "options": {
-        "A": "LATEST delivers only records after the mapping is created — prior stream data is skipped",
-        "B": "PITR must be disabled while stream mappings are active",
-        "C": "On-demand tables cannot emit MODIFY events until provisioned capacity is set",
-        "D": "Lambda polls SQS behind the stream and the queue was empty at mapping time"
+        "A": "PITR must be disabled while DynamoDB stream event source mappings remain active on the table",
+        "B": "On-demand tables cannot emit MODIFY stream events until provisioned capacity mode is enabled",
+        "C": "LATEST delivers only records after the mapping is created — prior stream data is skipped",
+        "D": "Lambda polls an SQS queue behind the stream and the completion queue was empty at mapping time"
       }
     },
     {
       "id": "Q4",
       "question": "GSA prod wiki-api increments page views with UpdateItem. night-18-lab uses ADD viewCount :inc. Why is ADD preferred over read-then-SET for hot counters?",
       "options": {
-        "A": "ADD requires a transaction and therefore guarantees cross-table consistency",
-        "B": "ADD only works on sort keys, preventing hot partition mistakes",
-        "C": "ADD atomically increments without a separate GetItem — avoids lost updates under concurrent writers",
-        "D": "ADD triggers Kinesis Data Streams automatically for analytics export"
+        "A": "ADD requires a TransactWriteItems call and therefore guarantees cross-table consistency always",
+        "B": "ADD only works on sort-key attributes, which prevents hot partition mistakes on pageId keys",
+        "C": "ADD triggers Kinesis Data Streams automatically for analytics export of every counter increment",
+        "D": "ADD atomically increments without a separate GetItem — avoids lost updates under concurrency"
       }
     },
     {
       "id": "Q5",
       "question": "A stream processor Lambda fails mid-batch. DynamoDB stream event source mappings retry. What design property keeps audit logging safe?",
       "options": {
-        "A": "Write the same log line twice is acceptable — handler only prints idempotent summaries",
-        "B": "Set batch size to 1 and disable retries on the mapping",
-        "C": "Use FIFO SQS between the stream and Lambda for exactly-once delivery",
-        "D": "Switch StreamViewType to KEYS_ONLY so retries carry no duplicate payload"
+        "A": "Writing the same log line twice is fine — the handler prints idempotent summaries only",
+        "B": "Set batch size to 1 and disable retries on the DynamoDB stream event source mapping entirely",
+        "C": "Use FIFO SQS between the stream and Lambda to force exactly-once delivery of every record",
+        "D": "Switch StreamViewType to KEYS_ONLY so retries carry no duplicate attribute payload at all"
       }
     },
     {
       "id": "Q6",
       "question": "Compare tonight's stub stream Lambda to Night 17 saa-study-gsa-stats-uploader. What is the trigger difference?",
       "options": {
-        "A": "Both use EventBridge schedules firing every minute",
-        "B": "Night 18 uses Aurora logical replication slots; Night 17 uses DynamoDB Streams",
-        "C": "Night 18 reacts to DynamoDB row changes; Night 17 polls SQS completion messages",
-        "D": "Both use API Gateway HTTP API synchronous invoke paths"
+        "A": "Both use EventBridge schedules that fire every minute against their target functions",
+        "B": "Night 18 reacts to DynamoDB row changes; Night 17 polls SQS completion messages",
+        "C": "Night 18 uses Aurora logical replication slots; Night 17 uses DynamoDB Streams only",
+        "D": "Both use API Gateway HTTP API synchronous invoke paths for every incoming request"
       }
     },
     {
       "id": "Q7",
       "question": "Global Ski Atlas needs wiki read/write in us-east-1 and eu-west-1 with local low latency. Tables are DynamoDB. Which feature fits?",
       "options": {
-        "A": "DynamoDB global tables with multi-Region active-active replication",
-        "B": "Aurora Global Database for WikiPages items stored as JSON rows",
-        "C": "RDS read replica in eu-west-1 attached to the wiki DynamoDB table",
-        "D": "S3 Cross-Region Replication on the DynamoDB table export bucket only"
+        "A": "Aurora Global Database for WikiPages items stored as JSON rows in PostgreSQL",
+        "B": "RDS read replica in eu-west-1 attached directly to the wiki DynamoDB table endpoint",
+        "C": "DynamoDB global tables with multi-Region active-active replication for local access",
+        "D": "S3 Cross-Region Replication on the DynamoDB table export bucket only for DR reads"
       }
     },
     {
       "id": "Q8",
       "question": "A Lambda in Night 9 private subnets calls DynamoDB in the same Region. NAT Gateway charges are high on GetItem traffic. What reduces DynamoDB egress cost?",
       "options": {
-        "A": "Enable DynamoDB Accelerator (DAX) in the public subnet",
-        "B": "Move the table to Aurora Serverless v2 in the same VPC",
-        "C": "Attach an internet gateway directly to the private subnet route table",
-        "D": "Add a DynamoDB gateway VPC endpoint and route DynamoDB prefix list traffic locally"
+        "A": "Enable DynamoDB Accelerator (DAX) in the public subnet to cache GetItem responses",
+        "B": "Move the table to Aurora Serverless v2 in the same VPC to avoid DynamoDB API calls",
+        "C": "Attach an internet gateway directly to the private subnet route table for DynamoDB",
+        "D": "Add a DynamoDB gateway VPC endpoint and route DynamoDB prefix-list traffic locally"
       }
     },
     {
       "id": "Q9",
       "question": "night-18-lab uses PAY_PER_REQUEST on saa-study-gsa-wiki-views. Wiki traffic spikes unpredictably on powder days. Why match on-demand billing here?",
       "options": {
-        "A": "On-demand removes the need for partition keys on hot counters",
-        "B": "On-demand automatically enables global tables in a second Region",
-        "C": "On-demand scales read/write capacity per request without provisioning RCU/WCU",
-        "D": "On-demand requires PITR to stay disabled to control backup cost"
+        "A": "On-demand scales read/write capacity per request without provisioning RCU/WCU upfront",
+        "B": "On-demand removes the need for partition keys on hot counter items stored in the wiki table",
+        "C": "On-demand automatically enables DynamoDB global tables in a second Region for every new table",
+        "D": "On-demand requires PITR to stay disabled so continuous backup cost stays predictable monthly"
       }
     },
     {
       "id": "Q10",
       "question": "You need centralized nightly backups for DynamoDB wiki tables, Aurora resort_stats, and EBS volumes under one retention policy. Which service?",
       "options": {
-        "A": "DynamoDB PITR alone — it backs up all AWS data stores in the account",
-        "B": "CloudTrail with data events on every table stream shard",
-        "C": "RDS automated backup window extended to 35 days for all services",
-        "D": "AWS Backup with a plan that selects resources by tag or ARN (Night 19 topic)"
+        "A": "DynamoDB PITR alone — it backs up all AWS data stores in the account automatically",
+        "B": "AWS Backup with a plan that selects resources by tag or ARN (Night 19 topic preview)",
+        "C": "CloudTrail with data events enabled on every DynamoDB table stream shard for restore",
+        "D": "RDS automated backup window extended to 35 days and applied to all AWS services"
       }
     },
     {
       "id": "Q11",
       "question": "Two Regions write the same item key in a global table within the same second. What conflict resolution applies?",
       "options": {
-        "A": "DynamoDB rejects the second write with ConditionalCheckFailedException globally",
-        "B": "The write from the Region with the lower table ARN wins automatically",
-        "C": "Last writer wins per item — eventual consistency across Regions",
-        "D": "Strongly consistent reads block all writes until a global lock expires"
+        "A": "DynamoDB rejects the second write with ConditionalCheckFailedException in both Regions always",
+        "B": "The write from the Region with the lexicographically lower table ARN wins automatically for that item",
+        "C": "Last writer wins per item — eventual consistency across Regions for conflicting updates",
+        "D": "Strongly consistent reads block all conflicting writes until a global distributed lock expires"
       }
     },
     {
       "id": "Q12",
       "question": "resort_stats monthly_runs needs SQL JOIN reports. wiki/iceland viewCount needs millions of atomic increments. Where should each live per GSA split?",
       "options": {
-        "A": "Both in Aurora — use JSONB columns for view counters",
-        "B": "Both in DynamoDB — model JOINs as multiple Query calls per report",
-        "C": "Aurora for relational resort_stats; DynamoDB for wiki view counters",
-        "D": "S3 Parquet for both — Athena replaces DynamoDB and Aurora entirely"
+        "A": "Both in Aurora — use JSONB columns for high-volume wiki view counter increments",
+        "B": "Both in DynamoDB — model JOINs as multiple Query calls for each reporting request",
+        "C": "S3 Parquet for both — Athena replaces DynamoDB and Aurora for counters and JOINs",
+        "D": "Aurora for relational resort_stats; DynamoDB for hot wiki view counter increments"
       }
     },
     {
       "id": "Q13",
       "question": "The stream processor IAM role needs dynamodb:GetRecords on the stream ARN. What else must the role allow for Lambda to emit logs?",
       "options": {
-        "A": "ec2:CreateNetworkInterface for DynamoDB Streams ENI attachment",
-        "B": "logs:CreateLogGroup, logs:CreateLogStream, logs:PutLogEvents on CloudWatch Logs",
-        "C": "dynamodb:UpdateItem on the source table for every processed record",
-        "D": "sqs:SendMessage to mirror stream batches into a completion queue"
+        "A": "logs:CreateLogGroup, logs:CreateLogStream, and logs:PutLogEvents on CloudWatch Logs",
+        "B": "ec2:CreateNetworkInterface for DynamoDB Streams ENI attachment inside the private VPC subnets",
+        "C": "dynamodb:UpdateItem on the source wiki table for every processed stream record batch item",
+        "D": "sqs:SendMessage to mirror each stream batch into the Night 13 Iceland completion queue path"
       }
     },
     {
       "id": "Q14",
       "question": "Maximum continuous backup window for DynamoDB PITR on a single-Region table is how long?",
       "options": {
-        "A": "7 days — same as default RDS automated backup retention",
-        "B": "14 days — matches maximum SQS message retention",
-        "C": "35 days — exam standard for DynamoDB PITR retention",
-        "D": "365 days — requires AWS Backup premium tier only"
+        "A": "7 days — same as the default RDS automated backup retention period for DB instances",
+        "B": "35 days — exam standard maximum retention for DynamoDB PITR continuous backups",
+        "C": "14 days — matches the maximum SQS standard queue message retention period on queues",
+        "D": "365 days — available only when AWS Backup premium tier is enabled on the AWS account"
       }
     },
     {
       "id": "Q15",
       "question": "night-18-lab teardown deletes saa-study-gsa-wiki-views. Prod WikiPages is untouched. A teammate asks whether teardown affects Night 17 Aurora. What is true?",
       "options": {
-        "A": "Aurora writer endpoint stops when any DynamoDB table in the account is deleted",
-        "B": "Nothing — Night 18 study table and stream Lambda are independent of Night 16/17 Aurora",
-        "C": "Night 17 stats-uploader loses VPC ENI when wiki-views table is removed",
-        "D": "SQS completion queue is deleted automatically with the DynamoDB table"
+        "A": "Aurora writer endpoint stops whenever any DynamoDB table in the same account is deleted",
+        "B": "Night 17 stats-uploader loses its VPC ENI when the wiki-views study table is removed",
+        "C": "Nothing — Night 18 study table and stream Lambda are independent of Night 16/17 Aurora",
+        "D": "SQS completion queue is deleted automatically together with the DynamoDB study table teardown"
       }
     }
   ]

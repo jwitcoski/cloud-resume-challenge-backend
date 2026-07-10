@@ -10,20 +10,20 @@
       "id": "Q1",
       "question": "Global Ski Atlas runs Aurora PostgreSQL as the production writer in us-east-1. Leadership wants automatic failover if the primary AZ fails with minimal write data loss and no manual DNS changes. Reports must not be routed to the standby during normal operation. What configuration fits?",
       "options": {
-        "A": "Three cross-Region read replicas with Route 53 weighted routing to all endpoints",
+        "A": "Three cross-Region read replicas with Route 53 weighted routing pointed at all writer endpoints",
         "B": "Aurora read replica in a second AZ promoted automatically by EventBridge on failure",
-        "C": "Aurora cluster with Multi-AZ writer failover — synchronous storage, automatic endpoint update",
-        "D": "RDS Single-AZ with daily manual snapshots copied to a standby Region"
+        "C": "Aurora cluster with Multi-AZ writer failover — sync storage, automatic endpoint update",
+        "D": "RDS Single-AZ with daily manual snapshots copied to a standby Region for disaster recovery"
       }
     },
     {
       "id": "Q2",
       "question": "A stats Lambda in the Night 9 VPC spikes to 2,000 concurrent executions after each Iceland completion message. Each invocation opens a new PostgreSQL connection to Aurora and you hit max_connections errors. The DB team wants pooling without rewriting application code. Best add-on?",
       "options": {
-        "A": "ElastiCache Redis cluster in front of Aurora to cache connection strings",
+        "A": "ElastiCache Redis cluster in front of Aurora to cache connection strings for Lambda",
         "B": "Amazon RDS Proxy in the same VPC — multiplexes Lambda connections to the cluster",
-        "C": "Aurora Global Database secondary in another Region to split connection load",
-        "D": "DynamoDB on-demand table replacing Aurora for all relational stats queries"
+        "C": "Aurora Global Database secondary in another Region to split connection load evenly",
+        "D": "DynamoDB on-demand table replacing Aurora for all relational stats query workloads"
       }
     },
     {
@@ -31,39 +31,39 @@
       "question": "A dev-only GSA reporting database is queried heavily for two hours after each monthly Iceland run and sits idle the rest of the month. You want PostgreSQL compatibility with automatic capacity scaling and minimal ops. Cost when idle should be low but the instance may stay warm. Best engine?",
       "options": {
         "A": "Aurora Serverless v2 PostgreSQL — scales ACUs with workload; minimum capacity still billed",
-        "B": "RDS Oracle Multi-AZ — enterprise features for intermittent reporting",
-        "C": "Aurora Serverless v1 — required for any database that scales to zero ACUs today",
-        "D": "Self-managed PostgreSQL on a large EC2 Reserved Instance left running 24×7"
+        "B": "RDS Oracle Multi-AZ — enterprise features sized for intermittent monthly reporting spikes",
+        "C": "Aurora Serverless v1 — required today for any database that must scale fully to zero ACUs",
+        "D": "Self-managed PostgreSQL on a large EC2 Reserved Instance left running continuously all month"
       }
     },
     {
       "id": "Q4",
       "question": "The GSA BI team runs heavy SELECT dashboards against resort aggregates. Write traffic to the primary must stay fast during month-end reporting. The primary is RDS PostgreSQL Multi-AZ in us-east-1. How do you scale reads without adding write load to the primary?",
       "options": {
-        "A": "Enable Multi-AZ — the synchronous standby serves read-only analytics traffic",
-        "B": "Point dashboards at the Aurora cluster writer endpoint with read-only IAM users",
-        "C": "Create an S3 Gateway Endpoint so reports read Iceberg files instead of SQL",
-        "D": "Add RDS read replicas — async copies dedicated to read-only dashboard queries"
+        "A": "Enable Multi-AZ — the synchronous standby serves read-only analytics traffic by default always",
+        "B": "Point dashboards at the Aurora cluster writer endpoint with read-only IAM database users only",
+        "C": "Create an S3 Gateway Endpoint so reports read Iceberg files instead of running SQL queries",
+        "D": "Add RDS read replicas — async copies dedicated to read-only dashboard and reporting queries"
       }
     },
     {
       "id": "Q5",
       "question": "GSA needs a secondary Region for disaster recovery with Aurora PostgreSQL. RPO must be under one second and secondary Region should serve read-only queries before a controlled failover. Which Aurora feature matches?",
       "options": {
-        "A": "Cross-Region automated backup copy with 35-day retention only",
-        "B": "RDS read replica in eu-west-1 manually promoted after Route 53 health check fails",
-        "C": "Aurora Global Database — primary in us-east-1, secondary Region with sub-second replication lag",
-        "D": "DynamoDB global tables with multi-Region eventually consistent reads"
+        "A": "Cross-Region automated backup copy with 35-day retention and no live secondary reads",
+        "B": "RDS read replica in eu-west-1 manually promoted after a Route 53 health check failure",
+        "C": "Aurora Global Database — primary in us-east-1, secondary Region with sub-second lag",
+        "D": "DynamoDB global tables with multi-Region eventually consistent reads for SQL reports"
       }
     },
     {
       "id": "Q6",
       "question": "The Night 13 SQS stats uploader must store resort rows, monthly aggregates, and foreign keys between resort_dimension and monthly_agg. Downstream SQL must JOIN tables for ad-hoc reports. Wiki visitor counters stay in DynamoDB. Where should the relational stats live?",
       "options": {
-        "A": "DynamoDB with one GSI per JOIN pattern — avoids VPC networking",
-        "B": "Aurora PostgreSQL or RDS PostgreSQL — relational schema, JOINs, and ACID batches",
-        "C": "S3 Iceberg only — no database; Athena replaces all transactional updates",
-        "D": "ElastiCache Redis hashes — primary store for durable resort dimension data"
+        "A": "DynamoDB with one GSI per JOIN pattern — avoids VPC networking for the stats uploader",
+        "B": "Aurora PostgreSQL or RDS PostgreSQL — relational schema, JOINs, and ACID write batches",
+        "C": "S3 Iceberg only — no database; Athena replaces all transactional updates and JOINs",
+        "D": "ElastiCache Redis hashes — primary durable store for resort dimension and aggregate data"
       }
     },
     {
@@ -71,77 +71,77 @@
       "question": "An Aurora PostgreSQL cluster ingests Iceland metadata faster than forecast. CloudWatch shows storage growing but no DBA action was taken. A junior engineer proposes doubling provisioned Aurora storage in the console. What is correct?",
       "options": {
         "A": "Aurora storage auto-scales in 10 GB increments — no manual storage provisioning step",
-        "B": "You must pre-purchase Aurora IOPS like gp3 EBS before writes are accepted",
-        "C": "Storage is fixed at cluster creation; add a second cluster and shard by country",
-        "D": "Only manual snapshots increase usable Aurora volume size"
+        "B": "You must pre-purchase Aurora IOPS like gp3 EBS before additional writes are accepted",
+        "C": "Storage is fixed at cluster creation; add a second cluster and shard rows by country code",
+        "D": "Only creating manual snapshots increases usable Aurora volume size for new write traffic"
       }
     },
     {
       "id": "Q8",
       "question": "RDS PostgreSQL in us-east-1 has a cross-Region read replica in eu-west-1 for DR. The primary Region is declared lost. Leadership wants the replica to accept writes as the new production database. What action is required?",
       "options": {
-        "A": "Enable Multi-AZ on the replica — AWS automatically swaps DNS to eu-west-1",
-        "B": "Failover the Aurora Global Database with no promotion step",
-        "C": "Increase the replica instance class — promotion is automatic on scale-up",
-        "D": "Promote the read replica to a standalone DB instance — breaks replication, becomes new primary"
+        "A": "Enable Multi-AZ on the replica — AWS automatically swaps application DNS endpoints to eu-west-1",
+        "B": "Failover the Aurora Global Database secondary with no separate promotion step required",
+        "C": "Increase the replica instance class — promotion happens automatically on any scale-up operation",
+        "D": "Promote the read replica to a standalone DB instance — breaks replication, becomes primary"
       }
     },
     {
       "id": "Q9",
       "question": "An exam question contrasts RDS Multi-AZ with a read replica in the same Region. Which statement is accurate?",
       "options": {
-        "A": "Both use synchronous replication so reads on either endpoint are strongly consistent",
+        "A": "Both use synchronous replication so reads on either endpoint remain strongly consistent always",
         "B": "Multi-AZ uses synchronous replication for HA; read replicas use async replication for scale",
-        "C": "Read replicas auto-failover the primary; Multi-AZ is only for manual maintenance windows",
-        "D": "Multi-AZ standby is the preferred endpoint for analytics SELECT workloads"
+        "C": "Read replicas auto-failover the primary writer; Multi-AZ is only for manual maintenance windows",
+        "D": "Multi-AZ standby is the preferred endpoint for analytics SELECT workloads on standard RDS"
       }
     },
     {
       "id": "Q10",
       "question": "Compliance requires point-in-time recovery for a GSA RDS PostgreSQL instance with up to one month of restore granularity. Automated backups are enabled. What is the maximum automated backup retention period RDS supports?",
       "options": {
-        "A": "7 days — longer retention requires Aurora only",
-        "B": "14 days — cross-Region copy extends to 35 days automatically",
-        "C": "35 days — enables PITR within that window when automated backups are on",
-        "D": "365 days — match S3 Glacier Deep Archive for database logs"
+        "A": "7 days — longer automated retention requires Aurora clusters only, not standard RDS",
+        "B": "14 days — cross-Region snapshot copy extends retention to 35 days automatically",
+        "C": "35 days — enables PITR within that window when automated backups remain enabled",
+        "D": "365 days — match S3 Glacier Deep Archive retention for database transaction logs"
       }
     },
     {
       "id": "Q11",
       "question": "A startup asks whether Aurora Serverless v2 can scale database capacity to zero ACUs overnight to eliminate idle cost like their old Serverless v1 dev cluster. What is accurate for v2?",
       "options": {
-        "A": "Yes — v2 pauses after 10 minutes of no connections like v1",
-        "B": "Yes — but only for Aurora MySQL, not PostgreSQL",
-        "C": "Only with RDS Proxy attached — proxy holds zero-ACU state",
-        "D": "No — v2 maintains a configurable minimum ACU; use stop/start RDS or tear down dev stacks instead"
+        "A": "Yes — v2 pauses after about 10 minutes of no connections, matching Serverless v1 behavior",
+        "B": "Yes — but only for Aurora MySQL-compatible engines, not for Aurora PostgreSQL clusters",
+        "C": "Only when RDS Proxy is attached — the proxy alone holds the cluster in a zero-ACU state",
+        "D": "No — v2 keeps a configurable minimum ACU; stop/start RDS or tear down idle dev stacks"
       }
     },
     {
       "id": "Q12",
       "question": "night-16-lab will place Aurora in Night 9 private subnets. A Lambda stats function in the same VPC must connect on port 5432. Both use security groups. What ingress rule belongs on the Aurora security group?",
       "options": {
-        "A": "Allow TCP 5432 from the Lambda security group ID as source",
-        "B": "Allow TCP 5432 from 0.0.0.0/0 — Lambda has no fixed IP",
-        "C": "Allow all traffic from the VPC CIDR — stateful return handles PostgreSQL",
-        "D": "No inbound rule — Aurora initiates connections to Lambda on 5432"
+        "A": "Allow TCP 5432 from the Lambda security group ID as the inbound source",
+        "B": "Allow TCP 5432 from 0.0.0.0/0 — Lambda ENIs have no fixed private IP addresses",
+        "C": "Allow all traffic from the VPC CIDR — stateful return traffic handles PostgreSQL replies",
+        "D": "No inbound rule is needed — Aurora initiates outbound connections to Lambda on port 5432"
       }
     },
     {
       "id": "Q13",
       "question": "A serverless API uses 500 concurrent Lambdas that each open a DB connection per request to RDS MySQL. Connection errors spike at peak. The team already uses Secrets Manager for credentials. Minimal-change fix?",
       "options": {
-        "A": "Switch to DynamoDB for all relational tables",
-        "B": "Deploy RDS Proxy — pool connections; Lambdas target the proxy endpoint",
-        "C": "Enable Multi-AZ — doubles connection capacity on the standby",
-        "D": "Use Aurora Backtrack to rewind connections to a healthy point in time"
+        "A": "Switch every relational table to DynamoDB on-demand to remove connection pooling needs",
+        "B": "Deploy RDS Proxy — pool connections; Lambdas target the proxy endpoint instead of RDS",
+        "C": "Enable Multi-AZ — doubles usable connection capacity by serving reads from the standby",
+        "D": "Use Aurora Backtrack to rewind failed connections to a healthy point in time after errors"
       }
     },
     {
       "id": "Q14",
       "question": "A developer accidentally runs a bad UPDATE against production Aurora MySQL. Leadership wants to rewind the database to five minutes ago without restoring from a snapshot. Which Aurora capability applies?",
       "options": {
-        "A": "Aurora PostgreSQL Backtrack — rewinds the shared storage volume",
-        "B": "RDS automated backup PITR — instant rewind with no restore window",
+        "A": "Aurora PostgreSQL Backtrack — rewinds the shared storage volume for any Aurora engine",
+        "B": "RDS automated backup PITR — instant in-place rewind with no restore window or new instance",
         "C": "Aurora Backtrack on Aurora MySQL-compatible clusters — not available on PostgreSQL",
         "D": "Promote a read replica from five minutes ago — replicas retain historical row versions"
       }
@@ -151,9 +151,9 @@
       "question": "GSA frontend tracks wiki page views with a simple partition key and conditional increments. No JOINs or ad-hoc SQL. Iceland pipeline stats need multi-table reports. Which pairing is best?",
       "options": {
         "A": "DynamoDB for page-view counters; Aurora for relational stats and JOIN reports",
-        "B": "Aurora for both — one cluster simplifies operations",
-        "C": "DynamoDB for both — model JOINs as multiple GetItem calls per report",
-        "D": "RDS Multi-AZ Oracle for counters; S3 for stats"
+        "B": "Aurora for both workloads — one cluster simplifies operations and credential rotation",
+        "C": "DynamoDB for both — model JOINs as multiple GetItem calls for each reporting query",
+        "D": "RDS Multi-AZ Oracle for counters; S3 objects for monthly stats without a database"
       }
     }
   ]

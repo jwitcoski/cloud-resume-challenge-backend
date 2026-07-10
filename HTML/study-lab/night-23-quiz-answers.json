@@ -1,7 +1,12 @@
 {
   "night": 23,
   "title": "Lab 3A — ElastiCache (Redis) cache-aside in front of Aurora",
-  "answerDistribution": { "A": 4, "B": 4, "C": 4, "D": 3 },
+  "answerDistribution": {
+    "A": 4,
+    "B": 4,
+    "C": 4,
+    "D": 3
+  },
   "answers": [
     {
       "id": "Q1",
@@ -10,32 +15,32 @@
     },
     {
       "id": "Q2",
-      "correct": "D",
+      "correct": "B",
       "explanation": "Redis supports sorted sets, sessions, and replication-group failover; Memcached is simpler key-value only."
     },
     {
       "id": "Q3",
-      "correct": "B",
+      "correct": "C",
       "explanation": "redis-sg allows TCP 6379 from lambda-stats-sg — same SG reference pattern as aurora-sg :5432 (Night 16)."
     },
     {
       "id": "Q4",
-      "correct": "B",
+      "correct": "D",
       "explanation": "VPC Lambda cold start includes ENI setup — Night 17/23 tradeoff section."
     },
     {
       "id": "Q5",
-      "correct": "C",
+      "correct": "A",
       "explanation": "CloudFront = edge HTTP; ElastiCache = in-VPC object cache for DB reads — Night 23 compare table."
     },
     {
       "id": "Q6",
-      "correct": "A",
+      "correct": "B",
       "explanation": "DAX accelerates DynamoDB reads; ElastiCache targets generic app/RDS caching (Night 18 DAX awareness)."
     },
     {
       "id": "Q7",
-      "correct": "B",
+      "correct": "C",
       "explanation": "Cache-aside requires app-driven invalidation on write — lab uses TTL-only staleness by design."
     },
     {
@@ -45,12 +50,12 @@
     },
     {
       "id": "Q9",
-      "correct": "C",
+      "correct": "A",
       "explanation": "ElastiCache is not durable source of truth — Aurora holds resort_stats (Night 15 ElastiCache analogy)."
     },
     {
       "id": "Q10",
-      "correct": "A",
+      "correct": "B",
       "explanation": "Cache subnet group places nodes in private subnets — Night 23 lab + exam private-tier pattern."
     },
     {
@@ -65,17 +70,17 @@
     },
     {
       "id": "Q13",
-      "correct": "B",
+      "correct": "A",
       "explanation": "Redis replication group with Multi-AZ + auto failover — exam HA pattern vs single-node lab cluster."
     },
     {
       "id": "Q14",
-      "correct": "C",
+      "correct": "B",
       "explanation": "Lambda is outbound-only client — TCP 6379 to Redis and 5432 to Aurora (Night 17 SG recap)."
     },
     {
       "id": "Q15",
-      "correct": "A",
+      "correct": "C",
       "explanation": "night-23 teardown removes Redis/Lambda only — preserves Night 9 VPC and Night 16 Aurora."
     }
   ]
