@@ -1,0 +1,210 @@
+{
+  "night": 39,
+  "title": "Compute / network / integration keywords",
+  "topic": "VPC endpoints, throttling, scheduled scale, Lambda seconds, Streams, Lambda@Edge",
+  "format": "20 timed questions (~32 min, ~96 sec each). Underline force words before picking. Pair with the night guide.",
+  "answerKey": "night-39-quiz-answers.json",
+  "answerDistribution": "A x5 B x5 C x5 D x5",
+  "questions": [
+    {
+      "id": "Q1",
+      "question": "Private subnet to S3/DynamoDB; no NAT; no public Internet.",
+      "options": {
+        "A": "VPC endpoints",
+        "B": "Direct Connect",
+        "C": "VPN CloudHub",
+        "D": "Enable encryption"
+      }
+    },
+    {
+      "id": "Q2",
+      "question": "Protect API backends from spikes beyond NACLs.",
+      "options": {
+        "A": "API Gateway throttling",
+        "B": "API Gateway Multi-AZ read replica",
+        "C": "Resize API Gateway EC2",
+        "D": "Do nothing always"
+      }
+    },
+    {
+      "id": "Q3",
+      "question": "Predictable weekday peak; mixed instance sizes; morning lag.",
+      "options": {
+        "A": "Scheduled scaling before peak",
+        "B": "Dynamic CPU only",
+        "C": "Predictive as best on mixed sizes",
+        "D": "Manual reboot"
+      }
+    },
+    {
+      "id": "Q4",
+      "question": "Always ≥2 after AZ loss; max 6.",
+      "options": {
+        "A": "Min 4 max 6 two AZs",
+        "B": "Min 2 max 6 one each AZ",
+        "C": "Min 2 max 4",
+        "D": "Min 6 max 6 one AZ"
+      }
+    },
+    {
+      "id": "Q5",
+      "question": "EC2 memory and disk space metrics.",
+      "options": {
+        "A": "CloudWatch agent",
+        "B": "Default CloudWatch",
+        "C": "EC2 Enhanced Monitoring",
+        "D": "Inspector"
+      }
+    },
+    {
+      "id": "Q6",
+      "question": "Cost-effective CloudFront auth + 504 mitigation.",
+      "options": {
+        "A": "Full multi-Region app + latency Route 53",
+        "B": "Lambda@Edge + origin failover",
+        "C": "Only raise max-age forever",
+        "D": "Transit VPC mesh"
+      }
+    },
+    {
+      "id": "Q7",
+      "question": "Anonymize PII before NoSQL; real-time.",
+      "options": {
+        "A": "S3 then Lambda",
+        "B": "Kinesis → Lambda → DynamoDB",
+        "C": "DynamoDB then Streams scrub",
+        "D": "Firehose → Redshift"
+      }
+    },
+    {
+      "id": "Q8",
+      "question": "Default ASG terminate after AZ balance prefers?",
+      "options": {
+        "A": "Fewest sessions",
+        "B": "Oldest launch template",
+        "C": "Longest running always first",
+        "D": "Pure random only"
+      }
+    },
+    {
+      "id": "Q9",
+      "question": "Bursts within seconds through an API.",
+      "options": {
+        "A": "API GW + EC2 ASG",
+        "B": "API GW + Lambda",
+        "C": "API GW + ECS ASG",
+        "D": "API GW + Beanstalk"
+      }
+    },
+    {
+      "id": "Q10",
+      "question": "S3 can notify how many destinations directly?",
+      "options": {
+        "A": "Unlimited SNS and SQS together as multiples",
+        "B": "One destination config (use SNS to fan-out)",
+        "C": "Only Lambda",
+        "D": "Only SQS FIFO"
+      }
+    },
+    {
+      "id": "Q11",
+      "question": "Direct Connect is for?",
+      "options": {
+        "A": "Replacing VPC endpoints for S3 in-VPC private access",
+        "B": "Encrypting DynamoDB",
+        "C": "Dedicated connectivity from on-premises to AWS",
+        "D": "Being a WAF"
+      }
+    },
+    {
+      "id": "Q12",
+      "question": "Predictive scaling limitation called out in exams?",
+      "options": {
+        "A": "Cannot use schedules",
+        "B": "Only works with Lambda",
+        "C": "Assumes homogeneous instance capacity",
+        "D": "Requires Snowball"
+      }
+    },
+    {
+      "id": "Q13",
+      "question": "EventBridge → ECS task on S3 PUT least effort means?",
+      "options": {
+        "A": "Always wrap with extra Lambda StartTask",
+        "B": "CloudTrail alarm required",
+        "C": "EventBridge target ECS directly when possible",
+        "D": "Must use Step Functions"
+      }
+    },
+    {
+      "id": "Q14",
+      "question": "IPv6 egress-only component name?",
+      "options": {
+        "A": "NAT Gateway",
+        "B": "Internet Gateway alone always outbound-only",
+        "C": "Egress-only Internet Gateway",
+        "D": "VPC peering"
+      }
+    },
+    {
+      "id": "Q15",
+      "question": "CloudWatch default includes memory utilization?",
+      "options": {
+        "A": "Yes",
+        "B": "Yes on Windows only",
+        "C": "No — custom/agent",
+        "D": "Yes if Spot"
+      }
+    },
+    {
+      "id": "Q16",
+      "question": "Force word within seconds vs Auto Scaling groups?",
+      "options": {
+        "A": "Prefer ASG always",
+        "B": "Prefer DX",
+        "C": "Prefer Snowball",
+        "D": "Prefer Lambda for second-scale bursts"
+      }
+    },
+    {
+      "id": "Q17",
+      "question": "Origin group / failover addresses which symptom?",
+      "options": {
+        "A": "SQLi",
+        "B": "S3 Intelligent-Tiering",
+        "C": "IAM permission errors",
+        "D": "HTTP 504 from primary origin"
+      }
+    },
+    {
+      "id": "Q18",
+      "question": "DynamoDB Streams not enabled by default — implication?",
+      "options": {
+        "A": "SNS enables Streams",
+        "B": "Streams always on",
+        "C": "DAX enables Streams",
+        "D": "Adapter options without enable Streams are incomplete"
+      }
+    },
+    {
+      "id": "Q19",
+      "question": "First underline on compute stems?",
+      "options": {
+        "A": "Industry",
+        "B": "CEO name",
+        "C": "Logo",
+        "D": "Time words (seconds/minutes/schedule)"
+      }
+    },
+    {
+      "id": "Q20",
+      "question": "Night 40 success habit after each miss?",
+      "options": {
+        "A": "Only rebuild GSA",
+        "B": "Memorize answer letters",
+        "C": "Skip review",
+        "D": "Log force words + distractor type"
+      }
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+[
+  {
+    "Id": "iceland-fargate",
+    "Arn": "arn:aws:ecs:us-east-1:298043721974:cluster/globalskiatlas-backend-k8s",
+    "RoleArn": "arn:aws:iam::298043721974:role/saa-study-gsa-eventbridge-ecs",
+    "EcsParameters": {
+      "TaskDefinitionArn": "globalskiatlas-backend-k8s-iceland",
+      "LaunchType": "FARGATE",
+      "PlatformVersion": "LATEST",
+      "TaskCount": 1,
+      "NetworkConfiguration": {
+        "awsvpcConfiguration": {
+          "Subnets": ["subnet-0c00b7003aa3eb4db", "subnet-08aac9b095b7dec9c"],
+          "SecurityGroups": ["sg-09c00d8e2de6cee92"],
+          "AssignPublicIp": "DISABLED"
+        }
+      }
+    }
+  }
+]

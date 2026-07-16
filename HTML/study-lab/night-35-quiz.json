@@ -1,0 +1,210 @@
+{
+  "night": 35,
+  "title": "Exam stem method",
+  "topic": "SAA/TD stem anatomy: story vs force words, distractor types, decode-before-options",
+  "format": "20 timed questions (~32 min, ~96 sec each). Underline force words before picking. Pair with the night guide.",
+  "answerKey": "night-35-quiz-answers.json",
+  "answerDistribution": "A x5 B x5 C x5 D x5",
+  "questions": [
+    {
+      "id": "Q1",
+      "question": "First step on a Tutorials Dojo-style stem?",
+      "options": {
+        "A": "Cross out the company/industry story and underline force words",
+        "B": "Diagram every service the company might ever need",
+        "C": "Pick the service you used most in labs",
+        "D": "Always choose Amazon S3 when storage is mentioned"
+      }
+    },
+    {
+      "id": "Q2",
+      "question": "Which phrase is force-word gold, not story noise?",
+      "options": {
+        "A": "without passing through the public Internet and without NAT",
+        "B": "The company plans to announce a product",
+        "C": "A popular social network",
+        "D": "hundreds of thousands of clients each day"
+      }
+    },
+    {
+      "id": "Q3",
+      "question": "Distractor type: GuardDuty offered when stem needs to block SQLi on ALB.",
+      "options": {
+        "A": "Right family, wrong product",
+        "B": "Missing the toggle",
+        "C": "Fake AWS default magic",
+        "D": "Too much ops"
+      }
+    },
+    {
+      "id": "Q4",
+      "question": "Distractor type: IAM role on EC2 but IAM DB authentication never enabled.",
+      "options": {
+        "A": "Missing the toggle",
+        "B": "Wrong storage interface",
+        "C": "Fake default magic",
+        "D": "Cost adjective ignore"
+      }
+    },
+    {
+      "id": "Q5",
+      "question": "BEST prediction order before reading options?",
+      "options": {
+        "A": "Predict the service from force words, then confirm",
+        "B": "Scan all four options for the longest sentence",
+        "C": "Search the stem for the word Amazon and match it",
+        "D": "Always eliminate anything mentioning EC2"
+      }
+    },
+    {
+      "id": "Q6",
+      "question": "\"MOST cost-effective\" with global login latency usually kills which pattern?",
+      "options": {
+        "A": "Lambda@Edge near viewers",
+        "B": "Redeploy full stacks in many Regions + latency routing",
+        "C": "CloudFront origin failover for 504s",
+        "D": "Throttling on API Gateway"
+      }
+    },
+    {
+      "id": "Q7",
+      "question": "Select TWO questions usually require what?",
+      "options": {
+        "A": "The two longest answer choices",
+        "B": "Two services that each map to different force words",
+        "C": "Any two services from the same product family",
+        "D": "S3 plus whatever else is listed"
+      }
+    },
+    {
+      "id": "Q8",
+      "question": "Encryption at rest as the answer to private path, no Internet is which distractor?",
+      "options": {
+        "A": "Correct — encryption means private routing",
+        "B": "Solves a different requirement",
+        "C": "Too much ops",
+        "D": "Missing the toggle"
+      }
+    },
+    {
+      "id": "Q9",
+      "question": "Which ask-word changes how you compare options?",
+      "options": {
+        "A": "Company name",
+        "B": "LEAST operational overhead",
+        "C": "The word database",
+        "D": "Number of employees"
+      }
+    },
+    {
+      "id": "Q10",
+      "question": "After a miss, the highest-value note is?",
+      "options": {
+        "A": "Memorize the correct letter for that PDF",
+        "B": "The force word you skipped and the distractor type",
+        "C": "The company industry in the stem",
+        "D": "How long the explanation page was"
+      }
+    },
+    {
+      "id": "Q11",
+      "question": "API Gateway will automatically handle spikes so do nothing is which distractor type?",
+      "options": {
+        "A": "Missing toggle",
+        "B": "Right family wrong product",
+        "C": "Fake AWS default magic",
+        "D": "Wrong interface"
+      }
+    },
+    {
+      "id": "Q12",
+      "question": "Workload hint vs force word — which is only a hint?",
+      "options": {
+        "A": "must remain available if an AZ fails",
+        "B": "RPO of 1 second across Regions",
+        "C": "uses a relational database today",
+        "D": "including the root user"
+      }
+    },
+    {
+      "id": "Q13",
+      "question": "When should you read the four options first?",
+      "options": {
+        "A": "Always — options define the question",
+        "B": "Never read options; guess from stem length",
+        "C": "Only after underlining force words and predicting",
+        "D": "Only the option that mentions Lambda"
+      }
+    },
+    {
+      "id": "Q14",
+      "question": "A stem says minimize development changes for a Windows .NET app. Predicting EKS Fargate refactor is wrong because?",
+      "options": {
+        "A": "EKS cannot run containers",
+        "B": "Beanstalk never supports .NET",
+        "C": "It violates the minimize-change force word (too much change)",
+        "D": "Fargate is only for Lambda"
+      }
+    },
+    {
+      "id": "Q15",
+      "question": "Which pair is the correct method card sequence start?",
+      "options": {
+        "A": "Options first, then story, then lab memory",
+        "B": "Google each acronym in the stem",
+        "C": "Cross out story, underline force words, name family",
+        "D": "Pick Multi-AZ whenever HA appears"
+      }
+    },
+    {
+      "id": "Q16",
+      "question": "Force-word family for POSIX + concurrent mounts?",
+      "options": {
+        "A": "PII discovery",
+        "B": "Time scale",
+        "C": "DDoS",
+        "D": "Interface"
+      }
+    },
+    {
+      "id": "Q17",
+      "question": "Force-word family for within seconds vs few minutes?",
+      "options": {
+        "A": "Blast radius",
+        "B": "SMB",
+        "C": "WORM",
+        "D": "Time scale"
+      }
+    },
+    {
+      "id": "Q18",
+      "question": "Why Company X migration stories feel unlike GSA labs?",
+      "options": {
+        "A": "They test different AWS products that do not exist",
+        "B": "Mocks only test billing algebra",
+        "C": "Labs never cover networking or databases",
+        "D": "They grade constraint decoding more than build familiarity"
+      }
+    },
+    {
+      "id": "Q19",
+      "question": "If two options both look plausible, what breaks the tie?",
+      "options": {
+        "A": "Whichever service is newer",
+        "B": "Whichever you deployed in Night 9",
+        "C": "Whichever costs more (always safer)",
+        "D": "Which option satisfies EVERY underlined force word"
+      }
+    },
+    {
+      "id": "Q20",
+      "question": "Night 36-39 exist to do what after tonight?",
+      "options": {
+        "A": "Deploy more CloudFormation for GSA",
+        "B": "Replace all S3 usage with EFS",
+        "C": "Skip Practice Exam 2",
+        "D": "Apply the same stem method on storage, DB, security, compute maps"
+      }
+    }
+  ]
+}

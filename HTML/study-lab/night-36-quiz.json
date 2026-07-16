@@ -1,0 +1,210 @@
+{
+  "night": 36,
+  "title": "Storage + hybrid keywords",
+  "topic": "Object/block/file/SMB/iSCSI/gateway/SFTP/WORM/Transfer Acceleration force words",
+  "format": "20 timed questions (~32 min, ~96 sec each). Underline force words before picking. Pair with the night guide.",
+  "answerKey": "night-36-quiz-answers.json",
+  "answerDistribution": "A x5 B x5 C x5 D x5",
+  "questions": [
+    {
+      "id": "Q1",
+      "question": "Fleet EC2 CMS; need HA POSIX shared file system for uploads.",
+      "options": {
+        "A": "Amazon EFS",
+        "B": "Upgrade one EBS volume to io2",
+        "C": "S3 as a mounted block device",
+        "D": "ElastiCache"
+      }
+    },
+    {
+      "id": "Q2",
+      "question": "Windows Multi-AZ + low-latency shared block (iSCSI).",
+      "options": {
+        "A": "FSx for NetApp ONTAP via iSCSI",
+        "B": "Amazon EFS",
+        "C": "FSx for Windows File Server only",
+        "D": "S3 CRR between AZs"
+      }
+    },
+    {
+      "id": "Q3",
+      "question": "SFTP + encrypt + HA + delete after 30 days + least ops.",
+      "options": {
+        "A": "Transfer Family → S3 + S3 lifecycle expiration",
+        "B": "EC2 SFTP + EFS + cron",
+        "C": "Transfer Family → EFS + EFS lifecycle delete",
+        "D": "Transfer Family retention policy on the server"
+      }
+    },
+    {
+      "id": "Q4",
+      "question": "On-prem SMB + local cache + later Glacier from AWS.",
+      "options": {
+        "A": "File Gateway + S3 lifecycle to Glacier",
+        "B": "Tape Gateway",
+        "C": "DataSync only",
+        "D": "EBS over Direct Connect"
+      }
+    },
+    {
+      "id": "Q5",
+      "question": "WORM 1 year including root.",
+      "options": {
+        "A": "Compliance mode + retention period",
+        "B": "Governance mode + retention",
+        "C": "Compliance mode + legal hold for 1 year",
+        "D": "Governance + legal hold for 1 year"
+      }
+    },
+    {
+      "id": "Q6",
+      "question": "Stop accidental S3 delete/overwrite; still allow deletes.",
+      "options": {
+        "A": "Deny all Delete in bucket policy",
+        "B": "Versioning + MFA Delete",
+        "C": "Intelligent-Tiering",
+        "D": "Pre-signed URLs only"
+      }
+    },
+    {
+      "id": "Q7",
+      "question": "Tax docs: WORM + access only from one VPC.",
+      "options": {
+        "A": "Network Firewall attached to the bucket",
+        "B": "S3 Access Point (VPC) + Object Lock",
+        "C": "Object Lock with versioning disabled",
+        "D": "Glacier Instant Retrieval alone"
+      }
+    },
+    {
+      "id": "Q8",
+      "question": "Many private CloudFront files; do not change URLs.",
+      "options": {
+        "A": "Signed URL per object",
+        "B": "Signed cookies",
+        "C": "Match Viewer protocol policy",
+        "D": "Field-Level Encryption"
+      }
+    },
+    {
+      "id": "Q9",
+      "question": "Fastest one-time global upload into us-east-1 bucket.",
+      "options": {
+        "A": "Upload nearest Region + CRR",
+        "B": "S3 Transfer Acceleration + multipart",
+        "C": "Site-to-Site VPN",
+        "D": "DataSync agents everywhere for one shot"
+      }
+    },
+    {
+      "id": "Q10",
+      "question": "Persistent block + object backup + archive after 30 days.",
+      "options": {
+        "A": "Instance Store + Glacier",
+        "B": "EBS + S3 lifecycle to Glacier Flexible Retrieval",
+        "C": "EBS + lifecycle to One Zone-IA as archive",
+        "D": "Instance Store + One Zone-IA"
+      }
+    },
+    {
+      "id": "Q11",
+      "question": "Stem says object storage with lifecycle to archival. Default pick?",
+      "options": {
+        "A": "EFS",
+        "B": "EBS",
+        "C": "S3",
+        "D": "FSx Lustre"
+      }
+    },
+    {
+      "id": "Q12",
+      "question": "Why is S3 usually wrong for concurrent POSIX locks across ASG?",
+      "options": {
+        "A": "S3 cannot store files",
+        "B": "S3 is only for Glacier",
+        "C": "S3 is object storage without shared filesystem semantics",
+        "D": "S3 requires Windows"
+      }
+    },
+    {
+      "id": "Q13",
+      "question": "EFS lifecycle policies delete files after 30 days — true or trap?",
+      "options": {
+        "A": "True",
+        "B": "True only in one Zone",
+        "C": "Trap — they transition to IA, not delete",
+        "D": "True for Windows clients"
+      }
+    },
+    {
+      "id": "Q14",
+      "question": "FSx Windows vs ONTAP — force word that picks ONTAP?",
+      "options": {
+        "A": "SMB",
+        "B": "Active Directory",
+        "C": "iSCSI / block",
+        "D": "NTFS permissions"
+      }
+    },
+    {
+      "id": "Q15",
+      "question": "Legal hold for one year — valid Object Lock config?",
+      "options": {
+        "A": "Yes — set days on the hold",
+        "B": "Yes only in governance mode",
+        "C": "No — legal hold has no retention period",
+        "D": "Yes only without versioning"
+      }
+    },
+    {
+      "id": "Q16",
+      "question": "Hybrid: need local hot cache for recent SMB files.",
+      "options": {
+        "A": "DataSync",
+        "B": "CRR",
+        "C": "Snowball Edge only",
+        "D": "File Gateway"
+      }
+    },
+    {
+      "id": "Q17",
+      "question": "Mission-critical persistent disk for one EC2 database.",
+      "options": {
+        "A": "Instance Store",
+        "B": "CloudFront",
+        "C": "S3 Standard",
+        "D": "EBS"
+      }
+    },
+    {
+      "id": "Q18",
+      "question": "Transfer Family stores files by default where for least-ops SFTP→expire?",
+      "options": {
+        "A": "EFS always",
+        "B": "Glacier Direct Upload only",
+        "C": "EBS",
+        "D": "S3 (then lifecycle)"
+      }
+    },
+    {
+      "id": "Q19",
+      "question": "Signed URL vs cookie — force word for cookies?",
+      "options": {
+        "A": "single installer download",
+        "B": "no app that can set cookies ever",
+        "C": "RTMP distribution only",
+        "D": "multiple private files without changing URLs"
+      }
+    },
+    {
+      "id": "Q20",
+      "question": "First underline on a storage stem should be?",
+      "options": {
+        "A": "Company industry",
+        "B": "Color of the logo",
+        "C": "Employee headcount",
+        "D": "Interface words (POSIX/SMB/iSCSI/object)"
+      }
+    }
+  ]
+}

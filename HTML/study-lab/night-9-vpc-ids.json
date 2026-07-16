@@ -1,0 +1,53 @@
+﻿{
+    "teardown":  ".\\HTML\\study-lab\\night-9-lab-vpc-teardown.ps1",
+    "night10":  {
+                    "assignPublicIp":  "DISABLED",
+                    "note":  "Run Iceland task with these private subnets + fargate SG",
+                    "ecsSubnets":  [
+                                       "subnet-003336ab0af518eb0",
+                                       "subnet-02753a7d7acdd10c6"
+                                   ]
+                },
+    "routeTables":  {
+                        "public":  "rtb-07f41f67d2baff4b7",
+                        "private":  "rtb-0b95acaba0fb992ce"
+                    },
+    "subnets":  {
+                    "privateB":  {
+                                     "cidr":  "10.0.12.0/24",
+                                     "id":  "subnet-02753a7d7acdd10c6",
+                                     "az":  "us-east-1b"
+                                 },
+                    "publicB":  {
+                                    "cidr":  "10.0.2.0/24",
+                                    "id":  "subnet-0af9cde009c933fc9",
+                                    "az":  "us-east-1b"
+                                },
+                    "publicA":  {
+                                    "cidr":  "10.0.1.0/24",
+                                    "id":  "subnet-053ca372581b07570",
+                                    "az":  "us-east-1a"
+                                },
+                    "privateA":  {
+                                     "cidr":  "10.0.11.0/24",
+                                     "id":  "subnet-003336ab0af518eb0",
+                                     "az":  "us-east-1a"
+                                 }
+                },
+    "natGateway":  {
+                       "subnet":  "subnet-053ca372581b07570",
+                       "id":  "nat-08a1a4020eef0a4dd",
+                       "eipAllocation":  "eipalloc-0c3a912563c702998"
+                   },
+    "region":  "us-east-1",
+    "vpc":  {
+                "id":  "vpc-021a5e2236174ef20",
+                "cidr":  "10.0.0.0/16"
+            },
+    "securityGroups":  {
+                           "fargate":  "sg-07f0e0e9f9dba2a1e"
+                       },
+    "lab":  "night-9-lab2a-vpc-build",
+    "internetGateway":  "igw-01d10a28de49a91fc",
+    "builtAt":  "2026-06-26T18:46:04Z"
+}

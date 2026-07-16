@@ -1,0 +1,12 @@
+﻿{
+    "lab":  "night-20-dms-s3-migration",
+    "region":  "us-east-1",
+    "tableName":  "saa-study-gsa-wiki-views",
+    "tableArn":  "arn:aws:dynamodb:us-east-1:298043721974:table/saa-study-gsa-wiki-views",
+    "pitrStatus":  "ENABLED",
+    "migrationBucket":  "saa-study-gsa-migration-298043721974",
+    "exportPrefix":  "night-20/dynamodb/wiki-views",
+    "tag":  "saa-study-migration=night-20",
+    "exportArn":  "arn:aws:dynamodb:us-east-1:298043721974:table/saa-study-gsa-wiki-views/export/01782700015323-bbd55e4d",
+    "createdAt":  "2026-06-29T02:36:44Z"
+}

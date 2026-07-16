@@ -1,0 +1,112 @@
+{
+  "night": 37,
+  "title": "Database / HA / migrate keywords",
+  "answerDistribution": {
+    "A": 5,
+    "B": 5,
+    "C": 5,
+    "D": 5
+  },
+  "answers": [
+    {
+      "id": "Q1",
+      "correct": "A",
+      "explanation": "Sync HA → Multi-AZ."
+    },
+    {
+      "id": "Q2",
+      "correct": "A",
+      "explanation": "Numbers force Aurora Global."
+    },
+    {
+      "id": "Q3",
+      "correct": "A",
+      "explanation": "Flexible schema force word → DynamoDB."
+    },
+    {
+      "id": "Q4",
+      "correct": "A",
+      "explanation": "Custom endpoints."
+    },
+    {
+      "id": "Q5",
+      "correct": "A",
+      "explanation": "Need the IAM DB auth feature."
+    },
+    {
+      "id": "Q6",
+      "correct": "B",
+      "explanation": "Row DML → native Lambda; RDS events are infra."
+    },
+    {
+      "id": "Q7",
+      "correct": "B",
+      "explanation": "Enable Streams first."
+    },
+    {
+      "id": "Q8",
+      "correct": "B",
+      "explanation": "Minimize change → Beanstalk + DMS."
+    },
+    {
+      "id": "Q9",
+      "correct": "B",
+      "explanation": "Seconds force word → Lambda."
+    },
+    {
+      "id": "Q10",
+      "correct": "B",
+      "explanation": "FT math: min 2N."
+    },
+    {
+      "id": "Q11",
+      "correct": "C",
+      "explanation": "Enhanced Monitoring."
+    },
+    {
+      "id": "Q12",
+      "correct": "C",
+      "explanation": "Spread load."
+    },
+    {
+      "id": "Q13",
+      "correct": "C",
+      "explanation": "Async vs sync distinction."
+    },
+    {
+      "id": "Q14",
+      "correct": "C",
+      "explanation": "Same engine → DMS; SCT for heterogeneous."
+    },
+    {
+      "id": "Q15",
+      "correct": "C",
+      "explanation": "Known schedule → scheduled policy."
+    },
+    {
+      "id": "Q16",
+      "correct": "D",
+      "explanation": "Not row triggers."
+    },
+    {
+      "id": "Q17",
+      "correct": "D",
+      "explanation": "Writer/cluster endpoint."
+    },
+    {
+      "id": "Q18",
+      "correct": "D",
+      "explanation": "DR number family."
+    },
+    {
+      "id": "Q19",
+      "correct": "D",
+      "explanation": "Night 35 distractor type."
+    },
+    {
+      "id": "Q20",
+      "correct": "D",
+      "explanation": "Migration force bundle."
+    }
+  ]
+}

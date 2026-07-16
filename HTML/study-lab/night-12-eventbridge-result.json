@@ -1,0 +1,29 @@
+﻿{
+    "lab":  "night-12-lab2b-eventbridge-schedule",
+    "rule":  {
+                 "name":  "saa-study-gsa-iceland-monthly",
+                 "scheduleExpression":  "cron(0 6 1 * ? *)",
+                 "enabled":  true
+             },
+    "region":  "us-east-1",
+    "iam":  {
+                "roleName":  "saa-study-gsa-eventbridge-ecs",
+                "roleArn":  "arn:aws:iam::298043721974:role/saa-study-gsa-eventbridge-ecs"
+            },
+    "alarm":  "saa-study-gsa-iceland-task-failed",
+    "completedAt":  "2026-06-25T03:11:04Z",
+    "target":  {
+                   "cluster":  "globalskiatlas-backend-k8s",
+                   "network":  {
+                                   "subnets":  [
+                                                   "subnet-008120506b1128b9e",
+                                                   "subnet-0933a2f4e1533d1f9"
+                                               ],
+                                   "assignPublicIp":  "DISABLED",
+                                   "securityGroups":  [
+                                                          "sg-05266c3fee8cf0b57"
+                                                      ]
+                               },
+                   "taskDefinition":  "arn:aws:ecs:us-east-1:298043721974:task-definition/globalskiatlas-backend-k8s-iceland:1"
+               }
+}

@@ -1,0 +1,78 @@
+{
+    "assumedRunHours":  2,
+    "cluster":  "globalskiatlas-backend-k8s",
+    "lab":  "night-31",
+    "logGroup":  "/ecs/globalskiatlas-backend-k8s-iceland",
+    "liveTaskDefinition":  {
+                               "registeredAt":  1770990174.661,
+                               "memoryMiB":  2048,
+                               "cpu":  1024,
+                               "arn":  "arn:aws:ecs:us-east-1:298043721974:task-definition/globalskiatlas-backend-k8s-iceland:1",
+                               "compatibilities":  [
+                                                       "FARGATE"
+                                                   ],
+                               "revision":  1,
+                               "vcpu":  1,
+                               "memoryGiB":  2,
+                               "ephemeralStorageGiB":  21
+                           },
+    "sizingScenarios":  [
+                            {
+                                "onDemandRunUsd":  0.1975,
+                                "id":  "iceland-current",
+                                "monthlyOnDemandUsd":  2.37,
+                                "memoryMiB":  4096,
+                                "cpu":  2048,
+                                "label":  "Iceland monthly pipeline (production baseline)",
+                                "fargateSpotRunUsd":  0.0691,
+                                "hourlyUsd":  0.0987,
+                                "vcpu":  2,
+                                "memoryGiB":  4
+                            },
+                            {
+                                "onDemandRunUsd":  0.0987,
+                                "id":  "iceland-rightsized",
+                                "monthlyOnDemandUsd":  1.184,
+                                "memoryMiB":  2048,
+                                "cpu":  1024,
+                                "label":  "Iceland rightsized candidate",
+                                "fargateSpotRunUsd":  0.0345,
+                                "hourlyUsd":  0.0494,
+                                "vcpu":  1,
+                                "memoryGiB":  2
+                            },
+                            {
+                                "onDemandRunUsd":  0.395,
+                                "id":  "pmtiles-heavy",
+                                "monthlyOnDemandUsd":  4.74,
+                                "memoryMiB":  8192,
+                                "cpu":  4096,
+                                "label":  "PMTiles / WORLD_SCALE parallel build",
+                                "fargateSpotRunUsd":  0.1382,
+                                "hourlyUsd":  0.1975,
+                                "vcpu":  4,
+                                "memoryGiB":  8
+                            }
+                        ],
+    "taskFamily":  "globalskiatlas-backend-k8s-iceland",
+    "night":  31,
+    "fargateRates":  {
+                         "gbPerHour":  0.004445,
+                         "vcpuPerHour":  0.04048
+                     },
+    "region":  "us-east-1",
+    "recentStoppedTask":  null,
+    "createdAt":  "2026-07-08T03:07:00.2014901Z",
+    "cloudWatchMetrics":  {
+                              "cpuUtilizationP95":  null,
+                              "note":  "Service-level metrics may be empty for RunTask-only workloads â€” check task-level Container Insights if enrolled",
+                              "memoryUtilizationP95":  null
+                          },
+    "computeOptimizer":  {
+                             "recommendations":  [
+
+                                                 ],
+                             "note":  "No response â€” enroll Compute Optimizer in Billing console",
+                             "enrolled":  false
+                         }
+}

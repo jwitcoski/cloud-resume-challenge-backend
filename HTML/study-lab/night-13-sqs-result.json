@@ -1,0 +1,43 @@
+﻿{
+    "lab":  "night-13-lab2c-sqs-decoupling",
+    "region":  "us-east-1",
+    "eventBridge":  {
+                        "ruleName":  "saa-study-gsa-iceland-success-to-sqs",
+                        "target":  "SQS saa-study-gsa-iceland-completion",
+                        "ruleArn":  "arn:aws:events:us-east-1:298043721974:rule/saa-study-gsa-iceland-success-to-sqs",
+                        "taskDefinition":  "arn:aws:ecs:us-east-1:298043721974:task-definition/globalskiatlas-backend-k8s-iceland:1"
+                    },
+    "queueAttributes":  {
+                            "Attributes":  {
+                                               "QueueArn":  "arn:aws:sqs:us-east-1:298043721974:saa-study-gsa-iceland-completion",
+                                               "ApproximateNumberOfMessages":  "0",
+                                               "ApproximateNumberOfMessagesNotVisible":  "0",
+                                               "ApproximateNumberOfMessagesDelayed":  "0",
+                                               "CreatedTimestamp":  "1782356890",
+                                               "LastModifiedTimestamp":  "1782356894",
+                                               "VisibilityTimeout":  "60",
+                                               "MaximumMessageSize":  "1048576",
+                                               "MessageRetentionPeriod":  "345600",
+                                               "DelaySeconds":  "0",
+                                               "Policy":  "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"AllowEventBridgeIcelandSuccessRule\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"events.amazonaws.com\"},\"Action\":\"sqs:SendMessage\",\"Resource\":\"arn:aws:sqs:us-east-1:298043721974:saa-study-gsa-iceland-completion\",\"Condition\":{\"ArnEquals\":{\"aws:SourceArn\":\"arn:aws:events:us-east-1:298043721974:rule/saa-study-gsa-iceland-success-to-sqs\"}}}]}",
+                                               "RedrivePolicy":  "{\"deadLetterTargetArn\":\"arn:aws:sqs:us-east-1:298043721974:saa-study-gsa-iceland-completion-dlq\",\"maxReceiveCount\":3}",
+                                               "ReceiveMessageWaitTimeSeconds":  "0",
+                                               "SqsManagedSseEnabled":  "true"
+                                           }
+                        },
+    "completedAt":  "2026-06-25T03:08:16Z",
+    "queues":  {
+                   "main":  {
+                                "url":  "https://sqs.us-east-1.amazonaws.com/298043721974/saa-study-gsa-iceland-completion",
+                                "name":  "saa-study-gsa-iceland-completion",
+                                "arn":  "arn:aws:sqs:us-east-1:298043721974:saa-study-gsa-iceland-completion"
+                            },
+                   "visibilityTimeout":  60,
+                   "maxReceiveCount":  3,
+                   "dlq":  {
+                               "url":  "https://sqs.us-east-1.amazonaws.com/298043721974/saa-study-gsa-iceland-completion-dlq",
+                               "name":  "saa-study-gsa-iceland-completion-dlq",
+                               "arn":  "arn:aws:sqs:us-east-1:298043721974:saa-study-gsa-iceland-completion-dlq"
+                           }
+               }
+}

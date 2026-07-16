@@ -1,0 +1,26 @@
+{
+    "lab":  "night-32",
+    "createdAt":  "2026-07-09T02:04:07.2884597Z",
+    "stackName":  "sam-pipeline-orchestrator",
+    "fargateSecurityGroupId":  "sg-07f0e0e9f9dba2a1e",
+    "stateMachineName":  "saa-study-gsa-iceland-pipeline",
+    "legacyRule":  "saa-study-gsa-iceland-monthly",
+    "region":  "us-east-1",
+    "ecsExecutionRoleArn":  "arn:aws:iam::298043721974:role/globalskiatlas-backend-k8s-ecs-execution",
+    "successRuleDisabled":  false,
+    "statsUploaderArn":  "arn:aws:lambda:us-east-1:298043721974:function:saa-study-gsa-stats-uploader",
+    "successRule":  "saa-study-gsa-iceland-success-to-sqs",
+    "subnets":  [
+                    "subnet-003336ab0af518eb0",
+                    "subnet-02753a7d7acdd10c6"
+                ],
+    "alertsTopicArn":  "arn:aws:sns:us-east-1:298043721974:saa-study-gsa-iceland-alerts",
+    "night":  32,
+    "testExecutionStatus":  null,
+    "legacyRuleDisabled":  true,
+    "testExecutionArn":  null,
+    "ecsTaskRoleArn":  "arn:aws:iam::298043721974:role/globalskiatlas-backend-k8s-ecs-task",
+    "scheduleRule":  "saa-study-gsa-iceland-monthly-sfn",
+    "completionQueueUrl":  "https://queue.amazonaws.com/298043721974/saa-study-gsa-iceland-completion",
+    "stateMachineArn":  "arn:aws:states:us-east-1:298043721974:stateMachine:saa-study-gsa-iceland-pipeline"
+}

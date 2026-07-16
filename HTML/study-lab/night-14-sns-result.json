@@ -1,0 +1,34 @@
+﻿{
+    "sns":  {
+                "topicArn":  "arn:aws:sns:us-east-1:298043721974:saa-study-gsa-iceland-alerts",
+                "topicName":  "saa-study-gsa-iceland-alerts",
+                "subscriptions":  [
+                                      {
+                                          "SubscriptionArn":  "arn:aws:sns:us-east-1:298043721974:saa-study-gsa-iceland-alerts:6ae5e864-9a4c-41f8-b100-deef4f3f2356",
+                                          "Owner":  "298043721974",
+                                          "Protocol":  "sqs",
+                                          "Endpoint":  "arn:aws:sqs:us-east-1:298043721974:saa-study-gsa-iceland-alerts-inbox",
+                                          "TopicArn":  "arn:aws:sns:us-east-1:298043721974:saa-study-gsa-iceland-alerts"
+                                      }
+                                  ]
+            },
+    "completedAt":  "2026-07-05T03:09:54Z",
+    "lab":  "night-14-lab2c-sns-fanout",
+    "cloudWatch":  {
+                       "alarmName":  "saa-study-gsa-iceland-task-failed",
+                       "alarmActionTopic":  "arn:aws:sns:us-east-1:298043721974:saa-study-gsa-iceland-alerts"
+                   },
+    "eventBridge":  {
+                        "pattern":  "ECS STOPPED exitCode != 0 Iceland task family",
+                        "failureRuleArn":  "arn:aws:events:us-east-1:298043721974:rule/saa-study-gsa-iceland-failure-to-sns",
+                        "failureRuleName":  "saa-study-gsa-iceland-failure-to-sns"
+                    },
+    "region":  "us-east-1",
+    "emailSubscription":  null,
+    "sqsInbox":  {
+                     "url":  "https://queue.amazonaws.com/298043721974/saa-study-gsa-iceland-alerts-inbox",
+                     "name":  "saa-study-gsa-iceland-alerts-inbox",
+                     "approximateMessages":  "0",
+                     "arn":  "arn:aws:sqs:us-east-1:298043721974:saa-study-gsa-iceland-alerts-inbox"
+                 }
+}

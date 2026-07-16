@@ -1,0 +1,112 @@
+{
+  "night": 36,
+  "title": "Storage + hybrid keywords",
+  "answerDistribution": {
+    "A": 5,
+    "B": 5,
+    "C": 5,
+    "D": 5
+  },
+  "answers": [
+    {
+      "id": "Q1",
+      "correct": "A",
+      "explanation": "POSIX + shared + Multi-AZ → EFS."
+    },
+    {
+      "id": "Q2",
+      "correct": "A",
+      "explanation": "Block/iSCSI force word → ONTAP not SMB-only FSx Windows."
+    },
+    {
+      "id": "Q3",
+      "correct": "A",
+      "explanation": "Managed SFTP to S3; lifecycle expires objects; EFS lifecycle ≠ delete."
+    },
+    {
+      "id": "Q4",
+      "correct": "A",
+      "explanation": "Local cache + SMB → File Gateway."
+    },
+    {
+      "id": "Q5",
+      "correct": "A",
+      "explanation": "Compliance + retention; legal hold has no duration."
+    },
+    {
+      "id": "Q6",
+      "correct": "B",
+      "explanation": "Classic accidental-delete pair."
+    },
+    {
+      "id": "Q7",
+      "correct": "B",
+      "explanation": "Access Point for VPC; Object Lock needs versioning."
+    },
+    {
+      "id": "Q8",
+      "correct": "B",
+      "explanation": "Multiple files + same URLs → signed cookies."
+    },
+    {
+      "id": "Q9",
+      "correct": "B",
+      "explanation": "Acceleration + multipart wins one-time speed stems."
+    },
+    {
+      "id": "Q10",
+      "correct": "B",
+      "explanation": "EBS persistent; Glacier FR for archive; not Instance Store."
+    },
+    {
+      "id": "Q11",
+      "correct": "C",
+      "explanation": "Object + lifecycle → S3 family."
+    },
+    {
+      "id": "Q12",
+      "correct": "C",
+      "explanation": "Interface mismatch."
+    },
+    {
+      "id": "Q13",
+      "correct": "C",
+      "explanation": "Classic Transfer/EFS distractor."
+    },
+    {
+      "id": "Q14",
+      "correct": "C",
+      "explanation": "Block/iSCSI is the ONTAP differentiator on SAA."
+    },
+    {
+      "id": "Q15",
+      "correct": "C",
+      "explanation": "Use retention period for timed WORM."
+    },
+    {
+      "id": "Q16",
+      "correct": "D",
+      "explanation": "Cache force word → File Gateway."
+    },
+    {
+      "id": "Q17",
+      "correct": "D",
+      "explanation": "Persistent block → EBS."
+    },
+    {
+      "id": "Q18",
+      "correct": "D",
+      "explanation": "S3 + lifecycle expiration pattern."
+    },
+    {
+      "id": "Q19",
+      "correct": "D",
+      "explanation": "Night 36 CloudFront map."
+    },
+    {
+      "id": "Q20",
+      "correct": "D",
+      "explanation": "Method applied to storage."
+    }
+  ]
+}

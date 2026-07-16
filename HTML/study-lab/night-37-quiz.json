@@ -1,0 +1,210 @@
+{
+  "night": 37,
+  "title": "Database / HA / migrate keywords",
+  "topic": "Multi-AZ, Aurora Global, DynamoDB schema, IAM DB auth, DMS/Beanstalk, ASG FT math",
+  "format": "20 timed questions (~32 min, ~96 sec each). Underline force words before picking. Pair with the night guide.",
+  "answerKey": "night-37-quiz-answers.json",
+  "answerDistribution": "A x5 B x5 C x5 D x5",
+  "questions": [
+    {
+      "id": "Q1",
+      "question": "Sync standby in another AZ for RDS failover.",
+      "options": {
+        "A": "Multi-AZ deployment",
+        "B": "Read replica",
+        "C": "DynamoDB global table",
+        "D": "Manual snapshot hourly"
+      }
+    },
+    {
+      "id": "Q2",
+      "question": "Relational multi-Region RPO 1s RTO under 1 minute.",
+      "options": {
+        "A": "Aurora Global Database",
+        "B": "RDS cross-Region read replica",
+        "C": "DynamoDB (non-relational)",
+        "D": "Single-AZ RDS + frequent snapshots"
+      }
+    },
+    {
+      "id": "Q3",
+      "question": "Frequent schema changes + global low latency.",
+      "options": {
+        "A": "DynamoDB",
+        "B": "Aurora + replicas",
+        "C": "RDS Multi-AZ",
+        "D": "Redshift"
+      }
+    },
+    {
+      "id": "Q4",
+      "question": "Aurora prod on large instances; reports on small.",
+      "options": {
+        "A": "Custom endpoints by capacity",
+        "B": "Default Aurora routing",
+        "C": "Reader endpoint for writes too",
+        "D": "Only instance endpoints forever"
+      }
+    },
+    {
+      "id": "Q5",
+      "question": "RDS MySQL auth token from EC2 instance profile.",
+      "options": {
+        "A": "Enable IAM database authentication",
+        "B": "Attach IAM role only",
+        "C": "SSL only",
+        "D": "STS without IAM DB auth"
+      }
+    },
+    {
+      "id": "Q6",
+      "question": "Aurora MySQL row delete → distributed SQS consumers.",
+      "options": {
+        "A": "RDS event subscription → SNS",
+        "B": "Native Lambda invoke → SQS",
+        "C": "RDS event → SQS directly as row trigger",
+        "D": "Only DynamoDB Streams"
+      }
+    },
+    {
+      "id": "Q7",
+      "question": "DynamoDB item update → email subscribers.",
+      "options": {
+        "A": "DAX + SNS",
+        "B": "Streams + Lambda + SNS",
+        "C": "Kinesis Adapter without enabling Streams",
+        "D": "Scan every minute"
+      }
+    },
+    {
+      "id": "Q8",
+      "question": ".NET Windows + Oracle; minimize code change; HA.",
+      "options": {
+        "A": "EKS Fargate refactor",
+        "B": "Beanstalk Multi-AZ + DMS to RDS Oracle Multi-AZ",
+        "C": "ECS Anywhere as first choice",
+        "D": "Keep Oracle on-prem only"
+      }
+    },
+    {
+      "id": "Q9",
+      "question": "API usually quiet; bursts within seconds.",
+      "options": {
+        "A": "API GW + EC2 ASG",
+        "B": "API GW + Lambda",
+        "C": "API GW + ECS ASG",
+        "D": "API GW + Beanstalk"
+      }
+    },
+    {
+      "id": "Q10",
+      "question": "Need 2 instances after AZ failure; peak 6.",
+      "options": {
+        "A": "Min 2 max 6 with 1 per AZ",
+        "B": "Min 4 max 6 across two AZs",
+        "C": "Min 2 max 4",
+        "D": "All six in one AZ"
+      }
+    },
+    {
+      "id": "Q11",
+      "question": "Per-process CPU on RDS OS.",
+      "options": {
+        "A": "CloudWatch CPUUtilization only",
+        "B": "SSH to RDS host with agent",
+        "C": "Enhanced Monitoring",
+        "D": "Inspector"
+      }
+    },
+    {
+      "id": "Q12",
+      "question": "Hot DynamoDB partitions / uneven WCU.",
+      "options": {
+        "A": "Low-cardinality keys",
+        "B": "Fewer partition keys",
+        "C": "High-cardinality partition keys",
+        "D": "Avoid sort keys always"
+      }
+    },
+    {
+      "id": "Q13",
+      "question": "Read replica vs Multi-AZ — replica is primarily?",
+      "options": {
+        "A": "Synchronous AZ failover",
+        "B": "Identical to Multi-AZ",
+        "C": "Async read scaling / DR with lag",
+        "D": "Only for DynamoDB"
+      }
+    },
+    {
+      "id": "Q14",
+      "question": "Homogeneous Oracle→Oracle migration tool of choice?",
+      "options": {
+        "A": "SCT required always",
+        "B": "Snowball only",
+        "C": "DMS",
+        "D": "OpenSearch"
+      }
+    },
+    {
+      "id": "Q15",
+      "question": "Predictable 9–5 traffic; morning slowness.",
+      "options": {
+        "A": "Wait for CPU dynamic scaling",
+        "B": "Predictive always if mixed sizes",
+        "C": "Scheduled scaling before 9",
+        "D": "Terminate ASG nightly"
+      }
+    },
+    {
+      "id": "Q16",
+      "question": "RDS event subscriptions notify mainly about?",
+      "options": {
+        "A": "Every INSERT/UPDATE",
+        "B": "CloudFront invalidations",
+        "C": "S3 puts",
+        "D": "Operational/instance events"
+      }
+    },
+    {
+      "id": "Q17",
+      "question": "Aurora cluster endpoint is for?",
+      "options": {
+        "A": "Load-balanced readers only",
+        "B": "ElastiCache",
+        "C": "Custom capacity groups",
+        "D": "Current primary/writer"
+      }
+    },
+    {
+      "id": "Q18",
+      "question": "Force words RPO/RTO across Regions for SQL → first map check?",
+      "options": {
+        "A": "S3 Transfer Acceleration",
+        "B": "NACL rules",
+        "C": "Instance Store",
+        "D": "Aurora Global vs cross-Region replica lag"
+      }
+    },
+    {
+      "id": "Q19",
+      "question": "IAM role on EC2 mentioning RDS without IAM DB auth enabled fails because?",
+      "options": {
+        "A": "Cost",
+        "B": "Wrong interface",
+        "C": "Fake magic",
+        "D": "Missing the toggle"
+      }
+    },
+    {
+      "id": "Q20",
+      "question": "Before options on a migration stem, underline what first?",
+      "options": {
+        "A": "Company brand colors",
+        "B": "Only the word cloud",
+        "C": "Employee names",
+        "D": "minimize change / engine / HA / time words"
+      }
+    }
+  ]
+}

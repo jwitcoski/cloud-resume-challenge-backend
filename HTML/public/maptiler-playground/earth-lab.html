@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MapTiler Earth Lab</title>
+  <link href="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.css" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #eef4ff;
+      --muted: #9fb0c9;
+      --panel: rgba(6, 10, 22, 0.82);
+      --line: rgba(255, 255, 255, 0.12);
+      --accent: #6ec8ff;
+      --warm: #ffb454;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      height: 100%;
+      overflow: hidden;
+      font-family: "Segoe UI", "Avenir Next", sans-serif;
+      color: var(--ink);
+      background: #02060f;
+    }
+
+    #map { position: absolute; inset: 0; }
+
+    .panel {
+      position: absolute;
+      z-index: 2;
+      top: 14px;
+      left: 14px;
+      width: min(380px, calc(100vw - 28px));
+      max-height: calc(100vh - 28px);
+      overflow: auto;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--panel);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 18px 48px rgba(0, 0, 0, 0.45);
+    }
+
+    .panel h1 {
+      margin: 0 0 4px;
+      font-size: 1.15rem;
+      font-weight: 650;
+    }
+
+    .panel .lede {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 0.86rem;
+      line-height: 1.4;
+    }
+
+    .label {
+      display: block;
+      margin: 12px 0 8px;
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    button, .tog {
+      appearance: none;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--ink);
+      font: inherit;
+      font-size: 0.8rem;
+      padding: 6px 11px;
+      cursor: pointer;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+
+    button:hover, .tog:hover {
+      background: rgba(110, 200, 255, 0.14);
+      border-color: rgba(110, 200, 255, 0.4);
+    }
+
+    button.active, .tog.active {
+      background: rgba(110, 200, 255, 0.22);
+      border-color: var(--accent);
+    }
+
+    button.warm.active {
+      background: rgba(255, 180, 84, 0.2);
+      border-color: var(--warm);
+    }
+
+    .probe {
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid var(--line);
+      font-size: 0.84rem;
+      line-height: 1.45;
+      min-height: 5.5rem;
+    }
+
+    .probe strong { color: var(--accent); }
+    .probe .place { font-weight: 650; margin-bottom: 4px; }
+    .probe .meta { color: var(--muted); }
+
+    .weather-bar {
+      display: none;
+      margin-top: 10px;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .weather-bar.on { display: flex; }
+
+    .weather-bar input[type="range"] {
+      flex: 1;
+      accent-color: var(--accent);
+    }
+
+    .weather-bar #timeLabel {
+      font-size: 0.72rem;
+      color: var(--muted);
+      min-width: 9.5rem;
+      text-align: right;
+    }
+
+    .hint {
+      margin: 12px 0 0;
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    .hint a { color: var(--accent); text-decoration: none; }
+
+    #pointerHud {
+      position: absolute;
+      z-index: 2;
+      right: 14px;
+      bottom: 14px;
+      min-width: 160px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--panel);
+      backdrop-filter: blur(12px);
+      font-size: 0.82rem;
+      line-height: 1.4;
+      color: var(--muted);
+      pointer-events: none;
+      white-space: pre-line;
+    }
+
+    #error {
+      display: none;
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      background: #070b14;
+      color: #ff8a80;
+      padding: 28px;
+      white-space: pre-wrap;
+      font: 15px/1.5 "Segoe UI", sans-serif;
+    }
+
+    .maplibregl-ctrl-top-right .maplibregl-ctrl {
+      margin: 10px 10px 0 0;
+    }
+    .maptiler-geocoding-control,
+    .input-group {
+      min-width: min(280px, 70vw);
+    }
+
+    @media (max-width: 720px) {
+      .panel {
+        top: auto;
+        bottom: 10px;
+        left: 10px;
+        right: 10px;
+        width: auto;
+        max-height: 48vh;
+      }
+      #pointerHud { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <div id="error"></div>
+  <div id="pointerHud">Move cursor for live weather</div>
+
+  <aside class="panel">
+    <h1>MapTiler Earth Lab</h1>
+    <p class="lede">
+      Globe · atmosphere · weather particles · 3D terrain · geocoding · elevation —
+      click anywhere to probe the planet.
+    </p>
+
+    <span class="label">Projection</span>
+    <div class="row" id="projectionRow">
+      <button type="button" class="active" data-proj="globe">Globe</button>
+      <button type="button" data-proj="mercator">Flat</button>
+    </div>
+
+    <span class="label">Basemap</span>
+    <div class="row" id="styleRow">
+      <button type="button" class="active" data-style="satellite">Satellite</button>
+      <button type="button" data-style="hybrid">Hybrid</button>
+      <button type="button" data-style="backdrop">Backdrop</button>
+      <button type="button" data-style="outdoor">Outdoor</button>
+      <button type="button" data-style="ocean">Ocean</button>
+    </div>
+
+    <span class="label">Layers</span>
+    <div class="row">
+      <button type="button" class="tog warm" id="btnWeather">Weather</button>
+      <button type="button" class="tog" id="btnTerrain">3D Terrain</button>
+      <button type="button" class="tog" id="btnPlay" disabled>Play forecast</button>
+    </div>
+
+    <div class="weather-bar" id="weatherBar">
+      <input type="range" id="timeSlider" min="0" max="100" value="0" />
+      <span id="timeLabel">—</span>
+    </div>
+
+    <span class="label">Dive in</span>
+    <div class="row" id="diveRow"></div>
+
+    <div class="probe" id="probe">
+      <div class="place">Click the map</div>
+      <div class="meta">Reverse geocode + elevation + local weather sample</div>
+    </div>
+
+    <p class="hint">
+      Uses your key from
+      <a href="../admin-boundaries/tool.html">admin-boundaries</a>.
+      Weather works best on Backdrop · terrain shines on Outdoor / Hybrid.
+    </p>
+  </aside>
+
+  <script src="../admin-boundaries/js/config.js"></script>
+  <script src="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.umd.min.js"></script>
+  <script src="https://cdn.maptiler.com/maptiler-weather/v3.1.1/maptiler-weather.umd.min.js"></script>
+  <script src="https://cdn.maptiler.com/maptiler-geocoding-control/v3.0.0/maptilersdk.umd.js"></script>
+  <script>
+    const STYLES = {
+      satellite: () => maptilersdk.MapStyle.SATELLITE,
+      hybrid: () => maptilersdk.MapStyle.HYBRID,
+      backdrop: () => maptilersdk.MapStyle.BACKDROP,
+      outdoor: () => maptilersdk.MapStyle.OUTDOOR,
+      ocean: () => maptilersdk.MapStyle.OCEAN,
+    };
+
+    const DIVES = [
+      { id: "orbit", label: "Orbit", center: [-20, 18], zoom: 1.4, pitch: 0, bearing: 0, globe: true, terrain: false },
+      { id: "fuji", label: "Mt. Fuji", center: [138.7274, 35.3606], zoom: 11.4, pitch: 68, bearing: -30, globe: false, terrain: true },
+      { id: "alps", label: "Alps", center: [7.9851, 46.0207], zoom: 11.8, pitch: 70, bearing: -18, globe: false, terrain: true },
+      { id: "everest", label: "Everest", center: [86.9250, 27.9881], zoom: 11.5, pitch: 72, bearing: 40, globe: false, terrain: true },
+      { id: "canyon", label: "Grand Canyon", center: [-112.1401, 36.0544], zoom: 11.3, pitch: 62, bearing: 35, globe: false, terrain: true },
+      { id: "reykjavik", label: "Reykjavík", center: [-21.9426, 64.1466], zoom: 11.5, pitch: 55, bearing: -20, globe: false, terrain: true },
+      { id: "nyc", label: "NYC", center: [-73.9857, 40.7484], zoom: 14, pitch: 55, bearing: 20, globe: false, terrain: false },
+    ];
+
+    function showError(msg) {
+      const el = document.getElementById("error");
+      el.style.display = "block";
+      el.textContent = msg;
+      console.error(msg);
+    }
+
+    function validateKey() {
+      const key = window.MAPTILER_API_KEY;
+      if (!key || key === "YOUR_MAPTILER_KEY_HERE") {
+        throw new Error(
+          "Missing MapTiler API key.\n\nCopy admin-boundaries/js/config.example.js → config.js"
+        );
+      }
+      return key;
+    }
+
+    if (typeof maptilersdk === "undefined") {
+      showError("MapTiler SDK failed to load.");
+    } else if (typeof maptilerweather === "undefined") {
+      showError("MapTiler Weather failed to load.");
+    } else {
+      try {
+        maptilersdk.config.apiKey = validateKey();
+
+        let activeStyle = "satellite";
+        let weatherOn = false;
+        let terrainOn = false;
+        let isPlaying = false;
+        let pointerLngLat = null;
+        let windLayer = null;
+        let tempLayer = null;
+        let marker = null;
+
+        const map = new maptilersdk.Map({
+          container: "map",
+          style: maptilersdk.MapStyle.SATELLITE,
+          center: [-20, 18],
+          zoom: 1.4,
+          projection: "globe",
+          halo: true,
+          space: true,
+          navigationControl: true,
+          geolocateControl: true,
+          terrainControl: true,
+          projectionControl: true,
+          fullscreenControl: true,
+          hash: true,
+        });
+
+        const gc = new maptilerGeocoder.GeocodingControl({
+          apiKey: maptilersdk.config.apiKey,
+          language: "en",
+          placeholder: "Search any place…",
+          marker: true,
+        });
+        map.addControl(gc, "top-right");
+
+        const probeEl = document.getElementById("probe");
+        const pointerHud = document.getElementById("pointerHud");
+        const weatherBar = document.getElementById("weatherBar");
+        const timeSlider = document.getElementById("timeSlider");
+        const timeLabel = document.getElementById("timeLabel");
+        const btnWeather = document.getElementById("btnWeather");
+        const btnTerrain = document.getElementById("btnTerrain");
+        const btnPlay = document.getElementById("btnPlay");
+
+        map.on("error", (e) => {
+          const message = String(e.error?.message || e.error || "");
+          if (message.includes("403") || message.includes("401")) {
+            showError("Map tiles blocked — allow " + location.origin + " on your MapTiler key.");
+          }
+        });
+
+        function setActive(rowId, datasetKey, value) {
+          document.querySelectorAll(`#${rowId} button`).forEach((b) => {
+            b.classList.toggle("active", b.dataset[datasetKey] === value);
+          });
+        }
+
+        function ensureWeatherLayers() {
+          if (windLayer && tempLayer) return;
+
+          tempLayer = new maptilerweather.TemperatureLayer({
+            id: "mt-temperature",
+            opacity: 0.75,
+          });
+
+          windLayer = new maptilerweather.WindLayer({
+            id: "mt-wind",
+            colorramp: maptilerweather.ColorRamp.builtin.NULL,
+            speed: 0.001,
+            fadeFactor: 0.03,
+            maxAmount: 256,
+            density: 180,
+            color: [255, 255, 255, 40],
+            fastColor: [255, 255, 255, 120],
+          });
+
+          windLayer.on("sourceReady", () => {
+            const start = windLayer.getAnimationStartDate();
+            const end = windLayer.getAnimationEndDate();
+            const now = windLayer.getAnimationTimeDate();
+            timeSlider.min = +start;
+            timeSlider.max = +end;
+            timeSlider.value = +now;
+            refreshTime();
+          });
+
+          windLayer.on("tick", () => {
+            refreshTime();
+            updatePointerWeather(pointerLngLat);
+          });
+
+          windLayer.on("animationTimeSet", refreshTime);
+        }
+
+        function refreshTime() {
+          if (!windLayer) return;
+          const d = windLayer.getAnimationTimeDate();
+          if (!d) return;
+          timeLabel.textContent = d.toLocaleString(undefined, {
+            weekday: "short",
+            month: "short",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+          timeSlider.value = +d;
+        }
+
+        function addWeatherToMap() {
+          ensureWeatherLayers();
+          // Prefer under labels; fall back to top if style has no Water layer
+          const beforeId = map.getLayer("Water") ? "Water" : undefined;
+          try {
+            if (!map.getLayer("mt-temperature")) {
+              if (beforeId) map.addLayer(tempLayer, beforeId);
+              else map.addLayer(tempLayer);
+            }
+            if (!map.getLayer("mt-wind")) {
+              map.addLayer(windLayer);
+            }
+          } catch (err) {
+            console.warn("Weather layer add:", err);
+            map.addLayer(tempLayer);
+            map.addLayer(windLayer);
+          }
+        }
+
+        function removeWeatherFromMap() {
+          isPlaying = false;
+          btnPlay.textContent = "Play forecast";
+          btnPlay.disabled = true;
+          weatherBar.classList.remove("on");
+          try {
+            if (windLayer) {
+              windLayer.animateByFactor(0);
+              if (map.getLayer("mt-wind")) map.removeLayer("mt-wind");
+            }
+            if (tempLayer && map.getLayer("mt-temperature")) {
+              map.removeLayer("mt-temperature");
+            }
+          } catch (_) { /* style swap may have cleared layers */ }
+          windLayer = null;
+          tempLayer = null;
+        }
+
+        async function enableWeather() {
+          weatherOn = true;
+          btnWeather.classList.add("active");
+          weatherBar.classList.add("on");
+          btnPlay.disabled = false;
+
+          // Weather composites read best on Backdrop
+          if (activeStyle !== "backdrop") {
+            activeStyle = "backdrop";
+            setActive("styleRow", "style", "backdrop");
+            await map.setStyle(STYLES.backdrop(), { diff: false });
+            map.once("style.load", () => {
+              map.setProjection("globe", { persist: true });
+              addWeatherToMap();
+              if (terrainOn) map.enableTerrain(1.35);
+            });
+          } else {
+            addWeatherToMap();
+          }
+        }
+
+        function disableWeather() {
+          weatherOn = false;
+          btnWeather.classList.remove("active");
+          removeWeatherFromMap();
+          pointerHud.textContent = "Weather off";
+        }
+
+        function setTerrain(on) {
+          terrainOn = on;
+          btnTerrain.classList.toggle("active", on);
+          if (on) map.enableTerrain(1.4);
+          else if (map.getTerrain()) map.disableTerrain();
+        }
+
+        function updatePointerWeather(lngLat) {
+          if (!lngLat || !weatherOn || !windLayer || !tempLayer) return;
+          const w = windLayer.pickAt(lngLat.lng, lngLat.lat);
+          const t = tempLayer.pickAt(lngLat.lng, lngLat.lat);
+          if (!w || !t) {
+            pointerHud.textContent = "No weather sample here";
+            return;
+          }
+          pointerHud.textContent =
+            `${t.value.toFixed(1)} °C\n` +
+            `${w.speedKilometersPerHour.toFixed(1)} km/h wind`;
+        }
+
+        async function probePoint(lngLat) {
+          const { lng, lat } = lngLat;
+          probeEl.innerHTML =
+            `<div class="place">Reading…</div>` +
+            `<div class="meta">${lat.toFixed(4)}, ${lng.toFixed(4)}</div>`;
+
+          if (!marker) {
+            marker = new maptilersdk.Marker({ color: "#6ec8ff" })
+              .setLngLat([lng, lat])
+              .addTo(map);
+          } else {
+            marker.setLngLat([lng, lat]);
+          }
+
+          let place = "Unknown place";
+          let elevText = "—";
+          let weatherText = weatherOn ? "…" : "enable Weather for sample";
+
+          try {
+            const rev = await maptilersdk.geocoding.reverse([lng, lat], { language: "en" });
+            place = rev?.features?.[0]?.place_name || place;
+          } catch (_) { /* ignore */ }
+
+          try {
+            const elev = await maptilersdk.elevation.at([lng, lat]);
+            const meters = Array.isArray(elev) ? elev[2] : elev;
+            if (typeof meters === "number" && !Number.isNaN(meters)) {
+              elevText = `${meters.toFixed(0)} m (${(meters * 3.28084).toFixed(0)} ft)`;
+            }
+          } catch (_) { /* ignore */ }
+
+          if (weatherOn && windLayer && tempLayer) {
+            const w = windLayer.pickAt(lng, lat);
+            const t = tempLayer.pickAt(lng, lat);
+            if (w && t) {
+              weatherText =
+                `${t.value.toFixed(1)} °C · ${w.speedKilometersPerHour.toFixed(1)} km/h wind`;
+            } else {
+              weatherText = "no sample (wait for tiles)";
+            }
+          }
+
+          probeEl.innerHTML =
+            `<div class="place">${place}</div>` +
+            `<div class="meta"><strong>Elevation</strong> ${elevText}</div>` +
+            `<div class="meta"><strong>Weather</strong> ${weatherText}</div>` +
+            `<div class="meta">${lat.toFixed(5)}, ${lng.toFixed(5)}</div>`;
+        }
+
+        // --- UI wiring ---
+        document.getElementById("projectionRow").addEventListener("click", (e) => {
+          const btn = e.target.closest("button");
+          if (!btn) return;
+          const proj = btn.dataset.proj;
+          setActive("projectionRow", "proj", proj);
+          map.setProjection(proj, { persist: true });
+        });
+
+        document.getElementById("styleRow").addEventListener("click", async (e) => {
+          const btn = e.target.closest("button");
+          if (!btn) return;
+          activeStyle = btn.dataset.style;
+          setActive("styleRow", "style", activeStyle);
+
+          const keepWeather = weatherOn;
+          const keepTerrain = terrainOn;
+          if (keepWeather) removeWeatherFromMap();
+
+          await map.setStyle(STYLES[activeStyle](), { diff: false });
+          map.once("style.load", () => {
+            const proj = document.querySelector("#projectionRow button.active")?.dataset.proj || "globe";
+            map.setProjection(proj, { persist: true });
+            if (keepTerrain) map.enableTerrain(1.4);
+            if (keepWeather) {
+              weatherOn = true;
+              btnWeather.classList.add("active");
+              weatherBar.classList.add("on");
+              btnPlay.disabled = false;
+              addWeatherToMap();
+            }
+          });
+        });
+
+        btnWeather.addEventListener("click", () => {
+          if (weatherOn) disableWeather();
+          else enableWeather();
+        });
+
+        btnTerrain.addEventListener("click", () => setTerrain(!terrainOn));
+
+        btnPlay.addEventListener("click", () => {
+          if (!windLayer || !tempLayer) return;
+          isPlaying = !isPlaying;
+          if (isPlaying) {
+            windLayer.animateByFactor(3600);
+            tempLayer.animateByFactor(3600);
+            btnPlay.textContent = "Pause";
+            btnPlay.classList.add("active");
+          } else {
+            windLayer.animateByFactor(0);
+            tempLayer.animateByFactor(0);
+            btnPlay.textContent = "Play forecast";
+            btnPlay.classList.remove("active");
+          }
+        });
+
+        timeSlider.addEventListener("input", () => {
+          if (!windLayer || !tempLayer) return;
+          const t = parseInt(timeSlider.value / 1000, 10);
+          windLayer.setAnimationTime(t);
+          tempLayer.setAnimationTime(t);
+        });
+
+        const diveRow = document.getElementById("diveRow");
+        DIVES.forEach((d) => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.textContent = d.label;
+          btn.addEventListener("click", () => {
+            setActive("projectionRow", "proj", d.globe ? "globe" : "mercator");
+            map.setProjection(d.globe ? "globe" : "mercator", { persist: true });
+            setTerrain(d.terrain);
+            if (d.terrain && (activeStyle === "satellite" || activeStyle === "ocean")) {
+              // Outdoor/hybrid show more relief context; leave style if user chose outdoor already
+            }
+            map.flyTo({
+              center: d.center,
+              zoom: d.zoom,
+              pitch: d.pitch,
+              bearing: d.bearing,
+              speed: 0.55,
+              curve: 1.35,
+              essential: true,
+            });
+          });
+          diveRow.appendChild(btn);
+        });
+
+        map.on("mousemove", (e) => {
+          pointerLngLat = e.lngLat;
+          if (weatherOn) updatePointerWeather(e.lngLat);
+        });
+
+        map.on("click", (e) => {
+          probePoint(e.lngLat);
+        });
+
+        // Gentle idle spin in orbit
+        let spin = true;
+        map.on("movestart", () => { spin = false; });
+        map.on("load", () => {
+          const secondsPerRevolution = 200;
+          function rotate() {
+            if (
+              spin &&
+              map.getZoom() < 2.2 &&
+              document.querySelector("#projectionRow button.active")?.dataset.proj === "globe" &&
+              !map.isMoving()
+            ) {
+              const c = map.getCenter();
+              c.lng -= 360 / secondsPerRevolution / 60;
+              map.setCenter(c);
+            }
+            requestAnimationFrame(rotate);
+          }
+          rotate();
+        });
+      } catch (err) {
+        showError(err.message || String(err));
+      }
+    }
+  </script>
+</body>
+</html>

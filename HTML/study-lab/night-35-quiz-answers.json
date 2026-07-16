@@ -1,0 +1,112 @@
+{
+  "night": 35,
+  "title": "Exam stem method",
+  "answerDistribution": {
+    "A": 5,
+    "B": 5,
+    "C": 5,
+    "D": 5
+  },
+  "answers": [
+    {
+      "id": "Q1",
+      "correct": "A",
+      "explanation": "Story is filler. Force words decide the answer — Night 35 method card."
+    },
+    {
+      "id": "Q2",
+      "correct": "A",
+      "explanation": "Networking constraints eliminate DX/VPN/encryption distractors."
+    },
+    {
+      "id": "Q3",
+      "correct": "A",
+      "explanation": "Both are security-ish; only WAF blocks HTTP SQLi patterns."
+    },
+    {
+      "id": "Q4",
+      "correct": "A",
+      "explanation": "Partial IAM without the RDS feature toggle."
+    },
+    {
+      "id": "Q5",
+      "correct": "A",
+      "explanation": "Pre-commit reduces near-miss persuasion."
+    },
+    {
+      "id": "Q6",
+      "correct": "B",
+      "explanation": "Cost adjective eliminates heavy multi-Region app deploys."
+    },
+    {
+      "id": "Q7",
+      "correct": "B",
+      "explanation": "Each correct option covers a distinct constraint."
+    },
+    {
+      "id": "Q8",
+      "correct": "B",
+      "explanation": "Encryption does not change routing; VPC endpoints do."
+    },
+    {
+      "id": "Q9",
+      "correct": "B",
+      "explanation": "Ask adjectives (least ops / most cost-effective) break ties."
+    },
+    {
+      "id": "Q10",
+      "correct": "B",
+      "explanation": "Keyword post-mortem scales; letter memorization does not."
+    },
+    {
+      "id": "Q11",
+      "correct": "C",
+      "explanation": "Throttling still needs configuration for backend protection stems."
+    },
+    {
+      "id": "Q12",
+      "correct": "C",
+      "explanation": "Engine hint narrows family; numbers/blast-radius force the pick."
+    },
+    {
+      "id": "Q13",
+      "correct": "C",
+      "explanation": "Method card step 4-5."
+    },
+    {
+      "id": "Q14",
+      "correct": "C",
+      "explanation": "Distractor type: too much change vs Beanstalk rehost."
+    },
+    {
+      "id": "Q15",
+      "correct": "C",
+      "explanation": "Night 35 core sequence."
+    },
+    {
+      "id": "Q16",
+      "correct": "D",
+      "explanation": "Interface family → EFS not S3/EBS."
+    },
+    {
+      "id": "Q17",
+      "correct": "D",
+      "explanation": "Seconds → Lambda; minutes → ASG-class compute."
+    },
+    {
+      "id": "Q18",
+      "correct": "D",
+      "explanation": "Week 6 exists to train that decoding muscle."
+    },
+    {
+      "id": "Q19",
+      "correct": "D",
+      "explanation": "Near-misses fail one constraint."
+    },
+    {
+      "id": "Q20",
+      "correct": "D",
+      "explanation": "Domain keyword maps + method repetition."
+    }
+  ]
+}

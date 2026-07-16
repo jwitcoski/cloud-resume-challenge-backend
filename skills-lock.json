@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "maptiler": {
+      "source": "maptiler/maptiler-skills",
+      "sourceType": "github",
+      "skillPath": "skills/SKILL.md",
+      "computedHash": "de7fd50ae9f484eee187b206a6eaa471733cedf5afaffdd3ded0847505a1c9ff"
+    }
+  }
+}

@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MapTiler Pin Quest</title>
+  <link href="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.css" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #f3f6ff;
+      --muted: #9aa8c2;
+      --panel: rgba(8, 12, 24, 0.9);
+      --line: rgba(255, 255, 255, 0.14);
+      --accent: #6ec8ff;
+      --good: #5ddea8;
+      --warn: #ffb454;
+      --bad: #ff7b7b;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      height: 100%;
+      overflow: hidden;
+      font-family: "Segoe UI", "Avenir Next", sans-serif;
+      color: var(--ink);
+      background: #02060f;
+    }
+
+    #map { position: absolute; inset: 0; }
+
+    .hud {
+      position: absolute;
+      z-index: 3;
+      top: 14px;
+      left: 14px;
+      width: min(400px, calc(100vw - 28px));
+      padding: 16px 16px 14px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--panel);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 18px 48px rgba(0, 0, 0, 0.45);
+    }
+
+    .hud h1 {
+      margin: 0 0 2px;
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+
+    .lede {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-size: 0.86rem;
+      line-height: 1.4;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .stat {
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .stat .k {
+      display: block;
+      font-size: 0.68rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .stat .v {
+      font-size: 1.05rem;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .phase {
+      margin: 0 0 10px;
+      font-size: 0.9rem;
+      line-height: 1.45;
+      min-height: 2.8em;
+    }
+
+    .phase strong { color: var(--accent); }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    button {
+      appearance: none;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--ink);
+      font: inherit;
+      font-size: 0.85rem;
+      padding: 8px 14px;
+      cursor: pointer;
+    }
+
+    button:hover { background: rgba(110, 200, 255, 0.16); border-color: rgba(110, 200, 255, 0.45); }
+    button:disabled { opacity: 0.4; cursor: not-allowed; }
+    button.primary {
+      background: rgba(110, 200, 255, 0.22);
+      border-color: var(--accent);
+      font-weight: 650;
+    }
+    button.good {
+      background: rgba(93, 222, 168, 0.18);
+      border-color: var(--good);
+    }
+
+    .result {
+      display: none;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid var(--line);
+      font-size: 0.86rem;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+
+    .result.on { display: block; }
+    .result .score-line { color: var(--ink); font-weight: 650; margin-bottom: 4px; }
+
+    .hint {
+      margin: 12px 0 0;
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    .hint a { color: var(--accent); text-decoration: none; }
+
+    .toast {
+      position: absolute;
+      z-index: 4;
+      left: 50%;
+      bottom: 24px;
+      transform: translateX(-50%);
+      padding: 10px 16px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      color: var(--ink);
+      font-size: 0.88rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+      white-space: nowrap;
+      max-width: calc(100vw - 32px);
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .toast.show { opacity: 1; }
+
+    #error {
+      display: none;
+      position: absolute;
+      inset: 0;
+      z-index: 6;
+      background: #070b14;
+      color: #ff8a80;
+      padding: 28px;
+      white-space: pre-wrap;
+      font: 15px/1.5 "Segoe UI", sans-serif;
+    }
+
+    .final {
+      display: none;
+      position: absolute;
+      z-index: 5;
+      inset: 0;
+      background: rgba(2, 6, 15, 0.78);
+      backdrop-filter: blur(8px);
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .final.on { display: flex; }
+
+    .final-card {
+      width: min(420px, 100%);
+      padding: 28px 24px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(10, 14, 28, 0.95);
+      text-align: center;
+    }
+
+    .final-card h2 { margin: 0 0 8px; font-size: 1.5rem; }
+    .final-card p { margin: 0 0 18px; color: var(--muted); }
+    .final-card .big {
+      font-size: 2.4rem;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+
+    @media (max-width: 640px) {
+      .hud {
+        top: auto;
+        bottom: 10px;
+        left: 10px;
+        right: 10px;
+        width: auto;
+        max-height: 46vh;
+        overflow: auto;
+      }
+      .toast { bottom: calc(46vh + 18px); }
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <div id="error"></div>
+  <div class="toast" id="toast"></div>
+
+  <aside class="hud">
+    <h1>MapTiler Pin Quest</h1>
+    <p class="lede">Scout a mystery satellite view, then pin where you think you are on the globe.</p>
+
+    <div class="stats">
+      <div class="stat"><span class="k">Round</span><span class="v" id="statRound">0 / 5</span></div>
+      <div class="stat"><span class="k">Score</span><span class="v" id="statScore">0</span></div>
+      <div class="stat"><span class="k">Best hit</span><span class="v" id="statBest">—</span></div>
+    </div>
+
+    <p class="phase" id="phase">
+      Ready when you are. Five rounds · closer pin = more points.
+    </p>
+
+    <div class="row">
+      <button type="button" class="primary" id="btnPrimary">Start game</button>
+      <button type="button" id="btnSecondary" disabled>Skip scout</button>
+    </div>
+
+    <div class="result" id="result"></div>
+
+    <p class="hint">
+      Built with MapTiler SDK (satellite, globe, markers, elevation).
+      <a href="./earth-lab.html">Earth Lab</a>
+    </p>
+  </aside>
+
+  <div class="final" id="final">
+    <div class="final-card">
+      <h2>Run complete</h2>
+      <div class="big" id="finalScore">0</div>
+      <p id="finalBlurb">Nice exploring.</p>
+      <div class="row" style="justify-content:center">
+        <button type="button" class="primary" id="btnAgain">Play again</button>
+        <button type="button" id="btnLab">Earth Lab</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../admin-boundaries/js/config.js"></script>
+  <script src="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.umd.min.js"></script>
+  <script>
+    /** Curated landmarks — satellite looks distinctive at scout zoom */
+    const LOCATIONS = [
+      { name: "Great Pyramid of Giza", hint: "Desert plateau beside a megacity", lng: 31.1342, lat: 29.9792, zoom: 15.2, bearing: 20, pitch: 45 },
+      { name: "Machu Picchu", hint: "Cloud-forest ridge ruins", lng: -72.5450, lat: -13.1631, zoom: 14.8, bearing: -40, pitch: 55 },
+      { name: "Mount Fuji", hint: "Lonely stratovolcano", lng: 138.7274, lat: 35.3606, zoom: 11.8, bearing: -25, pitch: 60 },
+      { name: "Grand Canyon", hint: "Mile-deep river gash", lng: -112.1401, lat: 36.0544, zoom: 12.2, bearing: 35, pitch: 55 },
+      { name: "Uluru", hint: "Red sandstone monolith", lng: 131.0369, lat: -25.3444, zoom: 13.5, bearing: 10, pitch: 40 },
+      { name: "Niagara Falls", hint: "Three waterfalls on a border river", lng: -79.0750, lat: 43.0828, zoom: 14.2, bearing: 0, pitch: 50 },
+      { name: "Sydney Opera House", hint: "Harbor shells", lng: 151.2153, lat: -33.8568, zoom: 15.4, bearing: 40, pitch: 45 },
+      { name: "Santorini caldera", hint: "White cliffs around a flooded crater", lng: 25.3753, lat: 36.4618, zoom: 12.6, bearing: -15, pitch: 50 },
+      { name: "Victoria Falls", hint: "Smoke that thunders", lng: 25.8572, lat: -17.9243, zoom: 13.8, bearing: 20, pitch: 45 },
+      { name: "Matterhorn", hint: "Pyramid peak on an alpine border", lng: 7.6586, lat: 45.9763, zoom: 12.5, bearing: -30, pitch: 65 },
+      { name: "Central Park", hint: "Rectangle of green in a dense grid", lng: -73.9654, lat: 40.7829, zoom: 13.8, bearing: 0, pitch: 40 },
+      { name: "Mount Everest", hint: "Highest roof on Earth", lng: 86.9250, lat: 27.9881, zoom: 12.2, bearing: 50, pitch: 65 },
+      { name: "Dubai Palm Jumeirah", hint: "Palm-shaped artificial islands", lng: 55.1187, lat: 25.1124, zoom: 13.2, bearing: 0, pitch: 35 },
+      { name: "Stonehenge", hint: "Circle of standing stones on chalk plain", lng: -1.8262, lat: 51.1789, zoom: 15.6, bearing: 0, pitch: 40 },
+      { name: "Iguazu Falls", hint: "Horseshoe curtain of falls", lng: -54.4400, lat: -25.6866, zoom: 13.5, bearing: -20, pitch: 50 },
+      { name: "Namib dunes", hint: "Towering orange sand sea by the Atlantic", lng: 15.4078, lat: -24.7284, zoom: 12.0, bearing: 15, pitch: 45 },
+    ];
+
+    const ROUNDS = 5;
+    const MAX_ROUND_SCORE = 5000;
+
+    const state = {
+      phase: "idle", // idle | scouting | guessing | reveal | done
+      round: 0,
+      score: 0,
+      bestKm: null,
+      deck: [],
+      current: null,
+      guessLngLat: null,
+      guessMarker: null,
+      truthMarker: null,
+    };
+
+    function showError(msg) {
+      const el = document.getElementById("error");
+      el.style.display = "block";
+      el.textContent = msg;
+    }
+
+    function toast(msg) {
+      const el = document.getElementById("toast");
+      el.textContent = msg;
+      el.classList.add("show");
+      clearTimeout(toast._t);
+      toast._t = setTimeout(() => el.classList.remove("show"), 2200);
+    }
+
+    function validateKey() {
+      const key = window.MAPTILER_API_KEY;
+      if (!key || key === "YOUR_MAPTILER_KEY_HERE") {
+        throw new Error("Missing MapTiler API key — copy admin-boundaries/js/config.example.js → config.js");
+      }
+      return key;
+    }
+
+    function haversineKm(a, b) {
+      const toRad = (d) => (d * Math.PI) / 180;
+      const R = 6371;
+      const dLat = toRad(b.lat - a.lat);
+      const dLng = toRad(b.lng - a.lng);
+      const lat1 = toRad(a.lat);
+      const lat2 = toRad(b.lat);
+      const h =
+        Math.sin(dLat / 2) ** 2 +
+        Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLng / 2) ** 2;
+      return 2 * R * Math.asin(Math.min(1, Math.sqrt(h)));
+    }
+
+    /** Soft falloff: perfect pin ≈ 5000, ~2000 km ≈ half, far away → few points */
+    function scoreFromKm(km) {
+      return Math.round(MAX_ROUND_SCORE * Math.exp(-km / 1500));
+    }
+
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function fmtKm(km) {
+      if (km < 1) return `${Math.round(km * 1000)} m`;
+      if (km < 100) return `${km.toFixed(1)} km`;
+      return `${Math.round(km)} km`;
+    }
+
+    function updateStats() {
+      document.getElementById("statRound").textContent =
+        state.phase === "idle" ? `0 / ${ROUNDS}` : `${Math.min(state.round, ROUNDS)} / ${ROUNDS}`;
+      document.getElementById("statScore").textContent = String(state.score);
+      document.getElementById("statBest").textContent =
+        state.bestKm == null ? "—" : fmtKm(state.bestKm);
+    }
+
+    function setPhaseText(html) {
+      document.getElementById("phase").innerHTML = html;
+    }
+
+    function clearOverlayLayers(map) {
+      if (map.getLayer("guess-line")) map.removeLayer("guess-line");
+      if (map.getSource("guess-line")) map.removeSource("guess-line");
+      if (state.guessMarker) {
+        state.guessMarker.remove();
+        state.guessMarker = null;
+      }
+      if (state.truthMarker) {
+        state.truthMarker.remove();
+        state.truthMarker = null;
+      }
+      state.guessLngLat = null;
+      document.getElementById("result").classList.remove("on");
+      document.getElementById("result").innerHTML = "";
+    }
+
+    if (typeof maptilersdk === "undefined") {
+      showError("MapTiler SDK failed to load.");
+    } else {
+      try {
+        maptilersdk.config.apiKey = validateKey();
+
+        const map = new maptilersdk.Map({
+          container: "map",
+          style: maptilersdk.MapStyle.SATELLITE,
+          center: [10, 20],
+          zoom: 1.5,
+          projection: "globe",
+          halo: true,
+          space: true,
+          navigationControl: true,
+          hash: false,
+        });
+
+        const btnPrimary = document.getElementById("btnPrimary");
+        const btnSecondary = document.getElementById("btnSecondary");
+        const finalEl = document.getElementById("final");
+
+        map.on("error", (e) => {
+          const message = String(e.error?.message || e.error || "");
+          if (message.includes("403") || message.includes("401")) {
+            showError("Map tiles blocked — allow " + location.origin + " on your MapTiler key.");
+          }
+        });
+
+        function goIdleWorld() {
+          map.setProjection("globe", { persist: true });
+          map.easeTo({
+            center: [10, 20],
+            zoom: 1.5,
+            pitch: 0,
+            bearing: 0,
+            duration: 900,
+          });
+        }
+
+        async function startScout() {
+          clearOverlayLayers(map);
+          state.phase = "scouting";
+          state.current = state.deck[state.round - 1];
+          state.guessLngLat = null;
+
+          btnPrimary.textContent = "I'm ready to guess";
+          btnPrimary.disabled = false;
+          btnPrimary.className = "primary";
+          btnSecondary.disabled = false;
+          btnSecondary.textContent = "Skip to guess";
+
+          setPhaseText(
+            `<strong>Scout</strong> — look around this mystery spot.<br>` +
+            `Hint: <em>${state.current.hint}</em>`
+          );
+          updateStats();
+
+          await map.setStyle(maptilersdk.MapStyle.SATELLITE, { diff: false });
+          map.once("style.load", () => {
+            map.setProjection("mercator", { persist: true });
+            map.jumpTo({
+              center: [state.current.lng, state.current.lat],
+              zoom: state.current.zoom,
+              bearing: state.current.bearing,
+              pitch: state.current.pitch,
+            });
+            toast("Look around — no labels on purpose");
+          });
+        }
+
+        async function startGuessing() {
+          state.phase = "guessing";
+          state.guessLngLat = null;
+          if (state.guessMarker) {
+            state.guessMarker.remove();
+            state.guessMarker = null;
+          }
+
+          btnPrimary.textContent = "Confirm pin";
+          btnPrimary.disabled = true;
+          btnPrimary.className = "primary";
+          btnSecondary.disabled = true;
+          btnSecondary.textContent = "Skip scout";
+
+          setPhaseText(
+            `<strong>Guess</strong> — click the globe to drop your pin, then confirm.`
+          );
+
+          await map.setStyle(maptilersdk.MapStyle.DATAVIZ.DARK, { diff: false });
+          map.once("style.load", () => {
+            map.setProjection("globe", { persist: true });
+            map.easeTo({
+              center: [10, 20],
+              zoom: 1.6,
+              pitch: 0,
+              bearing: 0,
+              duration: 1200,
+            });
+            toast("Drop a pin anywhere on Earth");
+          });
+        }
+
+        async function submitGuess() {
+          if (!state.guessLngLat || !state.current) return;
+          state.phase = "reveal";
+
+          const truth = { lng: state.current.lng, lat: state.current.lat };
+          const km = haversineKm(state.guessLngLat, truth);
+          const pts = scoreFromKm(km);
+          state.score += pts;
+          if (state.bestKm == null || km < state.bestKm) state.bestKm = km;
+
+          btnPrimary.disabled = true;
+          btnSecondary.disabled = true;
+
+          // Reveal markers + great-circle line
+          if (state.truthMarker) state.truthMarker.remove();
+          state.truthMarker = new maptilersdk.Marker({ color: "#5ddea8" })
+            .setLngLat([truth.lng, truth.lat])
+            .setPopup(
+              new maptilersdk.Popup().setHTML(
+                `<strong>${state.current.name}</strong><br/>Target`
+              )
+            )
+            .addTo(map);
+          state.truthMarker.togglePopup();
+
+          if (map.getLayer("guess-line")) map.removeLayer("guess-line");
+          if (map.getSource("guess-line")) map.removeSource("guess-line");
+          map.addSource("guess-line", {
+            type: "geojson",
+            data: {
+              type: "Feature",
+              geometry: {
+                type: "LineString",
+                coordinates: [
+                  [state.guessLngLat.lng, state.guessLngLat.lat],
+                  [truth.lng, truth.lat],
+                ],
+              },
+            },
+          });
+          map.addLayer({
+            id: "guess-line",
+            type: "line",
+            source: "guess-line",
+            paint: {
+              "line-color": "#ffb454",
+              "line-width": 2.5,
+              "line-dasharray": [1.5, 1.5],
+            },
+          });
+
+          // Fit both points
+          const bounds = new maptilersdk.LngLatBounds();
+          bounds.extend([state.guessLngLat.lng, state.guessLngLat.lat]);
+          bounds.extend([truth.lng, truth.lat]);
+          map.fitBounds(bounds, { padding: 80, duration: 1600, maxZoom: 8 });
+
+          let elevText = "";
+          try {
+            const elev = await maptilersdk.elevation.at([truth.lng, truth.lat]);
+            const m = Array.isArray(elev) ? elev[2] : elev;
+            if (typeof m === "number" && !Number.isNaN(m)) {
+              elevText = ` · elevation ${m.toFixed(0)} m`;
+            }
+          } catch (_) { /* optional */ }
+
+          let grade = "Nice try";
+          if (km < 25) grade = "Unreal — bullseye";
+          else if (km < 150) grade = "Excellent";
+          else if (km < 500) grade = "Solid";
+          else if (km < 1500) grade = "In the neighborhood";
+          else grade = "Wrong hemisphere energy";
+
+          const result = document.getElementById("result");
+          result.classList.add("on");
+          result.innerHTML =
+            `<div class="score-line">+${pts.toLocaleString()} pts · ${fmtKm(km)} away</div>` +
+            `It was <strong style="color:var(--good)">${state.current.name}</strong>${elevText}. ${grade}.`;
+
+          setPhaseText(`<strong>Reveal</strong> — ${grade.toLowerCase()}.`);
+          updateStats();
+
+          const more = state.round < ROUNDS;
+          btnPrimary.textContent = more ? "Next round" : "See final score";
+          btnPrimary.disabled = false;
+          btnPrimary.className = more ? "primary" : "good";
+          btnSecondary.disabled = true;
+        }
+
+        function finishGame() {
+          state.phase = "done";
+          document.getElementById("finalScore").textContent = state.score.toLocaleString();
+          const avg = state.score / ROUNDS;
+          let blurb = "Keep exploring.";
+          if (avg > 3500) blurb = "Cartographer vibes. You read the satellite like a pro.";
+          else if (avg > 2000) blurb = "Strong sense of place — a few more runs and you’ll crush it.";
+          else if (avg > 1000) blurb = "Decent start. Scout longer next time before you pin.";
+          else blurb = "Earth is big. Scout the texture, rivers, and coastlines next run.";
+          if (state.bestKm != null) blurb += ` Best pin: ${fmtKm(state.bestKm)}.`;
+          document.getElementById("finalBlurb").textContent = blurb;
+          finalEl.classList.add("on");
+        }
+
+        function startGame() {
+          finalEl.classList.remove("on");
+          state.phase = "idle";
+          state.round = 0;
+          state.score = 0;
+          state.bestKm = null;
+          state.deck = shuffle(LOCATIONS).slice(0, ROUNDS);
+          clearOverlayLayers(map);
+          updateStats();
+          nextRound();
+        }
+
+        function nextRound() {
+          if (state.round >= ROUNDS) {
+            finishGame();
+            return;
+          }
+          state.round += 1;
+          updateStats();
+          startScout();
+        }
+
+        btnPrimary.addEventListener("click", () => {
+          if (state.phase === "idle" || state.phase === "done") {
+            startGame();
+          } else if (state.phase === "scouting") {
+            startGuessing();
+          } else if (state.phase === "guessing") {
+            submitGuess();
+          } else if (state.phase === "reveal") {
+            if (state.round >= ROUNDS) finishGame();
+            else nextRound();
+          }
+        });
+
+        btnSecondary.addEventListener("click", () => {
+          if (state.phase === "scouting") startGuessing();
+        });
+
+        document.getElementById("btnAgain").addEventListener("click", startGame);
+        document.getElementById("btnLab").addEventListener("click", () => {
+          location.href = "./earth-lab.html";
+        });
+
+        map.on("click", (e) => {
+          if (state.phase !== "guessing") return;
+          state.guessLngLat = e.lngLat;
+          if (state.guessMarker) state.guessMarker.remove();
+          state.guessMarker = new maptilersdk.Marker({ color: "#6ec8ff", draggable: true })
+            .setLngLat(e.lngLat)
+            .addTo(map);
+
+          state.guessMarker.on("dragend", () => {
+            state.guessLngLat = state.guessMarker.getLngLat();
+          });
+
+          btnPrimary.disabled = false;
+          toast("Pin placed — confirm when ready");
+        });
+
+        map.on("load", () => {
+          updateStats();
+          goIdleWorld();
+        });
+      } catch (err) {
+        showError(err.message || String(err));
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,112 @@
+{
+  "night": 38,
+  "title": "Security keywords",
+  "answerDistribution": {
+    "A": 5,
+    "B": 5,
+    "C": 5,
+    "D": 5
+  },
+  "answers": [
+    {
+      "id": "Q1",
+      "correct": "A",
+      "explanation": "Prevention L7 + multi-account FMS."
+    },
+    {
+      "id": "Q2",
+      "correct": "A",
+      "explanation": "Shield Advanced for sophisticated DDoS."
+    },
+    {
+      "id": "Q3",
+      "correct": "A",
+      "explanation": "Macie."
+    },
+    {
+      "id": "Q4",
+      "correct": "A",
+      "explanation": "Custom key store."
+    },
+    {
+      "id": "Q5",
+      "correct": "A",
+      "explanation": "EKS secrets encryption feature."
+    },
+    {
+      "id": "Q6",
+      "correct": "B",
+      "explanation": "Egress-only IGW map."
+    },
+    {
+      "id": "Q7",
+      "correct": "B",
+      "explanation": "SG inbound TCP."
+    },
+    {
+      "id": "Q8",
+      "correct": "B",
+      "explanation": "Artifact."
+    },
+    {
+      "id": "Q9",
+      "correct": "B",
+      "explanation": "Client master key never to AWS."
+    },
+    {
+      "id": "Q10",
+      "correct": "B",
+      "explanation": "VPC endpoints — also a security/network stem."
+    },
+    {
+      "id": "Q11",
+      "correct": "C",
+      "explanation": "Detection ≠ block."
+    },
+    {
+      "id": "Q12",
+      "correct": "C",
+      "explanation": "FMS centralizes."
+    },
+    {
+      "id": "Q13",
+      "correct": "C",
+      "explanation": "Solves different requirement distractor."
+    },
+    {
+      "id": "Q14",
+      "correct": "C",
+      "explanation": "VPC-level, not ALB WAF substitute."
+    },
+    {
+      "id": "Q15",
+      "correct": "C",
+      "explanation": "AUTH token parameter."
+    },
+    {
+      "id": "Q16",
+      "correct": "D",
+      "explanation": "AD Connector + roles pattern."
+    },
+    {
+      "id": "Q17",
+      "correct": "D",
+      "explanation": "Night 38 decision order."
+    },
+    {
+      "id": "Q18",
+      "correct": "D",
+      "explanation": "Wrong product family trap."
+    },
+    {
+      "id": "Q19",
+      "correct": "D",
+      "explanation": "DDoS force word."
+    },
+    {
+      "id": "Q20",
+      "correct": "D",
+      "explanation": "etcd vs volume encryption."
+    }
+  ]
+}

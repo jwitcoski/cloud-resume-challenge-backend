@@ -1,0 +1,180 @@
+{
+    "tiersFound":  4,
+    "tiersTotal":  6,
+    "tierWinsScaffold":  {
+                             "data":  {
+                                          "cost":  "ElastiCache cache-aside reduces Aurora read load",
+                                          "security":  "Aurora/DynamoDB in private subnets; SG ingress from Lambda SG only",
+                                          "resilience":  "Aurora Multi-AZ; PITR + AWS Backup; DynamoDB PITR"
+                                      },
+                             "network":  {
+                                             "cost":  "VPC endpoints for S3/ECR vs NAT data processing",
+                                             "security":  "Private subnets for compute ENIs; no 0.0.0.0/0 on data SGs",
+                                             "resilience":  "2-AZ subnets; document single-NAT AZ risk"
+                                         },
+                             "analytics":  {
+                                               "cost":  "Athena partitions + lifecycle on old export prefixes",
+                                               "security":  "S3 bucket policies; IAM on Athena workgroup",
+                                               "resilience":  "Iceberg snapshots for point-in-time reads"
+                                           },
+                             "edge":  {
+                                          "cost":  "CachingOptimized static; CachingDisabled on wiki API paths until safe TTL",
+                                          "security":  "Cognito JWT on wiki writes; TLS at CloudFront",
+                                          "resilience":  "Route 53 failover + health check on PRIMARY (Night 25)"
+                                      },
+                             "application":  {
+                                                 "cost":  "Right-size Lambda memory; API GW usage plans for partners",
+                                                 "security":  "Secrets Manager + KMS for Cognito secret; least-privilege Lambda IAM",
+                                                 "resilience":  "Idempotent SQS handlers; Lambda error handling on async paths"
+                                             },
+                             "pipeline":  {
+                                              "cost":  "Scheduled Fargate vs 24/7; lifecycle iceland/ -\u003e IA -\u003e Glacier",
+                                              "security":  "ECS execution vs task role split; Step Functions iam:PassRole scoped",
+                                              "resilience":  "SQS DLQ; SNS failure fan-out; Step Functions Catch per step"
+                                          }
+                         },
+    "region":  "us-east-1",
+    "tiers":  {
+                  "data":  {
+                               "found":  false,
+                               "aurora":  {
+                                              "clusterId":  "saa-study-gsa-aurora",
+                                              "found":  false,
+                                              "status":  null
+                                          },
+                               "elasticache":  {
+                                                   "clusterId":  "saa-study-gsa-redis",
+                                                   "found":  false
+                                               },
+                               "tier":  "data",
+                               "note":  "Aurora OLTP source of truth; Redis cache-aside (Night 23) â€” OK if torn down"
+                           },
+                  "network":  {
+                                  "note":  "Single NAT AZ risk (Night 9); S3/ECR endpoints reduce NAT GB",
+                                  "found":  true,
+                                  "natGatewayCount":  0,
+                                  "cidr":  "10.0.0.0/16",
+                                  "tier":  "network",
+                                  "vpcId":  "vpc-021a5e2236174ef20",
+                                  "vpcIdsFile":  "C:\\Users\\jwitc\\Documents\\Cloud Resume Challenge\\HTML\\study-lab\\night-9-vpc-ids.json"
+                              },
+                  "analytics":  {
+                                    "found":  false,
+                                    "athenaWorkgroup":  {
+                                                            "name":  "saa-study-night24",
+                                                            "found":  false
+                                                        },
+                                    "glueDatabase":  {
+                                                         "name":  "saa_study_gsa_night24",
+                                                         "found":  false
+                                                     },
+                                    "tier":  "analytics",
+                                    "note":  "Athena on S3 Iceberg â€” not for live OLTP writes"
+                                },
+                  "edge":  {
+                               "originsCount":  3,
+                               "tier":  "edge",
+                               "distributionId":  "E3BDMTLYF8G4VB",
+                               "found":  true,
+                               "aliases":  [
+                                               "globalskiatlas.com",
+                                               "www.globalskiatlas.com"
+                                           ],
+                               "enabled":  true,
+                               "domainName":  "d284mjkhz1tqa9.cloudfront.net",
+                               "note":  "Route 53 -\u003e CloudFront -\u003e S3 + API GW origins"
+                           },
+                  "application":  {
+                                      "wikiLambda":  {
+                                                         "runtime":  "nodejs22.x",
+                                                         "name":  "sam-app-WikiApiFunction-E7soNy97MhEn",
+                                                         "arn":  "arn:aws:lambda:us-east-1:298043721974:function:sam-app-WikiApiFunction-E7soNy97MhEn"
+                                                     },
+                                      "found":  true,
+                                      "apiGateway":  null,
+                                      "tier":  "application",
+                                      "note":  "Cognito JWT on mutating wiki methods; Secrets Manager for client secret",
+                                      "dynamoDbWikiTables":  [
+                                                                 "atlas-WikiComments",
+                                                                 "atlas-WikiPages",
+                                                                 "atlas-WikiRevisions",
+                                                                 "saa-study-gsa-wiki-views",
+                                                                 "ywiki-WikiComments",
+                                                                 "ywiki-WikiPages",
+                                                                 "ywiki-WikiRevisions"
+                                                             ]
+                                  },
+                  "pipeline":  {
+                                   "statsUploaderLambda":  {
+                                                               "found":  false,
+                                                               "name":  "saa-study-gsa-stats-uploader",
+                                                               "arn":  null
+                                                           },
+                                   "found":  true,
+                                   "stepFunctions":  {
+                                                         "scheduleFound":  true,
+                                                         "found":  true,
+                                                         "scheduleRule":  "saa-study-gsa-iceland-monthly-sfn",
+                                                         "name":  "saa-study-gsa-iceland-pipeline",
+                                                         "arn":  "arn:aws:states:us-east-1:298043721974:stateMachine:saa-study-gsa-iceland-pipeline"
+                                                     },
+                                   "tier":  "pipeline",
+                                   "ecs":  {
+                                               "taskDefFound":  true,
+                                               "clusterStatus":  "ACTIVE",
+                                               "memoryMiB":  "2048",
+                                               "cluster":  "globalskiatlas-backend-k8s",
+                                               "taskFamily":  "globalskiatlas-backend-k8s-iceland",
+                                               "cpu":  "1024"
+                                           },
+                                   "note":  "Disable double schedule if both legacy and SFN rules enabled (Night 32)",
+                                   "legacyEventBridgeRule":  {
+                                                                 "found":  true,
+                                                                 "name":  "saa-study-gsa-iceland-monthly",
+                                                                 "arn":  "arn:aws:events:us-east-1:298043721974:rule/saa-study-gsa-iceland-monthly"
+                                                             }
+                               }
+              },
+    "lab":  "night-33-architecture-audit",
+    "wellArchitectedPillars":  {
+                                   "sustainability":  [
+                                                          "night-30",
+                                                          "night-31"
+                                                      ],
+                                   "security":  [
+                                                    "night-1",
+                                                    "night-2",
+                                                    "night-3",
+                                                    "night-7",
+                                                    "night-17"
+                                                ],
+                                   "costOptimization":  [
+                                                            "night-27",
+                                                            "night-30",
+                                                            "night-31"
+                                                        ],
+                                   "reliability":  [
+                                                       "night-14",
+                                                       "night-15",
+                                                       "night-19",
+                                                       "night-25"
+                                                   ],
+                                   "operationalExcellence":  [
+                                                                 "night-26",
+                                                                 "night-28",
+                                                                 "night-32"
+                                                             ],
+                                   "performanceEfficiency":  [
+                                                                 "night-23",
+                                                                 "night-24",
+                                                                 "night-26"
+                                                             ]
+                               },
+    "auditedAt":  "2026-07-09T02:33:00Z",
+    "account":  "298043721974",
+    "nextSteps":  [
+                      "Fill tierWinsScaffold with your own sentences in portfolio notes",
+                      "Draw full stack from gsa-architecture-map.md",
+                      "Take night-33-quiz.json"
+                  ]
+}

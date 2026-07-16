@@ -1,0 +1,82 @@
+{
+    "teardown":  null,
+    "eventBridgeRules":  [
+                             {
+                                 "arn":  "arn:aws:events:us-east-1:298043721974:rule/saa-study-gsa-iceland-monthly",
+                                 "found":  true,
+                                 "pattern":  "EventBridge schedule or event rule",
+                                 "scheduleExpression":  "cron(0 6 1 * ? *)",
+                                 "targetIds":  "iceland-fargate",
+                                 "name":  "saa-study-gsa-iceland-monthly",
+                                 "state":  "ENABLED"
+                             },
+                             {
+                                 "arn":  "arn:aws:events:us-east-1:298043721974:rule/saa-study-gsa-iceland-success-to-sqs",
+                                 "found":  true,
+                                 "pattern":  "EventBridge schedule or event rule",
+                                 "scheduleExpression":  null,
+                                 "targetIds":  "iceland-completion-sqs",
+                                 "name":  "saa-study-gsa-iceland-success-to-sqs",
+                                 "state":  "ENABLED"
+                             },
+                             {
+                                 "arn":  "arn:aws:events:us-east-1:298043721974:rule/saa-study-gsa-iceland-failure-to-sns",
+                                 "found":  true,
+                                 "pattern":  "EventBridge schedule or event rule",
+                                 "scheduleExpression":  null,
+                                 "targetIds":  "iceland-failure-sns",
+                                 "name":  "saa-study-gsa-iceland-failure-to-sns",
+                                 "state":  "ENABLED"
+                             }
+                         ],
+    "sqsQueues":  [
+                      {
+                          "pattern":  "SQS pull buffer / DLQ",
+                          "found":  true,
+                          "queueArn":  "arn:aws:sqs:us-east-1:298043721974:saa-study-gsa-iceland-completion",
+                          "name":  "saa-study-gsa-iceland-completion",
+                          "queueUrl":  "https://queue.amazonaws.com/298043721974/saa-study-gsa-iceland-completion",
+                          "redrivePolicy":  "{\"deadLetterTargetArn\":\"arn:aws:sqs:us-east-1:298043721974:saa-study-gsa-iceland-completion-dlq\",\"maxReceiveCount\":3}"
+                      },
+                      {
+                          "pattern":  "SQS pull buffer / DLQ",
+                          "found":  true,
+                          "queueArn":  "arn:aws:sqs:us-east-1:298043721974:saa-study-gsa-iceland-completion-dlq",
+                          "name":  "saa-study-gsa-iceland-completion-dlq",
+                          "queueUrl":  "https://queue.amazonaws.com/298043721974/saa-study-gsa-iceland-completion-dlq",
+                          "redrivePolicy":  null
+                      },
+                      {
+                          "pattern":  "SQS pull buffer / DLQ",
+                          "found":  true,
+                          "queueArn":  "arn:aws:sqs:us-east-1:298043721974:saa-study-gsa-iceland-alerts-inbox",
+                          "name":  "saa-study-gsa-iceland-alerts-inbox",
+                          "queueUrl":  "https://queue.amazonaws.com/298043721974/saa-study-gsa-iceland-alerts-inbox",
+                          "redrivePolicy":  null
+                      }
+                  ],
+    "cloudWatchAlarms":  [
+                             {
+                                 "found":  true,
+                                 "metricName":  "FailedInvocations",
+                                 "name":  "saa-study-gsa-iceland-task-failed",
+                                 "pattern":  "CloudWatch alarm -\u003e SNS on FailedInvocations",
+                                 "alarmArn":  "arn:aws:cloudwatch:us-east-1:298043721974:alarm:saa-study-gsa-iceland-task-failed"
+                             }
+                         ],
+    "region":  "us-east-1",
+    "totalCount":  8,
+    "lab":  "night-28-integration-audit",
+    "foundCount":  8,
+    "auditedAt":  "2026-07-05T03:11:01.7638737Z",
+    "account":  "298043721974",
+    "snsTopics":  [
+                      {
+                          "topicArn":  "arn:aws:sns:us-east-1:298043721974:saa-study-gsa-iceland-alerts",
+                          "found":  true,
+                          "subscriptionProtocols":  "sqs",
+                          "name":  "saa-study-gsa-iceland-alerts",
+                          "pattern":  "SNS fan-out notifications"
+                      }
+                  ]
+}

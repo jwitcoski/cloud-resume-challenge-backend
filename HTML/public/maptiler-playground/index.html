@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MapTiler Tower Defense</title>
+  <link href="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.css" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #eef2ff;
+      --muted: #9aa8c2;
+      --panel: rgba(8, 12, 22, 0.94);
+      --line: rgba(255, 255, 255, 0.12);
+      --accent: #7dd3fc;
+      --gold: #fbbf24;
+      --hp: #4ade80;
+      --danger: #f87171;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      height: 100%;
+      overflow: hidden;
+      font-family: "Segoe UI", "Avenir Next", sans-serif;
+      color: var(--ink);
+      background: #05070f;
+    }
+
+    #map { position: absolute; inset: 0; }
+
+    .hud {
+      position: absolute;
+      z-index: 3;
+      top: 12px;
+      left: 12px;
+      width: min(340px, calc(100vw - 24px));
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--panel);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.45);
+    }
+
+    h1 { margin: 0 0 2px; font-size: 1.1rem; }
+    .lede { margin: 0 0 10px; color: var(--muted); font-size: 0.8rem; line-height: 1.35; }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+    .stat {
+      padding: 7px 8px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.04);
+      text-align: center;
+    }
+    .stat b {
+      display: block;
+      font-size: 1.05rem;
+      font-variant-numeric: tabular-nums;
+    }
+    .stat span { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+    .stat.gold b { color: var(--gold); }
+    .stat.lives b { color: var(--danger); }
+    .stat.wave b { color: var(--accent); }
+
+    .label {
+      display: block;
+      margin: 8px 0 6px;
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .towers {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 6px;
+    }
+
+    .tower-btn {
+      appearance: none;
+      font: inherit;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--ink);
+      padding: 8px 6px;
+      cursor: pointer;
+      text-align: center;
+    }
+    .tower-btn:hover { border-color: rgba(125, 211, 252, 0.5); }
+    .tower-btn.selected {
+      border-color: var(--accent);
+      background: rgba(125, 211, 252, 0.18);
+      box-shadow: 0 0 0 2px rgba(125, 211, 252, 0.25);
+    }
+    .tower-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+    .tower-btn .ico { font-size: 1.25rem; display: block; }
+    .tower-btn .nm { font-size: 0.72rem; font-weight: 650; }
+    .tower-btn .pr { font-size: 0.68rem; color: var(--gold); }
+
+    .row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+
+    button.action {
+      appearance: none;
+      font: inherit;
+      font-size: 0.82rem;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--ink);
+      padding: 7px 12px;
+      cursor: pointer;
+    }
+    button.action:hover { border-color: rgba(125, 211, 252, 0.5); }
+    button.action:disabled { opacity: 0.4; cursor: not-allowed; }
+    button.action.primary { background: rgba(125, 211, 252, 0.22); border-color: var(--accent); font-weight: 650; }
+    button.action.go { background: rgba(74, 222, 128, 0.2); border-color: var(--hp); font-weight: 650; }
+    button.action.hot { background: rgba(248, 113, 113, 0.18); border-color: var(--danger); }
+    button.action.active { border-color: var(--accent); background: rgba(125, 211, 252, 0.2); }
+
+    .presets { display: flex; flex-wrap: wrap; gap: 6px; }
+
+    .status {
+      margin: 10px 0 0;
+      font-size: 0.8rem;
+      line-height: 1.4;
+      color: var(--muted);
+      min-height: 2.6em;
+    }
+    .status strong { color: var(--accent); }
+
+    #error {
+      display: none;
+      position: absolute; inset: 0; z-index: 6;
+      background: #070b14; color: #ff8a80; padding: 28px; white-space: pre-wrap;
+    }
+
+    .banner {
+      display: none;
+      position: absolute; inset: 0; z-index: 5;
+      background: rgba(2, 6, 15, 0.8);
+      backdrop-filter: blur(8px);
+      align-items: center; justify-content: center; padding: 24px;
+    }
+    .banner.on { display: flex; }
+    .banner-card {
+      width: min(380px, 100%);
+      padding: 24px 20px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: rgba(10, 14, 26, 0.96);
+      text-align: center;
+    }
+    .banner-card h2 { margin: 0 0 8px; }
+    .banner-card p { margin: 0 0 14px; color: var(--muted); }
+
+    .enemy {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #ef4444;
+      border: 2px solid #fff;
+      box-shadow: 0 0 10px rgba(239, 68, 68, 0.7);
+      position: relative;
+    }
+    .enemy.tank { width: 28px; height: 28px; background: #a855f7; }
+    .enemy.fast { width: 16px; height: 16px; background: #f97316; }
+    .enemy .hp {
+      position: absolute;
+      left: -4px; right: -4px; top: -7px;
+      height: 3px;
+      background: rgba(0,0,0,.55);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .enemy .hp i { display: block; height: 100%; background: var(--hp); width: 100%; }
+
+    .tower {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      border: 2px solid #fff;
+      display: grid;
+      place-items: center;
+      font-size: 16px;
+      box-shadow: 0 4px 14px rgba(0,0,0,.5);
+      cursor: default;
+    }
+    .tower.arrow { background: #166534; }
+    .tower.cannon { background: #7c2d12; }
+    .tower.frost { background: #1e3a8a; }
+
+    .base-flag, .spawn-flag {
+      padding: 4px 8px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 800;
+      border: 2px solid #fff;
+      box-shadow: 0 4px 12px rgba(0,0,0,.45);
+      white-space: nowrap;
+    }
+    .base-flag { background: #22c55e; color: #052e16; }
+    .spawn-flag { background: #ef4444; color: #fff; }
+
+    .shot {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #fde68a;
+      box-shadow: 0 0 8px #fbbf24;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    @media (max-width: 700px) {
+      .hud {
+        top: auto; bottom: 8px; left: 8px; right: 8px; width: auto;
+        max-height: 48vh; overflow: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <div id="error"></div>
+
+  <aside class="hud">
+    <h1>Map Tower Defense</h1>
+    <p class="lede">Pick a place — we pull a real street route for the enemy lane. Build towers beside the roads and hold your base.</p>
+
+    <div class="stats">
+      <div class="stat gold"><b id="gold">100</b><span>Gold</span></div>
+      <div class="stat lives"><b id="lives">20</b><span>Lives</span></div>
+      <div class="stat wave"><b id="wave">0</b><span>Wave</span></div>
+    </div>
+
+    <div id="phasePick">
+      <span class="label">Quick start</span>
+      <div class="presets" id="presets"></div>
+      <div class="row">
+        <button type="button" class="action primary" id="btnBuildPath" disabled>Load street path</button>
+        <button type="button" class="action" id="btnClear" disabled>Clear</button>
+      </div>
+    </div>
+
+    <div id="phasePlay" hidden>
+      <span class="label">Build tower (then click beside the path)</span>
+      <div class="towers">
+        <button type="button" class="tower-btn selected" data-tower="arrow" id="btn-arrow">
+          <span class="ico">🏹</span>
+          <span class="nm">Archer</span>
+          <span class="pr">$40</span>
+        </button>
+        <button type="button" class="tower-btn" data-tower="cannon" id="btn-cannon">
+          <span class="ico">💣</span>
+          <span class="nm">Cannon</span>
+          <span class="pr">$75</span>
+        </button>
+        <button type="button" class="tower-btn" data-tower="frost" id="btn-frost">
+          <span class="ico">❄️</span>
+          <span class="nm">Frost</span>
+          <span class="pr">$60</span>
+        </button>
+      </div>
+      <div class="row">
+        <button type="button" class="action go" id="btnWave">Start wave</button>
+        <button type="button" class="action hot" id="btnRestart">New map</button>
+      </div>
+    </div>
+
+    <p class="status" id="status">Click the map (or a preset city) — we’ll route the enemy lane on real streets.</p>
+  </aside>
+
+  <div class="banner" id="banner">
+    <div class="banner-card">
+      <h2 id="bannerTitle">Victory</h2>
+      <p id="bannerText"></p>
+      <button type="button" class="action go" id="btnAgain">Play again</button>
+    </div>
+  </div>
+
+  <script src="../admin-boundaries/js/config.js"></script>
+  <script src="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@turf/turf@7.3.5/turf.min.js"></script>
+  <script>
+    const TOWERS = {
+      arrow:  { name: "Archer", cost: 40, range: 0.45, dmg: 12, rate: 380, color: "#4ade80" },
+      cannon: { name: "Cannon", cost: 75, range: 0.38, dmg: 32, rate: 900, color: "#fb923c" },
+      frost:  { name: "Frost",  cost: 60, range: 0.5,  dmg: 6,  rate: 500, color: "#60a5fa", slow: 0.55 },
+    };
+
+    const ENEMY_TYPES = {
+      basic: { hp: 40, speed: 0.11, reward: 8, cls: "" },
+      fast:  { hp: 28, speed: 0.2,  reward: 10, cls: "fast" },
+      tank:  { hp: 120, speed: 0.07, reward: 18, cls: "tank" },
+    };
+
+    const PRESETS = [
+      { name: "NYC", lng: -73.9857, lat: 40.7484 },
+      { name: "London", lng: -0.1276, lat: 51.5072 },
+      { name: "Tokyo", lng: 139.6917, lat: 35.6895 },
+      { name: "Paris", lng: 2.3522, lat: 48.8566 },
+      { name: "SF", lng: -122.4194, lat: 37.7749 },
+    ];
+
+    let map;
+    let center = null;
+    let pathCoords = []; // [[lng,lat], ...]
+    let pathLine = null;
+    let phase = "pick"; // pick | play
+    let selectedTower = "arrow";
+    let gold = 100;
+    let lives = 20;
+    let wave = 0;
+    let waveActive = false;
+    let enemies = [];
+    let towers = [];
+    let spawnMarker = null;
+    let baseMarker = null;
+    let raf = null;
+    let lastTs = 0;
+    let spawnQueue = [];
+    let spawnAcc = 0;
+
+    function showError(msg) {
+      const el = document.getElementById("error");
+      el.style.display = "block";
+      el.textContent = msg;
+    }
+    function setStatus(html) {
+      document.getElementById("status").innerHTML = html;
+    }
+    function validateKey() {
+      const key = window.MAPTILER_API_KEY;
+      if (!key || key === "YOUR_MAPTILER_KEY_HERE") {
+        throw new Error("Missing MapTiler API key — copy admin-boundaries/js/config.example.js → config.js");
+      }
+      return key;
+    }
+
+    function refreshHud() {
+      document.getElementById("gold").textContent = Math.floor(gold);
+      document.getElementById("lives").textContent = lives;
+      document.getElementById("wave").textContent = wave;
+      for (const [id, t] of Object.entries(TOWERS)) {
+        const btn = document.getElementById("btn-" + id);
+        btn.disabled = gold < t.cost || phase !== "play";
+        btn.classList.toggle("selected", selectedTower === id);
+      }
+      document.getElementById("btnWave").disabled = phase !== "play" || waveActive;
+    }
+
+    function setPhase(p) {
+      phase = p;
+      document.getElementById("phasePick").hidden = p !== "pick";
+      document.getElementById("phasePlay").hidden = p !== "play";
+      refreshHud();
+    }
+
+    function offset(c, bearing, km) {
+      return turf.destination(turf.point(c), km, bearing, { units: "kilometers" }).geometry.coordinates;
+    }
+
+    function densifyLine(coords, stepKm = 0.03) {
+      const line = turf.lineString(coords);
+      const length = turf.length(line, { units: "kilometers" });
+      if (length < 0.01) return coords;
+      const dense = [];
+      const steps = Math.max(40, Math.ceil(length / stepKm));
+      for (let i = 0; i <= steps; i++) {
+        dense.push(
+          turf.along(line, (length * i) / steps, { units: "kilometers" }).geometry.coordinates
+        );
+      }
+      return dense;
+    }
+
+    /** Real OS streets via OSRM (snaps waypoints onto the road network). */
+    async function fetchStreetPath(c) {
+      const layouts = [
+        [offset(c, 200, 1.15), offset(c, 90, 0.85), offset(c, 20, 1.15)],
+        [offset(c, 160, 1.0), offset(c, 40, 0.7), offset(c, 300, 0.9), offset(c, 220, 1.05)],
+        [offset(c, 0, 1.2), offset(c, 120, 1.0), offset(c, 240, 1.2)],
+        [offset(c, 45, 1.3), offset(c, 225, 1.3)],
+        [offset(c, 90, 0.9), offset(c, 180, 0.6), offset(c, 270, 0.9), offset(c, 0, 0.6), offset(c, 90, 0.4)],
+      ];
+
+      let lastErr = "No route";
+      for (const pts of layouts) {
+        const pathParam = pts.map((p) => `${p[0].toFixed(6)},${p[1].toFixed(6)}`).join(";");
+        const url =
+          `https://router.project-osrm.org/route/v1/driving/${pathParam}` +
+          `?overview=full&geometries=geojson&steps=false`;
+        try {
+          const res = await fetch(url);
+          if (!res.ok) {
+            lastErr = `OSRM HTTP ${res.status}`;
+            continue;
+          }
+          const data = await res.json();
+          if (data.code !== "Ok" || !data.routes?.[0]?.geometry?.coordinates?.length) {
+            lastErr = data.message || data.code || "route rejected";
+            continue;
+          }
+          const raw = data.routes[0].geometry.coordinates;
+          const km = turf.length(turf.lineString(raw), { units: "kilometers" });
+          // Need enough lane for a tower-defense fight; skip tiny stubs / country tracks that fail snap
+          if (km < 1.2 || km > 14) {
+            lastErr = `route length ${km.toFixed(1)} km out of range`;
+            continue;
+          }
+          return densifyLine(raw);
+        } catch (err) {
+          lastErr = err.message || String(err);
+        }
+      }
+      throw new Error("Could not load a street path here (" + lastErr + "). Try a denser city.");
+    }
+
+    function clearEntities() {
+      for (const e of enemies) if (e.marker) e.marker.remove();
+      for (const t of towers) {
+        if (t.marker) t.marker.remove();
+        if (t.rangeId && map.getLayer(t.rangeId)) map.removeLayer(t.rangeId);
+        if (t.rangeSrc && map.getSource(t.rangeSrc)) map.removeSource(t.rangeSrc);
+      }
+      enemies = [];
+      towers = [];
+      spawnQueue = [];
+      waveActive = false;
+      if (spawnMarker) { spawnMarker.remove(); spawnMarker = null; }
+      if (baseMarker) { baseMarker.remove(); baseMarker = null; }
+    }
+
+    function clearPathLayers() {
+      if (map.getLayer("path-glow")) map.removeLayer("path-glow");
+      if (map.getLayer("path-line")) map.removeLayer("path-line");
+      if (map.getSource("path")) map.removeSource("path");
+    }
+
+    function drawPath() {
+      clearPathLayers();
+      pathLine = turf.lineString(pathCoords);
+      map.addSource("path", { type: "geojson", data: pathLine });
+      map.addLayer({
+        id: "path-glow",
+        type: "line",
+        source: "path",
+        paint: {
+          "line-color": "#fbbf24",
+          "line-width": 14,
+          "line-opacity": 0.25,
+          "line-blur": 4,
+        },
+      });
+      map.addLayer({
+        id: "path-line",
+        type: "line",
+        source: "path",
+        paint: {
+          "line-color": "#fde68a",
+          "line-width": 5,
+          "line-opacity": 0.95,
+        },
+      });
+
+      const start = pathCoords[0];
+      const end = pathCoords[pathCoords.length - 1];
+
+      const sEl = document.createElement("div");
+      sEl.className = "spawn-flag";
+      sEl.textContent = "SPAWN";
+      spawnMarker = new maptilersdk.Marker({ element: sEl, anchor: "bottom" })
+        .setLngLat(start)
+        .addTo(map);
+
+      const bEl = document.createElement("div");
+      bEl.className = "base-flag";
+      bEl.textContent = "BASE";
+      baseMarker = new maptilersdk.Marker({ element: bEl, anchor: "bottom" })
+        .setLngLat(end)
+        .addTo(map);
+    }
+
+    function fitPath() {
+      const b = turf.bbox(pathLine);
+      map.fitBounds([[b[0], b[1]], [b[2], b[3]]], {
+        padding: { top: 60, bottom: 60, left: 380, right: 40 },
+        duration: 900,
+        pitch: 0,
+        bearing: 0,
+      });
+    }
+
+    function placeField(lngLat) {
+      center = [lngLat.lng, lngLat.lat];
+      document.getElementById("btnBuildPath").disabled = false;
+      document.getElementById("btnClear").disabled = false;
+      setStatus(`Location set. Click <strong>Load street path</strong> to route enemies along real roads.`);
+      map.flyTo({ center, zoom: 14.2, pitch: 0, duration: 1000 });
+    }
+
+    async function startGame() {
+      if (!center) return;
+      const btn = document.getElementById("btnBuildPath");
+      btn.disabled = true;
+      setStatus("Routing on the <strong>street network</strong>…");
+      try {
+        clearEntities();
+        clearPathLayers();
+        pathCoords = await fetchStreetPath(center);
+        drawPath();
+        fitPath();
+        gold = 100;
+        lives = 20;
+        wave = 0;
+        setPhase("play");
+        refreshHud();
+        const km = turf.length(pathLine, { units: "kilometers" }).toFixed(1);
+        setStatus(
+          `Lane follows <strong>${km} km</strong> of real streets. Build beside the yellow road, then <strong>Start wave</strong>.`
+        );
+        document.getElementById("banner").classList.remove("on");
+        lastTs = performance.now();
+        if (!raf) raf = requestAnimationFrame(loop);
+      } catch (err) {
+        setStatus(`Street routing failed: ${err.message}`);
+        btn.disabled = false;
+        setPhase("pick");
+      }
+    }
+
+    function distToPath(lngLat) {
+      const nearest = turf.nearestPointOnLine(pathLine, turf.point(lngLat), { units: "kilometers" });
+      return {
+        dist: turf.distance(turf.point(lngLat), nearest, { units: "kilometers" }),
+        onPath: nearest.geometry.coordinates,
+      };
+    }
+
+    function tryBuild(lngLat) {
+      if (phase !== "play") return;
+      const def = TOWERS[selectedTower];
+      if (gold < def.cost) {
+        setStatus(`Need <strong>$${def.cost}</strong> for ${def.name}.`);
+        return;
+      }
+      const { dist } = distToPath(lngLat);
+      if (dist < 0.08) {
+        setStatus("Too close to the path — give creeps room to walk.");
+        return;
+      }
+      if (dist > 0.55) {
+        setStatus("Too far from the path — towers must cover the lane.");
+        return;
+      }
+      // Don't stack on other towers
+      for (const t of towers) {
+        if (turf.distance([t.lng, t.lat], lngLat, { units: "kilometers" }) < 0.12) {
+          setStatus("Too close to another tower.");
+          return;
+        }
+      }
+
+      gold -= def.cost;
+      const el = document.createElement("div");
+      el.className = `tower ${selectedTower}`;
+      el.textContent = selectedTower === "arrow" ? "🏹" : selectedTower === "cannon" ? "💣" : "❄️";
+      const marker = new maptilersdk.Marker({ element: el, anchor: "center" })
+        .setLngLat(lngLat)
+        .addTo(map);
+
+      const id = "t" + Math.random().toString(36).slice(2, 7);
+      const rangeSrc = "range-" + id;
+      const rangeId = "range-layer-" + id;
+      const circle = turf.circle(lngLat, def.range, { steps: 48, units: "kilometers" });
+      map.addSource(rangeSrc, { type: "geojson", data: circle });
+      map.addLayer({
+        id: rangeId,
+        type: "fill",
+        source: rangeSrc,
+        paint: {
+          "fill-color": def.color,
+          "fill-opacity": 0.12,
+        },
+      });
+
+      towers.push({
+        id,
+        type: selectedTower,
+        lng: lngLat[0],
+        lat: lngLat[1],
+        marker,
+        rangeSrc,
+        rangeId,
+        cooldown: 0,
+      });
+      refreshHud();
+      setStatus(`Built <strong>${def.name}</strong>. Gold left: <strong>$${Math.floor(gold)}</strong>.`);
+    }
+
+    function waveComposition(n) {
+      const bag = [];
+      const count = 6 + n * 3;
+      for (let i = 0; i < count; i++) {
+        let type = "basic";
+        if (n >= 2 && Math.random() < 0.25) type = "fast";
+        if (n >= 4 && Math.random() < 0.2) type = "tank";
+        if (n >= 6 && i % 5 === 0) type = "tank";
+        bag.push(type);
+      }
+      return bag;
+    }
+
+    function startWave() {
+      if (waveActive || phase !== "play") return;
+      wave++;
+      spawnQueue = waveComposition(wave);
+      spawnAcc = 0;
+      waveActive = true;
+      refreshHud();
+      setStatus(`Wave <strong>${wave}</strong> incoming — ${spawnQueue.length} enemies.`);
+    }
+
+    function spawnEnemy(type) {
+      const def = ENEMY_TYPES[type];
+      const el = document.createElement("div");
+      el.className = "enemy " + def.cls;
+      el.innerHTML = `<div class="hp"><i></i></div>`;
+      const start = pathCoords[0];
+      const marker = new maptilersdk.Marker({ element: el, anchor: "center" })
+        .setLngLat(start)
+        .addTo(map);
+      enemies.push({
+        type,
+        hp: def.hp * (1 + wave * 0.12),
+        maxHp: def.hp * (1 + wave * 0.12),
+        speed: def.speed,
+        slow: 1,
+        progress: 0, // 0..1 along path
+        reward: def.reward + wave,
+        marker,
+        el,
+      });
+    }
+
+    function posAlongPath(t) {
+      const len = turf.length(pathLine, { units: "kilometers" });
+      const p = turf.along(pathLine, Math.min(1, Math.max(0, t)) * len, { units: "kilometers" });
+      return p.geometry.coordinates;
+    }
+
+    function projectToPixel(lngLat) {
+      return map.project(lngLat);
+    }
+
+    function fireShot(from, to, color) {
+      const a = projectToPixel(from);
+      const b = projectToPixel(to);
+      const el = document.createElement("div");
+      el.className = "shot";
+      el.style.background = color;
+      el.style.boxShadow = `0 0 8px ${color}`;
+      el.style.left = a.x + "px";
+      el.style.top = a.y + "px";
+      document.body.appendChild(el);
+      const start = performance.now();
+      const dur = 120;
+      function step(now) {
+        const k = Math.min(1, (now - start) / dur);
+        el.style.left = a.x + (b.x - a.x) * k + "px";
+        el.style.top = a.y + (b.y - a.y) * k + "px";
+        if (k < 1) requestAnimationFrame(step);
+        else el.remove();
+      }
+      requestAnimationFrame(step);
+    }
+
+    function updateEnemyHp(e) {
+      const bar = e.el.querySelector(".hp i");
+      if (bar) bar.style.width = `${Math.max(0, (e.hp / e.maxHp) * 100)}%`;
+    }
+
+    function loop(ts) {
+      raf = requestAnimationFrame(loop);
+      if (phase !== "play") return;
+      const dt = Math.min(0.05, (ts - lastTs) / 1000);
+      lastTs = ts;
+
+      // Spawn cadence
+      if (waveActive && spawnQueue.length) {
+        spawnAcc += dt;
+        if (spawnAcc >= 0.7) {
+          spawnAcc = 0;
+          spawnEnemy(spawnQueue.shift());
+        }
+      }
+
+      const pathLen = pathLine ? turf.length(pathLine, { units: "kilometers" }) : 1;
+
+      // Move enemies
+      for (const e of enemies) {
+        if (e.hp <= 0) continue;
+        e.slow = Math.min(1, e.slow + dt * 0.35); // recover from frost
+        e.progress += ((e.speed * e.slow) * dt) / pathLen;
+        if (e.progress >= 1) {
+          lives -= 1;
+          e.hp = 0;
+          if (e.marker) { e.marker.remove(); e.marker = null; }
+          refreshHud();
+          if (lives <= 0) {
+            gameOver(false);
+            return;
+          }
+          continue;
+        }
+        const pos = posAlongPath(e.progress);
+        e.lng = pos[0];
+        e.lat = pos[1];
+        e.marker.setLngLat(pos);
+      }
+
+      // Towers shoot
+      for (const t of towers) {
+        t.cooldown = Math.max(0, t.cooldown - dt * 1000);
+        if (t.cooldown > 0) continue;
+        const def = TOWERS[t.type];
+        let target = null;
+        let bestProg = -1;
+        for (const e of enemies) {
+          if (e.hp <= 0 || !e.marker) continue;
+          const d = turf.distance([t.lng, t.lat], [e.lng, e.lat], { units: "kilometers" });
+          if (d <= def.range && e.progress > bestProg) {
+            bestProg = e.progress;
+            target = e;
+          }
+        }
+        if (!target) continue;
+        t.cooldown = def.rate;
+        fireShot([t.lng, t.lat], [target.lng, target.lat], def.color);
+        target.hp -= def.dmg;
+        if (def.slow) target.slow = Math.min(target.slow, def.slow);
+        updateEnemyHp(target);
+        if (target.hp <= 0) {
+          gold += target.reward;
+          if (target.marker) { target.marker.remove(); target.marker = null; }
+          refreshHud();
+        }
+      }
+
+      // Cleanup dead / leaked
+      enemies = enemies.filter((e) => e.hp > 0 && e.marker);
+
+      if (waveActive && spawnQueue.length === 0 && enemies.length === 0) {
+        waveActive = false;
+        gold += 25 + wave * 5;
+        refreshHud();
+        setStatus(`Wave <strong>${wave}</strong> cleared! Bonus gold. Build more, then start the next wave.`);
+        if (wave >= 12) gameOver(true);
+      }
+    }
+
+    function gameOver(won) {
+      waveActive = false;
+      spawnQueue = [];
+      document.getElementById("bannerTitle").textContent = won ? "You held the line!" : "Base destroyed";
+      document.getElementById("bannerText").textContent = won
+        ? `Survived ${wave} waves with $${Math.floor(gold)} left.`
+        : `Reached wave ${wave}. Try a tighter tower layout.`;
+      document.getElementById("banner").classList.add("on");
+      refreshHud();
+    }
+
+    function resetToPick() {
+      clearEntities();
+      clearPathLayers();
+      center = null;
+      pathCoords = [];
+      pathLine = null;
+      document.getElementById("banner").classList.remove("on");
+      document.getElementById("btnBuildPath").disabled = true;
+      document.getElementById("btnClear").disabled = true;
+      setPhase("pick");
+      setStatus("Click the map (or a preset) to choose a city block to defend.");
+      map.easeTo({ center: [0, 20], zoom: 2, duration: 800 });
+    }
+
+    // --- boot ---
+    if (typeof maptilersdk === "undefined" || typeof turf === "undefined") {
+      showError("Failed to load MapTiler SDK or Turf.");
+    } else {
+      try {
+        maptilersdk.config.apiKey = validateKey();
+        map = new maptilersdk.Map({
+          container: "map",
+          style: maptilersdk.MapStyle.STREETS,
+          center: [0, 20],
+          zoom: 2,
+          pitch: 0,
+          navigationControl: true,
+          hash: false,
+        });
+
+        map.on("error", (e) => {
+          const message = String(e.error?.message || e.error || "");
+          if (message.includes("403") || message.includes("401")) {
+            showError("Map tiles blocked — allow " + location.origin + " on your MapTiler key.");
+          }
+        });
+
+        map.on("click", (e) => {
+          if (phase === "pick") placeField(e.lngLat);
+          else if (phase === "play" && !waveActive) tryBuild([e.lngLat.lng, e.lngLat.lat]);
+          else if (phase === "play" && waveActive) {
+            // Allow building between shots during wave too
+            tryBuild([e.lngLat.lng, e.lngLat.lat]);
+          }
+        });
+
+        const wrap = document.getElementById("presets");
+        for (const p of PRESETS) {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "action";
+          btn.textContent = p.name;
+          btn.addEventListener("click", () => {
+            wrap.querySelectorAll("button").forEach((b) => b.classList.remove("active"));
+            btn.classList.add("active");
+            placeField({ lng: p.lng, lat: p.lat });
+          });
+          wrap.appendChild(btn);
+        }
+
+        document.querySelectorAll(".tower-btn").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            selectedTower = btn.dataset.tower;
+            refreshHud();
+          });
+        });
+
+        document.getElementById("btnBuildPath").addEventListener("click", startGame);
+        document.getElementById("btnClear").addEventListener("click", resetToPick);
+        document.getElementById("btnRestart").addEventListener("click", resetToPick);
+        document.getElementById("btnWave").addEventListener("click", startWave);
+        document.getElementById("btnAgain").addEventListener("click", () => {
+          if (center) startGame();
+          else resetToPick();
+        });
+
+        setPhase("pick");
+        refreshHud();
+      } catch (err) {
+        showError(err.message || String(err));
+      }
+    }
+  </script>
+</body>
+</html>

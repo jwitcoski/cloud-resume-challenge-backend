@@ -106,8 +106,13 @@ const nightlyPlan: NightPlan[] = [
   { night: 32, week: 5, title: "Lab 4C — Step Functions capstone", minutes: [20, 80, 20], blocks: ["State machine: ECS → SQS → Lambda → SNS", "Error handling + Catch states", "Deploy sam-pipeline-orchestrator"], lab: "Global Ski Atlas backend — new SAM stack" },
   { night: 33, week: 5, title: "Architecture write-up", minutes: [30, 60, 30], blocks: ["Document GSA frontend + backend stacks", "One security/resilience/cost win per tier", "Link labs to Well-Architected pillars"], lab: "Portfolio artifact" },
   { night: 34, week: 5, title: "Practice exam 1", minutes: [10, 130, 20], blocks: ["Timed full mock (130 min)", "Review every wrong answer", "List weak services"], lab: undefined },
-  { night: 35, week: 5, title: "Weak-area drill", minutes: [20, 60, 40], blocks: ["Re-study top 3 missed domains", "40 targeted questions", "Redo 5 missed scenarios aloud"], lab: undefined },
-  { night: 36, week: 5, title: "Practice exam 2 + schedule", minutes: [10, 130, 20], blocks: ["Second timed mock — target ≥75%", "Schedule real exam if ready", "Tear down NAT/Aurora/ElastiCache labs"], lab: undefined },
+
+  { night: 35, week: 6, title: "Exam stem method", minutes: [40, 50, 30], blocks: ["Anatomy of a TD/SAA question", "Force-word underlining drill", "20 stem-decode practice questions"], lab: undefined },
+  { night: 36, week: 6, title: "Keywords — storage + hybrid", minutes: [30, 60, 30], blocks: ["Object vs block vs file vs gateway map", "Force words: POSIX, SMB, iSCSI, WORM, SFTP", "20 storage keyword questions"], lab: undefined },
+  { night: 37, week: 6, title: "Keywords — DB / HA / migrate", minutes: [30, 60, 30], blocks: ["Multi-AZ vs replica vs Global vs DynamoDB", "RPO/RTO + DMS/Beanstalk force words", "20 database/migration questions"], lab: undefined },
+  { night: 38, week: 6, title: "Keywords — security picks", minutes: [30, 60, 30], blocks: ["WAF vs Shield vs GuardDuty vs Macie", "KMS/Object Lock/IAM DB auth/IPv6 egress", "20 security keyword questions"], lab: undefined },
+  { night: 39, week: 6, title: "Keywords — compute / net / integrate", minutes: [30, 60, 30], blocks: ["Seconds vs minutes scale; endpoints vs DX", "ASG FT math; Streams vs RDS events", "20 performance/net questions"], lab: undefined },
+  { night: 40, week: 6, title: "Practice exam 2 + schedule", minutes: [10, 130, 20], blocks: ["Second timed mock — target ≥75%", "Keyword post-mortem on every miss", "Schedule real exam if ready"], lab: undefined },
 ];
 
 function LevelBadge({ level }: { level: ServiceRow["level"] }) {
@@ -151,7 +156,7 @@ export default function AwsSolutionsArchitectStudyPage() {
           </h1>
           <p className="leading-relaxed mb-2 text-[#555]">
             <strong>Started:</strong> June 2026 · <strong>Pace:</strong> 2 hours every night ·{" "}
-            <strong>Duration:</strong> 5 weeks (35 nights, ~70 hours)
+            <strong>Duration:</strong> 6 weeks (40 nights, ~80 hours) — Week 6 is exam keyword / stem skills after Practice Exam 1
           </p>
           <p className="leading-relaxed mb-6">
             I earned{" "}
@@ -359,15 +364,15 @@ export default function AwsSolutionsArchitectStudyPage() {
           </ol>
 
           <h2 className="text-2xl font-bold text-[#444] mt-10 mb-4">
-            5-week nightly calendar
+            6-week nightly calendar
           </h2>
           <p className="leading-relaxed mb-6 text-sm text-[#666]">
             Week 1 Security · Week 2 VPC + messaging · Week 3 RDS + resilience · Week 4 Performance ·
-            Week 5 Cost + mocks
+            Week 5 Cost + Practice Exam 1 · Week 6 Exam keywords + Practice Exam 2
           </p>
 
           <div className="space-y-4 mb-10">
-            {[1, 2, 3, 4, 5].map((week) => (
+            {[1, 2, 3, 4, 5, 6].map((week) => (
               <div key={week}>
                 <h3 className="text-lg font-semibold text-[#444] mb-2 pb-1 border-b border-[#eee]">
                   Week {week}
@@ -461,7 +466,7 @@ export default function AwsSolutionsArchitectStudyPage() {
               — Exam Prep: Solutions Architect Associate
             </li>
             <li>
-              Practice exams (Week 5, Nights 33 & 35) — Tutorials Dojo or Stephane Maarek on Udemy
+              Practice exams (Nights 34 & 40) — Tutorials Dojo or Stephane Maarek on Udemy; Nights 35–39 are keyword/stem drills between mocks
             </li>
           </ul>
 

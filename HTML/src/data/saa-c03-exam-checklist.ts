@@ -856,6 +856,33 @@ export const studyNights: StudyNight[] = [
     reviewedServiceIds: ["well-architected", "cloudfront", "api-gateway", "cognito", "ecs", "s3"],
     completedCheckpointIds: ["d4-t1-cp-0", "d4-t4-cp-0"],
   },
+  {
+    night: 34,
+    week: 5,
+    title: "Practice exam 1",
+    completedDate: "2026-07-13",
+    practiceScore: "~33/65 (~50%)",
+    notes:
+      "External 65-question timed mock ≈50%. Strong on Macie, canary, Multi-AZ sync, FSx Windows SMB, Shield Advanced, Versioning+MFA Delete, Aurora Global RPO, scheduled scaling, Lake Formation, Artifact. Gap was scenario decoding (Company X + constraints), not missing service lists. Week 6 (Nights 35–40): exam stem method + keyword hunts by domain, then Practice Exam 2 on Night 40.",
+    reviewedServiceIds: [
+      "vpc",
+      "dynamodb",
+      "api-gateway",
+      "kms",
+      "waf",
+      "s3",
+      "autoscaling",
+      "rds",
+      "aurora",
+      "fsx",
+      "cloudwatch",
+      "efs",
+      "lambda",
+      "cloudfront",
+      "eks",
+    ],
+    completedCheckpointIds: [],
+  },
 ];
 
 /** Merge all completed nights into default checklist state for first-time visitors. */
@@ -878,6 +905,7 @@ export const reviewSchedule: { week: number; categories: string[]; serviceCount:
   { week: 3, categories: ["Database", "Migration and Transfer"], serviceCount: 14 },
   { week: 4, categories: ["Analytics", "Compute", "Containers", "Storage"], serviceCount: 32 },
   { week: 5, categories: ["Cost Management", "Machine Learning", "Front-End Web and Mobile", "Media Services", "Developer Tools", "Serverless"], serviceCount: 22 },
+  { week: 6, categories: ["Exam skills — stem decoding / keyword force words (cross-domain)"], serviceCount: 0 },
 ];
 
 export function countByReadiness(services: ExamService[]) {

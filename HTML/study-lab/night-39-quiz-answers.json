@@ -1,0 +1,112 @@
+{
+  "night": 39,
+  "title": "Compute / network / integration keywords",
+  "answerDistribution": {
+    "A": 5,
+    "B": 5,
+    "C": 5,
+    "D": 5
+  },
+  "answers": [
+    {
+      "id": "Q1",
+      "correct": "A",
+      "explanation": "Endpoints for private AWS APIs."
+    },
+    {
+      "id": "Q2",
+      "correct": "A",
+      "explanation": "Throttling."
+    },
+    {
+      "id": "Q3",
+      "correct": "A",
+      "explanation": "Scheduled; predictive weak on heterogeneous ASG."
+    },
+    {
+      "id": "Q4",
+      "correct": "A",
+      "explanation": "Min 2N."
+    },
+    {
+      "id": "Q5",
+      "correct": "A",
+      "explanation": "Agent for memory/disk space; Enhanced Monitoring is RDS."
+    },
+    {
+      "id": "Q6",
+      "correct": "B",
+      "explanation": "Edge + failover."
+    },
+    {
+      "id": "Q7",
+      "correct": "B",
+      "explanation": "Transform before durable NoSQL."
+    },
+    {
+      "id": "Q8",
+      "correct": "B",
+      "explanation": "Oldest launch template."
+    },
+    {
+      "id": "Q9",
+      "correct": "B",
+      "explanation": "Seconds → Lambda."
+    },
+    {
+      "id": "Q10",
+      "correct": "B",
+      "explanation": "Fan-out via SNS."
+    },
+    {
+      "id": "Q11",
+      "correct": "C",
+      "explanation": "DX distractor vs endpoints."
+    },
+    {
+      "id": "Q12",
+      "correct": "C",
+      "explanation": "Mixed types → prefer scheduled when pattern known."
+    },
+    {
+      "id": "Q13",
+      "correct": "C",
+      "explanation": "Least effort path."
+    },
+    {
+      "id": "Q14",
+      "correct": "C",
+      "explanation": "Egress-only IGW."
+    },
+    {
+      "id": "Q15",
+      "correct": "C",
+      "explanation": "Custom metric."
+    },
+    {
+      "id": "Q16",
+      "correct": "D",
+      "explanation": "Time-scale family."
+    },
+    {
+      "id": "Q17",
+      "correct": "D",
+      "explanation": "504 / origin HA."
+    },
+    {
+      "id": "Q18",
+      "correct": "D",
+      "explanation": "Missing toggle."
+    },
+    {
+      "id": "Q19",
+      "correct": "D",
+      "explanation": "Time-scale hunt."
+    },
+    {
+      "id": "Q20",
+      "correct": "D",
+      "explanation": "Keyword post-mortem."
+    }
+  ]
+}

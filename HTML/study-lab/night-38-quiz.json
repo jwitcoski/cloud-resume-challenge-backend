@@ -1,0 +1,210 @@
+{
+  "night": 38,
+  "title": "Security keywords",
+  "topic": "WAF vs Shield vs GuardDuty vs Macie, KMS custom store, EKS secrets, egress-only IGW, Artifact",
+  "format": "20 timed questions (~32 min, ~96 sec each). Underline force words before picking. Pair with the night guide.",
+  "answerKey": "night-38-quiz-answers.json",
+  "answerDistribution": "A x5 B x5 C x5 D x5",
+  "questions": [
+    {
+      "id": "Q1",
+      "question": "Block SQLi on ALBs across many accounts.",
+      "options": {
+        "A": "WAF managed SQLi + Firewall Manager",
+        "B": "GuardDuty + Security Hub",
+        "C": "Macie + Audit Manager",
+        "D": "Network Firewall attached like a web ACL to ALB"
+      }
+    },
+    {
+      "id": "Q2",
+      "question": "Large DDoS on ELB/CloudFront apps.",
+      "options": {
+        "A": "Shield Advanced",
+        "B": "WAF alone",
+        "C": "SG+NACL alone",
+        "D": "Firewall Manager as DDoS mitigator only"
+      }
+    },
+    {
+      "id": "Q3",
+      "question": "Discover PII privacy issues in S3.",
+      "options": {
+        "A": "Macie",
+        "B": "Polly",
+        "C": "Kendra",
+        "D": "Fraud Detector"
+      }
+    },
+    {
+      "id": "Q4",
+      "question": "Customer keys; purge material from KMS; audit ≠ CloudTrail.",
+      "options": {
+        "A": "KMS custom key store + CloudHSM",
+        "B": "AWS owned keys + CloudHSM story",
+        "C": "Custom key store with material in S3",
+        "D": "AWS managed keys only"
+      }
+    },
+    {
+      "id": "Q5",
+      "question": "Encrypt EKS secrets in etcd.",
+      "options": {
+        "A": "EKS secrets encryption with CMK",
+        "B": "Secrets Manager replaces etcd encryption",
+        "C": "Account EBS default encryption only",
+        "D": "EBS CSI as etcd encryption"
+      }
+    },
+    {
+      "id": "Q6",
+      "question": "IPv6 outbound only + traffic inspection.",
+      "options": {
+        "A": "NAT Gateway for IPv6 egress-only",
+        "B": "Egress-only IGW + Network Firewall",
+        "C": "Public IGW + Traffic Mirroring as filter",
+        "D": "PrivateLink + GuardDuty filtering"
+      }
+    },
+    {
+      "id": "Q7",
+      "question": "SSH only from 110.238.98.71.",
+      "options": {
+        "A": "Inbound UDP 22 /32",
+        "B": "Inbound TCP 22 /32",
+        "C": "Outbound TCP 22",
+        "D": "Outbound UDP 22 to 0.0.0.0/0"
+      }
+    },
+    {
+      "id": "Q8",
+      "question": "Auditor needs AWS compliance reports.",
+      "options": {
+        "A": "IAM",
+        "B": "Artifact",
+        "C": "Inspector assessment zip of all SOC",
+        "D": "Security Hub as document vault"
+      }
+    },
+    {
+      "id": "Q9",
+      "question": "Master key + plaintext never sent to AWS for S3.",
+      "options": {
+        "A": "SSE-KMS",
+        "B": "Client-side encryption with client master key",
+        "C": "SSE-C",
+        "D": "Client-side with KMS key id to AWS"
+      }
+    },
+    {
+      "id": "Q10",
+      "question": "Private path to S3/DynamoDB; no NAT.",
+      "options": {
+        "A": "Encryption at rest",
+        "B": "VPC endpoints",
+        "C": "Direct Connect as in-VPC private endpoint",
+        "D": "VPN CloudHub"
+      }
+    },
+    {
+      "id": "Q11",
+      "question": "Detection vs prevention — GuardDuty is?",
+      "options": {
+        "A": "Prevention that blocks SQLi",
+        "B": "WAF replacement",
+        "C": "Threat detection",
+        "D": "Object Lock mode"
+      }
+    },
+    {
+      "id": "Q12",
+      "question": "Multi-account reuse of WAF rules — add?",
+      "options": {
+        "A": "Only Macie",
+        "B": "Only Security Hub",
+        "C": "Firewall Manager",
+        "D": "Only Artifact"
+      }
+    },
+    {
+      "id": "Q13",
+      "question": "Encryption at rest fixing private routing?",
+      "options": {
+        "A": "True",
+        "B": "True for DynamoDB only",
+        "C": "False — different requirement",
+        "D": "True if SSE-S3"
+      }
+    },
+    {
+      "id": "Q14",
+      "question": "Network Firewall primary association model?",
+      "options": {
+        "A": "Attach like WAF web ACL to ALB listeners",
+        "B": "S3 bucket resource policy engine",
+        "C": "VPC traffic filtering / inspection",
+        "D": "Replace security groups entirely"
+      }
+    },
+    {
+      "id": "Q15",
+      "question": "Redis AUTH long-lived password needs?",
+      "options": {
+        "A": "IAM auth token only",
+        "B": "At-rest encryption alone",
+        "C": "auth-token (+ transit encryption as required)",
+        "D": "Macie"
+      }
+    },
+    {
+      "id": "Q16",
+      "question": "Corporate AD groups already assign roles; console access via federation.",
+      "options": {
+        "A": "Lambda authorizer only",
+        "B": "Create 1200 IAM users",
+        "C": "Simple AD always required over Connector",
+        "D": "AD Connector + IAM roles"
+      }
+    },
+    {
+      "id": "Q17",
+      "question": "First question on a security stem?",
+      "options": {
+        "A": "Is Purple the brand color?",
+        "B": "What is the company ticker symbol?",
+        "C": "How many AZs does S3 have?",
+        "D": "Block or detect?"
+      }
+    },
+    {
+      "id": "Q18",
+      "question": "Macie vs WAF for SQLi on ALB?",
+      "options": {
+        "A": "Macie blocks SQLi",
+        "B": "Neither exists",
+        "C": "They are identical",
+        "D": "WAF blocks; Macie is S3 sensitive-data discovery"
+      }
+    },
+    {
+      "id": "Q19",
+      "question": "Shield Advanced vs WAF — volumetric DDoS keyword favors?",
+      "options": {
+        "A": "EBS snapshots",
+        "B": "Macie",
+        "C": "Artifact",
+        "D": "Shield Advanced"
+      }
+    },
+    {
+      "id": "Q20",
+      "question": "EBS encryption alone encrypts EKS etcd secrets?",
+      "options": {
+        "A": "Yes always",
+        "B": "Yes if gp3",
+        "C": "Yes if io2",
+        "D": "No — need EKS secrets encryption"
+      }
+    }
+  ]
+}
