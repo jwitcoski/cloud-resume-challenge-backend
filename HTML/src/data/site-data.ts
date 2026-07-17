@@ -79,7 +79,7 @@ export const projectOverview = {
     sideProjects: [
         { name: "Global Ski Atlas", url: "https://globalskiatlas.com" },
         { name: "Vector Scope AI", url: "https://vectorscopeai.com" },
-        { name: "MapTiler Agent Grader", url: "/maptiler-playground/" },
+        { name: "MapTiler Agent Grader", url: "/maptiler-playground/index.html" },
         { name: "AWS SAA Study Plan", url: "/aws-solutions-architect-study.html" },
     ]
 };
