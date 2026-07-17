@@ -209,7 +209,10 @@
 
     <section>
       <div class="panel" style="margin-bottom:16px">
-        <h2>Challenge</h2>
+        <h2 style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+          Challenge
+          <a id="exampleLink" href="#" target="_blank" rel="noopener noreferrer" hidden style="font-size:0.8rem;font-weight:600;letter-spacing:0;text-transform:none;color:var(--accent)">View example</a>
+        </h2>
         <div id="chalMeta" class="status">Select a challenge.</div>
         <div class="prompt" id="promptBox">—</div>
         <div class="actions">
@@ -350,6 +353,10 @@
   <script>
     let catalog = null;
     let selected = null;
+    /** @type {Record<string, { source: string, ext?: string, meta?: object|null }>} */
+    let uploadedPack = {};
+    /** @type {Record<string, { source: string, ext?: string }>} */
+    let pastedByChallenge = {};
 
     async function boot() {
       const res = await fetch("./challenges/catalog.json");
@@ -411,6 +418,38 @@
       renderList();
       document.getElementById("checkResults").innerHTML = "";
       document.getElementById("gradeStatus").textContent = "";
+      updateExampleLink(selected);
+
+      const pasted = pastedByChallenge[id];
+      if (pasted?.source) {
+        document.getElementById("source").value = pasted.source;
+      } else if (uploadedPack[id]?.source) {
+        document.getElementById("source").value = uploadedPack[id].source;
+      } else {
+        document.getElementById("source").value = "";
+      }
+    }
+
+    function updateExampleLink(challenge) {
+      const link = document.getElementById("exampleLink");
+      if (!challenge) {
+        link.hidden = true;
+        link.removeAttribute("href");
+        return;
+      }
+      const ext = extFor(challenge)[0];
+      const file = challenge.id + ext;
+      link.href = "./solutions/" + file;
+      link.textContent = "View example (" + file + ")";
+      link.hidden = false;
+    }
+
+    function rememberPasteForSelected(source, ext) {
+      if (!selected || !source) return;
+      pastedByChallenge[selected.id] = {
+        source,
+        ext: ext || extFor(selected)[0],
+      };
     }
 
     function numOrNull(id) {
@@ -453,6 +492,7 @@
         document.getElementById("gradeStatus").textContent = "Paste agent code first.";
         return;
       }
+      rememberPasteForSelected(source, null);
       let meta;
       try {
         meta = collectMeta();
@@ -587,7 +627,30 @@
     function buildBatchPrompt() {
       const model = document.getElementById("metaModel").value.trim() || "YOUR_MODEL_NAME";
       const agent = document.getElementById("metaAgent").value;
+      const provider = document.getElementById("metaProvider").value;
       const skillOn = document.getElementById("metaSkill").checked;
+      const tokIn = numOrNull("tokIn");
+      const tokOut = numOrNull("tokOut");
+      let tokTotal = numOrNull("tokTotal");
+      if (tokTotal == null && tokIn != null && tokOut != null) tokTotal = tokIn + tokOut;
+      const costUsd = numOrNull("metaCost");
+      const latencySec = numOrNull("metaLatency");
+      const attempts = numOrNull("metaAttempts") || 1;
+      const notes = document.getElementById("metaNotes").value.trim() || "user-upload";
+
+      const metaTemplate = {
+        agentLabel: agent,
+        provider,
+        model,
+        skillUsed: skillOn,
+        skillVersionNote: "maptiler-skills @ local .agents",
+        tokens: { input: tokIn, output: tokOut, total: tokTotal },
+        costUsd,
+        latencySec,
+        attempts,
+        notes,
+      };
+
       const lines = [];
       lines.push("Use the MapTiler skill: read .agents/skills/maptiler/SKILL.md first.");
       lines.push("");
@@ -603,8 +666,18 @@
       lines.push("The user will UPLOAD these files into the MapTiler Agent Skill Scoreboard to grade them.");
       lines.push("Do not assume a repo path — emit complete file contents the user can save and upload.");
       lines.push("");
-      lines.push("Each .meta.json must look like:");
-      lines.push(`{"agentLabel":${JSON.stringify(agent)},"provider":"cursor","model":${JSON.stringify(model)},"skillUsed":${skillOn},"skillVersionNote":"maptiler-skills @ local .agents","tokens":{"input":null,"output":null,"total":null},"costUsd":null,"latencySec":null,"attempts":1,"notes":"user-upload"}`);
+      lines.push("Each .meta.json MUST include tokens (input/output/total), costUsd, and latencySec.");
+      lines.push("Use these run-metadata values (update per challenge if you track separately):");
+      lines.push(JSON.stringify(metaTemplate));
+      lines.push("");
+      lines.push("Field meanings:");
+      lines.push("- tokens.input — prompt/input token count (number or null)");
+      lines.push("- tokens.output — completion/output token count (number or null)");
+      lines.push("- tokens.total — input+output if known (number or null)");
+      lines.push("- costUsd — estimated USD cost for the run (number or null)");
+      lines.push("- latencySec — wall time in seconds (number or null)");
+      lines.push("- attempts — how many tries before the final solution (integer ≥ 1)");
+      lines.push("If you do not know a value, keep null — do not omit the keys.");
       lines.push("");
       lines.push("Hard rules: @maptiler/sdk CDN v4.0.2 only (never maplibre-gl); coordinates [lng,lat]; no streets-v2/basic-v2; no {{ }}; browser pages load key from ../admin-boundaries/js/config.js as window.MAPTILER_API_KEY.");
       lines.push("Write all files. Do not stop early.");
@@ -734,6 +807,8 @@
           meta: await fetchMeta(c.id),
         };
       }
+      // Keep in memory so selecting a challenge opens this pack (same as upload)
+      uploadedPack = pack;
       gradePack(pack, { label: "Example pack", sourceTag: "example-solutions" });
     }
 
@@ -790,6 +865,7 @@
         return;
       }
       gradePack(pack, { label: "Your upload", sourceTag: "upload" });
+      uploadedPack = pack;
       if (ignored.length) {
         status.textContent += ` · ignored: ${ignored.slice(0, 4).join(", ")}${ignored.length > 4 ? "…" : ""}`;
       }
@@ -829,6 +905,13 @@
       await navigator.clipboard.writeText(selected.prompt);
       document.getElementById("gradeStatus").textContent = "Prompt copied.";
     });
+    document.getElementById("source").addEventListener("change", () => {
+      rememberPasteForSelected(document.getElementById("source").value, null);
+    });
+    document.getElementById("source").addEventListener("blur", () => {
+      const v = document.getElementById("source").value.trim();
+      if (v) rememberPasteForSelected(v, null);
+    });
     document.getElementById("btnCopyBatch").addEventListener("click", async () => {
       if (!catalog) return;
       const text = buildBatchPrompt();
@@ -841,7 +924,16 @@
     document.getElementById("uploadOne").addEventListener("change", async (e) => {
       const file = e.target.files && e.target.files[0];
       if (!file) return;
-      document.getElementById("source").value = await file.text();
+      const text = await file.text();
+      document.getElementById("source").value = text;
+      const ext = "." + (file.name.split(".").pop() || "html");
+      rememberPasteForSelected(text, ext);
+      // If filename is C1.html etc., bind to that challenge and select it
+      const parsed = parseChallengeFileName(file.name);
+      if (parsed && parsed.kind === "solution") {
+        pastedByChallenge[parsed.id] = { source: text, ext: parsed.ext || ext };
+        if (catalog) selectChallenge(parsed.id);
+      }
       document.getElementById("gradeStatus").textContent = `Loaded ${file.name} — click Grade.`;
       e.target.value = "";
     });

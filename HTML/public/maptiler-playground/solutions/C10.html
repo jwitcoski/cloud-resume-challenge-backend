@@ -25,11 +25,11 @@
     <img id="staticImg" alt="Static map snapshot" width="320" height="200" />
     <button id="refresh" type="button">Refresh from viewport</button>
   </div>
-  <script src="../admin-boundaries/js/config.js"></script>
+  <script src="/admin-boundaries/js/config.js"></script>
   <script>
     const key = window.MAPTILER_API_KEY;
     if (!key) {
-      throw new Error('Missing MAPTILER_API_KEY — set it in ../admin-boundaries/js/config.js');
+      throw new Error('Missing MAPTILER_API_KEY — set it in /admin-boundaries/js/config.js');
     }
     maptilersdk.config.apiKey = key;
 

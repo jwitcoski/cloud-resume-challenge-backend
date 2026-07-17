@@ -18,11 +18,11 @@
   <a id="creditLogo" href="https://www.maptiler.com/" target="_blank" rel="noopener">
     <img src="https://api.maptiler.com/resources/logo.svg" alt="MapTiler" />
   </a>
-  <script src="../admin-boundaries/js/config.js"></script>
+  <script src="/admin-boundaries/js/config.js"></script>
   <script>
     const key = window.MAPTILER_API_KEY;
     if (!key) {
-      throw new Error('Missing MAPTILER_API_KEY — set it in ../admin-boundaries/js/config.js');
+      throw new Error('Missing MAPTILER_API_KEY — set it in /admin-boundaries/js/config.js');
     }
 
     // Cesium only — do not mix MapLibre / MapTiler SDK Map APIs here

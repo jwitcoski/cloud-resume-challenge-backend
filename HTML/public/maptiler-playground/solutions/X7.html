@@ -25,11 +25,11 @@
     <div id="msg" style="margin-top:8px;color:#666;font-size:12px;">Transforming…</div>
   </div>
   <div id="map"></div>
-  <script src="../admin-boundaries/js/config.js"></script>
+  <script src="/admin-boundaries/js/config.js"></script>
   <script>
     const key = window.MAPTILER_API_KEY;
     if (!key) {
-      throw new Error('Missing MAPTILER_API_KEY — set it in ../admin-boundaries/js/config.js');
+      throw new Error('Missing MAPTILER_API_KEY — set it in /admin-boundaries/js/config.js');
     }
     maptilersdk.config.apiKey = key;
 

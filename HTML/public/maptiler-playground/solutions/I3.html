@@ -28,7 +28,7 @@
 <body>
   <div id="webGpuError"></div>
   <div id="map"></div>
-  <script src="../admin-boundaries/js/config.js"></script>
+  <script src="/admin-boundaries/js/config.js"></script>
   <script type="module">
     import {
       Map,
@@ -38,7 +38,7 @@
 
     const key = window.MAPTILER_API_KEY;
     if (!key) {
-      throw new Error('Missing MAPTILER_API_KEY — set it in ../admin-boundaries/js/config.js');
+      throw new Error('Missing MAPTILER_API_KEY — set it in /admin-boundaries/js/config.js');
     }
 
     const errorOverlay = document.getElementById('webGpuError');
