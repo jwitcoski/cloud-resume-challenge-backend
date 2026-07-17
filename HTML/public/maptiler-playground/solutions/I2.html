@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>I2 deck.gl Overlay</title>
+  <link href="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.css" rel="stylesheet" />
+  <script src="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.umd.min.js"></script>
+  <script src="https://unpkg.com/deck.gl@9.0.38/dist.min.js"></script>
+  <script src="../admin-boundaries/js/config.js"></script>
+  <style>
+    html, body { margin: 0; height: 100%; }
+    #map { position: absolute; inset: 0; }
+    .panel {
+      position: absolute; z-index: 5; top: 12px; left: 12px;
+      background: rgba(255,255,255,0.9); padding: 8px 12px; border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="panel">deck.gl ScatterplotLayer on MapTiler SDK basemap</div>
+  <div id="map"></div>
+  <script>
+    maptilersdk.config.apiKey = window.MAPTILER_API_KEY;
+
+    const data = [];
+    for (let i = 0; i < 400; i++) {
+      data.push({
+        position: [
+          14.4178 + (Math.random() - 0.5) * 0.25,
+          50.1167 + (Math.random() - 0.5) * 0.2,
+        ],
+        radius: 40 + Math.random() * 80,
+      });
+    }
+
+    const map = new maptilersdk.Map({
+      container: 'map',
+      style: maptilersdk.MapStyle.DATAVIZ.DARK,
+      center: [14.4178, 50.1167],
+      zoom: 11,
+      pitch: 40,
+    });
+
+    // Interleaved-ish overlay: deck.gl MapboxOverlay works with MapLibre-compatible maps
+    const { MapboxOverlay, ScatterplotLayer } = deck;
+
+    map.on('load', () => {
+      const overlay = new MapboxOverlay({
+        interleaved: true,
+        layers: [
+          new ScatterplotLayer({
+            id: 'scatter',
+            data,
+            getPosition: (d) => d.position,
+            getRadius: (d) => d.radius,
+            getFillColor: [56, 189, 248, 180],
+            radiusUnits: 'meters',
+            pickable: true,
+          }),
+        ],
+      });
+      map.addControl(overlay);
+    });
+  </script>
+</body>
+</html>

@@ -3,866 +3,883 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>MapTiler Tower Defense</title>
-  <link href="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.css" rel="stylesheet" />
+  <title>MapTiler Agent Skill Scoreboard</title>
   <style>
     :root {
-      --ink: #eef2ff;
-      --muted: #9aa8c2;
-      --panel: rgba(8, 12, 22, 0.94);
-      --line: rgba(255, 255, 255, 0.12);
-      --accent: #7dd3fc;
-      --gold: #fbbf24;
-      --hp: #4ade80;
-      --danger: #f87171;
+      --bg: #0b1020;
+      --panel: #121a2e;
+      --line: rgba(255,255,255,.12);
+      --ink: #e8eefc;
+      --muted: #93a0bd;
+      --accent: #6ec8ff;
+      --good: #4ade80;
+      --bad: #f87171;
+      --warn: #fbbf24;
+      --core: #38bdf8;
+      --extreme: #fb923c;
+      --insane: #e879f9;
     }
-
     * { box-sizing: border-box; }
-
-    html, body {
+    body {
       margin: 0;
-      height: 100%;
-      overflow: hidden;
-      font-family: "Segoe UI", "Avenir Next", sans-serif;
+      font-family: "Segoe UI", "Avenir Next", system-ui, sans-serif;
+      background: radial-gradient(1200px 600px at 10% -10%, #1a2744, var(--bg));
       color: var(--ink);
-      background: #05070f;
+      min-height: 100vh;
     }
-
-    #map { position: absolute; inset: 0; }
-
-    .hud {
-      position: absolute;
-      z-index: 3;
-      top: 12px;
-      left: 12px;
-      width: min(340px, calc(100vw - 24px));
-      padding: 12px 14px;
-      border: 1px solid var(--line);
-      border-radius: 14px;
+    header {
+      padding: 20px 24px 12px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: flex-end;
+      justify-content: space-between;
+    }
+    header h1 { margin: 0; font-size: 1.35rem; }
+    header p { margin: 4px 0 0; color: var(--muted); font-size: 0.88rem; max-width: 52rem; }
+    header a { color: var(--accent); }
+    .scores {
+      display: flex; gap: 8px; flex-wrap: wrap;
+    }
+    .pill {
       background: var(--panel);
-      backdrop-filter: blur(12px);
-      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.45);
-    }
-
-    h1 { margin: 0 0 2px; font-size: 1.1rem; }
-    .lede { margin: 0 0 10px; color: var(--muted); font-size: 0.8rem; line-height: 1.35; }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 6px;
-      margin-bottom: 10px;
-    }
-    .stat {
-      padding: 7px 8px;
-      border-radius: 10px;
       border: 1px solid var(--line);
-      background: rgba(255, 255, 255, 0.04);
+      border-radius: 12px;
+      padding: 8px 12px;
+      min-width: 88px;
       text-align: center;
     }
-    .stat b {
-      display: block;
-      font-size: 1.05rem;
-      font-variant-numeric: tabular-nums;
-    }
-    .stat span { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
-    .stat.gold b { color: var(--gold); }
-    .stat.lives b { color: var(--danger); }
-    .stat.wave b { color: var(--accent); }
+    .pill b { display: block; font-size: 1.15rem; }
+    .pill span { font-size: 0.65rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+    .pill.core b { color: var(--core); }
+    .pill.extreme b { color: var(--extreme); }
+    .pill.insane b { color: var(--insane); }
+    .pill.combined b { color: var(--good); }
 
-    .label {
-      display: block;
-      margin: 8px 0 6px;
-      font-size: 0.65rem;
-      letter-spacing: 0.08em;
+    main {
+      display: grid;
+      grid-template-columns: minmax(280px, 340px) 1fr;
+      gap: 16px;
+      padding: 16px 24px 32px;
+    }
+    @media (max-width: 960px) {
+      main { grid-template-columns: 1fr; }
+    }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px;
+    }
+    .panel h2 {
+      margin: 0 0 10px;
+      font-size: 0.95rem;
+      letter-spacing: .04em;
       text-transform: uppercase;
       color: var(--muted);
     }
-
-    .towers {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 6px;
+    .tier-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      margin: 12px 0 6px;
+      text-transform: uppercase;
     }
+    .tier-label.core { color: var(--core); }
+    .tier-label.extreme { color: var(--extreme); }
+    .tier-label.insane { color: var(--insane); }
 
-    .tower-btn {
-      appearance: none;
+    .chal {
+      width: 100%;
+      text-align: left;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      color: var(--ink);
+      border-radius: 10px;
+      padding: 8px 10px;
+      margin-bottom: 6px;
+      cursor: pointer;
       font: inherit;
+    }
+    .chal:hover { border-color: rgba(110,200,255,.45); }
+    .chal.active { border-color: var(--accent); background: rgba(110,200,255,.12); }
+    .chal .t { font-weight: 650; font-size: 0.88rem; }
+    .chal .m { color: var(--muted); font-size: 0.72rem; margin-top: 2px; }
+    .badge {
+      display: inline-block;
+      font-size: 0.65rem;
+      padding: 1px 6px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      margin-left: 4px;
+    }
+    .badge.pass { color: var(--good); border-color: rgba(74,222,128,.4); }
+    .badge.fail { color: var(--bad); border-color: rgba(248,113,113,.4); }
+    .badge.static { color: var(--warn); }
+
+    label { display: block; font-size: 0.72rem; color: var(--muted); margin: 8px 0 4px; text-transform: uppercase; letter-spacing: .05em; }
+    input, select, textarea, button.btn {
+      font: inherit;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(0,0,0,.25);
+      color: var(--ink);
+      padding: 8px 10px;
+      width: 100%;
+    }
+    textarea { min-height: 220px; font-family: ui-monospace, Consolas, monospace; font-size: 0.8rem; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+    .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    button.btn { width: auto; cursor: pointer; }
+    button.btn.primary { background: rgba(110,200,255,.2); border-color: var(--accent); font-weight: 650; }
+    button.btn:hover { border-color: rgba(110,200,255,.55); }
+    .prompt {
+      background: rgba(0,0,0,.28);
       border: 1px solid var(--line);
       border-radius: 12px;
-      background: rgba(255, 255, 255, 0.05);
-      color: var(--ink);
-      padding: 8px 6px;
-      cursor: pointer;
-      text-align: center;
+      padding: 12px;
+      font-size: 0.88rem;
+      line-height: 1.45;
+      white-space: pre-wrap;
+      margin-bottom: 8px;
     }
-    .tower-btn:hover { border-color: rgba(125, 211, 252, 0.5); }
-    .tower-btn.selected {
-      border-color: var(--accent);
-      background: rgba(125, 211, 252, 0.18);
-      box-shadow: 0 0 0 2px rgba(125, 211, 252, 0.25);
+    .checks { margin-top: 12px; }
+    .check {
+      display: flex; gap: 8px; align-items: flex-start;
+      padding: 6px 8px; border-radius: 8px; font-size: 0.82rem;
+      border: 1px solid transparent;
     }
-    .tower-btn:disabled { opacity: 0.35; cursor: not-allowed; }
-    .tower-btn .ico { font-size: 1.25rem; display: block; }
-    .tower-btn .nm { font-size: 0.72rem; font-weight: 650; }
-    .tower-btn .pr { font-size: 0.68rem; color: var(--gold); }
-
-    .row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
-
-    button.action {
-      appearance: none;
-      font: inherit;
-      font-size: 0.82rem;
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.06);
-      color: var(--ink);
-      padding: 7px 12px;
-      cursor: pointer;
-    }
-    button.action:hover { border-color: rgba(125, 211, 252, 0.5); }
-    button.action:disabled { opacity: 0.4; cursor: not-allowed; }
-    button.action.primary { background: rgba(125, 211, 252, 0.22); border-color: var(--accent); font-weight: 650; }
-    button.action.go { background: rgba(74, 222, 128, 0.2); border-color: var(--hp); font-weight: 650; }
-    button.action.hot { background: rgba(248, 113, 113, 0.18); border-color: var(--danger); }
-    button.action.active { border-color: var(--accent); background: rgba(125, 211, 252, 0.2); }
-
-    .presets { display: flex; flex-wrap: wrap; gap: 6px; }
-
-    .status {
-      margin: 10px 0 0;
-      font-size: 0.8rem;
-      line-height: 1.4;
-      color: var(--muted);
-      min-height: 2.6em;
-    }
-    .status strong { color: var(--accent); }
-
-    #error {
-      display: none;
-      position: absolute; inset: 0; z-index: 6;
-      background: #070b14; color: #ff8a80; padding: 28px; white-space: pre-wrap;
-    }
-
-    .banner {
-      display: none;
-      position: absolute; inset: 0; z-index: 5;
-      background: rgba(2, 6, 15, 0.8);
-      backdrop-filter: blur(8px);
-      align-items: center; justify-content: center; padding: 24px;
-    }
-    .banner.on { display: flex; }
-    .banner-card {
-      width: min(380px, 100%);
-      padding: 24px 20px;
-      border-radius: 16px;
-      border: 1px solid var(--line);
-      background: rgba(10, 14, 26, 0.96);
-      text-align: center;
-    }
-    .banner-card h2 { margin: 0 0 8px; }
-    .banner-card p { margin: 0 0 14px; color: var(--muted); }
-
-    .enemy {
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      background: #ef4444;
-      border: 2px solid #fff;
-      box-shadow: 0 0 10px rgba(239, 68, 68, 0.7);
-      position: relative;
-    }
-    .enemy.tank { width: 28px; height: 28px; background: #a855f7; }
-    .enemy.fast { width: 16px; height: 16px; background: #f97316; }
-    .enemy .hp {
-      position: absolute;
-      left: -4px; right: -4px; top: -7px;
-      height: 3px;
-      background: rgba(0,0,0,.55);
-      border-radius: 2px;
-      overflow: hidden;
-    }
-    .enemy .hp i { display: block; height: 100%; background: var(--hp); width: 100%; }
-
-    .tower {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      border: 2px solid #fff;
-      display: grid;
-      place-items: center;
-      font-size: 16px;
-      box-shadow: 0 4px 14px rgba(0,0,0,.5);
-      cursor: default;
-    }
-    .tower.arrow { background: #166534; }
-    .tower.cannon { background: #7c2d12; }
-    .tower.frost { background: #1e3a8a; }
-
-    .base-flag, .spawn-flag {
-      padding: 4px 8px;
-      border-radius: 8px;
-      font-size: 11px;
-      font-weight: 800;
-      border: 2px solid #fff;
-      box-shadow: 0 4px 12px rgba(0,0,0,.45);
-      white-space: nowrap;
-    }
-    .base-flag { background: #22c55e; color: #052e16; }
-    .spawn-flag { background: #ef4444; color: #fff; }
-
-    .shot {
-      position: absolute;
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: #fde68a;
-      box-shadow: 0 0 8px #fbbf24;
-      pointer-events: none;
-      z-index: 2;
-    }
-
-    @media (max-width: 700px) {
-      .hud {
-        top: auto; bottom: 8px; left: 8px; right: 8px; width: auto;
-        max-height: 48vh; overflow: auto;
-      }
-    }
+    .check.ok { background: rgba(74,222,128,.08); }
+    .check.no { background: rgba(248,113,113,.08); }
+    .check .id { font-family: ui-monospace, Consolas, monospace; color: var(--muted); min-width: 10rem; }
+    .board table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+    .board th, .board td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); }
+    .board th { color: var(--muted); font-weight: 600; }
+    .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; align-items: center; }
+    .filters select, .filters input { width: auto; min-width: 120px; }
+    .status { color: var(--muted); font-size: 0.82rem; margin-top: 8px; min-height: 1.2em; }
+    .toggle-row { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
+    .toggle-row input { width: auto; }
   </style>
 </head>
 <body>
-  <div id="map"></div>
-  <div id="error"></div>
-
-  <aside class="hud">
-    <h1>Map Tower Defense</h1>
-    <p class="lede">Pick a place — we pull a real street route for the enemy lane. Build towers beside the roads and hold your base.</p>
-
-    <div class="stats">
-      <div class="stat gold"><b id="gold">100</b><span>Gold</span></div>
-      <div class="stat lives"><b id="lives">20</b><span>Lives</span></div>
-      <div class="stat wave"><b id="wave">0</b><span>Wave</span></div>
+  <header>
+    <div>
+      <h1>MapTiler Agent Skill Scoreboard</h1>
+      <p>
+        Grade agent MapTiler code against
+        <a href="https://github.com/maptiler/maptiler-skills" target="_blank" rel="noopener">maptiler-skills</a>.
+        <strong>Demo:</strong> Grade example pack from <code>solutions/</code>.
+        <strong>Your run:</strong> Copy ALL → agent writes files → upload them here (or paste one challenge).
+        Demos: <a href="./earth-lab.html">Earth Lab</a> · <a href="./pin-quest.html">Pin Quest</a>
+      </p>
     </div>
+    <div class="scores">
+      <div class="pill core"><b id="pctCore">—</b><span>Core</span></div>
+      <div class="pill extreme"><b id="pctExtreme">—</b><span>Extreme</span></div>
+      <div class="pill insane"><b id="pctInsane">—</b><span>Insane</span></div>
+      <div class="pill combined"><b id="pctCombined">—</b><span>Combined</span></div>
+    </div>
+  </header>
 
-    <div id="phasePick">
-      <span class="label">Quick start</span>
-      <div class="presets" id="presets"></div>
-      <div class="row">
-        <button type="button" class="action primary" id="btnBuildPath" disabled>Load street path</button>
-        <button type="button" class="action" id="btnClear" disabled>Clear</button>
+  <main>
+    <aside class="panel" id="listPanel">
+      <h2>Challenges</h2>
+      <div class="actions" style="margin:0 0 10px">
+        <button type="button" class="btn primary" id="btnCopyBatch">Copy ALL challenges prompt</button>
       </div>
-    </div>
-
-    <div id="phasePlay" hidden>
-      <span class="label">Build tower (then click beside the path)</span>
-      <div class="towers">
-        <button type="button" class="tower-btn selected" data-tower="arrow" id="btn-arrow">
-          <span class="ico">🏹</span>
-          <span class="nm">Archer</span>
-          <span class="pr">$40</span>
-        </button>
-        <button type="button" class="tower-btn" data-tower="cannon" id="btn-cannon">
-          <span class="ico">💣</span>
-          <span class="nm">Cannon</span>
-          <span class="pr">$75</span>
-        </button>
-        <button type="button" class="tower-btn" data-tower="frost" id="btn-frost">
-          <span class="ico">❄️</span>
-          <span class="nm">Frost</span>
-          <span class="pr">$60</span>
-        </button>
+      <div class="actions" style="margin:0 0 10px">
+        <button type="button" class="btn" id="btnGradeAll" title="Loads the checked-in example pack under solutions/">Grade example solutions/</button>
       </div>
-      <div class="row">
-        <button type="button" class="action go" id="btnWave">Start wave</button>
-        <button type="button" class="action hot" id="btnRestart">New map</button>
+      <div class="status" id="batchStatus" style="margin-bottom:10px">
+        Example pack is demo output only. To score your own agent, upload files below (or paste one challenge).
       </div>
-    </div>
+      <div style="margin-bottom:12px;padding:10px;border:1px dashed var(--line);border-radius:8px">
+        <label for="uploadPack" style="margin:0 0 6px;display:block">Upload your solutions</label>
+        <input id="uploadPack" type="file" multiple accept=".html,.js,.mjs,.ts,.tsx,.jsx,.swift,.kt,.dart,.json,.txt" style="font-size:0.78rem;width:100%" />
+        <p class="status" style="margin:6px 0 8px">
+          Select <code>C1.html</code> + <code>C1.meta.json</code> (etc.). Names must start with the challenge id.
+        </p>
+        <button type="button" class="btn primary" id="btnGradeUpload" style="width:100%">Grade uploaded files</button>
+      </div>
+      <div id="challengeList"></div>
+    </aside>
 
-    <p class="status" id="status">Click the map (or a preset city) — we’ll route the enemy lane on real streets.</p>
-  </aside>
+    <section>
+      <div class="panel" style="margin-bottom:16px">
+        <h2>Challenge</h2>
+        <div id="chalMeta" class="status">Select a challenge.</div>
+        <div class="prompt" id="promptBox">—</div>
+        <div class="actions">
+          <button type="button" class="btn" id="btnCopy">Copy prompt</button>
+        </div>
+      </div>
 
-  <div class="banner" id="banner">
-    <div class="banner-card">
-      <h2 id="bannerTitle">Victory</h2>
-      <p id="bannerText"></p>
-      <button type="button" class="action go" id="btnAgain">Play again</button>
-    </div>
-  </div>
+      <div class="panel" style="margin-bottom:16px">
+        <h2>Run metadata</h2>
+        <div class="row">
+          <div>
+            <label>Agent / product</label>
+            <select id="metaAgent">
+              <option>Cursor Agent</option>
+              <option>Cursor Chat</option>
+              <option>Claude Code</option>
+              <option>ChatGPT</option>
+              <option>Gemini</option>
+              <option>Copilot</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div>
+            <label>Provider</label>
+            <select id="metaProvider">
+              <option value="cursor">cursor</option>
+              <option value="anthropic">anthropic</option>
+              <option value="openai">openai</option>
+              <option value="google">google</option>
+              <option value="other">other</option>
+            </select>
+          </div>
+        </div>
+        <label>Model</label>
+        <input id="metaModel" placeholder="e.g. composer / claude-opus / gpt-5" />
+        <div class="toggle-row">
+          <input type="checkbox" id="metaSkill" checked />
+          <label for="metaSkill" style="margin:0;text-transform:none;letter-spacing:0">maptiler-skills loaded for this run</label>
+        </div>
+        <div class="row3">
+          <div>
+            <label>Tokens in</label>
+            <input id="tokIn" type="number" min="0" placeholder="optional" />
+          </div>
+          <div>
+            <label>Tokens out</label>
+            <input id="tokOut" type="number" min="0" placeholder="optional" />
+          </div>
+          <div>
+            <label>Tokens total</label>
+            <input id="tokTotal" type="number" min="0" placeholder="optional" />
+          </div>
+        </div>
+        <div class="row3">
+          <div>
+            <label>Cost USD</label>
+            <input id="metaCost" type="number" step="0.0001" min="0" placeholder="optional" />
+          </div>
+          <div>
+            <label>Latency (sec)</label>
+            <input id="metaLatency" type="number" step="0.1" min="0" placeholder="optional" />
+          </div>
+          <div>
+            <label>Attempts</label>
+            <input id="metaAttempts" type="number" min="1" value="1" />
+          </div>
+        </div>
+        <label>Notes</label>
+        <input id="metaNotes" placeholder="retries, prompt tweaks, …" />
+      </div>
 
-  <script src="../admin-boundaries/js/config.js"></script>
-  <script src="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.umd.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@turf/turf@7.3.5/turf.min.js"></script>
+      <div class="panel" style="margin-bottom:16px">
+        <h2>Single challenge (paste or one file)</h2>
+        <p class="status" style="margin:0 0 8px">
+          For one challenge only. For a full agent run, use <strong>Upload your solutions</strong> in the left rail.
+        </p>
+        <div class="actions" style="margin-bottom:8px">
+          <label class="btn" for="uploadOne" style="cursor:pointer;display:inline-block">Choose file…</label>
+          <input id="uploadOne" type="file" accept=".html,.js,.mjs,.ts,.tsx,.jsx,.swift,.kt,.dart,.txt" style="display:none" />
+        </div>
+        <textarea id="source" placeholder="Paste HTML / JS / Swift / Kotlin / Dart / TS here…"></textarea>
+        <div class="actions">
+          <button type="button" class="btn primary" id="btnGrade">Grade</button>
+          <button type="button" class="btn" id="btnLive">Grade + live smoke</button>
+        </div>
+        <div class="status" id="gradeStatus"></div>
+        <div class="checks" id="checkResults"></div>
+      </div>
+
+      <div class="panel board">
+        <h2>Scoreboard</h2>
+        <div class="filters">
+          <select id="filterSkill">
+            <option value="all">Skill: all</option>
+            <option value="yes">Skill: on</option>
+            <option value="no">Skill: off</option>
+          </select>
+          <input id="filterModel" placeholder="Filter model…" />
+          <button type="button" class="btn" id="btnExport">Export JSON</button>
+          <button type="button" class="btn" id="btnClear">Clear scores</button>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>When</th>
+              <th>Chal</th>
+              <th>Model</th>
+              <th>Skill</th>
+              <th>Score</th>
+              <th>Tokens</th>
+              <th>Letter</th>
+            </tr>
+          </thead>
+          <tbody id="boardBody"></tbody>
+        </table>
+        <div class="status" id="boardEmpty">No runs yet.</div>
+      </div>
+
+      <div class="panel board" style="margin-top:16px">
+        <h2>Agent improvement report</h2>
+        <p class="status" style="margin:0 0 10px">
+          Built from the latest graded run per challenge (example pack or your uploads).
+        </p>
+        <div class="actions" style="margin-bottom:10px">
+          <button type="button" class="btn primary" id="btnImproveRefresh">Refresh report</button>
+          <button type="button" class="btn" id="btnImproveMd">Export Markdown</button>
+          <button type="button" class="btn" id="btnImproveJson">Export JSON</button>
+        </div>
+        <div id="improveSummary" class="status"></div>
+        <ol id="improveList" style="margin:10px 0 0;padding-left:1.2rem;font-size:0.85rem;line-height:1.45;color:var(--text)"></ol>
+      </div>
+    </section>
+  </main>
+
+  <script src="./challenges/checks.js"></script>
+  <script src="./challenges/harness.js"></script>
+  <script src="./challenges/improvement.js"></script>
   <script>
-    const TOWERS = {
-      arrow:  { name: "Archer", cost: 40, range: 0.45, dmg: 12, rate: 380, color: "#4ade80" },
-      cannon: { name: "Cannon", cost: 75, range: 0.38, dmg: 32, rate: 900, color: "#fb923c" },
-      frost:  { name: "Frost",  cost: 60, range: 0.5,  dmg: 6,  rate: 500, color: "#60a5fa", slow: 0.55 },
-    };
+    let catalog = null;
+    let selected = null;
 
-    const ENEMY_TYPES = {
-      basic: { hp: 40, speed: 0.11, reward: 8, cls: "" },
-      fast:  { hp: 28, speed: 0.2,  reward: 10, cls: "fast" },
-      tank:  { hp: 120, speed: 0.07, reward: 18, cls: "tank" },
-    };
-
-    const PRESETS = [
-      { name: "NYC", lng: -73.9857, lat: 40.7484 },
-      { name: "London", lng: -0.1276, lat: 51.5072 },
-      { name: "Tokyo", lng: 139.6917, lat: 35.6895 },
-      { name: "Paris", lng: 2.3522, lat: 48.8566 },
-      { name: "SF", lng: -122.4194, lat: 37.7749 },
-    ];
-
-    let map;
-    let center = null;
-    let pathCoords = []; // [[lng,lat], ...]
-    let pathLine = null;
-    let phase = "pick"; // pick | play
-    let selectedTower = "arrow";
-    let gold = 100;
-    let lives = 20;
-    let wave = 0;
-    let waveActive = false;
-    let enemies = [];
-    let towers = [];
-    let spawnMarker = null;
-    let baseMarker = null;
-    let raf = null;
-    let lastTs = 0;
-    let spawnQueue = [];
-    let spawnAcc = 0;
-
-    function showError(msg) {
-      const el = document.getElementById("error");
-      el.style.display = "block";
-      el.textContent = msg;
+    async function boot() {
+      const res = await fetch("./challenges/catalog.json");
+      catalog = await res.json();
+      renderList();
+      renderBoard();
+      updateTierPcts();
+      renderImprovement();
     }
-    function setStatus(html) {
-      document.getElementById("status").innerHTML = html;
+
+    function byTier() {
+      const groups = { core: [], extreme: [], insane: [] };
+      for (const c of catalog.challenges) groups[c.tier].push(c);
+      return groups;
     }
-    function validateKey() {
-      const key = window.MAPTILER_API_KEY;
-      if (!key || key === "YOUR_MAPTILER_KEY_HERE") {
-        throw new Error("Missing MapTiler API key — copy admin-boundaries/js/config.example.js → config.js");
+
+    function bestByChallenge() {
+      const runs = MapTilerHarness.loadRuns();
+      const best = {};
+      for (const r of runs) {
+        if (!best[r.challengeId] || r.pct > best[r.challengeId].pct) best[r.challengeId] = r;
       }
-      return key;
+      return best;
     }
 
-    function refreshHud() {
-      document.getElementById("gold").textContent = Math.floor(gold);
-      document.getElementById("lives").textContent = lives;
-      document.getElementById("wave").textContent = wave;
-      for (const [id, t] of Object.entries(TOWERS)) {
-        const btn = document.getElementById("btn-" + id);
-        btn.disabled = gold < t.cost || phase !== "play";
-        btn.classList.toggle("selected", selectedTower === id);
-      }
-      document.getElementById("btnWave").disabled = phase !== "play" || waveActive;
-    }
-
-    function setPhase(p) {
-      phase = p;
-      document.getElementById("phasePick").hidden = p !== "pick";
-      document.getElementById("phasePlay").hidden = p !== "play";
-      refreshHud();
-    }
-
-    function offset(c, bearing, km) {
-      return turf.destination(turf.point(c), km, bearing, { units: "kilometers" }).geometry.coordinates;
-    }
-
-    function densifyLine(coords, stepKm = 0.03) {
-      const line = turf.lineString(coords);
-      const length = turf.length(line, { units: "kilometers" });
-      if (length < 0.01) return coords;
-      const dense = [];
-      const steps = Math.max(40, Math.ceil(length / stepKm));
-      for (let i = 0; i <= steps; i++) {
-        dense.push(
-          turf.along(line, (length * i) / steps, { units: "kilometers" }).geometry.coordinates
-        );
-      }
-      return dense;
-    }
-
-    /** Real OS streets via OSRM (snaps waypoints onto the road network). */
-    async function fetchStreetPath(c) {
-      const layouts = [
-        [offset(c, 200, 1.15), offset(c, 90, 0.85), offset(c, 20, 1.15)],
-        [offset(c, 160, 1.0), offset(c, 40, 0.7), offset(c, 300, 0.9), offset(c, 220, 1.05)],
-        [offset(c, 0, 1.2), offset(c, 120, 1.0), offset(c, 240, 1.2)],
-        [offset(c, 45, 1.3), offset(c, 225, 1.3)],
-        [offset(c, 90, 0.9), offset(c, 180, 0.6), offset(c, 270, 0.9), offset(c, 0, 0.6), offset(c, 90, 0.4)],
-      ];
-
-      let lastErr = "No route";
-      for (const pts of layouts) {
-        const pathParam = pts.map((p) => `${p[0].toFixed(6)},${p[1].toFixed(6)}`).join(";");
-        const url =
-          `https://router.project-osrm.org/route/v1/driving/${pathParam}` +
-          `?overview=full&geometries=geojson&steps=false`;
-        try {
-          const res = await fetch(url);
-          if (!res.ok) {
-            lastErr = `OSRM HTTP ${res.status}`;
-            continue;
-          }
-          const data = await res.json();
-          if (data.code !== "Ok" || !data.routes?.[0]?.geometry?.coordinates?.length) {
-            lastErr = data.message || data.code || "route rejected";
-            continue;
-          }
-          const raw = data.routes[0].geometry.coordinates;
-          const km = turf.length(turf.lineString(raw), { units: "kilometers" });
-          // Need enough lane for a tower-defense fight; skip tiny stubs / country tracks that fail snap
-          if (km < 1.2 || km > 14) {
-            lastErr = `route length ${km.toFixed(1)} km out of range`;
-            continue;
-          }
-          return densifyLine(raw);
-        } catch (err) {
-          lastErr = err.message || String(err);
+    function renderList() {
+      const best = bestByChallenge();
+      const wrap = document.getElementById("challengeList");
+      wrap.innerHTML = "";
+      const groups = byTier();
+      for (const tier of ["core", "extreme", "insane"]) {
+        const h = document.createElement("div");
+        h.className = "tier-label " + tier;
+        h.textContent = tier;
+        wrap.appendChild(h);
+        for (const c of groups[tier]) {
+          const b = document.createElement("button");
+          b.type = "button";
+          b.className = "chal" + (selected && selected.id === c.id ? " active" : "");
+          const br = best[c.id];
+          const badge = br
+            ? `<span class="badge ${br.pct >= 70 ? "pass" : "fail"}">${br.pct}%</span>`
+            : "";
+          const mode = c.mode === "static" ? `<span class="badge static">static</span>` : "";
+          b.innerHTML = `<div class="t">${c.id} · ${c.title} ${mode} ${badge}</div>
+            <div class="m">${c.tags.join(" · ")} · max ${c.maxScore}</div>`;
+          b.addEventListener("click", () => selectChallenge(c.id));
+          wrap.appendChild(b);
         }
       }
-      throw new Error("Could not load a street path here (" + lastErr + "). Try a denser city.");
     }
 
-    function clearEntities() {
-      for (const e of enemies) if (e.marker) e.marker.remove();
-      for (const t of towers) {
-        if (t.marker) t.marker.remove();
-        if (t.rangeId && map.getLayer(t.rangeId)) map.removeLayer(t.rangeId);
-        if (t.rangeSrc && map.getSource(t.rangeSrc)) map.removeSource(t.rangeSrc);
+    function selectChallenge(id) {
+      selected = catalog.challenges.find((c) => c.id === id);
+      document.getElementById("promptBox").textContent = selected.prompt;
+      document.getElementById("chalMeta").textContent =
+        `${selected.id} · ${selected.tier} · tags: ${selected.tags.join(", ")}` +
+        (selected.mode === "static" ? " · static-only grading" : "");
+      renderList();
+      document.getElementById("checkResults").innerHTML = "";
+      document.getElementById("gradeStatus").textContent = "";
+    }
+
+    function numOrNull(id) {
+      const v = document.getElementById(id).value;
+      if (v === "" || v == null) return null;
+      const n = Number(v);
+      return Number.isFinite(n) ? n : null;
+    }
+
+    function collectMeta() {
+      const model = document.getElementById("metaModel").value.trim();
+      if (!model) {
+        throw new Error("Model is required in run metadata.");
       }
-      enemies = [];
-      towers = [];
-      spawnQueue = [];
-      waveActive = false;
-      if (spawnMarker) { spawnMarker.remove(); spawnMarker = null; }
-      if (baseMarker) { baseMarker.remove(); baseMarker = null; }
-    }
-
-    function clearPathLayers() {
-      if (map.getLayer("path-glow")) map.removeLayer("path-glow");
-      if (map.getLayer("path-line")) map.removeLayer("path-line");
-      if (map.getSource("path")) map.removeSource("path");
-    }
-
-    function drawPath() {
-      clearPathLayers();
-      pathLine = turf.lineString(pathCoords);
-      map.addSource("path", { type: "geojson", data: pathLine });
-      map.addLayer({
-        id: "path-glow",
-        type: "line",
-        source: "path",
-        paint: {
-          "line-color": "#fbbf24",
-          "line-width": 14,
-          "line-opacity": 0.25,
-          "line-blur": 4,
-        },
-      });
-      map.addLayer({
-        id: "path-line",
-        type: "line",
-        source: "path",
-        paint: {
-          "line-color": "#fde68a",
-          "line-width": 5,
-          "line-opacity": 0.95,
-        },
-      });
-
-      const start = pathCoords[0];
-      const end = pathCoords[pathCoords.length - 1];
-
-      const sEl = document.createElement("div");
-      sEl.className = "spawn-flag";
-      sEl.textContent = "SPAWN";
-      spawnMarker = new maptilersdk.Marker({ element: sEl, anchor: "bottom" })
-        .setLngLat(start)
-        .addTo(map);
-
-      const bEl = document.createElement("div");
-      bEl.className = "base-flag";
-      bEl.textContent = "BASE";
-      baseMarker = new maptilersdk.Marker({ element: bEl, anchor: "bottom" })
-        .setLngLat(end)
-        .addTo(map);
-    }
-
-    function fitPath() {
-      const b = turf.bbox(pathLine);
-      map.fitBounds([[b[0], b[1]], [b[2], b[3]]], {
-        padding: { top: 60, bottom: 60, left: 380, right: 40 },
-        duration: 900,
-        pitch: 0,
-        bearing: 0,
-      });
-    }
-
-    function placeField(lngLat) {
-      center = [lngLat.lng, lngLat.lat];
-      document.getElementById("btnBuildPath").disabled = false;
-      document.getElementById("btnClear").disabled = false;
-      setStatus(`Location set. Click <strong>Load street path</strong> to route enemies along real roads.`);
-      map.flyTo({ center, zoom: 14.2, pitch: 0, duration: 1000 });
-    }
-
-    async function startGame() {
-      if (!center) return;
-      const btn = document.getElementById("btnBuildPath");
-      btn.disabled = true;
-      setStatus("Routing on the <strong>street network</strong>…");
-      try {
-        clearEntities();
-        clearPathLayers();
-        pathCoords = await fetchStreetPath(center);
-        drawPath();
-        fitPath();
-        gold = 100;
-        lives = 20;
-        wave = 0;
-        setPhase("play");
-        refreshHud();
-        const km = turf.length(pathLine, { units: "kilometers" }).toFixed(1);
-        setStatus(
-          `Lane follows <strong>${km} km</strong> of real streets. Build beside the yellow road, then <strong>Start wave</strong>.`
-        );
-        document.getElementById("banner").classList.remove("on");
-        lastTs = performance.now();
-        if (!raf) raf = requestAnimationFrame(loop);
-      } catch (err) {
-        setStatus(`Street routing failed: ${err.message}`);
-        btn.disabled = false;
-        setPhase("pick");
-      }
-    }
-
-    function distToPath(lngLat) {
-      const nearest = turf.nearestPointOnLine(pathLine, turf.point(lngLat), { units: "kilometers" });
+      const tin = numOrNull("tokIn");
+      const tout = numOrNull("tokOut");
+      let ttot = numOrNull("tokTotal");
+      if (ttot == null && tin != null && tout != null) ttot = tin + tout;
       return {
-        dist: turf.distance(turf.point(lngLat), nearest, { units: "kilometers" }),
-        onPath: nearest.geometry.coordinates,
+        agentLabel: document.getElementById("metaAgent").value,
+        provider: document.getElementById("metaProvider").value,
+        model,
+        skillUsed: document.getElementById("metaSkill").checked,
+        skillVersionNote: "maptiler-skills @ local .agents",
+        tokens: { input: tin, output: tout, total: ttot },
+        costUsd: numOrNull("metaCost"),
+        latencySec: numOrNull("metaLatency"),
+        attempts: numOrNull("metaAttempts") || 1,
+        notes: document.getElementById("metaNotes").value.trim(),
       };
     }
 
-    function tryBuild(lngLat) {
-      if (phase !== "play") return;
-      const def = TOWERS[selectedTower];
-      if (gold < def.cost) {
-        setStatus(`Need <strong>$${def.cost}</strong> for ${def.name}.`);
+    async function doGrade(withLive) {
+      if (!selected) {
+        document.getElementById("gradeStatus").textContent = "Pick a challenge first.";
         return;
       }
-      const { dist } = distToPath(lngLat);
-      if (dist < 0.08) {
-        setStatus("Too close to the path — give creeps room to walk.");
+      const source = document.getElementById("source").value;
+      if (!source.trim()) {
+        document.getElementById("gradeStatus").textContent = "Paste agent code first.";
         return;
       }
-      if (dist > 0.55) {
-        setStatus("Too far from the path — towers must cover the lane.");
+      let meta;
+      try {
+        meta = collectMeta();
+      } catch (err) {
+        document.getElementById("gradeStatus").textContent = err.message;
         return;
       }
-      // Don't stack on other towers
-      for (const t of towers) {
-        if (turf.distance([t.lng, t.lat], lngLat, { units: "kilometers" }) < 0.12) {
-          setStatus("Too close to another tower.");
-          return;
-        }
+
+      const result = MapTilerSkillChecks.grade(source, selected.checks);
+      let live = { skipped: true };
+      if (withLive && selected.mode !== "static") {
+        document.getElementById("gradeStatus").textContent = "Running live smoke…";
+        live = await MapTilerHarness.runLiveSmoke(source, 4500);
       }
 
-      gold -= def.cost;
-      const el = document.createElement("div");
-      el.className = `tower ${selectedTower}`;
-      el.textContent = selectedTower === "arrow" ? "🏹" : selectedTower === "cannon" ? "💣" : "❄️";
-      const marker = new maptilersdk.Marker({ element: el, anchor: "center" })
-        .setLngLat(lngLat)
-        .addTo(map);
+      const run = {
+        runId: MapTilerHarness.uuid(),
+        timestamp: new Date().toISOString(),
+        challengeId: selected.id,
+        tier: selected.tier,
+        ...meta,
+        checks: result.checks,
+        score: result.score,
+        maxScore: result.maxScore,
+        pct: result.pct,
+        letter: result.letter,
+        live,
+      };
 
-      const id = "t" + Math.random().toString(36).slice(2, 7);
-      const rangeSrc = "range-" + id;
-      const rangeId = "range-layer-" + id;
-      const circle = turf.circle(lngLat, def.range, { steps: 48, units: "kilometers" });
-      map.addSource(rangeSrc, { type: "geojson", data: circle });
-      map.addLayer({
-        id: rangeId,
-        type: "fill",
-        source: rangeSrc,
-        paint: {
-          "fill-color": def.color,
-          "fill-opacity": 0.12,
-        },
-      });
+      const runs = MapTilerHarness.loadRuns();
+      runs.unshift(run);
+      MapTilerHarness.saveRuns(runs);
 
-      towers.push({
-        id,
-        type: selectedTower,
-        lng: lngLat[0],
-        lat: lngLat[1],
-        marker,
-        rangeSrc,
-        rangeId,
-        cooldown: 0,
-      });
-      refreshHud();
-      setStatus(`Built <strong>${def.name}</strong>. Gold left: <strong>$${Math.floor(gold)}</strong>.`);
+      renderChecks(result);
+      let msg = `Score ${result.score}/${result.maxScore} (${result.pct}% · ${result.letter})`;
+      if (live && !live.skipped) msg += live.ok ? " · live smoke OK" : ` · live: ${live.reason || "fail"}`;
+      document.getElementById("gradeStatus").textContent = msg;
+      renderBoard();
+      renderList();
+      updateTierPcts();
+      renderImprovement();
     }
 
-    function waveComposition(n) {
-      const bag = [];
-      const count = 6 + n * 3;
-      for (let i = 0; i < count; i++) {
-        let type = "basic";
-        if (n >= 2 && Math.random() < 0.25) type = "fast";
-        if (n >= 4 && Math.random() < 0.2) type = "tank";
-        if (n >= 6 && i % 5 === 0) type = "tank";
-        bag.push(type);
+    function renderChecks(result) {
+      const el = document.getElementById("checkResults");
+      el.innerHTML = result.checks
+        .map(
+          (c) =>
+            `<div class="check ${c.pass ? "ok" : "no"}">
+              <span>${c.pass ? "✓" : "✗"}</span>
+              <span class="id">${c.id}</span>
+              <span>${c.detail} <em style="color:var(--muted)">(+${c.points}/${c.weight})</em></span>
+            </div>`
+        )
+        .join("");
+    }
+
+    function renderBoard() {
+      let runs = MapTilerHarness.loadRuns();
+      const skillF = document.getElementById("filterSkill").value;
+      const modelF = document.getElementById("filterModel").value.trim().toLowerCase();
+      if (skillF === "yes") runs = runs.filter((r) => r.skillUsed);
+      if (skillF === "no") runs = runs.filter((r) => !r.skillUsed);
+      if (modelF) runs = runs.filter((r) => (r.model || "").toLowerCase().includes(modelF));
+
+      const body = document.getElementById("boardBody");
+      document.getElementById("boardEmpty").style.display = runs.length ? "none" : "block";
+      body.innerHTML = runs
+        .slice(0, 80)
+        .map((r) => {
+          const tok = r.tokens?.total != null ? r.tokens.total : "—";
+          const when = new Date(r.timestamp).toLocaleString();
+          return `<tr>
+            <td>${when}</td>
+            <td>${r.challengeId}</td>
+            <td>${escapeHtml(r.model)}</td>
+            <td>${r.skillUsed ? "on" : "off"}</td>
+            <td>${r.score}/${r.maxScore} (${r.pct}%)</td>
+            <td>${tok}</td>
+            <td>${r.letter}</td>
+          </tr>`;
+        })
+        .join("");
+    }
+
+    function escapeHtml(s) {
+      return String(s)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function updateTierPcts() {
+      const best = bestByChallenge();
+      if (!catalog) return;
+      const avg = (tier) => {
+        const list = catalog.challenges.filter((c) => c.tier === tier);
+        const scored = list.map((c) => best[c.id]?.pct).filter((x) => x != null);
+        if (!scored.length) return null;
+        return Math.round(scored.reduce((a, b) => a + b, 0) / scored.length);
+      };
+      const core = avg("core");
+      const extreme = avg("extreme");
+      const insane = avg("insane");
+      document.getElementById("pctCore").textContent = core == null ? "—" : core + "%";
+      document.getElementById("pctExtreme").textContent = extreme == null ? "—" : extreme + "%";
+      document.getElementById("pctInsane").textContent = insane == null ? "—" : insane + "%";
+      const parts = [core, extreme, insane].filter((x) => x != null);
+      // Weight extreme/insane slightly higher in combined
+      let combined = null;
+      if (parts.length) {
+        const c = core ?? 0, e = extreme ?? 0, i = insane ?? 0;
+        const wC = core != null ? 1 : 0;
+        const wE = extreme != null ? 1.25 : 0;
+        const wI = insane != null ? 1.5 : 0;
+        const w = wC + wE + wI;
+        combined = Math.round((c * wC + e * wE + i * wI) / w);
       }
-      return bag;
+      document.getElementById("pctCombined").textContent = combined == null ? "—" : combined + "%";
     }
 
-    function startWave() {
-      if (waveActive || phase !== "play") return;
-      wave++;
-      spawnQueue = waveComposition(wave);
-      spawnAcc = 0;
-      waveActive = true;
-      refreshHud();
-      setStatus(`Wave <strong>${wave}</strong> incoming — ${spawnQueue.length} enemies.`);
+    function extFor(c) {
+      if (c.id === "I4") return [".swift", ".txt"];
+      if (c.id === "I5") return [".kt", ".kotlin", ".txt"];
+      if (c.id === "I6") return [".dart", ".txt"];
+      if (c.id === "I7") return [".tsx", ".ts", ".jsx", ".js", ".txt"];
+      if (c.id === "I8") return [".js", ".ts", ".mjs", ".txt"];
+      return [".html", ".js", ".txt"];
     }
 
-    function spawnEnemy(type) {
-      const def = ENEMY_TYPES[type];
-      const el = document.createElement("div");
-      el.className = "enemy " + def.cls;
-      el.innerHTML = `<div class="hp"><i></i></div>`;
-      const start = pathCoords[0];
-      const marker = new maptilersdk.Marker({ element: el, anchor: "center" })
-        .setLngLat(start)
-        .addTo(map);
-      enemies.push({
-        type,
-        hp: def.hp * (1 + wave * 0.12),
-        maxHp: def.hp * (1 + wave * 0.12),
-        speed: def.speed,
-        slow: 1,
-        progress: 0, // 0..1 along path
-        reward: def.reward + wave,
-        marker,
-        el,
-      });
-    }
-
-    function posAlongPath(t) {
-      const len = turf.length(pathLine, { units: "kilometers" });
-      const p = turf.along(pathLine, Math.min(1, Math.max(0, t)) * len, { units: "kilometers" });
-      return p.geometry.coordinates;
-    }
-
-    function projectToPixel(lngLat) {
-      return map.project(lngLat);
-    }
-
-    function fireShot(from, to, color) {
-      const a = projectToPixel(from);
-      const b = projectToPixel(to);
-      const el = document.createElement("div");
-      el.className = "shot";
-      el.style.background = color;
-      el.style.boxShadow = `0 0 8px ${color}`;
-      el.style.left = a.x + "px";
-      el.style.top = a.y + "px";
-      document.body.appendChild(el);
-      const start = performance.now();
-      const dur = 120;
-      function step(now) {
-        const k = Math.min(1, (now - start) / dur);
-        el.style.left = a.x + (b.x - a.x) * k + "px";
-        el.style.top = a.y + (b.y - a.y) * k + "px";
-        if (k < 1) requestAnimationFrame(step);
-        else el.remove();
+    function buildBatchPrompt() {
+      const model = document.getElementById("metaModel").value.trim() || "YOUR_MODEL_NAME";
+      const agent = document.getElementById("metaAgent").value;
+      const skillOn = document.getElementById("metaSkill").checked;
+      const lines = [];
+      lines.push("Use the MapTiler skill: read .agents/skills/maptiler/SKILL.md first.");
+      lines.push("");
+      lines.push("For EVERY challenge below, create TWO files (downloadable / saveable locally):");
+      lines.push("");
+      lines.push("File 1 — the solution (name by challenge id):");
+      lines.push("  C1.html, C2.html, … X8.html, I1.html, I2.html, I3.html");
+      lines.push("  I4.swift, I5.kt, I6.dart, I7.tsx, I8.js");
+      lines.push("");
+      lines.push("File 2 — metadata (same id):");
+      lines.push("  C1.meta.json, C2.meta.json, … (one per challenge)");
+      lines.push("");
+      lines.push("The user will UPLOAD these files into the MapTiler Agent Skill Scoreboard to grade them.");
+      lines.push("Do not assume a repo path — emit complete file contents the user can save and upload.");
+      lines.push("");
+      lines.push("Each .meta.json must look like:");
+      lines.push(`{"agentLabel":${JSON.stringify(agent)},"provider":"cursor","model":${JSON.stringify(model)},"skillUsed":${skillOn},"skillVersionNote":"maptiler-skills @ local .agents","tokens":{"input":null,"output":null,"total":null},"costUsd":null,"latencySec":null,"attempts":1,"notes":"user-upload"}`);
+      lines.push("");
+      lines.push("Hard rules: @maptiler/sdk CDN v4.0.2 only (never maplibre-gl); coordinates [lng,lat]; no streets-v2/basic-v2; no {{ }}; browser pages load key from ../admin-boundaries/js/config.js as window.MAPTILER_API_KEY.");
+      lines.push("Write all files. Do not stop early.");
+      lines.push("");
+      for (const c of catalog.challenges) {
+        lines.push(`---`);
+        lines.push(`${c.id} [${c.tier}] ${c.title}`);
+        lines.push(c.prompt);
+        lines.push("");
       }
-      requestAnimationFrame(step);
+      return lines.join("\n");
     }
 
-    function updateEnemyHp(e) {
-      const bar = e.el.querySelector(".hp i");
-      if (bar) bar.style.width = `${Math.max(0, (e.hp / e.maxHp) * 100)}%`;
-    }
-
-    function loop(ts) {
-      raf = requestAnimationFrame(loop);
-      if (phase !== "play") return;
-      const dt = Math.min(0.05, (ts - lastTs) / 1000);
-      lastTs = ts;
-
-      // Spawn cadence
-      if (waveActive && spawnQueue.length) {
-        spawnAcc += dt;
-        if (spawnAcc >= 0.7) {
-          spawnAcc = 0;
-          spawnEnemy(spawnQueue.shift());
-        }
+    async function fetchSolution(id, exts) {
+      for (const ext of exts) {
+        try {
+          const res = await fetch(`./solutions/${id}${ext}`, { cache: "no-store" });
+          if (res.ok) return { source: await res.text(), ext };
+        } catch { /* try next */ }
       }
+      return null;
+    }
 
-      const pathLen = pathLine ? turf.length(pathLine, { units: "kilometers" }) : 1;
+    async function fetchMeta(id) {
+      try {
+        const res = await fetch(`./solutions/${id}.meta.json`, { cache: "no-store" });
+        if (res.ok) return await res.json();
+      } catch { /* ignore */ }
+      return null;
+    }
 
-      // Move enemies
-      for (const e of enemies) {
-        if (e.hp <= 0) continue;
-        e.slow = Math.min(1, e.slow + dt * 0.35); // recover from frost
-        e.progress += ((e.speed * e.slow) * dt) / pathLen;
-        if (e.progress >= 1) {
-          lives -= 1;
-          e.hp = 0;
-          if (e.marker) { e.marker.remove(); e.marker = null; }
-          refreshHud();
-          if (lives <= 0) {
-            gameOver(false);
-            return;
-          }
+    function defaultBatchMeta(notes) {
+      try {
+        const m = collectMeta();
+        return { ...m, notes: notes || m.notes };
+      } catch {
+        return {
+          agentLabel: document.getElementById("metaAgent").value,
+          provider: document.getElementById("metaProvider").value,
+          model: document.getElementById("metaModel").value.trim() || "batch-unknown",
+          skillUsed: document.getElementById("metaSkill").checked,
+          skillVersionNote: "maptiler-skills @ local .agents",
+          tokens: { input: null, output: null, total: null },
+          costUsd: null,
+          latencySec: null,
+          attempts: 1,
+          notes: notes || "batch grade (form model fallback)",
+        };
+      }
+    }
+
+    /**
+     * @param {Record<string, { source: string, ext?: string, meta?: object|null }>} pack
+     * @param {{ label: string, sourceTag: string }} opts
+     */
+    function gradePack(pack, opts) {
+      if (!catalog) return;
+      const status = document.getElementById("batchStatus");
+      const formMeta = defaultBatchMeta(opts.label);
+      const runs = MapTilerHarness.loadRuns();
+      let ok = 0;
+      let missing = 0;
+      const summary = [];
+
+      for (const c of catalog.challenges) {
+        const file = pack[c.id];
+        if (!file || !file.source) {
+          missing++;
+          summary.push(`${c.id}: missing`);
           continue;
         }
-        const pos = posAlongPath(e.progress);
-        e.lng = pos[0];
-        e.lat = pos[1];
-        e.marker.setLngLat(pos);
+        const fileMeta = file.meta || null;
+        const meta = {
+          ...formMeta,
+          ...(fileMeta || {}),
+          tokens: {
+            input: fileMeta?.tokens?.input ?? formMeta.tokens.input,
+            output: fileMeta?.tokens?.output ?? formMeta.tokens.output,
+            total: fileMeta?.tokens?.total ?? formMeta.tokens.total,
+          },
+          notes: [formMeta.notes, fileMeta?.notes, `${opts.sourceTag}:${c.id}${file.ext || ""}`]
+            .filter(Boolean)
+            .join(" | "),
+        };
+        if (!meta.model) meta.model = formMeta.model;
+
+        const result = MapTilerSkillChecks.grade(file.source, c.checks);
+        runs.unshift({
+          runId: MapTilerHarness.uuid(),
+          timestamp: new Date().toISOString(),
+          challengeId: c.id,
+          tier: c.tier,
+          ...meta,
+          checks: result.checks,
+          score: result.score,
+          maxScore: result.maxScore,
+          pct: result.pct,
+          letter: result.letter,
+          live: { skipped: true, reason: opts.sourceTag },
+        });
+        ok++;
+        summary.push(`${c.id}: ${result.pct}% ${result.letter}`);
       }
 
-      // Towers shoot
-      for (const t of towers) {
-        t.cooldown = Math.max(0, t.cooldown - dt * 1000);
-        if (t.cooldown > 0) continue;
-        const def = TOWERS[t.type];
-        let target = null;
-        let bestProg = -1;
-        for (const e of enemies) {
-          if (e.hp <= 0 || !e.marker) continue;
-          const d = turf.distance([t.lng, t.lat], [e.lng, e.lat], { units: "kilometers" });
-          if (d <= def.range && e.progress > bestProg) {
-            bestProg = e.progress;
-            target = e;
-          }
+      MapTilerHarness.saveRuns(runs);
+      renderBoard();
+      renderList();
+      updateTierPcts();
+      renderImprovement();
+      status.textContent =
+        `${opts.label}: ${ok} graded, ${missing} missing. ` +
+        summary.slice(0, 8).join(" · ") +
+        (summary.length > 8 ? "…" : "");
+    }
+
+    async function gradeAllFromSolutions() {
+      if (!catalog) return;
+      const status = document.getElementById("batchStatus");
+      status.textContent = "Loading example solutions/…";
+      const pack = {};
+      for (const c of catalog.challenges) {
+        const file = await fetchSolution(c.id, extFor(c));
+        if (!file) continue;
+        pack[c.id] = {
+          source: file.source,
+          ext: file.ext,
+          meta: await fetchMeta(c.id),
+        };
+      }
+      gradePack(pack, { label: "Example pack", sourceTag: "example-solutions" });
+    }
+
+    function parseChallengeFileName(name) {
+      // C1.html, X3.meta.json, I7.tsx, c1.HTML
+      const base = name.split(/[/\\]/).pop() || name;
+      const meta = base.match(/^([CXI]\d+)\.meta\.json$/i);
+      if (meta) return { id: meta[1].toUpperCase(), kind: "meta" };
+      const sol = base.match(/^([CXI]\d+)\.[a-z0-9]+$/i);
+      if (sol) return { id: sol[1].toUpperCase(), kind: "solution", ext: "." + base.split(".").pop() };
+      return null;
+    }
+
+    async function readUploadPack(fileList) {
+      const pack = {};
+      const ignored = [];
+      for (const file of fileList) {
+        const parsed = parseChallengeFileName(file.name);
+        if (!parsed) {
+          ignored.push(file.name);
+          continue;
         }
-        if (!target) continue;
-        t.cooldown = def.rate;
-        fireShot([t.lng, t.lat], [target.lng, target.lat], def.color);
-        target.hp -= def.dmg;
-        if (def.slow) target.slow = Math.min(target.slow, def.slow);
-        updateEnemyHp(target);
-        if (target.hp <= 0) {
-          gold += target.reward;
-          if (target.marker) { target.marker.remove(); target.marker = null; }
-          refreshHud();
+        const text = await file.text();
+        if (!pack[parsed.id]) pack[parsed.id] = { source: "", ext: "", meta: null };
+        if (parsed.kind === "meta") {
+          try {
+            pack[parsed.id].meta = JSON.parse(text);
+          } catch {
+            ignored.push(file.name + " (bad JSON)");
+          }
+        } else {
+          pack[parsed.id].source = text;
+          pack[parsed.id].ext = parsed.ext || "";
         }
       }
+      return { pack, ignored };
+    }
 
-      // Cleanup dead / leaked
-      enemies = enemies.filter((e) => e.hp > 0 && e.marker);
-
-      if (waveActive && spawnQueue.length === 0 && enemies.length === 0) {
-        waveActive = false;
-        gold += 25 + wave * 5;
-        refreshHud();
-        setStatus(`Wave <strong>${wave}</strong> cleared! Bonus gold. Build more, then start the next wave.`);
-        if (wave >= 12) gameOver(true);
+    async function gradeUploadedFiles() {
+      if (!catalog) return;
+      const input = document.getElementById("uploadPack");
+      const files = input.files;
+      const status = document.getElementById("batchStatus");
+      if (!files || !files.length) {
+        status.textContent = "Choose solution files first (e.g. C1.html, C1.meta.json, …).";
+        return;
+      }
+      status.textContent = `Reading ${files.length} uploaded file(s)…`;
+      const { pack, ignored } = await readUploadPack(files);
+      const ids = Object.keys(pack).filter((id) => pack[id].source);
+      if (!ids.length) {
+        status.textContent =
+          "No challenge solution files recognized. Name files like C1.html / X2.html / I8.js.";
+        return;
+      }
+      gradePack(pack, { label: "Your upload", sourceTag: "upload" });
+      if (ignored.length) {
+        status.textContent += ` · ignored: ${ignored.slice(0, 4).join(", ")}${ignored.length > 4 ? "…" : ""}`;
       }
     }
 
-    function gameOver(won) {
-      waveActive = false;
-      spawnQueue = [];
-      document.getElementById("bannerTitle").textContent = won ? "You held the line!" : "Base destroyed";
-      document.getElementById("bannerText").textContent = won
-        ? `Survived ${wave} waves with $${Math.floor(gold)} left.`
-        : `Reached wave ${wave}. Try a tighter tower layout.`;
-      document.getElementById("banner").classList.add("on");
-      refreshHud();
-    }
-
-    function resetToPick() {
-      clearEntities();
-      clearPathLayers();
-      center = null;
-      pathCoords = [];
-      pathLine = null;
-      document.getElementById("banner").classList.remove("on");
-      document.getElementById("btnBuildPath").disabled = true;
-      document.getElementById("btnClear").disabled = true;
-      setPhase("pick");
-      setStatus("Click the map (or a preset) to choose a city block to defend.");
-      map.easeTo({ center: [0, 20], zoom: 2, duration: 800 });
-    }
-
-    // --- boot ---
-    if (typeof maptilersdk === "undefined" || typeof turf === "undefined") {
-      showError("Failed to load MapTiler SDK or Turf.");
-    } else {
-      try {
-        maptilersdk.config.apiKey = validateKey();
-        map = new maptilersdk.Map({
-          container: "map",
-          style: maptilersdk.MapStyle.STREETS,
-          center: [0, 20],
-          zoom: 2,
-          pitch: 0,
-          navigationControl: true,
-          hash: false,
-        });
-
-        map.on("error", (e) => {
-          const message = String(e.error?.message || e.error || "");
-          if (message.includes("403") || message.includes("401")) {
-            showError("Map tiles blocked — allow " + location.origin + " on your MapTiler key.");
-          }
-        });
-
-        map.on("click", (e) => {
-          if (phase === "pick") placeField(e.lngLat);
-          else if (phase === "play" && !waveActive) tryBuild([e.lngLat.lng, e.lngLat.lat]);
-          else if (phase === "play" && waveActive) {
-            // Allow building between shots during wave too
-            tryBuild([e.lngLat.lng, e.lngLat.lat]);
-          }
-        });
-
-        const wrap = document.getElementById("presets");
-        for (const p of PRESETS) {
-          const btn = document.createElement("button");
-          btn.type = "button";
-          btn.className = "action";
-          btn.textContent = p.name;
-          btn.addEventListener("click", () => {
-            wrap.querySelectorAll("button").forEach((b) => b.classList.remove("active"));
-            btn.classList.add("active");
-            placeField({ lng: p.lng, lat: p.lat });
-          });
-          wrap.appendChild(btn);
-        }
-
-        document.querySelectorAll(".tower-btn").forEach((btn) => {
-          btn.addEventListener("click", () => {
-            selectedTower = btn.dataset.tower;
-            refreshHud();
-          });
-        });
-
-        document.getElementById("btnBuildPath").addEventListener("click", startGame);
-        document.getElementById("btnClear").addEventListener("click", resetToPick);
-        document.getElementById("btnRestart").addEventListener("click", resetToPick);
-        document.getElementById("btnWave").addEventListener("click", startWave);
-        document.getElementById("btnAgain").addEventListener("click", () => {
-          if (center) startGame();
-          else resetToPick();
-        });
-
-        setPhase("pick");
-        refreshHud();
-      } catch (err) {
-        showError(err.message || String(err));
+    function renderImprovement() {
+      if (!globalThis.MapTilerImprovement) return;
+      const report = MapTilerImprovement.buildReport(MapTilerHarness.loadRuns());
+      const sum = document.getElementById("improveSummary");
+      const list = document.getElementById("improveList");
+      if (!report.challengesGraded) {
+        sum.textContent = "No graded runs yet.";
+        list.innerHTML = "";
+        return;
       }
+      sum.textContent =
+        `Avg ${report.avgPct}% · Core ${report.byTier.core ?? "—"}% · Extreme ${report.byTier.extreme ?? "—"}% · Insane ${report.byTier.insane ?? "—"}% · ${report.themes.length} improvement themes`;
+      list.innerHTML = report.themes
+        .map(
+          (t) =>
+            `<li style="margin-bottom:10px"><strong>${t.theme}</strong> (${t.count}×) — ${t.do}` +
+            (t.challenges.length ? ` <span style="color:var(--muted)">[${t.challenges.join(", ")}]</span>` : "") +
+            `</li>`
+        )
+        .join("");
     }
+
+    function downloadText(filename, text, type) {
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(new Blob([text], { type: type || "text/plain" }));
+      a.download = filename;
+      a.click();
+    }
+
+    document.getElementById("btnCopy").addEventListener("click", async () => {
+      if (!selected) return;
+      await navigator.clipboard.writeText(selected.prompt);
+      document.getElementById("gradeStatus").textContent = "Prompt copied.";
+    });
+    document.getElementById("btnCopyBatch").addEventListener("click", async () => {
+      if (!catalog) return;
+      const text = buildBatchPrompt();
+      await navigator.clipboard.writeText(text);
+      document.getElementById("batchStatus").textContent =
+        "Copied. Paste into your agent with the MapTiler skill. Then upload the output files here to grade (do not rely on the example solutions/ pack).";
+    });
+    document.getElementById("btnGradeAll").addEventListener("click", () => gradeAllFromSolutions());
+    document.getElementById("btnGradeUpload").addEventListener("click", () => gradeUploadedFiles());
+    document.getElementById("uploadOne").addEventListener("change", async (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      document.getElementById("source").value = await file.text();
+      document.getElementById("gradeStatus").textContent = `Loaded ${file.name} — click Grade.`;
+      e.target.value = "";
+    });
+    document.getElementById("btnGrade").addEventListener("click", () => doGrade(false));
+    document.getElementById("btnLive").addEventListener("click", () => doGrade(true));
+    document.getElementById("filterSkill").addEventListener("change", renderBoard);
+    document.getElementById("filterModel").addEventListener("input", renderBoard);
+    document.getElementById("btnClear").addEventListener("click", () => {
+      if (confirm("Clear all scoreboard runs?")) {
+        MapTilerHarness.clearRuns();
+        renderBoard();
+        renderList();
+        updateTierPcts();
+        renderImprovement();
+      }
+    });
+    document.getElementById("btnExport").addEventListener("click", () => {
+      const blob = new Blob([JSON.stringify(MapTilerHarness.loadRuns(), null, 2)], {
+        type: "application/json",
+      });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "maptiler-agent-scoreboard.json";
+      a.click();
+    });
+    document.getElementById("btnImproveRefresh").addEventListener("click", renderImprovement);
+    document.getElementById("btnImproveMd").addEventListener("click", () => {
+      const report = MapTilerImprovement.buildReport(MapTilerHarness.loadRuns());
+      downloadText("maptiler-agent-improvement.md", MapTilerImprovement.toMarkdown(report), "text/markdown");
+    });
+    document.getElementById("btnImproveJson").addEventListener("click", () => {
+      const report = MapTilerImprovement.buildReport(MapTilerHarness.loadRuns());
+      downloadText("maptiler-agent-improvement.json", JSON.stringify(report, null, 2), "application/json");
+    });
+
+    boot().catch((err) => {
+      document.getElementById("chalMeta").textContent = "Failed to load catalog: " + err.message;
+    });
   </script>
 </body>
 </html>

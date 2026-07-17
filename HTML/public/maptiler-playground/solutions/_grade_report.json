@@ -1,0 +1,588 @@
+{
+  "generated": "2026-07-17",
+  "avg": 84,
+  "byTier": {
+    "core": 96,
+    "extreme": 77,
+    "insane": 75
+  },
+  "failFreq": [
+    [
+      "no_cookiecutter_split_css",
+      7
+    ],
+    [
+      "min_substance_insane",
+      4
+    ],
+    [
+      "needs_validate_key",
+      3
+    ],
+    [
+      "map_on_error",
+      3
+    ],
+    [
+      "async_catch",
+      3
+    ],
+    [
+      "min_substance_extreme",
+      3
+    ],
+    [
+      "needs_full_viewport",
+      2
+    ],
+    [
+      "min_substance_web",
+      2
+    ],
+    [
+      "tiles_url_with_key",
+      2
+    ],
+    [
+      "weather_time_or_animate",
+      1
+    ],
+    [
+      "helpers_point_cluster",
+      1
+    ],
+    [
+      "route_dense_samples",
+      1
+    ],
+    [
+      "geocode_places_marker",
+      1
+    ],
+    [
+      "geosplats_real_asset",
+      1
+    ],
+    [
+      "no_stub_placeholder",
+      1
+    ],
+    [
+      "needs_android_internet",
+      1
+    ],
+    [
+      "needs_rn_maptiler",
+      1
+    ],
+    [
+      "admin_upload_and_process",
+      1
+    ],
+    [
+      "admin_live_fetch_process",
+      1
+    ]
+  ],
+  "rows": [
+    {
+      "id": "C1",
+      "tier": "core",
+      "title": "Hello Map",
+      "file": "C1.html",
+      "pct": 79,
+      "letter": "C",
+      "score": 96,
+      "maxScore": 122,
+      "fails": [
+        {
+          "id": "needs_full_viewport",
+          "detail": "Need full-viewport #map CSS",
+          "weight": 8
+        },
+        {
+          "id": "needs_validate_key",
+          "detail": "Add missing-key guard",
+          "weight": 10
+        },
+        {
+          "id": "min_substance_web",
+          "detail": "Too thin (571 chars, need ≥700 script/body)",
+          "weight": 8
+        }
+      ]
+    },
+    {
+      "id": "C2",
+      "tier": "core",
+      "title": "Globe Atmosphere",
+      "file": "C2.html",
+      "pct": 84,
+      "letter": "C",
+      "score": 82,
+      "maxScore": 98,
+      "fails": [
+        {
+          "id": "needs_full_viewport",
+          "detail": "Need full-viewport #map CSS",
+          "weight": 8
+        },
+        {
+          "id": "min_substance_web",
+          "detail": "Too thin (616 chars, need ≥700 script/body)",
+          "weight": 8
+        }
+      ]
+    },
+    {
+      "id": "C3",
+      "tier": "core",
+      "title": "Terrain Fly",
+      "file": "C3.html",
+      "pct": 100,
+      "letter": "A",
+      "score": 100,
+      "maxScore": 100,
+      "fails": []
+    },
+    {
+      "id": "C4",
+      "tier": "core",
+      "title": "Style Switcher v4",
+      "file": "C4.html",
+      "pct": 100,
+      "letter": "A",
+      "score": 90,
+      "maxScore": 90,
+      "fails": []
+    },
+    {
+      "id": "C5",
+      "tier": "core",
+      "title": "Geocode Roundtrip",
+      "file": "C5.html",
+      "pct": 100,
+      "letter": "A",
+      "score": 92,
+      "maxScore": 92,
+      "fails": []
+    },
+    {
+      "id": "C6",
+      "tier": "core",
+      "title": "Elevation Probe",
+      "file": "C6.html",
+      "pct": 100,
+      "letter": "A",
+      "score": 60,
+      "maxScore": 60,
+      "fails": []
+    },
+    {
+      "id": "C7",
+      "tier": "core",
+      "title": "3D Buildings",
+      "file": "C7.html",
+      "pct": 100,
+      "letter": "A",
+      "score": 82,
+      "maxScore": 82,
+      "fails": []
+    },
+    {
+      "id": "C8",
+      "tier": "core",
+      "title": "Weather Layer",
+      "file": "C8.html",
+      "pct": 100,
+      "letter": "A",
+      "score": 66,
+      "maxScore": 66,
+      "fails": []
+    },
+    {
+      "id": "C9",
+      "tier": "core",
+      "title": "Helper Heatmap",
+      "file": "C9.html",
+      "pct": 100,
+      "letter": "A",
+      "score": 52,
+      "maxScore": 52,
+      "fails": []
+    },
+    {
+      "id": "C10",
+      "tier": "core",
+      "title": "Static Snapshot",
+      "file": "C10.html",
+      "pct": 100,
+      "letter": "A",
+      "score": 52,
+      "maxScore": 52,
+      "fails": []
+    },
+    {
+      "id": "X1",
+      "tier": "extreme",
+      "title": "Stacked World",
+      "file": "X1.html",
+      "pct": 86,
+      "letter": "C",
+      "score": 200,
+      "maxScore": 232,
+      "fails": [
+        {
+          "id": "weather_time_or_animate",
+          "detail": "Add weather opacity/time/animation control (not just addLayer)",
+          "weight": 14
+        },
+        {
+          "id": "map_on_error",
+          "detail": "map.on('error') handler",
+          "weight": 10
+        },
+        {
+          "id": "no_cookiecutter_split_css",
+          "detail": "Unused .split CSS boilerplate — remove cookie-cutter paste",
+          "weight": 8
+        }
+      ]
+    },
+    {
+      "id": "X2",
+      "tier": "extreme",
+      "title": "City Extrude Survive",
+      "file": "X2.html",
+      "pct": 82,
+      "letter": "C",
+      "score": 152,
+      "maxScore": 186,
+      "fails": [
+        {
+          "id": "tiles_url_with_key",
+          "detail": "1 tiles URL(s) missing ?key=",
+          "weight": 16
+        },
+        {
+          "id": "map_on_error",
+          "detail": "map.on('error') handler",
+          "weight": 10
+        },
+        {
+          "id": "no_cookiecutter_split_css",
+          "detail": "Unused .split CSS boilerplate — remove cookie-cutter paste",
+          "weight": 8
+        }
+      ]
+    },
+    {
+      "id": "X3",
+      "tier": "extreme",
+      "title": "Store Locator 5k",
+      "file": "X3.html",
+      "pct": 85,
+      "letter": "C",
+      "score": 122,
+      "maxScore": 144,
+      "fails": [
+        {
+          "id": "helpers_point_cluster",
+          "detail": "helpers.addPoint({ cluster: true })",
+          "weight": 14
+        },
+        {
+          "id": "no_cookiecutter_split_css",
+          "detail": "Unused .split CSS boilerplate — remove cookie-cutter paste",
+          "weight": 8
+        }
+      ]
+    },
+    {
+      "id": "X4",
+      "tier": "extreme",
+      "title": "Route Profile",
+      "file": "X4.html",
+      "pct": 72,
+      "letter": "D",
+      "score": 88,
+      "maxScore": 122,
+      "fails": [
+        {
+          "id": "route_dense_samples",
+          "detail": "Need denser LineString (≥15 verts or densify); found 1",
+          "weight": 16
+        },
+        {
+          "id": "async_catch",
+          "detail": "try/await or .catch on async",
+          "weight": 10
+        },
+        {
+          "id": "no_cookiecutter_split_css",
+          "detail": "Unused .split CSS boilerplate — remove cookie-cutter paste",
+          "weight": 8
+        }
+      ]
+    },
+    {
+      "id": "X5",
+      "tier": "extreme",
+      "title": "Search Then Reverse",
+      "file": "X5.html",
+      "pct": 75,
+      "letter": "D",
+      "score": 96,
+      "maxScore": 128,
+      "fails": [
+        {
+          "id": "geocode_places_marker",
+          "detail": "Drop a Marker (or setLngLat) on the forward-geocode hit",
+          "weight": 14
+        },
+        {
+          "id": "async_catch",
+          "detail": "try/await or .catch on async",
+          "weight": 10
+        },
+        {
+          "id": "no_cookiecutter_split_css",
+          "detail": "Unused .split CSS boilerplate — remove cookie-cutter paste",
+          "weight": 8
+        }
+      ]
+    },
+    {
+      "id": "X6",
+      "tier": "extreme",
+      "title": "Schema Honest Outdoor",
+      "file": "X6.html",
+      "pct": 66,
+      "letter": "F",
+      "score": 74,
+      "maxScore": 112,
+      "fails": [
+        {
+          "id": "tiles_url_with_key",
+          "detail": "2 tiles URL(s) missing ?key=",
+          "weight": 16
+        },
+        {
+          "id": "no_cookiecutter_split_css",
+          "detail": "Unused .split CSS boilerplate — remove cookie-cutter paste",
+          "weight": 8
+        },
+        {
+          "id": "min_substance_extreme",
+          "detail": "Too thin (1424 chars, need ≥1600 after stripping CSS boilerplate)",
+          "weight": 14
+        }
+      ]
+    },
+    {
+      "id": "X7",
+      "tier": "extreme",
+      "title": "CRS Trap",
+      "file": "X7.html",
+      "pct": 69,
+      "letter": "D",
+      "score": 72,
+      "maxScore": 104,
+      "fails": [
+        {
+          "id": "async_catch",
+          "detail": "try/await or .catch on async",
+          "weight": 10
+        },
+        {
+          "id": "no_cookiecutter_split_css",
+          "detail": "Unused .split CSS boilerplate — remove cookie-cutter paste",
+          "weight": 8
+        },
+        {
+          "id": "min_substance_extreme",
+          "detail": "Too thin (1489 chars, need ≥1600 after stripping CSS boilerplate)",
+          "weight": 14
+        }
+      ]
+    },
+    {
+      "id": "X8",
+      "tier": "extreme",
+      "title": "Leaflet Hand-off",
+      "file": "X8.html",
+      "pct": 78,
+      "letter": "C",
+      "score": 84,
+      "maxScore": 108,
+      "fails": [
+        {
+          "id": "needs_validate_key",
+          "detail": "Add missing-key guard",
+          "weight": 10
+        },
+        {
+          "id": "min_substance_extreme",
+          "detail": "Too thin (1236 chars, need ≥1600 after stripping CSS boilerplate)",
+          "weight": 14
+        }
+      ]
+    },
+    {
+      "id": "I1",
+      "tier": "insane",
+      "title": "Cesium Globe",
+      "file": "I1.html",
+      "pct": 92,
+      "letter": "B",
+      "score": 112,
+      "maxScore": 122,
+      "fails": [
+        {
+          "id": "needs_validate_key",
+          "detail": "Add missing-key guard",
+          "weight": 10
+        }
+      ]
+    },
+    {
+      "id": "I2",
+      "tier": "insane",
+      "title": "deck.gl Overlay",
+      "file": "I2.html",
+      "pct": 88,
+      "letter": "B",
+      "score": 70,
+      "maxScore": 80,
+      "fails": [
+        {
+          "id": "map_on_error",
+          "detail": "map.on('error') handler",
+          "weight": 10
+        }
+      ]
+    },
+    {
+      "id": "I3",
+      "tier": "insane",
+      "title": "GeoSplats WebGPU",
+      "file": "I3.html",
+      "pct": 62,
+      "letter": "F",
+      "score": 62,
+      "maxScore": 100,
+      "fails": [
+        {
+          "id": "geosplats_real_asset",
+          "detail": "Replace placeholder splat model id",
+          "weight": 20
+        },
+        {
+          "id": "no_stub_placeholder",
+          "detail": "Stub/placeholder left in solution",
+          "weight": 18
+        }
+      ]
+    },
+    {
+      "id": "I4",
+      "tier": "insane",
+      "title": "iOS SwiftUI Map",
+      "file": "I4.swift",
+      "pct": 87,
+      "letter": "C",
+      "score": 82,
+      "maxScore": 94,
+      "fails": [
+        {
+          "id": "min_substance_insane",
+          "detail": "Too thin (1050 chars, need ≥1100)",
+          "weight": 12
+        }
+      ]
+    },
+    {
+      "id": "I5",
+      "tier": "insane",
+      "title": "Android Compose Map",
+      "file": "I5.kt",
+      "pct": 70,
+      "letter": "D",
+      "score": 52,
+      "maxScore": 74,
+      "fails": [
+        {
+          "id": "needs_android_internet",
+          "detail": "INTERNET permission",
+          "weight": 10
+        },
+        {
+          "id": "min_substance_insane",
+          "detail": "Too thin (1093 chars, need ≥1100)",
+          "weight": 12
+        }
+      ]
+    },
+    {
+      "id": "I6",
+      "tier": "insane",
+      "title": "Flutter Map",
+      "file": "I6.dart",
+      "pct": 80,
+      "letter": "C",
+      "score": 48,
+      "maxScore": 60,
+      "fails": [
+        {
+          "id": "min_substance_insane",
+          "detail": "Too thin (912 chars, need ≥1100)",
+          "weight": 12
+        }
+      ]
+    },
+    {
+      "id": "I7",
+      "tier": "insane",
+      "title": "React Native Map",
+      "file": "I7.tsx",
+      "pct": 48,
+      "letter": "F",
+      "score": 24,
+      "maxScore": 50,
+      "fails": [
+        {
+          "id": "needs_rn_maptiler",
+          "detail": "Real @maptiler RN import",
+          "weight": 14
+        },
+        {
+          "id": "min_substance_insane",
+          "detail": "Too thin (805 chars, need ≥1100)",
+          "weight": 12
+        }
+      ]
+    },
+    {
+      "id": "I8",
+      "tier": "insane",
+      "title": "Admin Tileset Sketch",
+      "file": "I8.js",
+      "pct": 74,
+      "letter": "D",
+      "score": 84,
+      "maxScore": 114,
+      "fails": [
+        {
+          "id": "admin_upload_and_process",
+          "detail": "Need ingest upload_url AND /process step",
+          "weight": 12
+        },
+        {
+          "id": "admin_live_fetch_process",
+          "detail": "Uncommented fetch to .../process required",
+          "weight": 18
+        }
+      ]
+    }
+  ]
+}

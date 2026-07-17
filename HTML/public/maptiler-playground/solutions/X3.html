@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.css" rel="stylesheet" />
+  <script src="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.umd.min.js"></script>
+  <script src="../admin-boundaries/js/config.js"></script>
+
+  <title>X3 Store Locator 5k</title>
+  <style>    html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
+    #map { position: absolute; inset: 0; }
+    .panel {
+      position: absolute; z-index: 2; top: 12px; left: 12px;
+      background: rgba(255,255,255,0.92); padding: 10px 12px; border-radius: 8px;
+      max-width: min(420px, 90vw); box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    }
+    .panel button { margin: 2px 4px 2px 0; cursor: pointer; }
+    .panel input { width: 100%; box-sizing: border-box; margin: 4px 0; }
+    .split { display: grid; grid-template-columns: 1fr 1fr; height: 100vh; }
+    .split > div { position: relative; min-height: 0; }
+    .split .label { position: absolute; z-index: 2; top: 8px; left: 8px;
+      background: rgba(0,0,0,0.7); color: #fff; padding: 4px 8px; font-size: 12px; }
+</style>
+</head>
+<body>
+  <div class="panel">
+    ~5000 stores ·
+    <button id="togHeat">Toggle heatmap</button>
+    <div id="info">Click a cluster/point</div>
+  </div>
+  <div id="map"></div>
+  <script>
+    maptilersdk.config.apiKey = window.MAPTILER_API_KEY;
+    const features = [];
+    for (let i = 0; i < 5000; i++) {
+      const lng = -74.006 + (Math.random() - 0.5) * 0.6;
+      const lat = 40.7128 + (Math.random() - 0.5) * 0.5;
+      features.push({
+        type: 'Feature',
+        properties: { id: i, name: 'Store #' + i },
+        geometry: { type: 'Point', coordinates: [lng, lat] },
+      });
+    }
+    const stores = { type: 'FeatureCollection', features };
+    let heatOn = false;
+
+    const map = new maptilersdk.Map({
+      container: 'map',
+      style: maptilersdk.MapStyle.STREETS,
+      center: [-74.006, 40.7128],
+      zoom: 10,
+    });
+
+    map.on('load', async () => {
+      map.addSource('stores', {
+        type: 'geojson',
+        data: stores,
+        cluster: true,
+        clusterMaxZoom: 14,
+        clusterRadius: 50,
+      });
+      map.addLayer({
+        id: 'clusters',
+        type: 'circle',
+        source: 'stores',
+        filter: ['has', 'point_count'],
+        paint: {
+          'circle-color': '#2563eb',
+          'circle-radius': ['step', ['get', 'point_count'], 16, 100, 22, 750, 28],
+        },
+      });
+      map.addLayer({
+        id: 'cluster-count',
+        type: 'symbol',
+        source: 'stores',
+        filter: ['has', 'point_count'],
+        layout: {
+          'text-field': ['get', 'point_count_abbreviated'],
+          'text-size': 12,
+        },
+      });
+      map.addLayer({
+        id: 'unclustered',
+        type: 'circle',
+        source: 'stores',
+        filter: ['!', ['has', 'point_count']],
+        paint: { 'circle-color': '#ef4444', 'circle-radius': 5 },
+      });
+
+      map.on('click', 'unclustered', (e) => {
+        const f = e.features[0];
+        const coords = f.geometry.coordinates.slice();
+        new maptilersdk.Popup()
+          .setLngLat(coords)
+          .setHTML('<strong>' + f.properties.name + '</strong><br/>[' +
+            coords[0].toFixed(4) + ', ' + coords[1].toFixed(4) + ']')
+          .addTo(map);
+        document.getElementById('info').textContent = f.properties.name;
+      });
+
+      map.on('click', 'clusters', async (e) => {
+        const features = map.queryRenderedFeatures(e.point, { layers: ['clusters'] });
+        const clusterId = features[0].properties.cluster_id;
+        const zoom = await map.getSource('stores').getClusterExpansionZoom(clusterId);
+        map.easeTo({ center: features[0].geometry.coordinates, zoom });
+      });
+    });
+
+    document.getElementById('togHeat').addEventListener('click', async () => {
+      heatOn = !heatOn;
+      if (heatOn) {
+        await maptilersdk.helpers.addHeatmap(map, {
+          data: stores,
+          opacity: 0.55,
+          radius: 28,
+        });
+      } else {
+        const style = map.getStyle();
+        (style.layers || []).filter((l) => /heatmap/i.test(l.id) || l.type === 'heatmap')
+          .forEach((l) => { if (map.getLayer(l.id)) map.removeLayer(l.id); });
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,680 @@
+{
+  "challengesGraded": 26,
+  "avgPct": 84,
+  "byTier": {
+    "core": 96,
+    "extreme": 77,
+    "insane": 75
+  },
+  "letterCounts": {
+    "C": 8,
+    "A": 8,
+    "D": 5,
+    "F": 3,
+    "B": 2
+  },
+  "topFails": [
+    {
+      "id": "no_cookiecutter_split_css",
+      "count": 7,
+      "theme": "Stop template paste",
+      "skill": "General / code hygiene",
+      "do": "Generate only CSS used by this challenge. Do not copy a shared .split pane stylesheet into every file.",
+      "why": "Unused boilerplate pads file size and signals the agent is cloning a shell instead of solving the prompt."
+    },
+    {
+      "id": "min_substance_insane",
+      "count": 4,
+      "theme": "Thin Insane / mobile sketches",
+      "skill": "Native + Cesium + Admin",
+      "do": "Include real package imports, style URL wiring, permissions/manifest bits, and non-stub asset IDs — not a 20-line outline.",
+      "why": "Insane tier grades whether the agent can leave the web SDK comfort zone with usable code."
+    },
+    {
+      "id": "needs_validate_key",
+      "count": 3,
+      "theme": "API key hygiene",
+      "skill": "Authentication",
+      "do": "Guard missing window.MAPTILER_API_KEY / env keys before constructing the map; throw or show a clear UI error.",
+      "why": "Skill and Cloud docs assume keys are configured; silent empty maps hide setup failures."
+    },
+    {
+      "id": "map_on_error",
+      "count": 3,
+      "theme": "Production resilience",
+      "skill": "SDK JS events",
+      "do": "Attach map.on('error', …) (and prefer try/catch around async Cloud calls).",
+      "why": "Style/tile/key failures otherwise fail silently in demos."
+    },
+    {
+      "id": "async_catch",
+      "count": 3,
+      "theme": "Async error handling",
+      "skill": "Geocoding / Elevation / Coordinates",
+      "do": "Wrap await geocoding/elevation/coordinates calls in try/catch or .catch; surface errors in the UI.",
+      "why": "Network and quota errors are expected; unhandled rejections are agent laziness."
+    },
+    {
+      "id": "min_substance_extreme",
+      "count": 3,
+      "theme": "Thin Extreme solutions",
+      "skill": "Extreme stacking",
+      "do": "Extreme challenges need layered behavior (reload hooks, UI, error paths), not a minimal happy-path Map.",
+      "why": "After CSS is stripped, thin Extreme files still fail substance."
+    },
+    {
+      "id": "needs_full_viewport",
+      "count": 2,
+      "theme": "Layout completeness",
+      "skill": "SDK JS get-started",
+      "do": "Style #map with height:100% / inset:0 / 100vh so the map actually fills the viewport.",
+      "why": "Zero-height maps are a classic incomplete Hello Map."
+    },
+    {
+      "id": "min_substance_web",
+      "count": 2,
+      "theme": "Thin solutions",
+      "skill": "SDK JS basics",
+      "do": "Ship a complete page: full-viewport map CSS, key assignment, Map constructor, and at least one real interaction or guard.",
+      "why": "Keyword-only snippets pass soft graders but fail substance thresholds."
+    },
+    {
+      "id": "tiles_url_with_key",
+      "count": 2,
+      "theme": "Authenticated tile URLs",
+      "skill": "Tiles / Buildings / Outdoor / Contours",
+      "do": "Append ?key= (or key= + apiKey) on every api.maptiler.com/tiles/… URL.",
+      "why": "Vector tile JSON without a key 401s in the browser even when config.apiKey is set for styles."
+    },
+    {
+      "id": "weather_time_or_animate",
+      "count": 1,
+      "theme": "Weather is more than addLayer",
+      "skill": "Weather module",
+      "do": "Add opacity, time, animation, or pickAt — not only WindLayer construction.",
+      "why": "Extreme weather challenges expect the agent to use the weather package surface, not a one-liner."
+    },
+    {
+      "id": "helpers_point_cluster",
+      "count": 1,
+      "theme": "Prefer SDK helpers",
+      "skill": "Helpers (point / heatmap)",
+      "do": "Use helpers.addPoint({ cluster: true }) (or equivalent) instead of only hand-rolled cluster layers when the prompt asks for helpers.",
+      "why": "Skill steers agents toward helpers for clustering/heatmap correctness."
+    },
+    {
+      "id": "route_dense_samples",
+      "count": 1,
+      "theme": "Elevation sampling quality",
+      "skill": "Elevation API",
+      "do": "Densify the LineString (≥15 verts) or use fromLineString with sampling options — five vertices is not a profile.",
+      "why": "min/max/gain on a 5-point polyline is meaningless."
+    },
+    {
+      "id": "geocode_places_marker",
+      "count": 1,
+      "theme": "Geocode UX completeness",
+      "skill": "Geocoding",
+      "do": "After forward geocode + flyTo, place a Marker (or setLngLat) on the hit.",
+      "why": "Search-without-marker looks unfinished and is easy for graders to require."
+    },
+    {
+      "id": "geosplats_real_asset",
+      "count": 1,
+      "theme": "No stub assets",
+      "skill": "GeoSplats",
+      "do": "Use a real MapTiler splat model id / URL; never ship YOUR_MAPTILER_SPLAT_MODEL placeholders.",
+      "why": "Insane GeoSplats is a WebGPU integration test — stubs are automatic fails."
+    },
+    {
+      "id": "no_stub_placeholder",
+      "count": 1,
+      "theme": "No TODO stubs",
+      "skill": "All tiers",
+      "do": "Remove TODO/FIXME/placeholder model strings before considering the challenge done.",
+      "why": "Commented or stubbed 'solutions' must not score as complete."
+    },
+    {
+      "id": "needs_android_internet",
+      "count": 1,
+      "theme": "Android manifest completeness",
+      "skill": "Android SDK",
+      "do": "Include android.permission.INTERNET in the manifest snippet.",
+      "why": "Maps cannot load tiles without it; omitting it is a classic incomplete Android answer."
+    },
+    {
+      "id": "needs_rn_maptiler",
+      "count": 1,
+      "theme": "Real React Native package",
+      "skill": "React Native",
+      "do": "Import from @maptiler/react-native (or documented MapTiler RN APIs) — do not invent NativeMapTilerTurbo modules.",
+      "why": "Hallucinated native modules are a top skill-failure mode."
+    },
+    {
+      "id": "admin_upload_and_process",
+      "count": 1,
+      "theme": "Admin ingest is two steps",
+      "skill": "Admin / Service API",
+      "do": "Implement datasets/ingest (upload_url) AND a live /process call — not comments-only outlines.",
+      "why": "Commented fetch(.../process) is stripped by graders and fails."
+    },
+    {
+      "id": "admin_live_fetch_process",
+      "count": 1,
+      "theme": "Live Admin process call",
+      "skill": "Admin / Service API",
+      "do": "Keep an executable fetch(.../process) in the script body (env token), not only in comments.",
+      "why": "Static graders ignore comments so agents cannot hide unfinished work there."
+    }
+  ],
+  "themes": [
+    {
+      "theme": "Stop template paste",
+      "skill": "General / code hygiene",
+      "do": "Generate only CSS used by this challenge. Do not copy a shared .split pane stylesheet into every file.",
+      "why": "Unused boilerplate pads file size and signals the agent is cloning a shell instead of solving the prompt.",
+      "count": 7,
+      "challenges": [
+        "X1",
+        "X2",
+        "X3",
+        "X4",
+        "X5",
+        "X6",
+        "X7"
+      ],
+      "checks": [
+        "no_cookiecutter_split_css"
+      ]
+    },
+    {
+      "theme": "Thin Insane / mobile sketches",
+      "skill": "Native + Cesium + Admin",
+      "do": "Include real package imports, style URL wiring, permissions/manifest bits, and non-stub asset IDs — not a 20-line outline.",
+      "why": "Insane tier grades whether the agent can leave the web SDK comfort zone with usable code.",
+      "count": 4,
+      "challenges": [
+        "I4",
+        "I5",
+        "I6",
+        "I7"
+      ],
+      "checks": [
+        "min_substance_insane"
+      ]
+    },
+    {
+      "theme": "API key hygiene",
+      "skill": "Authentication",
+      "do": "Guard missing window.MAPTILER_API_KEY / env keys before constructing the map; throw or show a clear UI error.",
+      "why": "Skill and Cloud docs assume keys are configured; silent empty maps hide setup failures.",
+      "count": 3,
+      "challenges": [
+        "C1",
+        "I1",
+        "X8"
+      ],
+      "checks": [
+        "needs_validate_key"
+      ]
+    },
+    {
+      "theme": "Production resilience",
+      "skill": "SDK JS events",
+      "do": "Attach map.on('error', …) (and prefer try/catch around async Cloud calls).",
+      "why": "Style/tile/key failures otherwise fail silently in demos.",
+      "count": 3,
+      "challenges": [
+        "I2",
+        "X1",
+        "X2"
+      ],
+      "checks": [
+        "map_on_error"
+      ]
+    },
+    {
+      "theme": "Async error handling",
+      "skill": "Geocoding / Elevation / Coordinates",
+      "do": "Wrap await geocoding/elevation/coordinates calls in try/catch or .catch; surface errors in the UI.",
+      "why": "Network and quota errors are expected; unhandled rejections are agent laziness.",
+      "count": 3,
+      "challenges": [
+        "X4",
+        "X5",
+        "X7"
+      ],
+      "checks": [
+        "async_catch"
+      ]
+    },
+    {
+      "theme": "Thin Extreme solutions",
+      "skill": "Extreme stacking",
+      "do": "Extreme challenges need layered behavior (reload hooks, UI, error paths), not a minimal happy-path Map.",
+      "why": "After CSS is stripped, thin Extreme files still fail substance.",
+      "count": 3,
+      "challenges": [
+        "X6",
+        "X7",
+        "X8"
+      ],
+      "checks": [
+        "min_substance_extreme"
+      ]
+    },
+    {
+      "theme": "Authenticated tile URLs",
+      "skill": "Tiles / Buildings / Outdoor / Contours",
+      "do": "Append ?key= (or key= + apiKey) on every api.maptiler.com/tiles/… URL.",
+      "why": "Vector tile JSON without a key 401s in the browser even when config.apiKey is set for styles.",
+      "count": 2,
+      "challenges": [
+        "X2",
+        "X6"
+      ],
+      "checks": [
+        "tiles_url_with_key"
+      ]
+    },
+    {
+      "theme": "Thin solutions",
+      "skill": "SDK JS basics",
+      "do": "Ship a complete page: full-viewport map CSS, key assignment, Map constructor, and at least one real interaction or guard.",
+      "why": "Keyword-only snippets pass soft graders but fail substance thresholds.",
+      "count": 2,
+      "challenges": [
+        "C1",
+        "C2"
+      ],
+      "checks": [
+        "min_substance_web"
+      ]
+    },
+    {
+      "theme": "Layout completeness",
+      "skill": "SDK JS get-started",
+      "do": "Style #map with height:100% / inset:0 / 100vh so the map actually fills the viewport.",
+      "why": "Zero-height maps are a classic incomplete Hello Map.",
+      "count": 2,
+      "challenges": [
+        "C1",
+        "C2"
+      ],
+      "checks": [
+        "needs_full_viewport"
+      ]
+    },
+    {
+      "theme": "Prefer SDK helpers",
+      "skill": "Helpers (point / heatmap)",
+      "do": "Use helpers.addPoint({ cluster: true }) (or equivalent) instead of only hand-rolled cluster layers when the prompt asks for helpers.",
+      "why": "Skill steers agents toward helpers for clustering/heatmap correctness.",
+      "count": 1,
+      "challenges": [
+        "X3"
+      ],
+      "checks": [
+        "helpers_point_cluster"
+      ]
+    },
+    {
+      "theme": "Weather is more than addLayer",
+      "skill": "Weather module",
+      "do": "Add opacity, time, animation, or pickAt — not only WindLayer construction.",
+      "why": "Extreme weather challenges expect the agent to use the weather package surface, not a one-liner.",
+      "count": 1,
+      "challenges": [
+        "X1"
+      ],
+      "checks": [
+        "weather_time_or_animate"
+      ]
+    },
+    {
+      "theme": "Elevation sampling quality",
+      "skill": "Elevation API",
+      "do": "Densify the LineString (≥15 verts) or use fromLineString with sampling options — five vertices is not a profile.",
+      "why": "min/max/gain on a 5-point polyline is meaningless.",
+      "count": 1,
+      "challenges": [
+        "X4"
+      ],
+      "checks": [
+        "route_dense_samples"
+      ]
+    },
+    {
+      "theme": "Geocode UX completeness",
+      "skill": "Geocoding",
+      "do": "After forward geocode + flyTo, place a Marker (or setLngLat) on the hit.",
+      "why": "Search-without-marker looks unfinished and is easy for graders to require.",
+      "count": 1,
+      "challenges": [
+        "X5"
+      ],
+      "checks": [
+        "geocode_places_marker"
+      ]
+    },
+    {
+      "theme": "No stub assets",
+      "skill": "GeoSplats",
+      "do": "Use a real MapTiler splat model id / URL; never ship YOUR_MAPTILER_SPLAT_MODEL placeholders.",
+      "why": "Insane GeoSplats is a WebGPU integration test — stubs are automatic fails.",
+      "count": 1,
+      "challenges": [
+        "I3"
+      ],
+      "checks": [
+        "geosplats_real_asset"
+      ]
+    },
+    {
+      "theme": "No TODO stubs",
+      "skill": "All tiers",
+      "do": "Remove TODO/FIXME/placeholder model strings before considering the challenge done.",
+      "why": "Commented or stubbed 'solutions' must not score as complete.",
+      "count": 1,
+      "challenges": [
+        "I3"
+      ],
+      "checks": [
+        "no_stub_placeholder"
+      ]
+    },
+    {
+      "theme": "Real React Native package",
+      "skill": "React Native",
+      "do": "Import from @maptiler/react-native (or documented MapTiler RN APIs) — do not invent NativeMapTilerTurbo modules.",
+      "why": "Hallucinated native modules are a top skill-failure mode.",
+      "count": 1,
+      "challenges": [
+        "I7"
+      ],
+      "checks": [
+        "needs_rn_maptiler"
+      ]
+    },
+    {
+      "theme": "Admin ingest is two steps",
+      "skill": "Admin / Service API",
+      "do": "Implement datasets/ingest (upload_url) AND a live /process call — not comments-only outlines.",
+      "why": "Commented fetch(.../process) is stripped by graders and fails.",
+      "count": 1,
+      "challenges": [
+        "I8"
+      ],
+      "checks": [
+        "admin_upload_and_process"
+      ]
+    },
+    {
+      "theme": "Live Admin process call",
+      "skill": "Admin / Service API",
+      "do": "Keep an executable fetch(.../process) in the script body (env token), not only in comments.",
+      "why": "Static graders ignore comments so agents cannot hide unfinished work there.",
+      "count": 1,
+      "challenges": [
+        "I8"
+      ],
+      "checks": [
+        "admin_live_fetch_process"
+      ]
+    },
+    {
+      "theme": "Android manifest completeness",
+      "skill": "Android SDK",
+      "do": "Include android.permission.INTERNET in the manifest snippet.",
+      "why": "Maps cannot load tiles without it; omitting it is a classic incomplete Android answer.",
+      "count": 1,
+      "challenges": [
+        "I5"
+      ],
+      "checks": [
+        "needs_android_internet"
+      ]
+    }
+  ],
+  "perChallenge": [
+    {
+      "id": "C1",
+      "tier": "core",
+      "pct": 79,
+      "letter": "C",
+      "fails": [
+        "needs_full_viewport",
+        "needs_validate_key",
+        "min_substance_web"
+      ]
+    },
+    {
+      "id": "C10",
+      "tier": "core",
+      "pct": 100,
+      "letter": "A",
+      "fails": []
+    },
+    {
+      "id": "C2",
+      "tier": "core",
+      "pct": 84,
+      "letter": "C",
+      "fails": [
+        "needs_full_viewport",
+        "min_substance_web"
+      ]
+    },
+    {
+      "id": "C3",
+      "tier": "core",
+      "pct": 100,
+      "letter": "A",
+      "fails": []
+    },
+    {
+      "id": "C4",
+      "tier": "core",
+      "pct": 100,
+      "letter": "A",
+      "fails": []
+    },
+    {
+      "id": "C5",
+      "tier": "core",
+      "pct": 100,
+      "letter": "A",
+      "fails": []
+    },
+    {
+      "id": "C6",
+      "tier": "core",
+      "pct": 100,
+      "letter": "A",
+      "fails": []
+    },
+    {
+      "id": "C7",
+      "tier": "core",
+      "pct": 100,
+      "letter": "A",
+      "fails": []
+    },
+    {
+      "id": "C8",
+      "tier": "core",
+      "pct": 100,
+      "letter": "A",
+      "fails": []
+    },
+    {
+      "id": "C9",
+      "tier": "core",
+      "pct": 100,
+      "letter": "A",
+      "fails": []
+    },
+    {
+      "id": "I1",
+      "tier": "insane",
+      "pct": 92,
+      "letter": "B",
+      "fails": [
+        "needs_validate_key"
+      ]
+    },
+    {
+      "id": "I2",
+      "tier": "insane",
+      "pct": 88,
+      "letter": "B",
+      "fails": [
+        "map_on_error"
+      ]
+    },
+    {
+      "id": "I3",
+      "tier": "insane",
+      "pct": 62,
+      "letter": "F",
+      "fails": [
+        "geosplats_real_asset",
+        "no_stub_placeholder"
+      ]
+    },
+    {
+      "id": "I4",
+      "tier": "insane",
+      "pct": 87,
+      "letter": "C",
+      "fails": [
+        "min_substance_insane"
+      ]
+    },
+    {
+      "id": "I5",
+      "tier": "insane",
+      "pct": 70,
+      "letter": "D",
+      "fails": [
+        "needs_android_internet",
+        "min_substance_insane"
+      ]
+    },
+    {
+      "id": "I6",
+      "tier": "insane",
+      "pct": 80,
+      "letter": "C",
+      "fails": [
+        "min_substance_insane"
+      ]
+    },
+    {
+      "id": "I7",
+      "tier": "insane",
+      "pct": 48,
+      "letter": "F",
+      "fails": [
+        "needs_rn_maptiler",
+        "min_substance_insane"
+      ]
+    },
+    {
+      "id": "I8",
+      "tier": "insane",
+      "pct": 74,
+      "letter": "D",
+      "fails": [
+        "admin_upload_and_process",
+        "admin_live_fetch_process"
+      ]
+    },
+    {
+      "id": "X1",
+      "tier": "extreme",
+      "pct": 86,
+      "letter": "C",
+      "fails": [
+        "weather_time_or_animate",
+        "map_on_error",
+        "no_cookiecutter_split_css"
+      ]
+    },
+    {
+      "id": "X2",
+      "tier": "extreme",
+      "pct": 82,
+      "letter": "C",
+      "fails": [
+        "tiles_url_with_key",
+        "map_on_error",
+        "no_cookiecutter_split_css"
+      ]
+    },
+    {
+      "id": "X3",
+      "tier": "extreme",
+      "pct": 85,
+      "letter": "C",
+      "fails": [
+        "helpers_point_cluster",
+        "no_cookiecutter_split_css"
+      ]
+    },
+    {
+      "id": "X4",
+      "tier": "extreme",
+      "pct": 72,
+      "letter": "D",
+      "fails": [
+        "route_dense_samples",
+        "async_catch",
+        "no_cookiecutter_split_css"
+      ]
+    },
+    {
+      "id": "X5",
+      "tier": "extreme",
+      "pct": 75,
+      "letter": "D",
+      "fails": [
+        "geocode_places_marker",
+        "async_catch",
+        "no_cookiecutter_split_css"
+      ]
+    },
+    {
+      "id": "X6",
+      "tier": "extreme",
+      "pct": 66,
+      "letter": "F",
+      "fails": [
+        "tiles_url_with_key",
+        "no_cookiecutter_split_css",
+        "min_substance_extreme"
+      ]
+    },
+    {
+      "id": "X7",
+      "tier": "extreme",
+      "pct": 69,
+      "letter": "D",
+      "fails": [
+        "async_catch",
+        "no_cookiecutter_split_css",
+        "min_substance_extreme"
+      ]
+    },
+    {
+      "id": "X8",
+      "tier": "extreme",
+      "pct": 78,
+      "letter": "C",
+      "fails": [
+        "needs_validate_key",
+        "min_substance_extreme"
+      ]
+    }
+  ]
+}

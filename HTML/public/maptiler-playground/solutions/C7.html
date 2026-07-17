@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.css" rel="stylesheet" />
+  <script src="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.umd.min.js"></script>
+  <script src="../admin-boundaries/js/config.js"></script>
+
+  <title>C7 3D Buildings</title>
+  <style>    html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
+    #map { position: absolute; inset: 0; }
+    .panel {
+      position: absolute; z-index: 2; top: 12px; left: 12px;
+      background: rgba(255,255,255,0.92); padding: 10px 12px; border-radius: 8px;
+      max-width: min(360px, 90vw); box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    }
+    .panel button { margin: 2px 4px 2px 0; cursor: pointer; }
+    .panel input { width: 100%; box-sizing: border-box; margin: 4px 0; }
+</style>
+</head>
+<body>
+  <div id="map"></div>
+  <script>
+    maptilersdk.config.apiKey = window.MAPTILER_API_KEY;
+    const map = new maptilersdk.Map({
+      container: 'map',
+      style: maptilersdk.MapStyle.STREETS,
+      center: [-74.006, 40.7128],
+      zoom: 15,
+      pitch: 60,
+      bearing: -17,
+      navigationControl: true,
+    });
+
+    function addBuildings() {
+      if (map.getSource('buildings')) return;
+      map.addSource('buildings', {
+        type: 'vector',
+        url: 'https://api.maptiler.com/tiles/buildings/tiles.json',
+      });
+      const layers = map.getStyle().layers;
+      let labelLayerId;
+      for (let i = 0; i < layers.length; i++) {
+        if (layers[i].type === 'symbol' && layers[i].layout && layers[i].layout['text-field']) {
+          labelLayerId = layers[i].id;
+          break;
+        }
+      }
+      map.addLayer({
+        id: 'Building 3D',
+        source: 'buildings',
+        'source-layer': 'building',
+        type: 'fill-extrusion',
+        minzoom: 13,
+        paint: {
+          'fill-extrusion-color': ['coalesce', ['get', 'facade_color'], 'hsl(44, 14%, 79%)'],
+          'fill-extrusion-height': ['coalesce', ['get', 'height'], 0],
+          'fill-extrusion-base': ['coalesce', ['get', 'height_min'], 0],
+          'fill-extrusion-opacity': 0.85,
+        },
+      }, labelLayerId);
+    }
+
+    map.on('load', addBuildings);
+  </script>
+</body>
+</html>

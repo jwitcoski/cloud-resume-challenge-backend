@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>I1 Cesium Globe</title>
+  <script src="https://cesium.com/downloads/cesiumjs/releases/1.141.0/Build/Cesium/Cesium.js"></script>
+  <link href="https://cesium.com/downloads/cesiumjs/releases/1.141.0/Build/Cesium/Widgets/widgets.css" rel="stylesheet" />
+  <script src="../admin-boundaries/js/config.js"></script>
+  <style>
+    html, body, #cesiumContainer { margin: 0; width: 100%; height: 100%; overflow: hidden; }
+  </style>
+</head>
+<body>
+  <div id="cesiumContainer"></div>
+  <a href="https://www.maptiler.com" style="position:absolute;right:10px;bottom:10px;z-index:999;">MapTiler</a>
+  <script>
+    const key = window.MAPTILER_API_KEY;
+    const credit = new Cesium.Credit(
+      '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> ' +
+      '<a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
+      true
+    );
+    const viewer = new Cesium.Viewer('cesiumContainer', {
+      imageryProvider: false,
+      baseLayerPicker: false,
+      geocoder: false,
+      terrain: new Cesium.Terrain(
+        Cesium.CesiumTerrainProvider.fromUrl(
+          'https://api.maptiler.com/tiles/terrain-quantized-mesh-v2/?key=' + key,
+          { requestVertexNormals: true }
+        )
+      ),
+      baseLayer: new Cesium.ImageryLayer(
+        new Cesium.UrlTemplateImageryProvider({
+          url: 'https://api.maptiler.com/maps/satellite-v4/{z}/{x}/{y}.jpg?key=' + key,
+          tileWidth: 512,
+          tileHeight: 512,
+          maximumLevel: 20,
+          credit: credit,
+        })
+      ),
+    });
+    viewer.camera.setView({
+      destination: Cesium.Cartesian3.fromDegrees(8.67, 46.72, 4500),
+      orientation: {
+        heading: Cesium.Math.toRadians(0),
+        pitch: Cesium.Math.toRadians(-20),
+      },
+    });
+  </script>
+</body>
+</html>

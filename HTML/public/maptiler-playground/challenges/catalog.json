@@ -1,0 +1,570 @@
+{
+  "version": 1,
+  "skill": "maptiler/maptiler-skills",
+  "pinned": {
+    "sdk": "v4.0.2",
+    "weather": "v3.1.1",
+    "cesium": "1.141.0",
+    "geosplats": "v1.0.4",
+    "geocodingControl": "v3.0.0"
+  },
+  "challenges": [
+    {
+      "id": "C1",
+      "tier": "core",
+      "title": "Hello Map",
+      "tags": [
+        "sdk-js"
+      ],
+      "maxScore": 70,
+      "prompt": "Build a minimal MapTiler SDK JS page: full-viewport #map, MapStyle.STREETS, center on Prague [14.4178, 50.1167], zoom 12. Use @maptiler/sdk v4.0.2 from CDN. Do not import maplibre-gl. Load API key from ../admin-boundaries/js/config.js (window.MAPTILER_API_KEY).",
+      "checks": [
+        "sdk_not_maplibre",
+        "pinned_sdk_version",
+        "no_template_leak",
+        "no_legacy_style",
+        "mapstyle_constant",
+        "lng_lat_order",
+        "api_key_hygiene",
+        "needs_mapstyle_streets",
+        "needs_prague_center",
+        "needs_full_viewport",
+        "needs_validate_key",
+        "min_substance_web"
+      ]
+    },
+    {
+      "id": "C2",
+      "tier": "core",
+      "title": "Globe Atmosphere",
+      "tags": [
+        "sdk-js",
+        "globe"
+      ],
+      "maxScore": 80,
+      "prompt": "Create a globe map with projection: 'globe', halo and space enabled, low zoom (~1.5). Use MapTiler SDK v4.0.2 and a modern v4 style (e.g. SATELLITE or STREETS).",
+      "checks": [
+        "sdk_not_maplibre",
+        "pinned_sdk_version",
+        "no_template_leak",
+        "no_legacy_style",
+        "api_key_hygiene",
+        "needs_globe",
+        "needs_halo_and_space",
+        "needs_full_viewport",
+        "min_substance_web"
+      ]
+    },
+    {
+      "id": "C3",
+      "tier": "core",
+      "title": "Terrain Fly",
+      "tags": [
+        "sdk-js",
+        "terrain"
+      ],
+      "maxScore": 80,
+      "prompt": "Map with terrain: true (and optional exaggeration), pitch ~60, flyTo a mountain (e.g. Alps or Fuji). SDK v4.0.2 only.",
+      "checks": [
+        "sdk_not_maplibre",
+        "pinned_sdk_version",
+        "no_legacy_style",
+        "api_key_hygiene",
+        "needs_terrain",
+        "needs_terrain_exaggeration",
+        "needs_flyto",
+        "flyto_alps",
+        "min_substance_web"
+      ]
+    },
+    {
+      "id": "C4",
+      "tier": "core",
+      "title": "Style Switcher v4",
+      "tags": [
+        "sdk-js",
+        "styles"
+      ],
+      "maxScore": 80,
+      "prompt": "Buttons to switch among MapStyle.STREETS, HYBRID, OUTDOOR, DATAVIZ.DARK (v4 only). After setStyle, re-bind custom layers on style.load / styledata. Never use streets-v2 or basic-v2.",
+      "checks": [
+        "sdk_not_maplibre",
+        "pinned_sdk_version",
+        "no_legacy_style",
+        "mapstyle_constant",
+        "needs_setstyle",
+        "needs_style_reload_hook",
+        "style_switcher_at_least_3",
+        "min_substance_web"
+      ]
+    },
+    {
+      "id": "C5",
+      "tier": "core",
+      "title": "Geocode Roundtrip",
+      "tags": [
+        "cloud-api",
+        "geocoding"
+      ],
+      "maxScore": 80,
+      "prompt": "Forward geocode a place string, flyTo result; reverse geocode on map click. Use maptilersdk.geocoding.forward / .reverse with [lng, lat].",
+      "checks": [
+        "sdk_not_maplibre",
+        "pinned_sdk_version",
+        "lng_lat_order",
+        "api_key_hygiene",
+        "needs_geocode_forward",
+        "needs_geocode_reverse",
+        "geocode_ui_input",
+        "needs_flyto",
+        "min_substance_web"
+      ]
+    },
+    {
+      "id": "C6",
+      "tier": "core",
+      "title": "Elevation Probe",
+      "tags": [
+        "cloud-api",
+        "elevation"
+      ],
+      "maxScore": 80,
+      "prompt": "On map click, call maptilersdk.elevation.at([lng,lat]) and show meters in the UI.",
+      "checks": [
+        "sdk_not_maplibre",
+        "pinned_sdk_version",
+        "lng_lat_order",
+        "needs_elevation_at",
+        "needs_popup_or_click",
+        "min_substance_web"
+      ]
+    },
+    {
+      "id": "C7",
+      "tier": "core",
+      "title": "3D Buildings",
+      "tags": [
+        "sdk-js",
+        "buildings"
+      ],
+      "maxScore": 80,
+      "prompt": "At a city zoom with pitch, add a fill-extrusion layer for buildings (height from properties). Survive basic interaction.",
+      "checks": [
+        "sdk_not_maplibre",
+        "pinned_sdk_version",
+        "no_legacy_style",
+        "needs_fill_extrusion",
+        "extrusion_height_expr",
+        "buildings_under_labels",
+        "min_substance_web"
+      ]
+    },
+    {
+      "id": "C8",
+      "tier": "core",
+      "title": "Weather Layer",
+      "tags": [
+        "weather"
+      ],
+      "maxScore": 80,
+      "prompt": "Add @maptiler/weather v3.1.1 wind or temperature layer on a MapTiler SDK map. Pin the weather package version.",
+      "checks": [
+        "sdk_not_maplibre",
+        "pinned_sdk_version",
+        "pinned_weather_version",
+        "weather_cdn_script",
+        "needs_weather",
+        "min_substance_web"
+      ]
+    },
+    {
+      "id": "C9",
+      "tier": "core",
+      "title": "Helper Heatmap",
+      "tags": [
+        "sdk-js",
+        "helpers"
+      ],
+      "maxScore": 80,
+      "prompt": "Use maptilersdk.helpers.addHeatmap and/or clustered points (helpers.addPoint with cluster or GeoJSON cluster:true) for a demo dataset.",
+      "checks": [
+        "sdk_not_maplibre",
+        "pinned_sdk_version",
+        "needs_heatmap_or_cluster",
+        "helpers_heatmap",
+        "min_substance_web"
+      ]
+    },
+    {
+      "id": "C10",
+      "tier": "core",
+      "title": "Static Snapshot",
+      "tags": [
+        "cloud-api",
+        "static-maps"
+      ],
+      "maxScore": 80,
+      "prompt": "Generate a static map image URL or use maptilersdk.staticMaps for the current (or fixed) viewport; display <img>.",
+      "checks": [
+        "sdk_not_maplibre",
+        "api_key_hygiene",
+        "needs_static_maps",
+        "static_img_element",
+        "min_substance_web"
+      ]
+    },
+    {
+      "id": "X1",
+      "tier": "extreme",
+      "title": "Stacked World",
+      "tags": [
+        "globe",
+        "terrain",
+        "weather"
+      ],
+      "maxScore": 140,
+      "prompt": "Globe + halo/space + terrain exaggeration + weather wind, then flyTo the Alps. Re-enable layers after any style change.",
+      "checks": [
+        "sdk_not_maplibre",
+        "pinned_sdk_version",
+        "pinned_weather_version",
+        "weather_cdn_script",
+        "no_legacy_style",
+        "needs_globe",
+        "needs_halo_and_space",
+        "needs_terrain",
+        "needs_terrain_exaggeration",
+        "needs_weather",
+        "flyto_alps",
+        "needs_style_reload_hook",
+        "readd_layers_in_style_load",
+        "weather_time_or_animate",
+        "map_on_error",
+        "no_cookiecutter_split_css",
+        "no_stub_placeholder",
+        "min_substance_extreme"
+      ]
+    },
+    {
+      "id": "X2",
+      "tier": "extreme",
+      "title": "City Extrude Survive",
+      "tags": [
+        "buildings",
+        "styles"
+      ],
+      "maxScore": 140,
+      "prompt": "NYC hybrid, pitch 60, 3D buildings. Toggle Streets\u2194Hybrid without losing extrusions (re-add on style.load).",
+      "checks": [
+        "sdk_not_maplibre",
+        "no_legacy_style",
+        "mapstyle_constant",
+        "nyc_pitch_hybrid",
+        "needs_fill_extrusion",
+        "extrusion_height_expr",
+        "buildings_under_labels",
+        "needs_setstyle",
+        "needs_style_reload_hook",
+        "readd_layers_in_style_load",
+        "tiles_url_with_key",
+        "map_on_error",
+        "no_cookiecutter_split_css",
+        "lng_lat_order",
+        "min_substance_extreme"
+      ]
+    },
+    {
+      "id": "X3",
+      "tier": "extreme",
+      "title": "Store Locator 5k",
+      "tags": [
+        "helpers",
+        "cluster"
+      ],
+      "maxScore": 140,
+      "prompt": "Simulate ~5000 stores: cluster at low zoom, heatmap toggle, popup on click. Coordinates must be [lng,lat].",
+      "checks": [
+        "sdk_not_maplibre",
+        "pinned_sdk_version",
+        "lng_lat_order",
+        "five_thousand_points",
+        "needs_heatmap_or_cluster",
+        "cluster_and_unclustered_layers",
+        "helpers_heatmap",
+        "helpers_point_cluster",
+        "heatmap_toggle",
+        "needs_popup_or_click",
+        "no_cookiecutter_split_css",
+        "min_substance_extreme"
+      ]
+    },
+    {
+      "id": "X4",
+      "tier": "extreme",
+      "title": "Route Profile",
+      "tags": [
+        "elevation"
+      ],
+      "maxScore": 140,
+      "prompt": "A LineString route; sample elevation via elevation API (at/batch/fromLineString); show min/max/gain.",
+      "checks": [
+        "sdk_not_maplibre",
+        "needs_elevation_at",
+        "elevation_multi_sample",
+        "elevation_stats_ui",
+        "route_dense_samples",
+        "needs_linestring",
+        "async_catch",
+        "lng_lat_order",
+        "no_cookiecutter_split_css",
+        "min_substance_extreme"
+      ]
+    },
+    {
+      "id": "X5",
+      "tier": "extreme",
+      "title": "Search Then Reverse",
+      "tags": [
+        "geocoding"
+      ],
+      "maxScore": 140,
+      "prompt": "Search UI \u2192 forward geocode \u2192 flyTo; map click \u2192 reverse with debounce. Prefer geocoding API or @maptiler/geocoding-control; do not invent GeocodingBar.",
+      "checks": [
+        "sdk_not_maplibre",
+        "needs_geocode_forward",
+        "needs_geocode_reverse",
+        "geocode_ui_input",
+        "geocode_places_marker",
+        "debounce_cleartimeout",
+        "controls_as_flags",
+        "async_catch",
+        "lng_lat_order",
+        "no_cookiecutter_split_css",
+        "min_substance_extreme"
+      ]
+    },
+    {
+      "id": "X6",
+      "tier": "extreme",
+      "title": "Schema Honest Outdoor",
+      "tags": [
+        "schema",
+        "outdoor"
+      ],
+      "maxScore": 140,
+      "prompt": "OUTDOOR style plus overlay using real Outdoor/Contours source-layer names (e.g. contour, path, mountain_peak). Do not invent fake layers like 'hiking_trails_v9'.",
+      "checks": [
+        "sdk_not_maplibre",
+        "no_legacy_style",
+        "mapstyle_outdoor",
+        "schema_outdoor_ok",
+        "outdoor_multi_overlay",
+        "no_fake_source_layer",
+        "tiles_url_with_key",
+        "no_cookiecutter_split_css",
+        "min_substance_extreme"
+      ]
+    },
+    {
+      "id": "X7",
+      "tier": "extreme",
+      "title": "CRS Trap",
+      "tags": [
+        "coordinates"
+      ],
+      "maxScore": 140,
+      "prompt": "Show a WGS84 point and transform via maptilersdk.coordinates (or Coordinates REST). Label both. Keep [lng,lat] for map APIs.",
+      "checks": [
+        "sdk_not_maplibre",
+        "needs_coordinates_api",
+        "coordinates_shows_both",
+        "crs_epsg_both_labeled",
+        "needs_marker",
+        "async_catch",
+        "lng_lat_order",
+        "no_cookiecutter_split_css",
+        "min_substance_extreme"
+      ]
+    },
+    {
+      "id": "X8",
+      "tier": "extreme",
+      "title": "Leaflet Hand-off",
+      "tags": [
+        "leaflet"
+      ],
+      "maxScore": 140,
+      "prompt": "Page with MapTiler SDK map ([lng,lat]) AND a Leaflet map using (lat,lng) setView plus streets-v4 tiles or leaflet-maptilersdk.",
+      "checks": [
+        "sdk_not_maplibre",
+        "no_legacy_style",
+        "dual_map_containers",
+        "needs_leaflet",
+        "needs_leaflet_latlng",
+        "needs_streets_v4_tiles_or_sdk",
+        "leaflet_attribution_maptiler",
+        "needs_validate_key",
+        "min_substance_extreme"
+      ]
+    },
+    {
+      "id": "I1",
+      "tier": "insane",
+      "title": "Cesium Globe",
+      "tags": [
+        "cesium"
+      ],
+      "maxScore": 150,
+      "mode": "static",
+      "prompt": "CesiumJS viewer with MapTiler imagery, Cesium 1.141.0 + Widgets CSS. Do not paste MapLibre APIs into Cesium.",
+      "checks": [
+        "pinned_cesium",
+        "needs_cesium",
+        "cesium_widgets_css",
+        "cesium_maptiler_imagery",
+        "cesium_terrain_and_imagery",
+        "no_maplibre_in_cesium",
+        "api_key_hygiene",
+        "needs_validate_key",
+        "no_template_leak",
+        "min_substance_insane"
+      ]
+    },
+    {
+      "id": "I2",
+      "tier": "insane",
+      "title": "deck.gl Overlay",
+      "tags": [
+        "deck.gl"
+      ],
+      "maxScore": 150,
+      "mode": "static",
+      "prompt": "deck.gl layer (Scatterplot or Hexagon) on a MapTiler basemap. Follow MapTiler deck.gl guidance; avoid bare maplibre-gl as the only import.",
+      "checks": [
+        "needs_deckgl",
+        "deck_overlay_wired",
+        "sdk_or_maptiler_basemap",
+        "pinned_sdk_version",
+        "api_key_hygiene",
+        "map_on_error",
+        "min_substance_insane"
+      ]
+    },
+    {
+      "id": "I3",
+      "tier": "insane",
+      "title": "GeoSplats WebGPU",
+      "tags": [
+        "geosplats"
+      ],
+      "maxScore": 150,
+      "mode": "static",
+      "prompt": "Use @maptiler/geosplats v1.0.4. Gate on navigator.gpu and show a clear fallback overlay if WebGPU is missing.",
+      "checks": [
+        "pinned_geosplats",
+        "needs_geosplats",
+        "needs_webgpu_gate",
+        "needs_webgpu_fallback",
+        "geosplats_real_asset",
+        "no_stub_placeholder",
+        "min_substance_insane"
+      ]
+    },
+    {
+      "id": "I4",
+      "tier": "insane",
+      "title": "iOS SwiftUI Map",
+      "tags": [
+        "ios"
+      ],
+      "maxScore": 150,
+      "mode": "static",
+      "prompt": "SwiftUI MapTiler map: streets-v4 style URL, set API key with await inside Task/.task BEFORE first map frame. When building MapTiler URLs use longitude,latitude order.",
+      "checks": [
+        "needs_swift_maptiler",
+        "needs_streets_v4_url",
+        "needs_ios_await_key",
+        "ios_gate_map_until_key",
+        "ios_applies_style_to_map",
+        "no_legacy_style",
+        "min_substance_insane"
+      ]
+    },
+    {
+      "id": "I5",
+      "tier": "insane",
+      "title": "Android Compose Map",
+      "tags": [
+        "android"
+      ],
+      "maxScore": 150,
+      "mode": "static",
+      "prompt": "Jetpack Compose MapTiler map using LngLat(lng, lat), INTERNET permission in manifest, streets-v4 style.",
+      "checks": [
+        "needs_android_lnglat",
+        "needs_android_internet",
+        "needs_streets_v4_url",
+        "android_compose_map",
+        "no_legacy_style",
+        "min_substance_insane"
+      ]
+    },
+    {
+      "id": "I6",
+      "tier": "insane",
+      "title": "Flutter Map",
+      "tags": [
+        "flutter"
+      ],
+      "maxScore": 150,
+      "mode": "static",
+      "prompt": "Flutter MapTiler map widget with a modern v4 style id (streets-v4 or SDK equivalent). No streets-v2.",
+      "checks": [
+        "needs_flutter_maptiler",
+        "needs_streets_v4_url",
+        "flutter_v4_style",
+        "no_legacy_style",
+        "min_substance_insane"
+      ]
+    },
+    {
+      "id": "I7",
+      "tier": "insane",
+      "title": "React Native Map",
+      "tags": [
+        "react-native"
+      ],
+      "maxScore": 150,
+      "mode": "static",
+      "prompt": "React Native MapTiler map using real RN MapTiler APIs (no invented native module names). v4 styles only.",
+      "checks": [
+        "needs_rn_maptiler",
+        "no_legacy_style",
+        "no_fake_rn_module",
+        "min_substance_insane"
+      ]
+    },
+    {
+      "id": "I8",
+      "tier": "insane",
+      "title": "Admin Tileset Sketch",
+      "tags": [
+        "admin-api"
+      ],
+      "maxScore": 150,
+      "mode": "static",
+      "prompt": "Script/outline to upload or list tilesets via Admin/service API. Service token MUST come from process.env / env placeholder \u2014 never hardcode a UUID. Do not use the browser map key as a service token.",
+      "checks": [
+        "needs_admin_or_service_host",
+        "admin_token_from_env",
+        "no_hardcoded_uuid_token",
+        "admin_upload_and_process",
+        "admin_live_fetch_process",
+        "admin_forbids_browser_key",
+        "api_key_hygiene",
+        "async_catch",
+        "min_substance_insane"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>I3 GeoSplats WebGPU</title>
+  <link rel="stylesheet" href="https://cdn.maptiler.com/maptiler-geosplats/v1.0.4/maptiler-geosplats.css" />
+  <script src="../admin-boundaries/js/config.js"></script>
+  <style>
+    html, body { margin: 0; overflow: hidden; font-family: system-ui, sans-serif; }
+    #map { width: 100%; height: 100vh; }
+    #webGpuError {
+      position: absolute; top: 20px; left: 50%; transform: translateX(-50%);
+      background: rgba(220, 53, 69, 0.92); color: #fff; padding: 12px 24px;
+      border-radius: 8px; z-index: 9999; font-weight: 500; display: none;
+      max-width: 90vw; text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div id="webGpuError"></div>
+  <div id="map"></div>
+  <script type="module">
+    import { Map, SplatModel, config } from 'https://cdn.maptiler.com/maptiler-geosplats/v1.0.4/maptiler-geosplats.mjs';
+
+    // @maptiler/geosplats v1.0.4 — WebGPU required
+    if (!navigator.gpu) {
+      const errorOverlay = document.getElementById('webGpuError');
+      errorOverlay.style.display = 'block';
+      errorOverlay.textContent =
+        'WebGPU is not supported by your browser (fallback). Upgrade to a compatible browser (Chrome, Edge, or Firefox Nightly) to view 3D GeoSplats.';
+    }
+
+    config.apiKey = window.MAPTILER_API_KEY;
+
+    const map = new Map({
+      apiKey: config.apiKey,
+      container: 'map',
+      center: [7.86040, 46.686488],
+      zoom: 16,
+    });
+
+    map.on('load', () => {
+      if (!navigator.gpu) return;
+      // Placeholder model id — replace with a real MapTiler splat asset in production
+      try {
+        const splatModel = new SplatModel({
+          model: 'YOUR_MAPTILER_SPLAT_MODEL_ID_HERE',
+        });
+        map.addSplatModel(splatModel);
+      } catch (err) {
+        console.warn('Splat model load skipped:', err);
+      }
+    });
+  </script>
+</body>
+</html>

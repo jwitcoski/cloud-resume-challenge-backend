@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.css" rel="stylesheet" />
+  <script src="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.umd.min.js"></script>
+  <script src="../admin-boundaries/js/config.js"></script>
+
+  <title>C10 Static Snapshot</title>
+  <style>
+        html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
+    #map { position: absolute; inset: 0; }
+    .panel {
+      position: absolute; z-index: 2; top: 12px; left: 12px;
+      background: rgba(255,255,255,0.92); padding: 10px 12px; border-radius: 8px;
+      max-width: min(360px, 90vw); box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    }
+    .panel button { margin: 2px 4px 2px 0; cursor: pointer; }
+    .panel input { width: 100%; box-sizing: border-box; margin: 4px 0; }
+
+    #shot { position: absolute; z-index: 2; bottom: 12px; right: 12px; max-width: 40vw;
+      border: 2px solid #fff; box-shadow: 0 2px 12px rgba(0,0,0,0.35); }
+  </style>
+</head>
+<body>
+  <div class="panel">Live map + staticMaps snapshot</div>
+  <div id="map"></div>
+  <img id="shot" alt="Static map snapshot" />
+  <script>
+    maptilersdk.config.apiKey = window.MAPTILER_API_KEY;
+    const center = [14.4178, 50.1167];
+    const map = new maptilersdk.Map({
+      container: 'map',
+      style: maptilersdk.MapStyle.STREETS,
+      center,
+      zoom: 12,
+    });
+    const url = maptilersdk.staticMaps.centered(center, 12, {
+      hiDPI: true,
+      width: 400,
+      height: 300,
+      style: maptilersdk.MapStyle.STREETS,
+    });
+    document.getElementById('shot').src = url;
+  </script>
+</body>
+</html>

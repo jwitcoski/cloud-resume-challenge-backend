@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.css" rel="stylesheet" />
+  <script src="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.umd.min.js"></script>
+  <script src="../admin-boundaries/js/config.js"></script>
+
+  <title>C4 Style Switcher v4</title>
+  <style>    html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
+    #map { position: absolute; inset: 0; }
+    .panel {
+      position: absolute; z-index: 2; top: 12px; left: 12px;
+      background: rgba(255,255,255,0.92); padding: 10px 12px; border-radius: 8px;
+      max-width: min(360px, 90vw); box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    }
+    .panel button { margin: 2px 4px 2px 0; cursor: pointer; }
+    .panel input { width: 100%; box-sizing: border-box; margin: 4px 0; }
+</style>
+</head>
+<body>
+  <div class="panel">
+    <strong>Style</strong><br />
+    <button data-style="STREETS">Streets</button>
+    <button data-style="HYBRID">Hybrid</button>
+    <button data-style="OUTDOOR">Outdoor</button>
+    <button data-style="DATAVIZ_DARK">Dataviz Dark</button>
+  </div>
+  <div id="map"></div>
+  <script>
+    maptilersdk.config.apiKey = window.MAPTILER_API_KEY;
+    const STYLES = {
+      STREETS: maptilersdk.MapStyle.STREETS,
+      HYBRID: maptilersdk.MapStyle.HYBRID,
+      OUTDOOR: maptilersdk.MapStyle.OUTDOOR,
+      DATAVIZ_DARK: maptilersdk.MapStyle.DATAVIZ.DARK,
+    };
+    const map = new maptilersdk.Map({
+      container: 'map',
+      style: maptilersdk.MapStyle.STREETS,
+      center: [14.4178, 50.1167],
+      zoom: 11,
+    });
+
+    function addCustomLayers() {
+      if (map.getSource('demo-pt')) return;
+      map.addSource('demo-pt', {
+        type: 'geojson',
+        data: {
+          type: 'Feature',
+          geometry: { type: 'Point', coordinates: [14.4178, 50.1167] },
+          properties: { name: 'Prague' },
+        },
+      });
+      map.addLayer({
+        id: 'demo-pt-circle',
+        type: 'circle',
+        source: 'demo-pt',
+        paint: { 'circle-radius': 8, 'circle-color': '#e11d48' },
+      });
+    }
+
+    function rebindCustomLayers() {
+      map.once('styledata', () => addCustomLayers());
+    }
+
+    map.on('load', addCustomLayers);
+    map.on('style.load', addCustomLayers);
+
+    document.querySelectorAll('[data-style]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const key = btn.getAttribute('data-style');
+        rebindCustomLayers();
+        map.setStyle(STYLES[key]);
+      });
+    });
+  </script>
+</body>
+</html>
