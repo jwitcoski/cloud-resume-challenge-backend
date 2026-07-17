@@ -111,6 +111,6 @@ export const featureWork = [
         description: "Scoreboard that grades AI agents on MapTiler SDK challenges — static checks, harsh training mode, and skill-driven feedback.",
         roles: ["MapTiler SDK", "Agent eval", "JavaScript", "Web GIS"],
         image: "/images/feature-work/maptiler-agent-grader.png",
-        url: "/maptiler-playground/"
+        url: "/maptiler-playground/index.html"
     }
 ];
