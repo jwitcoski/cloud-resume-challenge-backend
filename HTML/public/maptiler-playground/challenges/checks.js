@@ -1,12 +1,24 @@
 /**
- * MapTiler Agent Skill — strict static graders (v2)
+ * MapTiler Agent Skill — strict static graders (v3)
  * Presence-only checks are low weight; substance checks dominate Extreme/Insane.
+ *
+ * Modes:
+ *   normal — v2 thresholds / letter bands (demo-friendly)
+ *   harsh  — training mode: higher substance bars, stricter letters, auto-extra rigor
  */
 (function (global) {
   const PINNED_SDK = "v4.0.2";
   const PINNED_WEATHER = "v3.1.1";
   const PINNED_CESIUM = "1.141.0";
   const PINNED_GEOSPLATS = "v1.0.4";
+
+  /** @type {"normal"|"harsh"} */
+  let MODE = "harsh";
+
+  const THRESHOLDS = {
+    normal: { web: 700, extreme: 1600, insane: 1100 },
+    harsh: { web: 1100, extreme: 2400, insane: 1700 },
+  };
 
   const LEGACY_STYLE_RE = /streets-v2|basic-v2|outdoor-v2|hybrid-v2|topo-v2|satellite-v2|streets-v2-dark|streets-v2-light/i;
 
@@ -20,7 +32,7 @@
     /source-layer['"`]?\s*:\s*['"`](hiking_trails_v9|fake_trails|my_trails|trail_network_v2|custom_contours_x)['"`]/i;
 
   const STUB_RE =
-    /YOUR_MAPTILER_SPLAT_MODEL|TODO:|FIXME|not implemented|placeholder model|replace with a real/i;
+    /YOUR_MAPTILER_SPLAT_MODEL|YOUR_MAPTILER_SPLAT_ID|MODEL_ID_HERE|TODO:|FIXME|not implemented|placeholder model|replace with a real|coming soon|implement me|lorem ipsum/i;
 
   const UUID_RE =
     /[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}/gi;
@@ -28,6 +40,18 @@
   const PRAGUE_SWAPPED_RE = /\[\s*50\.11\d*\s*,\s*14\.4/i;
   const PRAGUE_OK_RE = /\[\s*14\.4178\s*,\s*50\.1167\s*\]/;
   const NYC_SWAPPED_RE = /\[\s*40\.7\d*\s*,\s*-74\.0/i;
+
+  function isHarsh() {
+    return MODE === "harsh";
+  }
+
+  /** Amplify hard-check weight in harsh mode so soft keyword hits can't carry the grade. */
+  function w(base, kind) {
+    if (!isHarsh()) return base;
+    if (kind === "soft") return Math.max(4, Math.round(base * 0.7));
+    if (kind === "hard") return Math.round(base * 1.5);
+    return Math.round(base * 1.2);
+  }
 
   function pts(pass, weight, id, detail) {
     return { id, pass: !!pass, weight, points: pass ? weight : 0, detail: detail || "" };
@@ -46,6 +70,28 @@
       .replace(/<link[^>]*>/gi, "")
       .replace(/\s+/g, " ")
       .trim().length;
+  }
+
+  function commentRatio(raw) {
+    const full = String(raw || "");
+    if (full.length < 80) return 0;
+    let comments = 0;
+    const blocks = full.match(/\/\*[\s\S]*?\*\//g) || [];
+    const html = full.match(/<!--[\s\S]*?-->/g) || [];
+    const lines = full.match(/(^|[^:])\/\/[^\n]*/g) || [];
+    for (const b of blocks) comments += b.length;
+    for (const b of html) comments += b.length;
+    for (const b of lines) comments += b.length;
+    return comments / full.length;
+  }
+
+  function setMode(next) {
+    MODE = next === "normal" ? "normal" : "harsh";
+    return MODE;
+  }
+
+  function getMode() {
+    return MODE;
   }
 
   const CHECKS = {
@@ -129,32 +175,74 @@
 
     no_stub_placeholder(src) {
       const bad = STUB_RE.test(src);
-      return pts(!bad, 18, "no_stub_placeholder", bad ? "Stub/placeholder left in solution" : "No stubs");
+      return pts(!bad, w(18, "hard"), "no_stub_placeholder", bad ? "Stub/placeholder left in solution" : "No stubs");
     },
 
     min_substance_web(src) {
+      const need = THRESHOLDS[MODE].web;
       const n = substanceLen(src);
-      return pts(n >= 700, 8, "min_substance_web", n >= 700 ? `${n} substance chars` : `Too thin (${n} chars, need ≥700 script/body)`);
+      return pts(
+        n >= need,
+        w(12, "hard"),
+        "min_substance_web",
+        n >= need ? `${n} substance chars` : `Too thin (${n} chars, need ≥${need} script/body)`
+      );
     },
 
     min_substance_extreme(src) {
+      const need = THRESHOLDS[MODE].extreme;
       const n = substanceLen(src);
-      return pts(n >= 1600, 14, "min_substance_extreme", n >= 1600 ? `${n} substance chars` : `Too thin (${n} chars, need ≥1600 after stripping CSS boilerplate)`);
+      return pts(
+        n >= need,
+        w(18, "hard"),
+        "min_substance_extreme",
+        n >= need ? `${n} substance chars` : `Too thin (${n} chars, need ≥${need} after stripping CSS boilerplate)`
+      );
     },
 
     min_substance_insane(src) {
+      const need = THRESHOLDS[MODE].insane;
       const n = substanceLen(src);
-      return pts(n >= 1100, 12, "min_substance_insane", n >= 1100 ? `${n} substance chars` : `Too thin (${n} chars, need ≥1100)`);
+      return pts(
+        n >= need,
+        w(16, "hard"),
+        "min_substance_insane",
+        n >= need ? `${n} substance chars` : `Too thin (${n} chars, need ≥${need})`
+      );
     },
 
     needs_validate_key(src) {
-      const ok = /MAPTILER_API_KEY|apiKey/.test(src) && /(missing|YOUR_MAPTILER|!key|throw new Error|if\s*\(\s*!)/i.test(src);
-      return pts(ok, 10, "needs_validate_key", ok ? "Key guard" : "Add missing-key guard");
+      const ok =
+        /MAPTILER_API_KEY|apiKey/.test(src) &&
+        /(missing|YOUR_MAPTILER|!key|throw new Error|if\s*\(\s*!)/i.test(src);
+      return pts(ok, w(14, "hard"), "needs_validate_key", ok ? "Key guard" : "Add missing-key guard");
     },
 
     needs_full_viewport(src) {
       const ok = /#map/.test(src) && /height:\s*100%|inset:\s*0|100vh/.test(src);
-      return pts(ok, 8, "needs_full_viewport", ok ? "Full viewport" : "Need full-viewport #map CSS");
+      return pts(ok, w(10, "hard"), "needs_full_viewport", ok ? "Full viewport" : "Need full-viewport #map CSS");
+    },
+
+    loads_config_js(src) {
+      if (!/maptilersdk|maptiler-sdk-js|geosplats|cesium/i.test(src)) {
+        return pts(true, 4, "loads_config_js", "N/A");
+      }
+      if (!/<html|<!DOCTYPE|<script/i.test(src)) {
+        return pts(true, 4, "loads_config_js", "N/A");
+      }
+      const ok = /admin-boundaries\/js\/config\.js/i.test(src);
+      return pts(ok, w(12, "hard"), "loads_config_js", ok ? "config.js loaded" : "Load ../admin-boundaries/js/config.js");
+    },
+
+    assigns_sdk_apikey(src) {
+      if (!/maptilersdk|@maptiler\/sdk/i.test(src)) return pts(true, 4, "assigns_sdk_apikey", "N/A");
+      const ok = /config\.apiKey\s*=/i.test(src);
+      return pts(ok, w(12, "hard"), "assigns_sdk_apikey", ok ? "config.apiKey set" : "Set maptilersdk.config.apiKey");
+    },
+
+    no_comment_bloat(src) {
+      // Placeholder — real ratio computed in grade() with raw source
+      return pts(true, w(10, "hard"), "no_comment_bloat", "OK");
     },
 
     // ——— core feature substance ———
@@ -333,6 +421,51 @@
       if (!/cesium/i.test(src)) return pts(false, 10, "no_maplibre_in_cesium", "Not Cesium");
       return pts(!/maplibre-gl|maptilersdk\.Map/i.test(src), 12, "no_maplibre_in_cesium", "No MapLibre in Cesium file");
     },
+    /**
+     * cesium.com/downloads/.../1.141.0 currently 404s — a blank page that still
+     * mentions 1.141.0 must not pass. Prefer jsDelivr/unpkg + CESIUM_BASE_URL.
+     */
+    cesium_cdn_loads(src) {
+      const deadOfficial141 =
+        /cesium\.com\/downloads\/cesiumjs\/releases\/1\.141\.0/i.test(src);
+      const workingNpmCdn =
+        /(?:cdn\.jsdelivr\.net\/npm\/cesium@1\.141\.0|unpkg\.com\/cesium@1\.141\.0)/i.test(src);
+      if (deadOfficial141 && !workingNpmCdn) {
+        return pts(
+          false,
+          20,
+          "cesium_cdn_loads",
+          "cesium.com/downloads/.../1.141.0 404s (blank page) — use jsDelivr/unpkg cesium@1.141.0"
+        );
+      }
+      return pts(
+        workingNpmCdn,
+        20,
+        "cesium_cdn_loads",
+        workingNpmCdn ? "Working npm CDN for 1.141.0" : "Need jsDelivr or unpkg cesium@1.141.0 script"
+      );
+    },
+    cesium_base_url(src) {
+      const ok = /CESIUM_BASE_URL/i.test(src);
+      return pts(
+        ok,
+        16,
+        "cesium_base_url",
+        ok ? "CESIUM_BASE_URL set" : "Set window.CESIUM_BASE_URL before Cesium.js (Workers/Assets)"
+      );
+    },
+    cesium_guards_load(src) {
+      const ok =
+        /typeof\s+Cesium\s*===?\s*['"]undefined['"]|if\s*\(\s*!?\s*Cesium|CesiumJS failed|showErr|getElementById\s*\(\s*['"]err['"]/i.test(
+          src
+        );
+      return pts(
+        ok,
+        12,
+        "cesium_guards_load",
+        ok ? "Guards missing Cesium / shows error UI" : "Guard Cesium load failure with visible error UI"
+      );
+    },
     needs_deckgl(src) {
       return pts(/new\s+(ScatterplotLayer|HexagonLayer|Deck)/i.test(src) || /ScatterplotLayer\s*\(/.test(src), 14, "needs_deckgl", "deck.gl layer instance");
     },
@@ -375,7 +508,11 @@
     },
 
     map_on_error(src) {
-      return pts(/\.on\(\s*['"]error['"]/i.test(src), 10, "map_on_error", "map.on('error') handler");
+      return pts(/\.on\(\s*['"]error['"]/i.test(src), w(12, "hard"), "map_on_error", "map.on('error') handler");
+    },
+
+    async_catch(src) {
+      return pts(/\.catch\s*\(|try\s*\{[\s\S]*await/i.test(src), w(12, "hard"), "async_catch", "try/await or .catch on async");
     },
 
     ui_style_buttons(src) {
@@ -466,12 +603,13 @@
       // Penalize unused split-pane CSS pasted into every challenge
       const hasSplitCss = /\.split\s*\{[^}]*grid-template-columns/i.test(src);
       const usesSplit = /class\s*=\s*['"][^'"]*\bsplit\b/i.test(src);
-      if (!hasSplitCss) return pts(true, 8, "no_cookiecutter_split_css", "OK");
-      return pts(usesSplit, 8, "no_cookiecutter_split_css", usesSplit ? "Split layout used" : "Unused .split CSS boilerplate — remove cookie-cutter paste");
-    },
-
-    async_catch(src) {
-      return pts(/\.catch\s*\(|try\s*\{[\s\S]*await/i.test(src), 10, "async_catch", "try/await or .catch on async");
+      if (!hasSplitCss) return pts(true, w(8, "hard"), "no_cookiecutter_split_css", "OK");
+      return pts(
+        usesSplit,
+        w(8, "hard"),
+        "no_cookiecutter_split_css",
+        usesSplit ? "Split layout used" : "Unused .split CSS boilerplate — remove cookie-cutter paste"
+      );
     },
 
     admin_live_fetch_process(src) {
@@ -542,6 +680,13 @@
   }
 
   function letter(pct) {
+    if (isHarsh()) {
+      if (pct >= 98) return "A";
+      if (pct >= 90) return "B";
+      if (pct >= 80) return "C";
+      if (pct >= 70) return "D";
+      return "F";
+    }
     if (pct >= 95) return "A";
     if (pct >= 88) return "B";
     if (pct >= 78) return "C";
@@ -549,19 +694,79 @@
     return "F";
   }
 
+  /** In harsh mode, append universal rigor checks the catalog often omits. */
+  function expandChecks(src, checkIds) {
+    const ids = checkIds.slice();
+    if (!isHarsh()) return ids;
+
+    const webSdk =
+      (/maptilersdk|maptiler-sdk-js|@maptiler\/sdk/i.test(src) || /geosplats|Cesium\.|L\.map/i.test(src)) &&
+      /<html|<!DOCTYPE|<script/i.test(src);
+
+    const extras = [];
+    if (webSdk) {
+      extras.push(
+        "needs_validate_key",
+        "loads_config_js",
+        "assigns_sdk_apikey",
+        "map_on_error",
+        "no_comment_bloat",
+        "no_stub_placeholder",
+        "no_template_leak",
+        "no_legacy_style"
+      );
+      if (/await |geocoding\.|elevation\.|coordinates\.|staticMaps\./i.test(src)) {
+        extras.push("async_catch");
+      }
+      if (!ids.some((id) => id.startsWith("min_substance"))) {
+        extras.push("min_substance_web");
+      }
+    }
+
+    // Native / admin sketches still get stub + substance pressure
+    if (
+      /import\s+SwiftUI|import\s+MapTilerSDK|MTConfig\.shared|com\.maptiler\.maptilersdk|maplibre_gl\/maplibre_gl|@maptiler\/react-native|service\.maptiler\.com/i.test(
+        src
+      )
+    ) {
+      extras.push("no_stub_placeholder", "min_substance_insane");
+    }
+
+    for (const e of extras) {
+      if (!ids.includes(e) && CHECKS[e]) ids.push(e);
+    }
+    return ids;
+  }
+
   function grade(source, checkIds) {
     const raw = String(source || "");
     const src = stripNoise(raw);
+    const ids = expandChecks(raw, checkIds || []);
     const results = [];
-    for (const id of checkIds) {
+    for (const id of ids) {
       const fn = CHECKS[id];
       if (!fn) {
         results.push(pts(false, 8, id, "Unknown check — treated as fail"));
         continue;
       }
       try {
-        // Pass both: most checkers use stripped; stub checker uses raw via closure... 
-        // Prefer stripped for all so commented-out "solutions" don't count.
+        if (id === "no_comment_bloat") {
+          const ratio = commentRatio(raw);
+          const limit = isHarsh() ? 0.35 : 0.55;
+          const ok = ratio <= limit;
+          results.push(
+            pts(
+              ok,
+              w(12, "hard"),
+              "no_comment_bloat",
+              ok
+                ? `Comment ratio ${(ratio * 100).toFixed(0)}%`
+                : `Comment bloat ${(ratio * 100).toFixed(0)}% (max ${Math.round(limit * 100)}%) — write real code`
+            )
+          );
+          continue;
+        }
+        // Prefer stripped so commented-out "solutions" don't count.
         results.push(fn(src));
       } catch (err) {
         results.push(pts(false, 8, id, "Checker error: " + (err.message || err)));
@@ -570,8 +775,24 @@
     const maxScore = results.reduce((s, r) => s + r.weight, 0);
     const score = results.reduce((s, r) => s + r.points, 0);
     const pct = maxScore ? Math.round((score / maxScore) * 100) : 0;
-    return { checks: results, score, maxScore, pct, letter: letter(pct) };
+    return {
+      checks: results,
+      score,
+      maxScore,
+      pct,
+      letter: letter(pct),
+      mode: MODE,
+    };
   }
 
-  global.MapTilerSkillChecks = { grade, CHECKS, letter, PINNED_SDK, PINNED_WEATHER };
+  global.MapTilerSkillChecks = {
+    grade,
+    CHECKS,
+    letter,
+    setMode,
+    getMode,
+    THRESHOLDS,
+    PINNED_SDK,
+    PINNED_WEATHER,
+  };
 })(typeof window !== "undefined" ? window : globalThis);

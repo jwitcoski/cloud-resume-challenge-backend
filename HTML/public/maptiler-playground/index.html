@@ -173,6 +173,7 @@
         <a href="https://github.com/maptiler/maptiler-skills" target="_blank" rel="noopener">maptiler-skills</a>.
         <strong>Demo:</strong> Grade example pack from <code>solutions/</code>.
         <strong>Your run:</strong> Copy ALL → agent writes files → upload them here (or paste one challenge).
+        Leave <strong>Harsh grading</strong> on while training the agent (stricter bars + extra rigor checks).
         Demos: <a href="./earth-lab.html">Earth Lab</a> · <a href="./pin-quest.html">Pin Quest</a>
       </p>
     </div>
@@ -194,15 +195,17 @@
         <button type="button" class="btn" id="btnGradeAll" title="Loads the checked-in example pack under solutions/">Grade example solutions/</button>
       </div>
       <div class="status" id="batchStatus" style="margin-bottom:10px">
-        Example pack is demo output only. To score your own agent, upload files below (or paste one challenge).
+        Example pack is demo output only. Upload grades <em>only</em> the files you select (replaces the scoreboard — it will not pull in <code>solutions/</code> for missing ids).
       </div>
       <div style="margin-bottom:12px;padding:10px;border:1px dashed var(--line);border-radius:8px">
         <label for="uploadPack" style="margin:0 0 6px;display:block">Upload your solutions</label>
         <input id="uploadPack" type="file" multiple accept=".html,.js,.mjs,.ts,.tsx,.jsx,.swift,.kt,.dart,.json,.txt" style="font-size:0.78rem;width:100%" />
         <p class="status" style="margin:6px 0 8px">
           Select <code>C1.html</code> + <code>C1.meta.json</code> (etc.). Names must start with the challenge id.
+          Partial uploads grade only those ids; other challenges stay ungraded.
         </p>
         <button type="button" class="btn primary" id="btnGradeUpload" style="width:100%">Grade uploaded files</button>
+        <button type="button" class="btn" id="btnClearBoard" style="width:100%;margin-top:6px" title="Wipe localStorage scoreboard">Clear scoreboard</button>
       </div>
       <div id="challengeList"></div>
     </aside>
@@ -251,6 +254,10 @@
         <div class="toggle-row">
           <input type="checkbox" id="metaSkill" checked />
           <label for="metaSkill" style="margin:0;text-transform:none;letter-spacing:0">maptiler-skills loaded for this run</label>
+        </div>
+        <div class="toggle-row">
+          <input type="checkbox" id="gradeHarsh" checked />
+          <label for="gradeHarsh" style="margin:0;text-transform:none;letter-spacing:0" title="Higher substance bars, stricter letter grades, extra rigor checks auto-added">Harsh grading (training)</label>
         </div>
         <div class="row3">
           <div>
@@ -358,9 +365,18 @@
     /** @type {Record<string, { source: string, ext?: string }>} */
     let pastedByChallenge = {};
 
+    function applyGradeMode() {
+      const harsh = document.getElementById("gradeHarsh")?.checked !== false;
+      if (globalThis.MapTilerSkillChecks?.setMode) {
+        MapTilerSkillChecks.setMode(harsh ? "harsh" : "normal");
+      }
+      return harsh ? "harsh" : "normal";
+    }
+
     async function boot() {
       const res = await fetch("./challenges/catalog.json");
       catalog = await res.json();
+      applyGradeMode();
       renderList();
       renderBoard();
       updateTierPcts();
@@ -374,10 +390,13 @@
     }
 
     function bestByChallenge() {
+      // Latest run per challenge (runs are stored newest-first). Do not keep
+      // "best ever" across packs — that made example-pack scores stick after a
+      // partial upload.
       const runs = MapTilerHarness.loadRuns();
       const best = {};
       for (const r of runs) {
-        if (!best[r.challengeId] || r.pct > best[r.challengeId].pct) best[r.challengeId] = r;
+        if (!best[r.challengeId]) best[r.challengeId] = r;
       }
       return best;
     }
@@ -493,6 +512,7 @@
         return;
       }
       rememberPasteForSelected(source, null);
+      applyGradeMode();
       let meta;
       try {
         meta = collectMeta();
@@ -731,21 +751,28 @@
 
     /**
      * @param {Record<string, { source: string, ext?: string, meta?: object|null }>} pack
-     * @param {{ label: string, sourceTag: string }} opts
+     * @param {{ label: string, sourceTag: string, replace?: boolean }} opts
+     *   replace (default true): wipe prior scoreboard so missing ids stay ungraded
+     *   instead of showing leftover example-pack / older upload scores.
      */
     function gradePack(pack, opts) {
       if (!catalog) return;
+      applyGradeMode();
       const status = document.getElementById("batchStatus");
       const formMeta = defaultBatchMeta(opts.label);
-      const runs = MapTilerHarness.loadRuns();
+      const replace = opts.replace !== false;
+      const runs = replace ? [] : MapTilerHarness.loadRuns().slice();
       let ok = 0;
       let missing = 0;
       const summary = [];
+      const missingIds = [];
+      const mode = MapTilerSkillChecks.getMode?.() || "harsh";
 
       for (const c of catalog.challenges) {
         const file = pack[c.id];
         if (!file || !file.source) {
           missing++;
+          missingIds.push(c.id);
           summary.push(`${c.id}: missing`);
           continue;
         }
@@ -787,10 +814,17 @@
       renderList();
       updateTierPcts();
       renderImprovement();
+      const missNote =
+        missing > 0
+          ? ` Missing (not graded): ${missingIds.slice(0, 12).join(", ")}${missingIds.length > 12 ? "…" : ""}.`
+          : "";
       status.textContent =
-        `${opts.label}: ${ok} graded, ${missing} missing. ` +
-        summary.slice(0, 8).join(" · ") +
-        (summary.length > 8 ? "…" : "");
+        `[${mode}] ${opts.label}: ${ok} graded, ${missing} missing.` +
+        missNote +
+        (replace ? " Scoreboard replaced with this pack only." : "") +
+        " " +
+        summary.filter((s) => !s.endsWith("missing")).slice(0, 8).join(" · ") +
+        (ok > 8 ? "…" : "");
     }
 
     async function gradeAllFromSolutions() {
@@ -921,6 +955,22 @@
     });
     document.getElementById("btnGradeAll").addEventListener("click", () => gradeAllFromSolutions());
     document.getElementById("btnGradeUpload").addEventListener("click", () => gradeUploadedFiles());
+    document.getElementById("gradeHarsh").addEventListener("change", () => {
+      const mode = applyGradeMode();
+      document.getElementById("batchStatus").textContent =
+        `Grading mode → ${mode}. Re-run Grade uploaded / example pack to refresh scores.`;
+    });
+    document.getElementById("btnClearBoard").addEventListener("click", () => {
+      MapTilerHarness.clearRuns();
+      uploadedPack = {};
+      pastedByChallenge = {};
+      renderBoard();
+      renderList();
+      updateTierPcts();
+      renderImprovement();
+      document.getElementById("batchStatus").textContent =
+        "Scoreboard cleared. Upload files or grade the example pack.";
+    });
     document.getElementById("uploadOne").addEventListener("change", async (e) => {
       const file = e.target.files && e.target.files[0];
       if (!file) return;

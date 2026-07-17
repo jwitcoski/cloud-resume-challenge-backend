@@ -320,7 +320,7 @@ Use pinned versions from `versions.md` — never `latest` or obsolete builds.
 Other commonly-used pins:
 - **Leaflet plugin**: `https://cdn.maptiler.com/maptiler-leaflet-maptilersdk/v4.1.0/maptiler-leaflet-maptilersdk.js`
 - **ol-mapbox-style**: `https://cdn.jsdelivr.net/npm/ol-mapbox-style@13.4.1/dist/olms.js`
-- **CesiumJS**: `1.141.0` (script + `/Widgets/widgets.css`)
+- **CesiumJS**: `1.141.0` via **jsDelivr/unpkg** (`cdn.jsdelivr.net/npm/cesium@1.141.0/Build/Cesium/…`) — set `window.CESIUM_BASE_URL` first. Do **not** use `cesium.com/downloads/.../1.141.0` (404 / blank page).
 
 **Browser ESM**: when using `<script type="module">` or an import map, you **MUST** target the `.mjs` build (`maptiler-sdk.mjs`), not the UMD build — named ES imports from UMD trigger console errors.
 

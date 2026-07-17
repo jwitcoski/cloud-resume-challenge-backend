@@ -10,6 +10,24 @@
       do: "Generate only CSS used by this challenge. Do not copy a shared .split pane stylesheet into every file.",
       why: "Unused boilerplate pads file size and signals the agent is cloning a shell instead of solving the prompt.",
     },
+    loads_config_js: {
+      theme: "API key wiring",
+      skill: "Authentication",
+      do: "Include <script src=\"../admin-boundaries/js/config.js\"> so window.MAPTILER_API_KEY is available.",
+      why: "Browser demos without the playground config path fail silently for graders and users.",
+    },
+    assigns_sdk_apikey: {
+      theme: "API key wiring",
+      skill: "SDK JS config",
+      do: "Assign maptilersdk.config.apiKey before constructing Map.",
+      why: "Missing config.apiKey is the #1 empty-map failure.",
+    },
+    no_comment_bloat: {
+      theme: "Thin solutions",
+      skill: "General / code hygiene",
+      do: "Prefer executable code over long comment essays; comments should not dominate the file.",
+      why: "Harsh mode rejects comment-padded stubs that look long but do nothing.",
+    },
     min_substance_web: {
       theme: "Thin solutions",
       skill: "SDK JS basics",
@@ -33,6 +51,24 @@
       skill: "Authentication",
       do: "Guard missing window.MAPTILER_API_KEY / env keys before constructing the map; throw or show a clear UI error.",
       why: "Skill and Cloud docs assume keys are configured; silent empty maps hide setup failures.",
+    },
+    cesium_cdn_loads: {
+      theme: "Cesium CDN must actually load",
+      skill: "Cesium",
+      do: "Use jsDelivr or unpkg cesium@1.141.0 — not cesium.com/downloads/.../1.141.0 (that path 404s and yields a blank page).",
+      why: "Pinning a version that never loads still looked like a pass under soft keyword checks.",
+    },
+    cesium_base_url: {
+      theme: "Cesium static assets",
+      skill: "Cesium",
+      do: "Set window.CESIUM_BASE_URL to the CDN Build/Cesium/ folder before loading Cesium.js.",
+      why: "Without BASE_URL, workers/Assets/Widgets fail and the globe stays blank.",
+    },
+    cesium_guards_load: {
+      theme: "Visible Cesium failure UI",
+      skill: "Cesium",
+      do: "Detect missing Cesium global / init errors and show an on-page error, not a silent black div.",
+      why: "Blank pages hide CDN and key failures from both users and agents.",
     },
     needs_full_viewport: {
       theme: "Layout completeness",

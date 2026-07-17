@@ -416,9 +416,12 @@
       ],
       "maxScore": 150,
       "mode": "static",
-      "prompt": "CesiumJS viewer with MapTiler imagery, Cesium 1.141.0 + Widgets CSS. Do not paste MapLibre APIs into Cesium.",
+      "prompt": "CesiumJS viewer with MapTiler imagery + terrain, Cesium 1.141.0 + Widgets CSS. Load from a working CDN (jsDelivr/unpkg cesium@1.141.0) — do not use cesium.com/downloads/.../1.141.0 (404). Set window.CESIUM_BASE_URL before Cesium.js. Do not paste MapLibre APIs into Cesium.",
       "checks": [
         "pinned_cesium",
+        "cesium_cdn_loads",
+        "cesium_base_url",
+        "cesium_guards_load",
         "needs_cesium",
         "cesium_widgets_css",
         "cesium_maptiler_imagery",
