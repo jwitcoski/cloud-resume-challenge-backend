@@ -1,56 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link href="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.css" rel="stylesheet" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>X4 — Route Profile</title>
   <script src="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.umd.min.js"></script>
-  <script src="../admin-boundaries/js/config.js"></script>
-
-  <title>X4 Route Profile</title>
-  <style>    html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
-    #map { position: absolute; inset: 0; }
-    .panel {
+  <link href="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.css" rel="stylesheet" />
+  <style>
+    html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
+    #map { position: absolute; inset: 0; width: 100%; height: 100%; }
+    #stats {
       position: absolute; z-index: 2; top: 12px; left: 12px;
-      background: rgba(255,255,255,0.92); padding: 10px 12px; border-radius: 8px;
-      max-width: min(420px, 90vw); box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+      background: #fff; padding: 12px 14px; border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.12); font-size: 14px;
     }
-    .panel button { margin: 2px 4px 2px 0; cursor: pointer; }
-    .panel input { width: 100%; box-sizing: border-box; margin: 4px 0; }
-    .split { display: grid; grid-template-columns: 1fr 1fr; height: 100vh; }
-    .split > div { position: relative; min-height: 0; }
-    .split .label { position: absolute; z-index: 2; top: 8px; left: 8px;
-      background: rgba(0,0,0,0.7); color: #fff; padding: 4px 8px; font-size: 12px; }
-</style>
+  </style>
 </head>
 <body>
-  <div class="panel" id="stats">Sampling elevation along LineString…</div>
+  <div id="stats">
+    <div><strong>Route elevation profile</strong></div>
+    <div>Min: <span id="min">—</span> m</div>
+    <div>Max: <span id="max">—</span> m</div>
+    <div>Gain: <span id="gain">—</span> m</div>
+    <div id="msg" style="margin-top:6px;color:#666;font-size:12px;">Sampling…</div>
+  </div>
   <div id="map"></div>
+  <script src="../admin-boundaries/js/config.js"></script>
   <script>
-    maptilersdk.config.apiKey = window.MAPTILER_API_KEY;
-    // Alps hiking-ish LineString [lng, lat]
+    const key = window.MAPTILER_API_KEY;
+    if (!key) {
+      throw new Error('Missing MAPTILER_API_KEY — set it in ../admin-boundaries/js/config.js');
+    }
+    maptilersdk.config.apiKey = key;
+
+    // Alpine ridge walk — densify between anchors
+    const anchors = [
+      [7.62, 45.95],
+      [7.64, 45.96],
+      [7.66, 45.97],
+      [7.68, 45.98],
+      [7.70, 45.99],
+      [7.72, 46.00],
+    ];
+
+    function densify(line, samplesPerSeg) {
+      const out = [];
+      for (let i = 0; i < line.length - 1; i++) {
+        const [lng0, lat0] = line[i];
+        const [lng1, lat1] = line[i + 1];
+        for (let s = 0; s < samplesPerSeg; s++) {
+          const t = s / samplesPerSeg;
+          out.push([lng0 + (lng1 - lng0) * t, lat0 + (lat1 - lat0) * t]);
+        }
+      }
+      out.push(line[line.length - 1]);
+      return out;
+    }
+
+    const coordinates = densify(anchors, 8); // 41 vertices
+
     const route = {
       type: 'Feature',
       properties: {},
-      geometry: {
-        type: 'LineString',
-        coordinates: [
-          [8.50, 46.50],
-          [8.55, 46.52],
-          [8.60, 46.55],
-          [8.65, 46.56],
-          [8.70, 46.58],
-        ],
-      },
+      geometry: { type: 'LineString', coordinates },
     };
 
     const map = new maptilersdk.Map({
       container: 'map',
       style: maptilersdk.MapStyle.OUTDOOR,
-      center: [8.60, 46.55],
-      zoom: 11,
-      terrain: true,
+      center: [7.66, 45.97],
+      zoom: 12,
       pitch: 50,
+      terrain: true,
+      navigationControl: true,
     });
 
     map.on('load', async () => {
@@ -59,30 +81,44 @@
         id: 'route-line',
         type: 'line',
         source: 'route',
-        paint: { 'line-color': '#dc2626', 'line-width': 4 },
+        paint: { 'line-color': '#e74c3c', 'line-width': 4 },
       });
 
-      let elevs = [];
-      if (maptilersdk.elevation.fromLineString) {
-        const sampled = await maptilersdk.elevation.fromLineString(route.geometry);
-        elevs = (sampled || []).map((p) => Array.isArray(p) ? p[2] : p.elevation).filter((n) => n != null);
-      } else {
-        for (const c of route.geometry.coordinates) {
-          const pt = await maptilersdk.elevation.at(c);
-          elevs.push(Array.isArray(pt) ? pt[2] : pt.elevation);
+      const msg = document.getElementById('msg');
+      try {
+        let elevations = [];
+        if (typeof maptilersdk.elevation.fromLineString === 'function') {
+          const sampled = await maptilersdk.elevation.fromLineString(coordinates, {
+            samples: coordinates.length,
+          });
+          elevations = (sampled || []).map((p) => (Array.isArray(p) ? p[2] : p));
+        } else {
+          const batch = await maptilersdk.elevation.batch(coordinates);
+          elevations = (batch || []).map((p) => (Array.isArray(p) ? p[2] : p));
         }
-      }
 
-      const min = Math.min(...elevs);
-      const max = Math.max(...elevs);
-      let gain = 0;
-      for (let i = 1; i < elevs.length; i++) {
-        const d = elevs[i] - elevs[i - 1];
-        if (d > 0) gain += d;
+        const nums = elevations.filter((n) => typeof n === 'number' && !Number.isNaN(n));
+        if (!nums.length) throw new Error('No elevation samples returned');
+
+        let min = nums[0];
+        let max = nums[0];
+        let gain = 0;
+        for (let i = 0; i < nums.length; i++) {
+          min = Math.min(min, nums[i]);
+          max = Math.max(max, nums[i]);
+          if (i > 0) {
+            const d = nums[i] - nums[i - 1];
+            if (d > 0) gain += d;
+          }
+        }
+
+        document.getElementById('min').textContent = min.toFixed(1);
+        document.getElementById('max').textContent = max.toFixed(1);
+        document.getElementById('gain').textContent = gain.toFixed(1);
+        msg.textContent = nums.length + ' samples along LineString';
+      } catch (err) {
+        msg.textContent = 'Elevation error: ' + (err.message || err);
       }
-      document.getElementById('stats').innerHTML =
-        '<strong>Route profile</strong><br/>min: ' + min.toFixed(0) + ' m · max: ' +
-        max.toFixed(0) + ' m · gain: ' + gain.toFixed(0) + ' m';
     });
   </script>
 </body>

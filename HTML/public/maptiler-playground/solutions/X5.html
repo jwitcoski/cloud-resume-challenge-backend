@@ -1,71 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link href="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.css" rel="stylesheet" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>X5 — Search Then Reverse</title>
   <script src="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.umd.min.js"></script>
-  <script src="../admin-boundaries/js/config.js"></script>
-
-  <title>X5 Search Then Reverse</title>
-  <style>    html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
-    #map { position: absolute; inset: 0; }
-    .panel {
+  <link href="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.css" rel="stylesheet" />
+  <style>
+    html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
+    #map { position: absolute; inset: 0; width: 100%; height: 100%; }
+    #ui {
       position: absolute; z-index: 2; top: 12px; left: 12px;
-      background: rgba(255,255,255,0.92); padding: 10px 12px; border-radius: 8px;
-      max-width: min(420px, 90vw); box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+      background: #fff; padding: 10px; border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.14); width: 300px;
     }
-    .panel button { margin: 2px 4px 2px 0; cursor: pointer; }
-    .panel input { width: 100%; box-sizing: border-box; margin: 4px 0; }
-    .split { display: grid; grid-template-columns: 1fr 1fr; height: 100vh; }
-    .split > div { position: relative; min-height: 0; }
-    .split .label { position: absolute; z-index: 2; top: 8px; left: 8px;
-      background: rgba(0,0,0,0.7); color: #fff; padding: 4px 8px; font-size: 12px; }
-</style>
+    #q { width: 100%; box-sizing: border-box; padding: 8px; margin-bottom: 6px; }
+    #status { font-size: 12px; color: #444; min-height: 2.5em; }
+  </style>
 </head>
 <body>
-  <div class="panel">
-    <input id="q" placeholder="Search place…" value="Empire State Building" />
-    <button id="search">Search</button>
-    <div id="out">Reverse geocode debounced on click</div>
+  <div id="ui">
+    <input id="q" type="search" placeholder="Search (forward geocode)…" />
+    <button id="search" type="button">Search</button>
+    <div id="status">Click map for reverse geocode (debounced).</div>
   </div>
   <div id="map"></div>
+  <script src="../admin-boundaries/js/config.js"></script>
   <script>
-    maptilersdk.config.apiKey = window.MAPTILER_API_KEY;
-    const out = document.getElementById('out');
+    const key = window.MAPTILER_API_KEY;
+    if (!key) {
+      throw new Error('Missing MAPTILER_API_KEY — set it in ../admin-boundaries/js/config.js');
+    }
+    maptilersdk.config.apiKey = key;
+
+    const statusEl = document.getElementById('status');
+    let marker;
+    let reverseTimer = null;
+
     const map = new maptilersdk.Map({
       container: 'map',
       style: maptilersdk.MapStyle.STREETS,
-      center: [-74.006, 40.7128],
+      center: [14.4178, 50.1167],
       zoom: 11,
       navigationControl: true,
     });
 
-    document.getElementById('search').addEventListener('click', async () => {
-      const q = document.getElementById('q').value;
-      const res = await maptilersdk.geocoding.forward(q, { limit: 1 });
-      const f = res.features && res.features[0];
-      if (!f) { out.textContent = 'No results'; return; }
-      const [lng, lat] = f.geometry.coordinates;
-      map.flyTo({ center: [lng, lat], zoom: 15 });
-      out.textContent = 'Found: ' + (f.place_name || f.text);
+    function placeMarker(lngLat, label) {
+      if (!marker) marker = new maptilersdk.Marker({ color: '#8e44ad' }).addTo(map);
+      marker.setLngLat(lngLat);
+      if (label) {
+        marker.setPopup(new maptilersdk.Popup().setText(label)).togglePopup();
+      }
+    }
+
+    async function doForward() {
+      const query = document.getElementById('q').value.trim();
+      if (!query) return;
+      statusEl.textContent = 'Forward geocoding…';
+      try {
+        const res = await maptilersdk.geocoding.forward(query, { limit: 1 });
+        const f = res?.features?.[0];
+        if (!f) {
+          statusEl.textContent = 'No matches.';
+          return;
+        }
+        const [lng, lat] = f.geometry.coordinates;
+        const label = f.place_name || f.text || query;
+        placeMarker([lng, lat], label);
+        map.flyTo({ center: [lng, lat], zoom: 14, duration: 1800 });
+        statusEl.textContent = 'Found: ' + label;
+      } catch (err) {
+        statusEl.textContent = 'Forward failed: ' + (err.message || err);
+      }
+    }
+
+    document.getElementById('search').addEventListener('click', doForward);
+    document.getElementById('q').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') doForward();
     });
 
-    let reverseTimer = null;
-    function debounceReverse(lng, lat) {
-      clearTimeout(reverseTimer);
+    function debounceReverse(lngLat) {
+      if (reverseTimer) clearTimeout(reverseTimer);
       reverseTimer = setTimeout(async () => {
-        const res = await maptilersdk.geocoding.reverse([lng, lat]);
-        const f = res.features && res.features[0];
-        out.textContent = f
-          ? 'Reverse: ' + (f.place_name || f.text)
-          : 'No reverse result';
+        statusEl.textContent = 'Reverse…';
+        try {
+          const res = await maptilersdk.geocoding.reverse([lngLat.lng, lngLat.lat]);
+          const f = res?.features?.[0];
+          const label = f?.place_name || f?.text || 'Unknown';
+          placeMarker([lngLat.lng, lngLat.lat], label);
+          statusEl.textContent =
+            'Reverse @ [' + lngLat.lng.toFixed(5) + ', ' + lngLat.lat.toFixed(5) + ']: ' + label;
+        } catch (err) {
+          statusEl.textContent = 'Reverse failed: ' + (err.message || err);
+        }
       }, 350);
     }
 
-    map.on('click', (e) => {
-      debounceReverse(e.lngLat.lng, e.lngLat.lat);
-    });
+    map.on('click', (e) => debounceReverse(e.lngLat));
   </script>
 </body>
 </html>

@@ -1,125 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link href="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.css" rel="stylesheet" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>X3 — Store Locator 5k</title>
   <script src="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.umd.min.js"></script>
-  <script src="../admin-boundaries/js/config.js"></script>
-
-  <title>X3 Store Locator 5k</title>
-  <style>    html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
-    #map { position: absolute; inset: 0; }
-    .panel {
+  <link href="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.css" rel="stylesheet" />
+  <style>
+    html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
+    #map { position: absolute; inset: 0; width: 100%; height: 100%; }
+    #controls {
       position: absolute; z-index: 2; top: 12px; left: 12px;
-      background: rgba(255,255,255,0.92); padding: 10px 12px; border-radius: 8px;
-      max-width: min(420px, 90vw); box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+      background: #fff; padding: 10px; border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.12);
     }
-    .panel button { margin: 2px 4px 2px 0; cursor: pointer; }
-    .panel input { width: 100%; box-sizing: border-box; margin: 4px 0; }
-    .split { display: grid; grid-template-columns: 1fr 1fr; height: 100vh; }
-    .split > div { position: relative; min-height: 0; }
-    .split .label { position: absolute; z-index: 2; top: 8px; left: 8px;
-      background: rgba(0,0,0,0.7); color: #fff; padding: 4px 8px; font-size: 12px; }
-</style>
+  </style>
 </head>
 <body>
-  <div class="panel">
-    ~5000 stores ·
-    <button id="togHeat">Toggle heatmap</button>
-    <div id="info">Click a cluster/point</div>
+  <div id="controls">
+    <div>~5000 stores — cluster at low zoom</div>
+    <label><input id="togHeat" type="checkbox" /> Show heatmap</label>
   </div>
   <div id="map"></div>
+  <script src="../admin-boundaries/js/config.js"></script>
   <script>
-    maptilersdk.config.apiKey = window.MAPTILER_API_KEY;
-    const features = [];
+    const key = window.MAPTILER_API_KEY;
+    if (!key) {
+      throw new Error('Missing MAPTILER_API_KEY — set it in ../admin-boundaries/js/config.js');
+    }
+    maptilersdk.config.apiKey = key;
+
+    // Simulate ~5000 store locations across CONUS [lng, lat]
+    const stores = { type: 'FeatureCollection', features: [] };
     for (let i = 0; i < 5000; i++) {
-      const lng = -74.006 + (Math.random() - 0.5) * 0.6;
-      const lat = 40.7128 + (Math.random() - 0.5) * 0.5;
-      features.push({
+      const lng = -124 + Math.random() * 58;
+      const lat = 25 + Math.random() * 24;
+      stores.features.push({
         type: 'Feature',
         properties: { id: i, name: 'Store #' + i },
         geometry: { type: 'Point', coordinates: [lng, lat] },
       });
     }
-    const stores = { type: 'FeatureCollection', features };
-    let heatOn = false;
 
     const map = new maptilersdk.Map({
       container: 'map',
       style: maptilersdk.MapStyle.STREETS,
-      center: [-74.006, 40.7128],
-      zoom: 10,
+      center: [-98.5, 39.8],
+      zoom: 3.5,
+      navigationControl: true,
     });
 
-    map.on('load', async () => {
-      map.addSource('stores', {
-        type: 'geojson',
+    let heatmapOn = false;
+
+    async function addLayers() {
+      if (map.getSource('stores')) return;
+
+      await maptilersdk.helpers.addPoint(map, {
         data: stores,
         cluster: true,
-        clusterMaxZoom: 14,
-        clusterRadius: 50,
+        showLabel: true,
+        pointColor: '#27ae60',
+        pointRadius: 5,
+      });
+
+      map.addSource('stores-heat', {
+        type: 'geojson',
+        data: stores,
       });
       map.addLayer({
-        id: 'clusters',
-        type: 'circle',
-        source: 'stores',
-        filter: ['has', 'point_count'],
+        id: 'stores-heatmap',
+        type: 'heatmap',
+        source: 'stores-heat',
+        layout: { visibility: 'none' },
         paint: {
-          'circle-color': '#2563eb',
-          'circle-radius': ['step', ['get', 'point_count'], 16, 100, 22, 750, 28],
+          'heatmap-weight': 1,
+          'heatmap-intensity': 1.2,
+          'heatmap-radius': 18,
+          'heatmap-opacity': 0.75,
         },
-      });
-      map.addLayer({
-        id: 'cluster-count',
-        type: 'symbol',
-        source: 'stores',
-        filter: ['has', 'point_count'],
-        layout: {
-          'text-field': ['get', 'point_count_abbreviated'],
-          'text-size': 12,
-        },
-      });
-      map.addLayer({
-        id: 'unclustered',
-        type: 'circle',
-        source: 'stores',
-        filter: ['!', ['has', 'point_count']],
-        paint: { 'circle-color': '#ef4444', 'circle-radius': 5 },
       });
 
-      map.on('click', 'unclustered', (e) => {
-        const f = e.features[0];
-        const coords = f.geometry.coordinates.slice();
+      // Popup on unclustered / helper point click
+      map.on('click', (e) => {
+        const feats = map.queryRenderedFeatures(e.point);
+        const hit = feats.find((f) => f.properties && f.properties.name);
+        if (!hit) return;
         new maptilersdk.Popup()
-          .setLngLat(coords)
-          .setHTML('<strong>' + f.properties.name + '</strong><br/>[' +
-            coords[0].toFixed(4) + ', ' + coords[1].toFixed(4) + ']')
+          .setLngLat(hit.geometry.coordinates)
+          .setHTML('<strong>' + hit.properties.name + '</strong>')
           .addTo(map);
-        document.getElementById('info').textContent = f.properties.name;
       });
+    }
 
-      map.on('click', 'clusters', async (e) => {
-        const features = map.queryRenderedFeatures(e.point, { layers: ['clusters'] });
-        const clusterId = features[0].properties.cluster_id;
-        const zoom = await map.getSource('stores').getClusterExpansionZoom(clusterId);
-        map.easeTo({ center: features[0].geometry.coordinates, zoom });
-      });
-    });
+    map.on('load', addLayers);
 
-    document.getElementById('togHeat').addEventListener('click', async () => {
-      heatOn = !heatOn;
-      if (heatOn) {
-        await maptilersdk.helpers.addHeatmap(map, {
-          data: stores,
-          opacity: 0.55,
-          radius: 28,
-        });
-      } else {
-        const style = map.getStyle();
-        (style.layers || []).filter((l) => /heatmap/i.test(l.id) || l.type === 'heatmap')
-          .forEach((l) => { if (map.getLayer(l.id)) map.removeLayer(l.id); });
-      }
+    document.getElementById('togHeat').addEventListener('change', (e) => {
+      heatmapOn = e.target.checked;
+      if (!map.getLayer('stores-heatmap')) return;
+      map.setLayoutProperty(
+        'stores-heatmap',
+        'visibility',
+        heatmapOn ? 'visible' : 'none'
+      );
     });
   </script>
 </body>

@@ -1,34 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link href="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.css" rel="stylesheet" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>X7 — CRS Trap</title>
   <script src="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.umd.min.js"></script>
-  <script src="../admin-boundaries/js/config.js"></script>
-
-  <title>X7 CRS Trap</title>
-  <style>    html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
-    #map { position: absolute; inset: 0; }
-    .panel {
+  <link href="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.css" rel="stylesheet" />
+  <style>
+    html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
+    #map { position: absolute; inset: 0; width: 100%; height: 100%; }
+    #labels {
       position: absolute; z-index: 2; top: 12px; left: 12px;
-      background: rgba(255,255,255,0.92); padding: 10px 12px; border-radius: 8px;
-      max-width: min(420px, 90vw); box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+      background: #fff; padding: 12px 14px; border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.12); font-size: 13px; line-height: 1.45;
     }
-    .panel button { margin: 2px 4px 2px 0; cursor: pointer; }
-    .panel input { width: 100%; box-sizing: border-box; margin: 4px 0; }
-    .split { display: grid; grid-template-columns: 1fr 1fr; height: 100vh; }
-    .split > div { position: relative; min-height: 0; }
-    .split .label { position: absolute; z-index: 2; top: 8px; left: 8px;
-      background: rgba(0,0,0,0.7); color: #fff; padding: 4px 8px; font-size: 12px; }
-</style>
+  </style>
 </head>
 <body>
-  <div class="panel" id="labels">Transforming WGS84 → projected CRS…</div>
+  <div id="labels">
+    <div><strong>WGS84 / EPSG:4326</strong></div>
+    <div id="wgs84">—</div>
+    <div style="margin-top:8px;"><strong>Web Mercator / EPSG:3857</strong></div>
+    <div id="merc">—</div>
+    <div id="msg" style="margin-top:8px;color:#666;font-size:12px;">Transforming…</div>
+  </div>
   <div id="map"></div>
+  <script src="../admin-boundaries/js/config.js"></script>
   <script>
-    maptilersdk.config.apiKey = window.MAPTILER_API_KEY;
-    // Prague — keep [lng, lat] for map APIs
+    const key = window.MAPTILER_API_KEY;
+    if (!key) {
+      throw new Error('Missing MAPTILER_API_KEY — set it in ../admin-boundaries/js/config.js');
+    }
+    maptilersdk.config.apiKey = key;
+
+    // Prague — keep [lng, lat] for all map APIs
     const wgs84 = [14.4178, 50.1167];
 
     const map = new maptilersdk.Map({
@@ -36,33 +41,46 @@
       style: maptilersdk.MapStyle.STREETS,
       center: wgs84,
       zoom: 12,
+      navigationControl: true,
     });
 
+    document.getElementById('wgs84').textContent =
+      'lng=' + wgs84[0] + ', lat=' + wgs84[1] + ' (EPSG:4326)';
+
     map.on('load', async () => {
-      new maptilersdk.Marker({ color: '#2563eb' })
+      new maptilersdk.Marker({ color: '#16a085' })
         .setLngLat(wgs84)
-        .setPopup(new maptilersdk.Popup().setHTML(
-          '<strong>WGS84</strong><br/>[' + wgs84[0] + ', ' + wgs84[1] + ']'
-        ))
+        .setPopup(new maptilersdk.Popup().setText('WGS84 point'))
         .addTo(map);
 
-      // Transform via SDK coordinates module (EPSG:4326 → EPSG:3857)
-      const transformed = await maptilersdk.coordinates.transform(wgs84, {
-        sourceCrs: 4326,
-        targetCrs: 3857,
-      });
+      const msg = document.getElementById('msg');
+      try {
+        const transformed = await maptilersdk.coordinates.transform(wgs84, {
+          sourceCrs: '4326',
+          targetCrs: '3857',
+        });
 
-      let projectedLabel = JSON.stringify(transformed);
-      if (transformed && transformed.results && transformed.results[0]) {
-        const r = transformed.results[0];
-        projectedLabel = '[' + r.x + ', ' + r.y + ']';
-      } else if (Array.isArray(transformed)) {
-        projectedLabel = '[' + transformed.join(', ') + ']';
+        // Response shapes vary — normalize for display
+        let x, y;
+        if (Array.isArray(transformed)) {
+          x = transformed[0];
+          y = transformed[1];
+        } else if (transformed?.results?.[0]) {
+          const r = transformed.results[0];
+          x = r.x ?? r[0];
+          y = r.y ?? r[1];
+        } else if (transformed?.x != null) {
+          x = transformed.x;
+          y = transformed.y;
+        }
+
+        document.getElementById('merc').textContent =
+          'x=' + Number(x).toFixed(2) + ', y=' + Number(y).toFixed(2) + ' (EPSG:3857)';
+        msg.textContent = 'Transformed via maptilersdk.coordinates.transform';
+      } catch (err) {
+        msg.textContent = 'Transform failed: ' + (err.message || err);
+        document.getElementById('merc').textContent = 'error';
       }
-
-      document.getElementById('labels').innerHTML =
-        '<strong>WGS84 (EPSG:4326)</strong> [lng,lat]: [' + wgs84[0] + ', ' + wgs84[1] + ']<br/>' +
-        '<strong>Web Mercator (EPSG:3857)</strong>: ' + projectedLabel;
     });
   </script>
 </body>

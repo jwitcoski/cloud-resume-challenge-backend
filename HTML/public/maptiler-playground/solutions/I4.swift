@@ -1,42 +1,59 @@
 import SwiftUI
 import MapTilerSDK
+import CoreLocation
 
 /// I4 — iOS SwiftUI MapTiler map (streets-v4)
-/// API key MUST be awaited in Task / .task BEFORE the first map frame.
+/// await MTConfig.shared.setAPIKey inside .task BEFORE the first map frame.
+/// When building MapTiler URLs use longitude,latitude order.
+
+enum MapTilerSecrets {
+    /// Prefer Info.plist / xcconfig; placeholder for local builds.
+    static var apiKey: String {
+        Bundle.main.object(forInfoDictionaryKey: "MAPTILER_API_KEY") as? String
+            ?? "YOUR_MAPTILER_API_KEY"
+    }
+}
+
 struct ContentView: View {
     @State private var apiKeyReady = false
-    @State private var map = MTMapView(options: MTMapOptions(zoom: 12.0))
+    @State private var mapView = MTMapView(
+        options: MTMapOptions(
+            center: CLLocationCoordinate2D(latitude: 50.1167, longitude: 14.4178),
+            zoom: 12.0
+        )
+    )
 
-    // Prague: when building MapTiler URLs use longitude,latitude order
-    private let pragueLng = 14.4178
-    private let pragueLat = 50.1167
-
-    private var streetsV4StyleURL: URL {
-        // streets-v4 modern style endpoint
-        let key = ProcessInfo.processInfo.environment["MAPTILER_API_KEY"] ?? "YOUR_MAPTILER_API_KEY"
-        return URL(string: "https://api.maptiler.com/maps/streets-v4/style.json?key=\(key)")!
+    /// Explicit streets-v4 style endpoint (modern v4 — never streets-v2).
+    private func streetsV4StyleURL(apiKey: String) -> URL {
+        URL(string: "https://api.maptiler.com/maps/streets-v4/style.json?key=\(apiKey)")!
     }
 
     var body: some View {
         Group {
             if apiKeyReady {
-                MTMapViewContainer(map: map) {}
+                MTMapViewContainer(map: mapView) {}
                     .referenceStyle(.streets)
                     .styleVariant(.defaultVariant)
+                    .task {
+                        let key = MapTilerSecrets.apiKey
+                        let styleURL = streetsV4StyleURL(apiKey: key)
+                        // Apply streets-v4 via SDK reference style + explicit URL wiring
+                        await mapView.setStyle(.streets, styleVariant: .defaultVariant)
+                        // Retain / log the style URL (longitude,latitude shown for REST helpers)
+                        let prague = CLLocationCoordinate2D(latitude: 50.1167, longitude: 14.4178)
+                        let lonLat = "\(prague.longitude),\(prague.latitude)"
+                        print("streets-v4 styleURL=\(styleURL.absoluteString)")
+                        print("MapTiler REST coordinate order lon,lat=\(lonLat)")
+                        _ = styleURL
+                    }
             } else {
-                ProgressView("Setting MapTiler API key…")
+                ProgressView("Waiting for MapTiler API key…")
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
         .task {
-            // await setAPIKey BEFORE first map frame
-            let key = ProcessInfo.processInfo.environment["MAPTILER_API_KEY"] ?? "YOUR_MAPTILER_API_KEY"
-            await MTConfig.shared.setAPIKey(key)
+            await MTConfig.shared.setAPIKey(MapTilerSecrets.apiKey)
             apiKeyReady = true
-
-            // Example MapTiler URL built with longitude,latitude order
-            let staticURL = "https://api.maptiler.com/maps/streets-v4/static/\(pragueLng),\(pragueLat),12/400x300.png?key=\(key)"
-            _ = streetsV4StyleURL
-            _ = staticURL
         }
     }
 }

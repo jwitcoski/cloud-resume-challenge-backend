@@ -1,89 +1,130 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link href="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.css" rel="stylesheet" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>X1 — Stacked World</title>
   <script src="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.umd.min.js"></script>
-  <script src="../admin-boundaries/js/config.js"></script>
-
-  <!-- @maptiler/weather v3.1.1 -->
+  <link href="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.css" rel="stylesheet" />
   <script src="https://cdn.maptiler.com/maptiler-weather/3.1.1/maptiler-weather.umd.min.js"></script>
-  <title>X1 Stacked World</title>
-  <style>    html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
-    #map { position: absolute; inset: 0; }
-    .panel {
+  <style>
+    html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
+    #map { position: absolute; inset: 0; width: 100%; height: 100%; }
+    #bar {
       position: absolute; z-index: 2; top: 12px; left: 12px;
-      background: rgba(255,255,255,0.92); padding: 10px 12px; border-radius: 8px;
-      max-width: min(420px, 90vw); box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+      display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+      background: rgba(0,0,0,.65); color: #fff; padding: 10px; border-radius: 8px;
     }
-    .panel button { margin: 2px 4px 2px 0; cursor: pointer; }
-    .panel input { width: 100%; box-sizing: border-box; margin: 4px 0; }
-    .split { display: grid; grid-template-columns: 1fr 1fr; height: 100vh; }
-    .split > div { position: relative; min-height: 0; }
-    .split .label { position: absolute; z-index: 2; top: 8px; left: 8px;
-      background: rgba(0,0,0,0.7); color: #fff; padding: 4px 8px; font-size: 12px; }
-</style>
+    #bar button, #bar input { cursor: pointer; }
+    #windReadout { font-size: 12px; min-width: 140px; }
+  </style>
 </head>
 <body>
-  <div class="panel">
-    Globe + terrain + wind ·
-    <button id="restyle">Toggle style</button>
+  <div id="bar">
+    <button id="flyAlps" type="button">Fly to Alps</button>
+    <button id="styleSat" type="button">Satellite</button>
+    <button id="styleBackdrop" type="button">Backdrop</button>
+    <label>Wind opacity <input id="opacity" type="range" min="0" max="100" value="80" /></label>
+    <button id="play" type="button">Animate wind</button>
+    <span id="windReadout">Wind: —</span>
   </div>
   <div id="map"></div>
+  <script src="../admin-boundaries/js/config.js"></script>
   <script>
-    maptilersdk.config.apiKey = window.MAPTILER_API_KEY;
+    const key = window.MAPTILER_API_KEY;
+    if (!key) {
+      throw new Error('Missing MAPTILER_API_KEY — set it in ../admin-boundaries/js/config.js');
+    }
+    maptilersdk.config.apiKey = key;
+
     let weatherLayer = null;
-    let useSatellite = true;
+    let animating = false;
 
     const map = new maptilersdk.Map({
       container: 'map',
       style: maptilersdk.MapStyle.SATELLITE,
-      center: [0, 20],
-      zoom: 1.8,
-      pitch: 45,
       projection: 'globe',
       halo: true,
       space: true,
       terrain: true,
       terrainExaggeration: 2,
+      center: [0, 20],
+      zoom: 1.8,
+      pitch: 0,
+      navigationControl: true,
+      projectionControl: true,
+      terrainControl: true,
+    });
+
+    map.on('error', (e) => {
+      console.error('Map error', e && e.error);
     });
 
     function enableWeather() {
-      if (weatherLayer && map.getLayer(weatherLayer.id)) {
-        try { map.removeLayer(weatherLayer.id); } catch (e) {}
+      if (weatherLayer) {
+        try { map.removeLayer(weatherLayer.id); } catch (_) { /* ignore */ }
+        weatherLayer = null;
       }
       weatherLayer = new maptilerweather.WindLayer({ id: 'wind-layer' });
       map.addLayer(weatherLayer);
+      const op = Number(document.getElementById('opacity').value) / 100;
+      if (typeof weatherLayer.setOpacity === 'function') {
+        weatherLayer.setOpacity(op);
+      }
     }
 
     function onStyleReady() {
-      map.setTerrain({
-        source: 'terrain',
-        exaggeration: 2,
-      });
-      // terrain may already be on via constructor; re-enable weather after style change
+      map.enableTerrain(2);
       enableWeather();
     }
 
     map.on('load', () => {
-      enableWeather();
+      onStyleReady();
       map.flyTo({
-        center: [8.5981, 46.5583],
+        center: [8.6, 46.5],
         zoom: 10,
-        pitch: 60,
+        pitch: 55,
+        bearing: 20,
         duration: 5000,
       });
     });
+    map.on('style.load', onStyleReady);
 
-    map.on('style.load', () => {
-      onStyleReady();
+    document.getElementById('flyAlps').addEventListener('click', () => {
+      map.flyTo({
+        center: [7.6586, 45.9763],
+        zoom: 12,
+        pitch: 60,
+        duration: 3500,
+      });
     });
 
-    document.getElementById('restyle').addEventListener('click', () => {
-      useSatellite = !useSatellite;
-      map.once('styledata', () => enableWeather());
-      map.setStyle(useSatellite ? maptilersdk.MapStyle.SATELLITE : maptilersdk.MapStyle.OUTDOOR);
+    document.getElementById('styleSat').addEventListener('click', () => {
+      map.setStyle(maptilersdk.MapStyle.SATELLITE);
+    });
+    document.getElementById('styleBackdrop').addEventListener('click', () => {
+      map.setStyle(maptilersdk.MapStyle.BACKDROP);
+    });
+
+    document.getElementById('opacity').addEventListener('input', (e) => {
+      if (weatherLayer && typeof weatherLayer.setOpacity === 'function') {
+        weatherLayer.setOpacity(Number(e.target.value) / 100);
+      }
+    });
+
+    document.getElementById('play').addEventListener('click', () => {
+      if (!weatherLayer) return;
+      animating = !animating;
+      weatherLayer.animateByFactor(animating ? 3600 : 0);
+      document.getElementById('play').textContent = animating ? 'Pause wind' : 'Animate wind';
+    });
+
+    map.on('mousemove', (e) => {
+      if (!weatherLayer) return;
+      const v = weatherLayer.pickAt(e.lngLat.lng, e.lngLat.lat);
+      document.getElementById('windReadout').textContent = v
+        ? 'Wind: ' + v.speedMetersPerSecond.toFixed(1) + ' m/s'
+        : 'Wind: —';
     });
   </script>
 </body>

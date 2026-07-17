@@ -1,65 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>X8 Leaflet Hand-off</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>X8 — Leaflet Hand-off</title>
+  <script src="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.umd.min.js"></script>
   <link href="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <script src="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.umd.min.js"></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="../admin-boundaries/js/config.js"></script>
   <style>
-        html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
-    #map { position: absolute; inset: 0; }
-    .panel {
-      position: absolute; z-index: 2; top: 12px; left: 12px;
-      background: rgba(255,255,255,0.92); padding: 10px 12px; border-radius: 8px;
-      max-width: min(420px, 90vw); box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
+    #wrap { display: grid; grid-template-columns: 1fr 1fr; height: 100vh; }
+    #sdkMap, #leafletMap { width: 100%; height: 100%; }
+    .caption {
+      position: absolute; z-index: 500; top: 8px; left: 8px;
+      background: rgba(255,255,255,.92); padding: 6px 10px; border-radius: 6px;
+      font-size: 12px; pointer-events: none;
     }
-    .panel button { margin: 2px 4px 2px 0; cursor: pointer; }
-    .panel input { width: 100%; box-sizing: border-box; margin: 4px 0; }
-    .split { display: grid; grid-template-columns: 1fr 1fr; height: 100vh; }
-    .split > div { position: relative; min-height: 0; }
-    .split .label { position: absolute; z-index: 2; top: 8px; left: 8px;
-      background: rgba(0,0,0,0.7); color: #fff; padding: 4px 8px; font-size: 12px; }
-
+    .pane { position: relative; }
+    @media (max-width: 800px) {
+      #wrap { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
+    }
   </style>
 </head>
 <body>
-  <div class="split">
-    <div>
-      <div class="label">MapTiler SDK [lng, lat]</div>
-      <div id="map" style="position:absolute;inset:0;"></div>
+  <div id="wrap">
+    <div class="pane">
+      <div class="caption">MapTiler SDK — center [lng, lat]</div>
+      <div id="sdkMap"></div>
     </div>
-    <div>
-      <div class="label">Leaflet setView([lat, lng]) + streets-v4</div>
-      <div id="leaflet" style="position:absolute;inset:0;"></div>
+    <div class="pane">
+      <div class="caption">Leaflet — setView([lat, lng]) + streets-v4 tiles</div>
+      <div id="leafletMap"></div>
     </div>
   </div>
+  <script src="../admin-boundaries/js/config.js"></script>
   <script>
     const key = window.MAPTILER_API_KEY;
+    if (!key) {
+      throw new Error('Missing MAPTILER_API_KEY — set it in ../admin-boundaries/js/config.js');
+    }
     maptilersdk.config.apiKey = key;
 
-    // SDK: [lng, lat]
-    new maptilersdk.Map({
-      container: 'map',
+    const pragueLngLat = [14.4178, 50.1167]; // SDK / GeoJSON order
+    const pragueLatLng = [50.1167, 14.4178]; // Leaflet order
+
+    const sdkMap = new maptilersdk.Map({
+      container: 'sdkMap',
       style: maptilersdk.MapStyle.STREETS,
-      center: [14.4178, 50.1167],
+      center: pragueLngLat,
       zoom: 12,
+      navigationControl: true,
     });
 
-    // Leaflet: (lat, lng) — reversed
-    const leafletMap = L.map('leaflet').setView([50.1167, 14.4178], 12);
+    new maptilersdk.Marker({ color: '#c0392b' })
+      .setLngLat(pragueLngLat)
+      .addTo(sdkMap);
+
+    const leafletMap = L.map('leafletMap').setView(pragueLatLng, 12);
+
     L.tileLayer(
-      'https://api.maptiler.com/maps/streets-v4/{z}/{x}/{y}.png?key=' + key,
+      'https://api.maptiler.com/maps/streets-v4/{z}/{x}/{y}.png?key=' + encodeURIComponent(key),
       {
         tileSize: 512,
         zoomOffset: -1,
-        attribution: '&copy; MapTiler &copy; OpenStreetMap',
+        attribution:
+          '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> ' +
+          '<a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
+        maxZoom: 20,
       }
     ).addTo(leafletMap);
-    L.marker(L.latLng(50.1167, 14.4178)).addTo(leafletMap);
+
+    L.marker(pragueLatLng).addTo(leafletMap).bindPopup('Leaflet (lat, lng)');
+
+    // Keep cameras loosely in sync (translate at the boundary)
+    sdkMap.on('moveend', () => {
+      const c = sdkMap.getCenter();
+      leafletMap.setView([c.lat, c.lng], Math.round(sdkMap.getZoom()), { animate: false });
+    });
   </script>
 </body>
 </html>

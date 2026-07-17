@@ -1,34 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>I2 deck.gl Overlay</title>
-  <link href="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.css" rel="stylesheet" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>I2 — deck.gl Overlay</title>
   <script src="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.umd.min.js"></script>
+  <link href="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.css" rel="stylesheet" />
   <script src="https://unpkg.com/deck.gl@9.0.38/dist.min.js"></script>
-  <script src="../admin-boundaries/js/config.js"></script>
   <style>
     html, body { margin: 0; height: 100%; }
-    #map { position: absolute; inset: 0; }
-    .panel {
-      position: absolute; z-index: 5; top: 12px; left: 12px;
-      background: rgba(255,255,255,0.9); padding: 8px 12px; border-radius: 8px;
-    }
+    #map { position: absolute; inset: 0; width: 100%; height: 100%; }
   </style>
 </head>
 <body>
-  <div class="panel">deck.gl ScatterplotLayer on MapTiler SDK basemap</div>
   <div id="map"></div>
+  <script src="../admin-boundaries/js/config.js"></script>
   <script>
-    maptilersdk.config.apiKey = window.MAPTILER_API_KEY;
+    const key = window.MAPTILER_API_KEY;
+    if (!key) {
+      throw new Error('Missing MAPTILER_API_KEY — set it in ../admin-boundaries/js/config.js');
+    }
+    maptilersdk.config.apiKey = key;
 
+    // Demo points [lng, lat]
     const data = [];
     for (let i = 0; i < 400; i++) {
       data.push({
         position: [
-          14.4178 + (Math.random() - 0.5) * 0.25,
-          50.1167 + (Math.random() - 0.5) * 0.2,
+          14.4178 + (Math.random() - 0.5) * 0.2,
+          50.1167 + (Math.random() - 0.5) * 0.12,
         ],
         radius: 40 + Math.random() * 80,
       });
@@ -40,26 +40,30 @@
       center: [14.4178, 50.1167],
       zoom: 11,
       pitch: 40,
+      navigationControl: true,
     });
 
-    // Interleaved-ish overlay: deck.gl MapboxOverlay works with MapLibre-compatible maps
+    map.on('error', (e) => console.error('Map error', e && e.error));
+
+    // Interleaved deck.gl overlay on MapTiler SDK basemap (not bare maplibre-gl alone)
     const { MapboxOverlay, ScatterplotLayer } = deck;
 
+    const overlay = new MapboxOverlay({
+      interleaved: true,
+      layers: [
+        new ScatterplotLayer({
+          id: 'prague-scatter',
+          data,
+          getPosition: (d) => d.position,
+          getRadius: (d) => d.radius,
+          getFillColor: [255, 140, 0, 180],
+          radiusUnits: 'meters',
+          pickable: true,
+        }),
+      ],
+    });
+
     map.on('load', () => {
-      const overlay = new MapboxOverlay({
-        interleaved: true,
-        layers: [
-          new ScatterplotLayer({
-            id: 'scatter',
-            data,
-            getPosition: (d) => d.position,
-            getRadius: (d) => d.radius,
-            getFillColor: [56, 189, 248, 180],
-            radiusUnits: 'meters',
-            pickable: true,
-          }),
-        ],
-      });
       map.addControl(overlay);
     });
   </script>

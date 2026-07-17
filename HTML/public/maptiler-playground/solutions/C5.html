@@ -1,60 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link href="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.css" rel="stylesheet" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>C5 — Geocode Roundtrip</title>
   <script src="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.umd.min.js"></script>
-  <script src="../admin-boundaries/js/config.js"></script>
-
-  <title>C5 Geocode Roundtrip</title>
-  <style>    html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
-    #map { position: absolute; inset: 0; }
-    .panel {
+  <link href="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.css" rel="stylesheet" />
+  <style>
+    html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
+    #map { position: absolute; inset: 0; width: 100%; height: 100%; }
+    #panel {
       position: absolute; z-index: 2; top: 12px; left: 12px;
-      background: rgba(255,255,255,0.92); padding: 10px 12px; border-radius: 8px;
-      max-width: min(360px, 90vw); box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+      background: #fff; padding: 10px; border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.15); max-width: 320px;
     }
-    .panel button { margin: 2px 4px 2px 0; cursor: pointer; }
-    .panel input { width: 100%; box-sizing: border-box; margin: 4px 0; }
-</style>
+    #q { width: 200px; padding: 6px; }
+    #status { margin-top: 8px; font-size: 13px; color: #333; }
+  </style>
 </head>
 <body>
-  <div class="panel">
-    <label>Forward geocode</label>
-    <input id="q" value="Charles Bridge, Prague" />
-    <button id="go">Search &amp; flyTo</button>
-    <div id="out">Click map for reverse geocode.</div>
+  <div id="panel">
+    <input id="q" type="search" placeholder="Search a place…" value="Charles Bridge, Prague" />
+    <button id="go" type="button">Geocode</button>
+    <div id="status">Click the map to reverse-geocode.</div>
   </div>
   <div id="map"></div>
+  <script src="../admin-boundaries/js/config.js"></script>
   <script>
-    maptilersdk.config.apiKey = window.MAPTILER_API_KEY;
-    const out = document.getElementById('out');
+    const key = window.MAPTILER_API_KEY;
+    if (!key) {
+      throw new Error('Missing MAPTILER_API_KEY — set it in ../admin-boundaries/js/config.js');
+    }
+    maptilersdk.config.apiKey = key;
+
+    const statusEl = document.getElementById('status');
+    let marker;
+
     const map = new maptilersdk.Map({
       container: 'map',
       style: maptilersdk.MapStyle.STREETS,
       center: [14.4178, 50.1167],
       zoom: 12,
+      navigationControl: true,
     });
 
-    document.getElementById('go').addEventListener('click', async () => {
-      const q = document.getElementById('q').value;
-      const res = await maptilersdk.geocoding.forward(q, { limit: 1 });
-      const f = res.features && res.features[0];
-      if (!f) { out.textContent = 'No results'; return; }
-      const [lng, lat] = f.geometry.coordinates;
-      map.flyTo({ center: [lng, lat], zoom: 14 });
-      out.textContent = 'Forward: ' + (f.place_name || f.text || q);
+    function placeMarker(lngLat, label) {
+      if (!marker) {
+        marker = new maptilersdk.Marker({ color: '#2980b9' }).addTo(map);
+      }
+      marker.setLngLat(lngLat);
+      if (label) {
+        marker.setPopup(new maptilersdk.Popup().setText(label)).togglePopup();
+      }
+    }
+
+    async function forwardSearch() {
+      const query = document.getElementById('q').value.trim();
+      if (!query) return;
+      statusEl.textContent = 'Searching…';
+      try {
+        const results = await maptilersdk.geocoding.forward(query, { limit: 1 });
+        const feature = results?.features?.[0];
+        if (!feature) {
+          statusEl.textContent = 'No results.';
+          return;
+        }
+        const [lng, lat] = feature.geometry.coordinates;
+        const label = feature.place_name || feature.text || query;
+        placeMarker([lng, lat], label);
+        map.flyTo({ center: [lng, lat], zoom: 14, duration: 2000 });
+        statusEl.textContent = `Forward: ${label} → [${lng.toFixed(5)}, ${lat.toFixed(5)}]`;
+      } catch (err) {
+        statusEl.textContent = 'Forward geocode failed: ' + (err.message || err);
+      }
+    }
+
+    document.getElementById('go').addEventListener('click', forwardSearch);
+    document.getElementById('q').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') forwardSearch();
     });
 
     map.on('click', async (e) => {
-      const lng = e.lngLat.lng;
-      const lat = e.lngLat.lat;
-      const res = await maptilersdk.geocoding.reverse([lng, lat]);
-      const f = res.features && res.features[0];
-      out.textContent = f
-        ? 'Reverse [' + lng.toFixed(5) + ', ' + lat.toFixed(5) + ']: ' + (f.place_name || f.text)
-        : 'No reverse result';
+      const { lng, lat } = e.lngLat;
+      statusEl.textContent = 'Reverse…';
+      try {
+        const results = await maptilersdk.geocoding.reverse([lng, lat]);
+        const feature = results?.features?.[0];
+        const label = feature?.place_name || feature?.text || 'Unknown place';
+        placeMarker([lng, lat], label);
+        statusEl.textContent = `Reverse @ [${lng.toFixed(5)}, ${lat.toFixed(5)}]: ${label}`;
+      } catch (err) {
+        statusEl.textContent = 'Reverse geocode failed: ' + (err.message || err);
+      }
     });
   </script>
 </body>

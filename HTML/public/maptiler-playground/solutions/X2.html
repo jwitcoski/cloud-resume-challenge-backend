@@ -1,86 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link href="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.css" rel="stylesheet" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>X2 — City Extrude Survive</title>
   <script src="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.umd.min.js"></script>
-  <script src="../admin-boundaries/js/config.js"></script>
-
-  <title>X2 City Extrude Survive</title>
-  <style>    html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
-    #map { position: absolute; inset: 0; }
-    .panel {
+  <link href="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.css" rel="stylesheet" />
+  <style>
+    html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
+    #map { position: absolute; inset: 0; width: 100%; height: 100%; }
+    #toggle {
       position: absolute; z-index: 2; top: 12px; left: 12px;
-      background: rgba(255,255,255,0.92); padding: 10px 12px; border-radius: 8px;
-      max-width: min(420px, 90vw); box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+      display: flex; gap: 8px;
     }
-    .panel button { margin: 2px 4px 2px 0; cursor: pointer; }
-    .panel input { width: 100%; box-sizing: border-box; margin: 4px 0; }
-    .split { display: grid; grid-template-columns: 1fr 1fr; height: 100vh; }
-    .split > div { position: relative; min-height: 0; }
-    .split .label { position: absolute; z-index: 2; top: 8px; left: 8px;
-      background: rgba(0,0,0,0.7); color: #fff; padding: 4px 8px; font-size: 12px; }
-</style>
+    #toggle button {
+      padding: 8px 12px; border: 0; border-radius: 6px; cursor: pointer;
+      background: #111; color: #fff; font-weight: 600;
+    }
+  </style>
 </head>
 <body>
-  <div class="panel">
-    NYC · pitch 60 ·
-    <button id="toStreets">Streets</button>
-    <button id="toHybrid">Hybrid</button>
+  <div id="toggle">
+    <button type="button" data-style="HYBRID">Hybrid</button>
+    <button type="button" data-style="STREETS">Streets</button>
   </div>
   <div id="map"></div>
+  <script src="../admin-boundaries/js/config.js"></script>
   <script>
-    maptilersdk.config.apiKey = window.MAPTILER_API_KEY;
+    const key = window.MAPTILER_API_KEY;
+    if (!key) {
+      throw new Error('Missing MAPTILER_API_KEY — set it in ../admin-boundaries/js/config.js');
+    }
+    maptilersdk.config.apiKey = key;
+
     const map = new maptilersdk.Map({
       container: 'map',
       style: maptilersdk.MapStyle.HYBRID,
       center: [-74.006, 40.7128],
-      zoom: 15,
+      zoom: 15.2,
       pitch: 60,
       bearing: -20,
+      navigationControl: true,
     });
 
-    function addExtrusions() {
-      if (!map.getSource('buildings')) {
-        map.addSource('buildings', {
-          type: 'vector',
-          url: 'https://api.maptiler.com/tiles/buildings/tiles.json',
-        });
-      }
-      if (map.getLayer('Building 3D')) return;
+    map.on('error', (e) => console.error('Map error', e && e.error));
+
+    function labelBeforeId() {
       const layers = map.getStyle().layers || [];
-      let labelLayerId;
-      for (let i = 0; i < layers.length; i++) {
-        if (layers[i].type === 'symbol' && layers[i].layout && layers[i].layout['text-field']) {
-          labelLayerId = layers[i].id;
-          break;
+      for (const layer of layers) {
+        if (layer.type === 'symbol' && layer.layout && layer.layout['text-field']) {
+          return layer.id;
         }
       }
+      return undefined;
+    }
+
+    function addExtrusions() {
+      if (map.getLayer('nyc-extrusions')) {
+        map.removeLayer('nyc-extrusions');
+      }
+      if (map.getSource('nyc-buildings')) {
+        map.removeSource('nyc-buildings');
+      }
+
+      map.addSource('nyc-buildings', {
+        type: 'vector',
+        url: 'https://api.maptiler.com/tiles/buildings/tiles.json?key=' + encodeURIComponent(key),
+      });
+
       map.addLayer({
-        id: 'Building 3D',
-        source: 'buildings',
-        'source-layer': 'building',
+        id: 'nyc-extrusions',
         type: 'fill-extrusion',
-        minzoom: 13,
+        source: 'nyc-buildings',
+        'source-layer': 'building',
+        minzoom: 14,
         paint: {
-          'fill-extrusion-color': ['coalesce', ['get', 'facade_color'], '#c4b59a'],
-          'fill-extrusion-height': ['coalesce', ['get', 'height'], 0],
-          'fill-extrusion-base': ['coalesce', ['get', 'height_min'], 0],
+          'fill-extrusion-color': [
+            'coalesce',
+            ['get', 'facade_color'],
+            '#d4c4a8',
+          ],
+          'fill-extrusion-height': ['coalesce', ['get', 'height'], ['get', 'render_height'], 12],
+          'fill-extrusion-base': ['coalesce', ['get', 'height_min'], ['get', 'render_min_height'], 0],
           'fill-extrusion-opacity': 0.9,
         },
-      }, labelLayerId);
+      }, labelBeforeId());
     }
 
     map.on('load', addExtrusions);
     map.on('style.load', addExtrusions);
 
-    function switchStyle(style) {
-      map.once('styledata', addExtrusions);
-      map.setStyle(style);
-    }
-    document.getElementById('toStreets').onclick = () => switchStyle(maptilersdk.MapStyle.STREETS);
-    document.getElementById('toHybrid').onclick = () => switchStyle(maptilersdk.MapStyle.HYBRID);
+    document.querySelectorAll('#toggle button').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const style =
+          btn.dataset.style === 'STREETS'
+            ? maptilersdk.MapStyle.STREETS
+            : maptilersdk.MapStyle.HYBRID;
+        map.setStyle(style);
+        // Extrusions re-added on style.load
+      });
+    });
   </script>
 </body>
 </html>

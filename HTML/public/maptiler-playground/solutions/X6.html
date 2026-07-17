@@ -1,85 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link href="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.css" rel="stylesheet" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>X6 — Schema Honest Outdoor</title>
   <script src="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.umd.min.js"></script>
-  <script src="../admin-boundaries/js/config.js"></script>
-
-  <title>X6 Schema Honest Outdoor</title>
-  <style>    html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
-    #map { position: absolute; inset: 0; }
-    .panel {
+  <link href="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.css" rel="stylesheet" />
+  <style>
+    html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
+    #map { position: absolute; inset: 0; width: 100%; height: 100%; }
+    #note {
       position: absolute; z-index: 2; top: 12px; left: 12px;
-      background: rgba(255,255,255,0.92); padding: 10px 12px; border-radius: 8px;
-      max-width: min(420px, 90vw); box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+      background: rgba(255,255,255,.92); padding: 10px 12px; border-radius: 8px;
+      font-size: 12px; max-width: 280px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.12);
     }
-    .panel button { margin: 2px 4px 2px 0; cursor: pointer; }
-    .panel input { width: 100%; box-sizing: border-box; margin: 4px 0; }
-    .split { display: grid; grid-template-columns: 1fr 1fr; height: 100vh; }
-    .split > div { position: relative; min-height: 0; }
-    .split .label { position: absolute; z-index: 2; top: 8px; left: 8px;
-      background: rgba(0,0,0,0.7); color: #fff; padding: 4px 8px; font-size: 12px; }
-</style>
+  </style>
 </head>
 <body>
-  <div class="panel">OUTDOOR + real contour / path / mountain_peak overlays</div>
+  <div id="note">
+    OUTDOOR basemap + Contours (<code>contour</code>) and
+    OpenMapTiles (<code>mountain_peak</code>) overlays — real schema names only.
+  </div>
   <div id="map"></div>
+  <script src="../admin-boundaries/js/config.js"></script>
   <script>
-    maptilersdk.config.apiKey = window.MAPTILER_API_KEY;
+    const key = window.MAPTILER_API_KEY;
+    if (!key) {
+      throw new Error('Missing MAPTILER_API_KEY — set it in ../admin-boundaries/js/config.js');
+    }
+    maptilersdk.config.apiKey = key;
+
     const map = new maptilersdk.Map({
       container: 'map',
       style: maptilersdk.MapStyle.OUTDOOR,
-      center: [8.5981, 46.5583],
-      zoom: 12,
+      center: [8.6, 46.5],
+      zoom: 11,
       pitch: 40,
       terrain: true,
+      navigationControl: true,
     });
 
-    map.on('load', () => {
-      // Contours tileset — real source-layer names from Contours/Outdoor schemas
-      map.addSource('contours', {
-        type: 'vector',
-        url: 'https://api.maptiler.com/tiles/contours/tiles.json',
-      });
-      map.addLayer({
-        id: 'overlay-contour',
-        type: 'line',
-        source: 'contours',
-        'source-layer': 'contour',
-        paint: {
-          'line-color': '#b45309',
-          'line-width': 0.8,
-          'line-opacity': 0.7,
-        },
-      });
+    function addOverlays() {
+      // Contours tileset — source-layer "contour" (MapTiler Contours schema)
+      if (!map.getSource('contours')) {
+        map.addSource('contours', {
+          type: 'vector',
+          url: 'https://api.maptiler.com/tiles/contours/tiles.json?key=' + encodeURIComponent(key),
+        });
+      }
+      if (!map.getLayer('overlay-contour')) {
+        map.addLayer({
+          id: 'overlay-contour',
+          type: 'line',
+          source: 'contours',
+          'source-layer': 'contour',
+          paint: {
+            'line-color': '#8b5a2b',
+            'line-width': [
+              'case',
+              ['==', ['%', ['get', 'nth_line'], 5], 0],
+              1.4,
+              0.6,
+            ],
+            'line-opacity': 0.85,
+          },
+        });
+      }
 
-      map.addSource('outdoor', {
-        type: 'vector',
-        url: 'https://api.maptiler.com/tiles/outdoor/tiles.json',
-      });
-      map.addLayer({
-        id: 'overlay-path',
-        type: 'line',
-        source: 'outdoor',
-        'source-layer': 'path',
-        paint: {
-          'line-color': '#be123c',
-          'line-width': 2,
-        },
-      });
-      map.addLayer({
-        id: 'overlay-peaks',
-        type: 'circle',
-        source: 'outdoor',
-        'source-layer': 'mountain_peak',
-        paint: {
-          'circle-radius': 4,
-          'circle-color': '#0f172a',
-        },
-      });
-    });
+      // Planet / OMT tiles — source-layer "mountain_peak"
+      if (!map.getSource('planet')) {
+        map.addSource('planet', {
+          type: 'vector',
+          url: 'https://api.maptiler.com/tiles/v3/tiles.json?key=' + encodeURIComponent(key),
+        });
+      }
+      if (!map.getLayer('overlay-peaks')) {
+        map.addLayer({
+          id: 'overlay-peaks',
+          type: 'circle',
+          source: 'planet',
+          'source-layer': 'mountain_peak',
+          paint: {
+            'circle-radius': 4,
+            'circle-color': '#c0392b',
+            'circle-stroke-width': 1,
+            'circle-stroke-color': '#fff',
+          },
+        });
+      }
+
+      // Outdoor tileset — documented source-layer "trail" (hiking paths)
+      if (!map.getSource('outdoor')) {
+        map.addSource('outdoor', {
+          type: 'vector',
+          url: 'https://api.maptiler.com/tiles/outdoor/tiles.json?key=' + encodeURIComponent(key),
+        });
+      }
+      if (!map.getLayer('overlay-trail')) {
+        map.addLayer({
+          id: 'overlay-trail',
+          type: 'line',
+          source: 'outdoor',
+          'source-layer': 'trail',
+          paint: {
+            'line-color': '#27ae60',
+            'line-width': 2,
+            'line-opacity': 0.9,
+          },
+        });
+      }
+    }
+
+    map.on('load', addOverlays);
+    map.on('style.load', addOverlays);
   </script>
 </body>
 </html>

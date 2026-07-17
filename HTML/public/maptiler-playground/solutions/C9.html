@@ -1,63 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link href="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.css" rel="stylesheet" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>C9 — Helper Heatmap</title>
   <script src="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.umd.min.js"></script>
-  <script src="../admin-boundaries/js/config.js"></script>
-
-  <title>C9 Helper Heatmap</title>
-  <style>    html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
-    #map { position: absolute; inset: 0; }
-    .panel {
+  <link href="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.css" rel="stylesheet" />
+  <style>
+    html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
+    #map { position: absolute; inset: 0; width: 100%; height: 100%; }
+    #hint {
       position: absolute; z-index: 2; top: 12px; left: 12px;
-      background: rgba(255,255,255,0.92); padding: 10px 12px; border-radius: 8px;
-      max-width: min(360px, 90vw); box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+      background: #fff; padding: 8px 12px; border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.12); font-size: 13px;
     }
-    .panel button { margin: 2px 4px 2px 0; cursor: pointer; }
-    .panel input { width: 100%; box-sizing: border-box; margin: 4px 0; }
-</style>
+  </style>
 </head>
 <body>
-  <div class="panel">Heatmap + clustered points demo</div>
+  <div id="hint">Heatmap + clustered points via SDK helpers</div>
   <div id="map"></div>
+  <script src="../admin-boundaries/js/config.js"></script>
   <script>
-    maptilersdk.config.apiKey = window.MAPTILER_API_KEY;
+    const key = window.MAPTILER_API_KEY;
+    if (!key) {
+      throw new Error('Missing MAPTILER_API_KEY — set it in ../admin-boundaries/js/config.js');
+    }
+    maptilersdk.config.apiKey = key;
+
+    // Synthetic demo points around Prague
     const features = [];
     for (let i = 0; i < 200; i++) {
+      const lng = 14.4178 + (Math.random() - 0.5) * 0.15;
+      const lat = 50.1167 + (Math.random() - 0.5) * 0.1;
       features.push({
         type: 'Feature',
-        properties: { mag: Math.random() },
-        geometry: {
-          type: 'Point',
-          coordinates: [
-            14.4178 + (Math.random() - 0.5) * 0.4,
-            50.1167 + (Math.random() - 0.5) * 0.3,
-          ],
-        },
+        properties: { id: i, mag: Math.random() },
+        geometry: { type: 'Point', coordinates: [lng, lat] },
       });
     }
-    const data = { type: 'FeatureCollection', features };
+    const demo = { type: 'FeatureCollection', features };
 
     const map = new maptilersdk.Map({
       container: 'map',
       style: maptilersdk.MapStyle.DATAVIZ.DARK,
       center: [14.4178, 50.1167],
-      zoom: 10,
+      zoom: 11,
+      navigationControl: true,
     });
 
     map.on('load', async () => {
       await maptilersdk.helpers.addHeatmap(map, {
-        data,
+        data: demo,
         opacity: 0.7,
         radius: 30,
       });
+
       await maptilersdk.helpers.addPoint(map, {
-        data,
+        data: demo,
         cluster: true,
         showLabel: true,
-        pointColor: '#38bdf8',
+        pointColor: '#f1c40f',
         pointRadius: 6,
       });
     });

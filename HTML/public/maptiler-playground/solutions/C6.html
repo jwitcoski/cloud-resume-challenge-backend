@@ -1,44 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link href="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.css" rel="stylesheet" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>C6 — Elevation Probe</title>
   <script src="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.umd.min.js"></script>
-  <script src="../admin-boundaries/js/config.js"></script>
-
-  <title>C6 Elevation Probe</title>
-  <style>    html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
-    #map { position: absolute; inset: 0; }
-    .panel {
+  <link href="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.css" rel="stylesheet" />
+  <style>
+    html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
+    #map { position: absolute; inset: 0; width: 100%; height: 100%; }
+    #hud {
       position: absolute; z-index: 2; top: 12px; left: 12px;
-      background: rgba(255,255,255,0.92); padding: 10px 12px; border-radius: 8px;
-      max-width: min(360px, 90vw); box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+      background: rgba(255,255,255,.95); padding: 12px 14px; border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.12); min-width: 220px;
     }
-    .panel button { margin: 2px 4px 2px 0; cursor: pointer; }
-    .panel input { width: 100%; box-sizing: border-box; margin: 4px 0; }
-</style>
+    #elev { font-size: 22px; font-weight: 700; }
+  </style>
 </head>
 <body>
-  <div class="panel" id="elev">Click the map for elevation (m).</div>
+  <div id="hud">
+    <div>Click the map for elevation</div>
+    <div id="elev">— m</div>
+    <div id="coords" style="font-size:12px;color:#555;margin-top:4px;"></div>
+  </div>
   <div id="map"></div>
+  <script src="../admin-boundaries/js/config.js"></script>
   <script>
-    maptilersdk.config.apiKey = window.MAPTILER_API_KEY;
-    const elev = document.getElementById('elev');
+    const key = window.MAPTILER_API_KEY;
+    if (!key) {
+      throw new Error('Missing MAPTILER_API_KEY — set it in ../admin-boundaries/js/config.js');
+    }
+    maptilersdk.config.apiKey = key;
+
+    const elevEl = document.getElementById('elev');
+    const coordsEl = document.getElementById('coords');
+
     const map = new maptilersdk.Map({
       container: 'map',
       style: maptilersdk.MapStyle.OUTDOOR,
-      center: [8.5981, 46.5583],
-      zoom: 10,
+      center: [7.6586, 45.9763],
+      zoom: 11,
       terrain: true,
+      navigationControl: true,
     });
+
     map.on('click', async (e) => {
-      const lng = e.lngLat.lng;
-      const lat = e.lngLat.lat;
-      const pt = await maptilersdk.elevation.at([lng, lat]);
-      const meters = Array.isArray(pt) ? pt[2] : (pt && pt.elevation);
-      elev.textContent = '[' + lng.toFixed(5) + ', ' + lat.toFixed(5) + '] → ' +
-        (meters != null ? Number(meters).toFixed(1) + ' m' : 'n/a');
+      const lngLat = [e.lngLat.lng, e.lngLat.lat];
+      coordsEl.textContent = `[${lngLat[0].toFixed(5)}, ${lngLat[1].toFixed(5)}]`;
+      elevEl.textContent = '…';
+      try {
+        const result = await maptilersdk.elevation.at(lngLat);
+        // SDK returns [lng, lat, elevationMeters] or similar
+        const meters = Array.isArray(result) ? result[2] : (result?.elevation ?? result);
+        elevEl.textContent = (typeof meters === 'number' ? meters.toFixed(1) : meters) + ' m';
+      } catch (err) {
+        elevEl.textContent = 'Error';
+        coordsEl.textContent = String(err.message || err);
+      }
     });
   </script>
 </body>
