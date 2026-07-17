@@ -79,7 +79,7 @@ export const projectOverview = {
     sideProjects: [
         { name: "Global Ski Atlas", url: "https://globalskiatlas.com" },
         { name: "Vector Scope AI", url: "https://vectorscopeai.com" },
-        { name: "Cloud Resume Challenge", url: "/cloud-resume-challenge.html" },
+        { name: "MapTiler Agent Grader", url: "/maptiler-playground/" },
         { name: "AWS SAA Study Plan", url: "/aws-solutions-architect-study.html" },
     ]
 };
@@ -107,10 +107,10 @@ export const featureWork = [
         url: "/admin-boundaries/tool.html"
     },
     {
-        title: "Cloud Resume Challenge",
-        description: "AWS-hosted application with IaC, REST APIs, and CI/CD.",
-        roles: ["AWS", "REST APIs", "CI/CD", "IaC"],
-        image: "/images/cloud-resume-challenge/CloudResumeArchitecture.png",
-        url: "/cloud-resume-challenge.html"
+        title: "MapTiler Agent Grader",
+        description: "Scoreboard that grades AI agents on MapTiler SDK challenges — static checks, harsh training mode, and skill-driven feedback.",
+        roles: ["MapTiler SDK", "Agent eval", "JavaScript", "Web GIS"],
+        image: "/images/feature-work/maptiler-agent-grader.png",
+        url: "/maptiler-playground/"
     }
 ];
