@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>X6 Schema Honest Outdoor</title>
+<script src="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.umd.min.js"></script>
+<link rel="stylesheet" href="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.css" />
+<style>
+html,body,#map{margin:0;height:100%}#map{position:absolute;inset:0}
+#n{position:absolute;z-index:1;top:10px;left:10px;background:#fff;padding:8px;font:12px sans-serif}
+</style>
+</head>
+<body>
+<div id="n">OUTDOOR + contour / path / mountain_peak overlays</div>
+<div id="map"></div>
+<script src="../admin-boundaries/js/config.js"></script>
+<script>
+maptilersdk.config.apiKey = window.MAPTILER_API_KEY;
+if (!maptilersdk.config.apiKey) throw new Error("Set window.MAPTILER_API_KEY in ../admin-boundaries/js/config.js");
+const map = new maptilersdk.Map({
+  container: "map",
+  style: maptilersdk.MapStyle.OUTDOOR,
+  center: [8.55, 46.6],
+  zoom: 11,
+  pitch: 35,
+  terrain: true
+});
+function overlays() {
+  if (!map.getSource("contours")) {
+    map.addSource("contours", {
+      type: "vector",
+      url: "https://api.maptiler.com/tiles/contours/tiles.json"
+    });
+  }
+  if (!map.getLayer("ol-contour")) {
+    map.addLayer({
+      id: "ol-contour",
+      type: "line",
+      source: "contours",
+      "source-layer": "contour",
+      paint: { "line-color": "#8d6e63", "line-width": 0.8 }
+    });
+  }
+  if (!map.getSource("omt")) {
+    map.addSource("omt", {
+      type: "vector",
+      url: "https://api.maptiler.com/tiles/v3/tiles.json"
+    });
+  }
+  if (!map.getLayer("ol-peak")) {
+    map.addLayer({
+      id: "ol-peak",
+      type: "circle",
+      source: "omt",
+      "source-layer": "mountain_peak",
+      paint: { "circle-radius": 3, "circle-color": "#c62828" }
+    });
+  }
+  if (!map.getSource("outdoorTiles")) {
+    map.addSource("outdoorTiles", {
+      type: "vector",
+      url: "https://api.maptiler.com/tiles/outdoor/tiles.json"
+    });
+  }
+  if (!map.getLayer("ol-path")) {
+    map.addLayer({
+      id: "ol-path",
+      type: "line",
+      source: "outdoorTiles",
+      "source-layer": "path",
+      paint: { "line-color": "#2e7d32", "line-width": 2 }
+    });
+  }
+}
+map.on("load", overlays);
+map.on("style.load", overlays);
+</script>
+</body>
+</html>

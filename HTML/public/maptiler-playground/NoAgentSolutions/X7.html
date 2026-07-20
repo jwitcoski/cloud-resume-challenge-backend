@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>X7 CRS Trap</title>
+<script src="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.umd.min.js"></script>
+<link rel="stylesheet" href="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.css" />
+<style>
+html,body,#map{margin:0;height:100%}#map{position:absolute;inset:0}
+#lab{position:absolute;z-index:1;top:10px;left:10px;background:#fff;padding:10px;font:13px sans-serif}
+</style>
+</head>
+<body>
+<div id="lab">
+  <div>WGS84 [lng,lat]: <span id="a"></span></div>
+  <div>EPSG:3857: <span id="b">…</span></div>
+</div>
+<div id="map"></div>
+<script src="../admin-boundaries/js/config.js"></script>
+<script>
+maptilersdk.config.apiKey = window.MAPTILER_API_KEY;
+if (!maptilersdk.config.apiKey) throw new Error("Set window.MAPTILER_API_KEY in ../admin-boundaries/js/config.js");
+const wgs = [14.4178, 50.1167];
+document.getElementById("a").textContent = wgs.join(", ");
+const map = new maptilersdk.Map({
+  container: "map",
+  style: maptilersdk.MapStyle.STREETS,
+  center: wgs,
+  zoom: 12
+});
+map.on("load", async () => {
+  new maptilersdk.Marker().setLngLat(wgs).addTo(map);
+  try {
+    const t = await maptilersdk.coordinates.transform(wgs, {
+      sourceCrs: "4326",
+      targetCrs: "3857"
+    });
+    let x, y;
+    if (Array.isArray(t)) { x = t[0]; y = t[1]; }
+    else if (t.results && t.results[0]) { x = t.results[0].x; y = t.results[0].y; }
+    else { x = t.x; y = t.y; }
+    document.getElementById("b").textContent = Number(x).toFixed(1) + ", " + Number(y).toFixed(1);
+  } catch (err) {
+    document.getElementById("b").textContent = String(err.message || err);
+  }
+});
+</script>
+</body>
+</html>

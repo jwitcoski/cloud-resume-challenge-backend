@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>C10 Static Snapshot</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<script src="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.umd.min.js"></script>
+<link rel="stylesheet" href="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.css" />
+<style>
+html,body,#map{margin:0;height:100%}#map{position:absolute;inset:0}
+#box{position:absolute;z-index:1;right:12px;bottom:12px;background:#fff;padding:8px}
+#box img{width:280px;display:block}
+</style>
+</head>
+<body>
+<div id="map"></div>
+<div id="box"><img id="snap" alt="static map" /><button id="btn">Snapshot</button></div>
+<script src="../admin-boundaries/js/config.js"></script>
+<script>
+maptilersdk.config.apiKey = window.MAPTILER_API_KEY;
+if (!maptilersdk.config.apiKey) {
+  throw new Error("Set window.MAPTILER_API_KEY in ../admin-boundaries/js/config.js");
+}
+const map = new maptilersdk.Map({
+  container: "map",
+  style: maptilersdk.MapStyle.STREETS,
+  center: [14.4178, 50.1167],
+  zoom: 12
+});
+async function snap() {
+  const c = map.getCenter();
+  const url = await maptilersdk.staticMaps.centered(
+    [c.lng, c.lat],
+    Math.round(map.getZoom()),
+    { width: 560, height: 360, style: maptilersdk.MapStyle.STREETS, hiDPI: true }
+  );
+  document.getElementById("snap").src = typeof url === "string" ? url : String(url);
+}
+map.on("load", snap);
+document.getElementById("btn").onclick = snap;
+</script>
+</body>
+</html>

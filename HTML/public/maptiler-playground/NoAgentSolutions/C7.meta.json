@@ -1,0 +1,16 @@
+{
+  "agentLabel": "Cursor Agent",
+  "provider": "cursor",
+  "model": "Composer",
+  "skillUsed": false,
+  "skillVersionNote": "BANNED \u2014 baseline Cursor-only (public docs + general knowledge)",
+  "tokens": {
+    "input": null,
+    "output": null,
+    "total": null
+  },
+  "costUsd": null,
+  "latencySec": null,
+  "attempts": 1,
+  "notes": "baseline NoAgentSolutions \u2014 no MapTiler agent, no local maptiler skill"
+}

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>C5 Geocode Roundtrip</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<script src="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.umd.min.js"></script>
+<link rel="stylesheet" href="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.css" />
+<style>
+html,body,#map{margin:0;height:100%}#map{position:absolute;inset:0}
+#ui{position:absolute;z-index:1;top:12px;left:12px;background:#fff;padding:10px;max-width:280px}
+</style>
+</head>
+<body>
+<div id="ui">
+  <input id="q" value="Eiffel Tower" />
+  <button id="go">Forward</button>
+  <p id="out">Click map to reverse.</p>
+</div>
+<div id="map"></div>
+<script src="../admin-boundaries/js/config.js"></script>
+<script>
+maptilersdk.config.apiKey = window.MAPTILER_API_KEY;
+if (!maptilersdk.config.apiKey) {
+  throw new Error("Set window.MAPTILER_API_KEY in ../admin-boundaries/js/config.js");
+}
+const out = document.getElementById("out");
+let mk;
+const map = new maptilersdk.Map({
+  container: "map",
+  style: maptilersdk.MapStyle.STREETS,
+  center: [2.2945, 48.8584],
+  zoom: 12
+});
+
+function mark(ll, text) {
+  if (!mk) mk = new maptilersdk.Marker().addTo(map);
+  mk.setLngLat(ll);
+  if (text) mk.setPopup(new maptilersdk.Popup().setText(text)).togglePopup();
+}
+
+document.getElementById("go").onclick = async () => {
+  const q = document.getElementById("q").value.trim();
+  const res = await maptilersdk.geocoding.forward(q, { limit: 1 });
+  const f = res.features && res.features[0];
+  if (!f) { out.textContent = "no hit"; return; }
+  const [lng, lat] = f.geometry.coordinates;
+  mark([lng, lat], f.place_name || q);
+  map.flyTo({ center: [lng, lat], zoom: 15 });
+  out.textContent = "forward [" + lng + ", " + lat + "]";
+};
+
+map.on("click", async (e) => {
+  const ll = [e.lngLat.lng, e.lngLat.lat];
+  const res = await maptilersdk.geocoding.reverse(ll);
+  const f = res.features && res.features[0];
+  const name = (f && (f.place_name || f.text)) || "?";
+  mark(ll, name);
+  out.textContent = "reverse " + name + " @ [" + ll[0].toFixed(5) + ", " + ll[1].toFixed(5) + "]";
+});
+</script>
+</body>
+</html>

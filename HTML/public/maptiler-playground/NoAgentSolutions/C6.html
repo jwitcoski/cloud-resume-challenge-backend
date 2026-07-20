@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>C6 Elevation Probe</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<script src="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.umd.min.js"></script>
+<link rel="stylesheet" href="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.css" />
+<style>
+html,body,#map{margin:0;height:100%}#map{position:absolute;inset:0}
+#hud{position:absolute;z-index:1;top:12px;left:12px;background:#fff;padding:12px}
+</style>
+</head>
+<body>
+<div id="hud">Elevation: <strong id="m">—</strong> m</div>
+<div id="map"></div>
+<script src="../admin-boundaries/js/config.js"></script>
+<script>
+maptilersdk.config.apiKey = window.MAPTILER_API_KEY;
+if (!maptilersdk.config.apiKey) {
+  throw new Error("Set window.MAPTILER_API_KEY in ../admin-boundaries/js/config.js");
+}
+const map = new maptilersdk.Map({
+  container: "map",
+  style: maptilersdk.MapStyle.OUTDOOR,
+  center: [7.66, 45.98],
+  zoom: 11,
+  terrain: true
+});
+map.on("click", async (e) => {
+  const ll = [e.lngLat.lng, e.lngLat.lat];
+  const r = await maptilersdk.elevation.at(ll);
+  const meters = Array.isArray(r) ? r[2] : (r && r.elevation != null ? r.elevation : r);
+  document.getElementById("m").textContent =
+    typeof meters === "number" ? meters.toFixed(1) : String(meters);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>C7 3D Buildings</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<script src="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.umd.min.js"></script>
+<link rel="stylesheet" href="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.css" />
+<style>html,body,#map{margin:0;height:100%}#map{position:absolute;inset:0}</style>
+</head>
+<body>
+<div id="map"></div>
+<script src="../admin-boundaries/js/config.js"></script>
+<script>
+maptilersdk.config.apiKey = window.MAPTILER_API_KEY;
+if (!maptilersdk.config.apiKey) {
+  throw new Error("Set window.MAPTILER_API_KEY in ../admin-boundaries/js/config.js");
+}
+const map = new maptilersdk.Map({
+  container: "map",
+  style: maptilersdk.MapStyle.STREETS,
+  center: [-0.1276, 51.5072],
+  zoom: 15.5,
+  pitch: 55,
+  bearing: -10
+});
+
+function extrude() {
+  if (map.getLayer("b3d")) return;
+  // Prefer MapTiler buildings tileset when available
+  if (!map.getSource("buildings")) {
+    map.addSource("buildings", {
+      type: "vector",
+      url: "https://api.maptiler.com/tiles/buildings/tiles.json"
+    });
+  }
+  map.addLayer({
+    id: "b3d",
+    type: "fill-extrusion",
+    source: "buildings",
+    "source-layer": "building",
+    minzoom: 14,
+    paint: {
+      "fill-extrusion-color": "#aaa",
+      "fill-extrusion-height": ["coalesce", ["get", "height"], ["get", "render_height"], 8],
+      "fill-extrusion-base": ["coalesce", ["get", "height_min"], ["get", "render_min_height"], 0],
+      "fill-extrusion-opacity": 0.8
+    }
+  });
+}
+map.on("load", extrude);
+map.on("style.load", extrude);
+</script>
+</body>
+</html>

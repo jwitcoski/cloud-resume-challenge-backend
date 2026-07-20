@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>C4 Style Switcher</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<script src="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.umd.min.js"></script>
+<link rel="stylesheet" href="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.css" />
+<style>
+html,body,#map{margin:0;height:100%}#map{position:absolute;inset:0}
+#bar{position:absolute;z-index:1;top:10px;left:10px;display:flex;gap:6px;flex-wrap:wrap}
+button{padding:8px 10px;cursor:pointer}
+</style>
+</head>
+<body>
+<div id="bar">
+  <button data-s="streets">STREETS</button>
+  <button data-s="hybrid">HYBRID</button>
+  <button data-s="outdoor">OUTDOOR</button>
+  <button data-s="dataviz">DATAVIZ.DARK</button>
+</div>
+<div id="map"></div>
+<script src="../admin-boundaries/js/config.js"></script>
+<script>
+maptilersdk.config.apiKey = window.MAPTILER_API_KEY;
+if (!maptilersdk.config.apiKey) {
+  throw new Error("Set window.MAPTILER_API_KEY in ../admin-boundaries/js/config.js");
+}
+const styles = {
+  streets: maptilersdk.MapStyle.STREETS,
+  hybrid: maptilersdk.MapStyle.HYBRID,
+  outdoor: maptilersdk.MapStyle.OUTDOOR,
+  dataviz: maptilersdk.MapStyle.DATAVIZ.DARK
+};
+const map = new maptilersdk.Map({
+  container: "map",
+  style: styles.streets,
+  center: [14.42, 50.08],
+  zoom: 11
+});
+
+function paintCustom() {
+  if (map.getSource("pin")) {
+    if (!map.getLayer("pin-circle")) {
+      map.addLayer({
+        id: "pin-circle",
+        type: "circle",
+        source: "pin",
+        paint: { "circle-radius": 8, "circle-color": "#d33" }
+      });
+    }
+    return;
+  }
+  map.addSource("pin", {
+    type: "geojson",
+    data: {
+      type: "Feature",
+      geometry: { type: "Point", coordinates: [14.42, 50.08] },
+      properties: {}
+    }
+  });
+  map.addLayer({
+    id: "pin-circle",
+    type: "circle",
+    source: "pin",
+    paint: { "circle-radius": 8, "circle-color": "#d33" }
+  });
+}
+
+map.on("load", paintCustom);
+map.on("style.load", paintCustom);
+map.on("styledata", () => { if (map.isStyleLoaded()) paintCustom(); });
+
+document.querySelectorAll("#bar button").forEach((b) => {
+  b.onclick = () => map.setStyle(styles[b.dataset.s]);
+});
+</script>
+</body>
+</html>

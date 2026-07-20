@@ -57,6 +57,119 @@
     .pill.insane b { color: var(--insane); }
     .pill.combined b { color: var(--good); }
 
+    .score-block {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: flex-end;
+    }
+    .compare {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 8px;
+      align-items: stretch;
+      width: min(100%, 520px);
+      font-size: 0.72rem;
+    }
+    .compare-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 8px 10px;
+      min-width: 0;
+    }
+    .compare-card h3 {
+      margin: 0 0 6px;
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--muted);
+      font-weight: 650;
+    }
+    .compare-card.skill h3 { color: var(--accent); }
+    .compare-card.baseline h3 { color: var(--warn); }
+    .compare-card.upload h3 { color: var(--good); }
+    .compare-card .sub {
+      display: block;
+      font-size: 0.62rem;
+      font-weight: 400;
+      color: var(--muted);
+      margin-top: 2px;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+    .compare-rows {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 2px 8px;
+      color: var(--ink);
+    }
+    .compare-rows span:nth-child(odd) { color: var(--muted); }
+    .compare-rows b { font-variant-numeric: tabular-nums; }
+    .compare-delta {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 2px;
+      padding: 6px 4px;
+      min-width: 72px;
+      text-align: center;
+      color: var(--muted);
+    }
+    .compare-delta .delta-val {
+      font-size: 1.05rem;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+    .compare-delta .delta-val.up { color: var(--good); }
+    .compare-delta .delta-val.down { color: var(--bad); }
+    .compare-delta .delta-val.flat { color: var(--muted); }
+    .compare-empty {
+      grid-column: 1 / -1;
+      color: var(--muted);
+      text-align: center;
+      padding: 8px;
+      border: 1px dashed var(--line);
+      border-radius: 12px;
+    }
+    .compare-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
+      gap: 8px;
+      width: min(100%, 560px);
+    }
+    .compare-deltas {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: flex-end;
+      width: min(100%, 560px);
+    }
+    .delta-chip {
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 0.68rem;
+      color: var(--muted);
+    }
+    .delta-chip b { font-variant-numeric: tabular-nums; margin-left: 4px; }
+    .delta-chip b.up { color: var(--good); }
+    .delta-chip b.down { color: var(--bad); }
+    .delta-chip b.flat { color: var(--muted); }
+    .active-run-label {
+      font-size: 0.65rem;
+      color: var(--muted);
+      text-align: right;
+      width: min(100%, 560px);
+    }
+    @media (max-width: 720px) {
+      .score-block { align-items: stretch; width: 100%; }
+      .compare-grid, .compare-deltas, .active-run-label { width: 100%; }
+      .compare-delta { flex-direction: row; gap: 8px; }
+    }
+
     main {
       display: grid;
       grid-template-columns: minmax(280px, 340px) 1fr;
@@ -177,11 +290,18 @@
         Demos: <a href="./earth-lab.html">Earth Lab</a> · <a href="./pin-quest.html">Pin Quest</a>
       </p>
     </div>
-    <div class="scores">
-      <div class="pill core"><b id="pctCore">—</b><span>Core</span></div>
-      <div class="pill extreme"><b id="pctExtreme">—</b><span>Extreme</span></div>
-      <div class="pill insane"><b id="pctInsane">—</b><span>Insane</span></div>
-      <div class="pill combined"><b id="pctCombined">—</b><span>Combined</span></div>
+    <div class="score-block">
+      <div class="scores">
+        <div class="pill core"><b id="pctCore">—</b><span>Core</span></div>
+        <div class="pill extreme"><b id="pctExtreme">—</b><span>Extreme</span></div>
+        <div class="pill insane"><b id="pctInsane">—</b><span>Insane</span></div>
+        <div class="pill combined"><b id="pctCombined">—</b><span>Combined</span></div>
+      </div>
+      <p class="active-run-label" id="activeRunLabel">Pills: grade a pack or upload to see tier averages</p>
+      <div id="runCompareWrap" style="width:min(100%,560px);display:flex;flex-direction:column;gap:8px;align-items:flex-end">
+        <div class="compare-grid" id="runCompare" aria-label="Run comparison"></div>
+        <div class="compare-deltas" id="runCompareDeltas" hidden></div>
+      </div>
     </div>
   </header>
 
@@ -193,9 +313,10 @@
       </div>
       <div class="actions" style="margin:0 0 10px">
         <button type="button" class="btn" id="btnGradeAll" title="Loads the checked-in example pack under solutions/">Grade example solutions/</button>
+        <button type="button" class="btn" id="btnGradeNoAgent" title="Loads the Cursor baseline pack under NoAgentSolutions/ (no MapTiler agent, no local skill)">No Maptiler Agent Run</button>
       </div>
       <div class="status" id="batchStatus" style="margin-bottom:10px">
-        Example pack is demo output only. Upload grades <em>only</em> the files you select (replaces the scoreboard — it will not pull in <code>solutions/</code> for missing ids).
+        Example pack is demo output only. <strong>No Maptiler Agent Run</strong> grades <code>NoAgentSolutions/</code> (Cursor baseline). Upload grades <em>only</em> the files you select (replaces the scoreboard — it will not pull in <code>solutions/</code> for missing ids).
       </div>
       <div style="margin-bottom:12px;padding:10px;border:1px dashed var(--line);border-radius:8px">
         <label for="uploadPack" style="margin:0 0 6px;display:block">Upload your solutions</label>
@@ -373,6 +494,176 @@
       return harsh ? "harsh" : "normal";
     }
 
+    const PACK_SNAPSHOT_KEY = "maptiler-pack-snapshots-v1";
+    const LAST_GRADED_SOURCE_KEY = "maptiler-last-graded-source";
+
+    const SOURCE_LABELS = {
+      "example-solutions": "Example solutions/",
+      "no-agent-baseline": "No MapTiler Agent",
+      upload: "Your upload",
+    };
+
+    function loadPackSnapshots() {
+      try {
+        return JSON.parse(localStorage.getItem(PACK_SNAPSHOT_KEY) || "{}");
+      } catch {
+        return {};
+      }
+    }
+
+    function savePackSnapshots(snaps) {
+      localStorage.setItem(PACK_SNAPSHOT_KEY, JSON.stringify(snaps));
+    }
+
+    function tierPctsFromRuns(runs) {
+      if (!catalog) return null;
+      const best = {};
+      for (const r of runs) {
+        if (!best[r.challengeId]) best[r.challengeId] = r;
+      }
+      const avg = (tier) => {
+        const list = catalog.challenges.filter((c) => c.tier === tier);
+        const scored = list.map((c) => best[c.id]?.pct).filter((x) => x != null);
+        if (!scored.length) return null;
+        return Math.round(scored.reduce((a, b) => a + b, 0) / scored.length);
+      };
+      const core = avg("core");
+      const extreme = avg("extreme");
+      const insane = avg("insane");
+      let combined = null;
+      if ([core, extreme, insane].some((x) => x != null)) {
+        const c = core ?? 0, e = extreme ?? 0, i = insane ?? 0;
+        const wC = core != null ? 1 : 0;
+        const wE = extreme != null ? 1.25 : 0;
+        const wI = insane != null ? 1.5 : 0;
+        const w = wC + wE + wI;
+        combined = Math.round((c * wC + e * wE + i * wI) / w);
+      }
+      return {
+        core,
+        extreme,
+        insane,
+        combined,
+        graded: Object.keys(best).length,
+        at: new Date().toISOString(),
+      };
+    }
+
+    function fmtPct(n) {
+      return n == null ? "—" : n + "%";
+    }
+
+    function fmtDelta(n) {
+      if (n == null) return { text: "—", cls: "flat" };
+      if (n === 0) return { text: "0", cls: "flat" };
+      const sign = n > 0 ? "+" : "";
+      return { text: sign + n, cls: n > 0 ? "up" : "down" };
+    }
+
+    function updateActiveRunLabel() {
+      const el = document.getElementById("activeRunLabel");
+      if (!el) return;
+      const src = localStorage.getItem(LAST_GRADED_SOURCE_KEY);
+      if (!src || !SOURCE_LABELS[src]) {
+        el.textContent = "Pills: grade a pack or upload to see tier averages";
+        return;
+      }
+      el.textContent = "Pills show latest grade: " + SOURCE_LABELS[src];
+    }
+
+    function updateRunCompare() {
+      const grid = document.getElementById("runCompare");
+      const deltasEl = document.getElementById("runCompareDeltas");
+      if (!grid) return;
+      const snaps = loadPackSnapshots();
+      const baseline = snaps["no-agent-baseline"];
+      const skill = snaps["example-solutions"];
+      const upload = snaps.upload;
+
+      if (!skill && !baseline && !upload) {
+        grid.innerHTML =
+          '<div class="compare-empty">' +
+          "Grade <strong>No MapTiler Agent Run</strong> for the baseline, then compare with " +
+          "<strong>Grade example solutions/</strong> or <strong>Grade uploaded files</strong> (your run)." +
+          "</div>";
+        if (deltasEl) deltasEl.hidden = true;
+        return;
+      }
+
+      const card = (cls, title, sub, s) => {
+        const subHtml = sub ? `<span class="sub">${escapeHtml(sub)}</span>` : "";
+        if (!s) {
+          return (
+            `<div class="compare-card ${cls}"><h3>${title}${subHtml}</h3>` +
+            `<div class="compare-rows"><span>status</span><b>not graded yet</b></div></div>`
+          );
+        }
+        return (
+          `<div class="compare-card ${cls}"><h3>${title}${subHtml}</h3>` +
+          `<div class="compare-rows">` +
+          `<span>Core</span><b>${fmtPct(s.core)}</b>` +
+          `<span>Extreme</span><b>${fmtPct(s.extreme)}</b>` +
+          `<span>Insane</span><b>${fmtPct(s.insane)}</b>` +
+          `<span>Combined</span><b>${fmtPct(s.combined)}</b>` +
+          `</div></div>`
+        );
+      };
+
+      const subFor = (s) => {
+        if (!s) return "";
+        const bits = [];
+        if (s.model) bits.push(s.model);
+        if (s.skillUsed === true) bits.push("skill on");
+        if (s.skillUsed === false) bits.push("skill off");
+        if (s.graded != null) bits.push(s.graded + " challenges");
+        return bits.join(" · ");
+      };
+
+      grid.innerHTML =
+        card("baseline", "No MapTiler Agent", subFor(baseline), baseline) +
+        card("skill", "Example solutions/", subFor(skill), skill) +
+        card("upload", "Your upload", subFor(upload), upload);
+
+      const chips = [];
+      function chip(label, a, b) {
+        if (!a || !b || a.combined == null || b.combined == null) return;
+        const d = fmtDelta(a.combined - b.combined);
+        chips.push(
+          `<span class="delta-chip">${label} vs baseline <b class="${d.cls}">${d.text}</b> combined</span>`
+        );
+      }
+      chip("Your upload", upload, baseline);
+      chip("Example", skill, baseline);
+      if (upload && skill && upload.combined != null && skill.combined != null) {
+        const d = fmtDelta(upload.combined - skill.combined);
+        chips.push(
+          `<span class="delta-chip">Your upload vs example <b class="${d.cls}">${d.text}</b> combined</span>`
+        );
+      }
+
+      if (deltasEl) {
+        if (chips.length) {
+          deltasEl.hidden = false;
+          deltasEl.innerHTML = chips.join("");
+        } else {
+          deltasEl.hidden = true;
+          deltasEl.innerHTML = "";
+        }
+      }
+    }
+
+    function rememberPackSnapshot(sourceTag, runs, extra) {
+      const allowed = ["example-solutions", "no-agent-baseline", "upload"];
+      if (!allowed.includes(sourceTag)) return;
+      const snap = tierPctsFromRuns(runs);
+      if (!snap) return;
+      Object.assign(snap, extra || {});
+      const snaps = loadPackSnapshots();
+      snaps[sourceTag] = snap;
+      savePackSnapshots(snaps);
+      updateRunCompare();
+    }
+
     async function boot() {
       const res = await fetch("./challenges/catalog.json");
       catalog = await res.json();
@@ -380,6 +671,8 @@
       renderList();
       renderBoard();
       updateTierPcts();
+      updateActiveRunLabel();
+      updateRunCompare();
       renderImprovement();
     }
 
@@ -711,19 +1004,19 @@
       return lines.join("\n");
     }
 
-    async function fetchSolution(id, exts) {
+    async function fetchSolution(id, exts, dir = "solutions") {
       for (const ext of exts) {
         try {
-          const res = await fetch(`./solutions/${id}${ext}`, { cache: "no-store" });
+          const res = await fetch(`./${dir}/${id}${ext}`, { cache: "no-store" });
           if (res.ok) return { source: await res.text(), ext };
         } catch { /* try next */ }
       }
       return null;
     }
 
-    async function fetchMeta(id) {
+    async function fetchMeta(id, dir = "solutions") {
       try {
-        const res = await fetch(`./solutions/${id}.meta.json`, { cache: "no-store" });
+        const res = await fetch(`./${dir}/${id}.meta.json`, { cache: "no-store" });
         if (res.ok) return await res.json();
       } catch { /* ignore */ }
       return null;
@@ -810,9 +1103,17 @@
       }
 
       MapTilerHarness.saveRuns(runs);
+      localStorage.setItem(LAST_GRADED_SOURCE_KEY, opts.sourceTag);
+      rememberPackSnapshot(opts.sourceTag, runs, {
+        label: opts.label,
+        model: formMeta.model,
+        skillUsed: formMeta.skillUsed,
+      });
       renderBoard();
       renderList();
       updateTierPcts();
+      updateActiveRunLabel();
+      updateRunCompare();
       renderImprovement();
       const missNote =
         missing > 0
@@ -827,23 +1128,37 @@
         (ok > 8 ? "…" : "");
     }
 
-    async function gradeAllFromSolutions() {
+    async function gradePackFromDir(dir, { label, sourceTag }) {
       if (!catalog) return;
       const status = document.getElementById("batchStatus");
-      status.textContent = "Loading example solutions/…";
+      status.textContent = `Loading ${dir}/…`;
       const pack = {};
       for (const c of catalog.challenges) {
-        const file = await fetchSolution(c.id, extFor(c));
+        const file = await fetchSolution(c.id, extFor(c), dir);
         if (!file) continue;
         pack[c.id] = {
           source: file.source,
           ext: file.ext,
-          meta: await fetchMeta(c.id),
+          meta: await fetchMeta(c.id, dir),
         };
       }
       // Keep in memory so selecting a challenge opens this pack (same as upload)
       uploadedPack = pack;
-      gradePack(pack, { label: "Example pack", sourceTag: "example-solutions" });
+      gradePack(pack, { label, sourceTag });
+    }
+
+    async function gradeAllFromSolutions() {
+      await gradePackFromDir("solutions", {
+        label: "Example pack",
+        sourceTag: "example-solutions",
+      });
+    }
+
+    async function gradeNoAgentRun() {
+      await gradePackFromDir("NoAgentSolutions", {
+        label: "No MapTiler Agent Run",
+        sourceTag: "no-agent-baseline",
+      });
     }
 
     function parseChallengeFileName(name) {
@@ -954,6 +1269,7 @@
         "Copied. Paste into your agent with the MapTiler skill. Then upload the output files here to grade (do not rely on the example solutions/ pack).";
     });
     document.getElementById("btnGradeAll").addEventListener("click", () => gradeAllFromSolutions());
+    document.getElementById("btnGradeNoAgent").addEventListener("click", () => gradeNoAgentRun());
     document.getElementById("btnGradeUpload").addEventListener("click", () => gradeUploadedFiles());
     document.getElementById("gradeHarsh").addEventListener("change", () => {
       const mode = applyGradeMode();
@@ -962,11 +1278,15 @@
     });
     document.getElementById("btnClearBoard").addEventListener("click", () => {
       MapTilerHarness.clearRuns();
+      localStorage.removeItem(PACK_SNAPSHOT_KEY);
+      localStorage.removeItem(LAST_GRADED_SOURCE_KEY);
       uploadedPack = {};
       pastedByChallenge = {};
       renderBoard();
       renderList();
       updateTierPcts();
+      updateActiveRunLabel();
+      updateRunCompare();
       renderImprovement();
       document.getElementById("batchStatus").textContent =
         "Scoreboard cleared. Upload files or grade the example pack.";
