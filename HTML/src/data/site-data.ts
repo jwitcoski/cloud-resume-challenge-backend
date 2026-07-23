@@ -79,6 +79,7 @@ export const projectOverview = {
     sideProjects: [
         { name: "Global Ski Atlas", url: "https://globalskiatlas.com" },
         { name: "Vector Scope AI", url: "https://vectorscopeai.com" },
+        { name: "Raiders of Antikythera", url: "/maptiler-playground/antikythera-dig.html" },
         { name: "MapTiler Agent Grader", url: "/maptiler-playground/index.html" },
         { name: "AWS SAA Study Plan", url: "/aws-solutions-architect-study.html" },
     ]
@@ -112,5 +113,12 @@ export const featureWork = [
         roles: ["MapTiler SDK", "Agent eval", "JavaScript", "Web GIS"],
         image: "/images/feature-work/maptiler-agent-grader.png",
         url: "/maptiler-playground/index.html"
+    },
+    {
+        title: "Raiders of Antikythera",
+        description: "Indiana Jones–flavored dig game on real Antikythera Survey Project tracts — fogged GeoJSON, PMTiles finds, MapTiler satellite, glory ranks, and chapter recovery.",
+        roles: ["MapTiler SDK", "PMTiles", "GeoJSON", "Game design"],
+        image: "/images/feature-work/raiders-of-antikythera.png",
+        url: "/maptiler-playground/antikythera-dig.html"
     }
 ];

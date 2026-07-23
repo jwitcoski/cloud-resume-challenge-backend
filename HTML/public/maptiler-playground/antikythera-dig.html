@@ -1,0 +1,4120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Raiders of Antikythera — Field Journal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Special+Elite&display=swap" rel="stylesheet" />
+  <link href="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.css" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #2a1f14;
+      --muted: #6b5340;
+      --parchment: #e8d9b8;
+      --parchment-deep: #d4c19a;
+      --leather: #4a2f1c;
+      --brass: #a67c2d;
+      --brass-bright: #c4963a;
+      --stamp: #8b2e2e;
+      --good: #4d6b32;
+      --warn: #9a5b24;
+      --dust: #c4b08a;
+      --panel-shadow: 0 14px 40px rgba(42, 31, 20, 0.45);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      height: 100%;
+      overflow: hidden;
+      font-family: "Special Elite", "Courier New", monospace;
+      color: var(--ink);
+      background: #2a1f14;
+    }
+
+    #map { position: absolute; inset: 0; }
+
+    .film {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse at center, transparent 42%, rgba(42, 31, 20, 0.55) 100%),
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 2px,
+          rgba(42, 31, 20, 0.03) 2px,
+          rgba(42, 31, 20, 0.03) 3px
+        );
+      animation: flicker 7s ease-in-out infinite;
+    }
+
+    @keyframes flicker {
+      0%, 100% { opacity: 1; }
+      48% { opacity: 1; }
+      50% { opacity: 0.92; }
+      52% { opacity: 1; }
+    }
+
+    .corner-stamp {
+      position: absolute;
+      z-index: 3;
+      top: 18px;
+      right: 18px;
+      width: 92px;
+      height: 92px;
+      border: 3px solid var(--stamp);
+      border-radius: 50%;
+      color: var(--stamp);
+      display: grid;
+      place-items: center;
+      text-align: center;
+      font-family: "Cinzel", serif;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      line-height: 1.15;
+      text-transform: uppercase;
+      transform: rotate(12deg);
+      opacity: 0.82;
+      background: rgba(232, 217, 184, 0.35);
+      box-shadow: inset 0 0 0 1px rgba(139, 46, 46, 0.35);
+      pointer-events: none;
+      animation: stamp-in 0.7s cubic-bezier(0.2, 1.4, 0.4, 1) both;
+    }
+
+    body:not(.playing) .hud,
+    body:not(.playing) .corner-stamp {
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .start-screen {
+      display: none;
+      position: absolute;
+      z-index: 8;
+      inset: 0;
+      align-items: stretch;
+      justify-content: center;
+      padding: clamp(12px, 3vh, 28px);
+      background:
+        radial-gradient(ellipse at 30% 20%, rgba(196, 150, 58, 0.12), transparent 50%),
+        radial-gradient(ellipse at 70% 80%, rgba(139, 46, 46, 0.18), transparent 45%),
+        rgba(42, 31, 20, 0.78);
+      overflow: auto;
+    }
+
+    .start-screen.on { display: flex; }
+
+    .start-card {
+      width: min(560px, 100%);
+      margin: auto;
+      padding: clamp(22px, 4vw, 34px) clamp(20px, 4vw, 32px) 24px;
+      border: 3px solid var(--leather);
+      background:
+        linear-gradient(160deg, rgba(255, 255, 255, 0.22), transparent 40%),
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 28px,
+          rgba(74, 47, 28, 0.04) 28px,
+          rgba(74, 47, 28, 0.04) 29px
+        ),
+        var(--parchment);
+      box-shadow: var(--panel-shadow);
+      animation: dossier-in 0.55s cubic-bezier(0.2, 1.3, 0.4, 1) both;
+    }
+
+    .start-card .eyebrow {
+      margin: 0 0 6px;
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--stamp);
+    }
+
+    .start-card h1 {
+      margin: 0 0 10px;
+      font-family: "Cinzel", serif;
+      font-size: clamp(1.55rem, 4.5vw, 2.15rem);
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      line-height: 1.15;
+      color: var(--leather);
+    }
+
+    .start-card .tagline {
+      margin: 0 0 18px;
+      font-size: 0.95rem;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+
+    .start-card h2 {
+      margin: 18px 0 8px;
+      font-family: "Cinzel", serif;
+      font-size: 0.95rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--brass);
+      border-bottom: 1px solid rgba(166, 124, 45, 0.45);
+      padding-bottom: 4px;
+    }
+
+    .start-card p {
+      margin: 0 0 10px;
+      font-size: 0.86rem;
+      line-height: 1.5;
+      color: var(--ink);
+    }
+
+    .start-card p:last-of-type { margin-bottom: 0; }
+
+    .start-card ul {
+      margin: 0 0 4px;
+      padding: 0 0 0 1.1rem;
+      font-size: 0.84rem;
+      line-height: 1.5;
+      color: var(--ink);
+    }
+
+    .start-card li { margin-bottom: 6px; }
+
+    .start-card .cite {
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .start-card .cite a {
+      color: var(--leather);
+    }
+
+    .start-facts {
+      display: grid;
+      gap: 8px;
+      margin: 4px 0 8px;
+    }
+
+    .start-fact {
+      padding: 8px 10px;
+      border-left: 3px solid var(--brass);
+      background: rgba(255, 248, 230, 0.5);
+      font-size: 0.8rem;
+      line-height: 1.4;
+      color: var(--ink);
+    }
+
+    .start-fact strong {
+      font-family: "Cinzel", serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--leather);
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .start-actions {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: stretch;
+    }
+
+    .start-actions .primary {
+      font-size: 1rem;
+      padding: 12px 18px;
+    }
+
+    .start-ready {
+      margin: 0;
+      text-align: center;
+      font-size: 0.75rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      min-height: 1.2em;
+    }
+
+    .start-ready.ok { color: var(--good); }
+
+    @keyframes stamp-in {
+      from { transform: rotate(12deg) scale(1.4); opacity: 0; }
+      to { transform: rotate(12deg) scale(1); opacity: 0.82; }
+    }
+
+    @keyframes dossier-in {
+      from { transform: translateY(18px) scale(0.96); opacity: 0; }
+      to { transform: none; opacity: 1; }
+    }
+
+    .hud {
+      position: absolute;
+      z-index: 3;
+      top: 14px;
+      left: 14px;
+      width: min(400px, calc(100vw - 28px));
+      max-height: calc(100vh - 28px);
+      overflow: auto;
+      padding: 18px 18px 16px;
+      color: var(--ink);
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.18), transparent 40%),
+        repeating-linear-gradient(
+          0deg,
+          var(--parchment) 0px,
+          var(--parchment) 28px,
+          var(--parchment-deep) 28px,
+          var(--parchment-deep) 29px
+        );
+      border: 2px solid var(--leather);
+      box-shadow:
+        var(--panel-shadow),
+        inset 0 0 0 1px rgba(166, 124, 45, 0.35),
+        inset 0 0 40px rgba(74, 47, 28, 0.08);
+      animation: journal-slide 0.55s ease-out both;
+    }
+
+    @keyframes journal-slide {
+      from { transform: translateX(-18px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    .hud::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 10px;
+      background: linear-gradient(180deg, #6b4228, var(--leather), #3a2414);
+      box-shadow: 2px 0 0 rgba(166, 124, 45, 0.4);
+    }
+
+    .eyebrow {
+      margin: 0 0 4px 8px;
+      font-family: "Cinzel", serif;
+      font-size: 0.68rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--stamp);
+    }
+
+    .hud h1 {
+      margin: 0 0 6px 8px;
+      font-family: "Cinzel", serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      line-height: 1.15;
+      color: var(--leather);
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
+    }
+
+    .isle-link {
+      appearance: none;
+      border: none;
+      background: none;
+      padding: 0;
+      margin: 0;
+      font: inherit;
+      color: var(--stamp);
+      cursor: pointer;
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 3px;
+      text-shadow: inherit;
+    }
+
+    .isle-link:hover {
+      color: #6e2020;
+    }
+
+    .isle-brief {
+      display: none;
+      position: absolute;
+      z-index: 5;
+      inset: 0;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(42, 31, 20, 0.62);
+    }
+
+    .isle-brief.on { display: flex; }
+
+    .isle-card {
+      width: min(560px, 100%);
+      max-height: min(88vh, 720px);
+      overflow: auto;
+      padding: 20px 18px 16px;
+      border: 3px solid var(--leather);
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.18), transparent 40%),
+        var(--parchment);
+      box-shadow: var(--panel-shadow);
+      animation: stamp-in 0.45s cubic-bezier(0.2, 1.35, 0.4, 1) both;
+    }
+
+    .isle-card .eyebrow { margin: 0 0 4px; }
+
+    .isle-card h2 {
+      margin: 0 0 10px;
+      font-family: "Cinzel", serif;
+      font-size: 1.35rem;
+      color: var(--leather);
+    }
+
+    .isle-card p {
+      margin: 0 0 10px;
+      font-size: 0.84rem;
+      line-height: 1.5;
+      color: var(--ink);
+    }
+
+    .isle-card p.muted { color: var(--muted); font-size: 0.78rem; }
+
+    #aegeanMap {
+      width: 100%;
+      height: 220px;
+      margin: 4px 0 12px;
+      border: 2px solid var(--leather);
+      background: #2a1f14;
+    }
+
+    .isle-card .row { margin: 0; justify-content: flex-end; }
+
+    .chapter-brief {
+      display: none;
+      position: absolute;
+      z-index: 5;
+      inset: 0;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(42, 31, 20, 0.68);
+    }
+
+    .chapter-brief.on { display: flex; }
+
+    .chapter-card {
+      width: min(520px, 100%);
+      max-height: min(88vh, 680px);
+      overflow: auto;
+      padding: 22px 20px 16px;
+      border: 3px solid #3f5a28;
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent 42%),
+        var(--parchment);
+      box-shadow: var(--panel-shadow);
+      animation: stamp-in 0.5s cubic-bezier(0.2, 1.35, 0.4, 1) both;
+    }
+
+    .chapter-card .eyebrow { margin: 0 0 4px; color: var(--good); }
+
+    .chapter-card h2 {
+      margin: 0 0 6px;
+      font-family: "Cinzel", serif;
+      font-size: 1.4rem;
+      color: var(--leather);
+    }
+
+    .chapter-card .when {
+      margin: 0 0 12px;
+      font-family: "Cinzel", serif;
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--stamp);
+    }
+
+    .chapter-card p {
+      margin: 0 0 10px;
+      font-size: 0.86rem;
+      line-height: 1.5;
+      color: var(--ink);
+    }
+
+    .chapter-card .museum {
+      margin: 12px 0 14px;
+      padding: 10px 12px;
+      border: 2px dashed var(--brass);
+      background: rgba(255, 248, 230, 0.65);
+      font-size: 0.88rem;
+      line-height: 1.45;
+    }
+
+    .chapter-card .museum strong { color: var(--good); }
+
+    .chapter-card .row { margin: 0; justify-content: flex-end; }
+
+    @media (max-width: 640px) {
+      #aegeanMap { height: 180px; }
+    }
+
+    .lede {
+      margin: 0 0 14px 8px;
+      color: var(--muted);
+      font-size: 0.86rem;
+      line-height: 1.45;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      margin: 0 0 12px 8px;
+    }
+
+    .stat {
+      padding: 8px 6px;
+      border: 1px dashed rgba(74, 47, 28, 0.35);
+      background: rgba(255, 248, 230, 0.45);
+    }
+
+    .stat .k {
+      display: block;
+      font-family: "Cinzel", serif;
+      font-size: 0.58rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .stat .v {
+      font-size: 1rem;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      color: var(--ink);
+    }
+
+    .phase {
+      margin: 0 0 12px 8px;
+      font-size: 0.9rem;
+      line-height: 1.45;
+      min-height: 2.6em;
+    }
+
+    .phase strong { color: var(--stamp); }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 0 0 10px 8px;
+    }
+
+    button {
+      appearance: none;
+      border: 2px solid var(--leather);
+      border-radius: 0;
+      background: linear-gradient(180deg, #f0e2c0, #d8c49a);
+      color: var(--ink);
+      font-family: "Cinzel", serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 9px 12px;
+      cursor: pointer;
+      box-shadow: 0 2px 0 rgba(74, 47, 28, 0.35);
+      transition: transform 0.12s ease, background 0.12s ease;
+    }
+
+    button:hover {
+      background: linear-gradient(180deg, #f7ebcf, #e0cc9f);
+      transform: translateY(-1px);
+    }
+
+    button:active { transform: translateY(1px); box-shadow: none; }
+    button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+    button.primary {
+      background: linear-gradient(180deg, #b23a3a, var(--stamp));
+      border-color: #5c1c1c;
+      color: #f8ecd4;
+      font-weight: 700;
+    }
+
+    button.primary:hover {
+      background: linear-gradient(180deg, #c44949, #9a3434);
+    }
+
+    button.survey.on {
+      background: linear-gradient(180deg, #3f5a28, var(--good));
+      border-color: #2a3f1c;
+      color: #f4ecd8;
+    }
+
+    .hud.paused {
+      box-shadow:
+        var(--panel-shadow),
+        inset 0 0 0 2px rgba(77, 107, 50, 0.55),
+        inset 0 0 40px rgba(74, 47, 28, 0.08);
+    }
+
+    .scout-legend {
+      display: none;
+      margin: 0 0 12px 8px;
+      padding: 10px 10px 8px;
+      border: 1px dashed rgba(74, 47, 28, 0.4);
+      background: rgba(255, 248, 230, 0.5);
+      font-size: 0.7rem;
+      line-height: 1.5;
+      color: var(--muted);
+    }
+
+    .hud.paused .scout-legend { display: block; }
+
+    .scout-legend strong { color: var(--ink); }
+    .scout-legend .lede-mini {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--muted);
+    }
+
+    .scout-swatch {
+      display: inline-block;
+      width: 0.75em;
+      height: 0.75em;
+      margin-right: 3px;
+      vertical-align: -0.08em;
+      border: 1px solid rgba(74, 47, 28, 0.4);
+    }
+
+    .scout-swatch.line {
+      height: 0;
+      border: none;
+      border-top: 3px solid #b85c38;
+      width: 0.9em;
+      vertical-align: 0.15em;
+      background: transparent;
+    }
+
+    .maplibregl-popup.dig-popup .maplibregl-popup-content {
+      padding: 0;
+      border: 2px solid var(--leather);
+      border-radius: 0;
+      background: var(--parchment);
+      box-shadow: var(--panel-shadow);
+      color: var(--ink);
+      font-family: "Special Elite", "Courier New", monospace;
+      max-width: 280px;
+    }
+
+    .maplibregl-popup.dig-popup .maplibregl-popup-tip {
+      border-top-color: var(--leather);
+      border-bottom-color: var(--leather);
+    }
+
+    .maplibregl-popup.dig-popup .maplibregl-popup-close-button {
+      color: var(--leather);
+      font-size: 18px;
+      padding: 2px 8px;
+    }
+
+    .dig-pop {
+      padding: 12px 14px 11px;
+    }
+
+    .dig-pop .kind {
+      margin: 0 0 4px;
+      font-family: "Cinzel", serif;
+      font-size: 0.58rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--stamp);
+    }
+
+    .dig-pop h3 {
+      margin: 0 0 8px;
+      font-family: "Cinzel", serif;
+      font-size: 0.95rem;
+      color: var(--leather);
+      font-weight: 700;
+    }
+
+    .dig-pop p {
+      margin: 0 0 7px;
+      font-size: 0.78rem;
+      line-height: 1.45;
+    }
+
+    .dig-pop p:last-child { margin-bottom: 0; }
+
+    .dig-pop .dig-tip {
+      padding-top: 7px;
+      border-top: 1px dashed rgba(74, 47, 28, 0.3);
+      color: var(--muted);
+    }
+
+    .dig-pop .dig-tip strong { color: var(--stamp); }
+
+    .mystery {
+      margin: 8px 0 0 8px;
+      padding-top: 10px;
+      border-top: 2px solid rgba(74, 47, 28, 0.25);
+    }
+
+    .mystery h2 {
+      margin: 0 0 8px;
+      font-family: "Cinzel", serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--leather);
+      font-weight: 700;
+    }
+
+    .era {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 4px 8px;
+      align-items: center;
+      margin-bottom: 7px;
+      font-size: 0.8rem;
+      padding: 4px 4px 6px;
+      cursor: help;
+      border: 1px solid transparent;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+
+    .era:hover,
+    .era:focus-within {
+      background: rgba(255, 248, 230, 0.55);
+      border-color: rgba(166, 124, 45, 0.45);
+      outline: none;
+    }
+
+    .era .name { color: var(--ink); }
+    .era.done .name { color: var(--good); font-weight: 700; }
+    .era .bar {
+      grid-column: 1 / -1;
+      height: 5px;
+      background: rgba(74, 47, 28, 0.15);
+      overflow: hidden;
+      border: 1px solid rgba(74, 47, 28, 0.2);
+    }
+    .era .bar > span {
+      display: block;
+      height: 100%;
+      background: linear-gradient(90deg, var(--brass), var(--brass-bright));
+      width: 0%;
+      transition: width 0.4s ease;
+    }
+    .era.done .bar > span { background: linear-gradient(90deg, #3f5a28, var(--good)); }
+
+    .mystery-note {
+      margin: 0 0 8px;
+      font-size: 0.68rem;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+
+    .era-tip {
+      position: fixed;
+      z-index: 8;
+      width: min(300px, calc(100vw - 24px));
+      padding: 12px 14px;
+      border: 2px solid var(--leather);
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.22), transparent 45%),
+        var(--parchment);
+      color: var(--ink);
+      box-shadow: var(--panel-shadow);
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity 0.15s ease, transform 0.15s ease;
+    }
+
+    .era-tip.on {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .era-tip .when {
+      margin: 0 0 6px;
+      font-family: "Cinzel", serif;
+      font-size: 0.62rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--stamp);
+    }
+
+    .era-tip h3 {
+      margin: 0 0 8px;
+      font-family: "Cinzel", serif;
+      font-size: 0.95rem;
+      color: var(--leather);
+      font-weight: 700;
+    }
+
+    .era-tip p {
+      margin: 0 0 8px;
+      font-size: 0.78rem;
+      line-height: 1.45;
+      color: var(--ink);
+    }
+
+    .era-tip p:last-child { margin-bottom: 0; }
+
+    .era-tip .where {
+      padding-top: 7px;
+      border-top: 1px dashed rgba(74, 47, 28, 0.3);
+      color: var(--muted);
+    }
+
+    .era-tip .where strong { color: var(--stamp); }
+
+    .log {
+      margin: 10px 0 0 8px;
+      max-height: 110px;
+      overflow: auto;
+      font-size: 0.78rem;
+      line-height: 1.4;
+      color: var(--muted);
+      border-left: 2px solid rgba(166, 124, 45, 0.45);
+      padding-left: 10px;
+    }
+
+    .log div { margin-bottom: 4px; }
+    .log .hit { color: var(--good); font-weight: 700; }
+    .log .miss { color: var(--warn); font-weight: 700; }
+
+    .hint {
+      margin: 12px 0 0 8px;
+      font-size: 0.68rem;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+
+    .hint a { color: var(--stamp); }
+
+    .toast {
+      position: absolute;
+      z-index: 4;
+      left: 50%;
+      bottom: 24px;
+      transform: translateX(-50%) rotate(-1deg);
+      padding: 10px 18px;
+      border: 2px solid var(--leather);
+      background: var(--parchment);
+      color: var(--ink);
+      font-size: 0.92rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+      max-width: calc(100vw - 32px);
+      box-shadow: var(--panel-shadow);
+    }
+
+    .toast.show { opacity: 1; }
+
+    .toast.hit {
+      border-color: var(--good);
+      color: var(--good);
+    }
+
+    .toast.miss {
+      border-color: var(--warn);
+      color: var(--warn);
+    }
+
+    .dig-event {
+      display: none;
+      position: absolute;
+      z-index: 5;
+      inset: 0;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(42, 31, 20, 0.55);
+      pointer-events: auto;
+    }
+
+    .dig-event.on { display: flex; }
+
+    .dig-event-card {
+      width: min(420px, 100%);
+      max-height: min(70vh, 520px);
+      overflow: auto;
+      padding: 22px 20px 18px;
+      border: 3px solid var(--leather);
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent 45%),
+        var(--parchment);
+      box-shadow: var(--panel-shadow);
+      animation: stamp-in 0.45s cubic-bezier(0.2, 1.35, 0.4, 1) both;
+      text-align: left;
+    }
+
+    .dig-event-card.hit-card { border-color: #3f5a28; }
+    .dig-event-card.miss-card { border-color: var(--warn); }
+
+    .dig-event-card .eyebrow {
+      margin: 0 0 4px;
+    }
+
+    .dig-event-card h2 {
+      margin: 0 0 10px;
+      font-family: "Cinzel", serif;
+      font-size: 1.45rem;
+      color: var(--leather);
+      letter-spacing: 0.04em;
+    }
+
+    .dig-event-card.hit-card h2 { color: var(--good); }
+    .dig-event-card.miss-card h2 { color: var(--warn); }
+
+    .dig-event-card .summary {
+      margin: 0 0 12px;
+      font-size: 0.86rem;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+
+    .dig-sites {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .dig-site {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 2px 10px;
+      padding: 8px 10px;
+      border: 1px dashed rgba(74, 47, 28, 0.35);
+      background: rgba(255, 248, 230, 0.45);
+      font-size: 0.78rem;
+      line-height: 1.4;
+    }
+
+    .dig-site .peg {
+      grid-row: 1 / span 2;
+      align-self: center;
+      width: 2.1rem;
+      height: 2.1rem;
+      display: grid;
+      place-items: center;
+      font-family: "Cinzel", serif;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      border: 2px solid currentColor;
+      border-radius: 50%;
+    }
+
+    .dig-site.hit { color: var(--good); }
+    .dig-site.miss { color: var(--warn); }
+
+    .dig-site .site-title {
+      font-family: "Cinzel", serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--ink);
+    }
+
+    .dig-site .site-detail { color: var(--muted); grid-column: 2; }
+
+    .dig-event-card .row { margin: 0; justify-content: flex-end; }
+
+    .dig-event-card.good-card { border-color: #3f5a28; }
+    .dig-event-card.good-card h2 { color: var(--good); }
+    .dig-event-card.bad-card { border-color: var(--stamp); }
+    .dig-event-card.bad-card h2 { color: var(--stamp); }
+    .dig-event-card.mixed-card { border-color: var(--brass); }
+    .dig-event-card.mixed-card h2 { color: var(--brass); }
+
+    .dig-event-card .effect {
+      margin: 0 0 14px;
+      padding: 8px 10px;
+      border: 1px dashed rgba(74, 47, 28, 0.35);
+      background: rgba(255, 248, 230, 0.55);
+      font-size: 0.82rem;
+      line-height: 1.45;
+      color: var(--ink);
+    }
+
+    .stat .v.busy { color: var(--warn); }
+
+    .stat .rank {
+      display: block;
+      margin-top: 2px;
+      font-family: "Cinzel", serif;
+      font-size: 0.55rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--brass);
+      line-height: 1.2;
+    }
+
+    @keyframes dig-pulse {
+      0%, 100% { opacity: 0.55; }
+      50% { opacity: 0.95; }
+    }
+
+    #error {
+      display: none;
+      position: absolute;
+      inset: 0;
+      z-index: 6;
+      background: var(--parchment);
+      color: var(--stamp);
+      padding: 28px;
+      white-space: pre-wrap;
+      font: 15px/1.5 "Special Elite", monospace;
+    }
+
+    .final {
+      display: none;
+      position: absolute;
+      z-index: 5;
+      inset: 0;
+      background: rgba(42, 31, 20, 0.72);
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .final.on { display: flex; }
+
+    .final-card {
+      width: min(440px, 100%);
+      padding: 30px 26px;
+      border: 3px solid var(--leather);
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent 45%),
+        var(--parchment);
+      text-align: center;
+      box-shadow: var(--panel-shadow);
+      animation: stamp-in 0.55s cubic-bezier(0.2, 1.3, 0.4, 1) both;
+    }
+
+    .final-card h2 {
+      margin: 0 0 8px;
+      font-family: "Cinzel", serif;
+      font-size: 1.55rem;
+      color: var(--leather);
+    }
+
+    .final-card p { margin: 0 0 16px; color: var(--muted); }
+    .final-card .big {
+      font-family: "Cinzel", serif;
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: var(--stamp);
+      margin-bottom: 6px;
+    }
+
+    .final-actions {
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .final-actions button {
+      flex: 1 1 140px;
+    }
+
+    .reveal-bar {
+      display: none;
+      position: absolute;
+      z-index: 4;
+      left: 50%;
+      bottom: 18px;
+      transform: translateX(-50%);
+      align-items: center;
+      gap: 14px;
+      padding: 10px 16px;
+      border: 2px solid var(--leather);
+      background: var(--parchment);
+      box-shadow: var(--panel-shadow);
+      font-family: "Special Elite", monospace;
+      font-size: 0.85rem;
+      color: var(--ink);
+      max-width: calc(100% - 32px);
+    }
+
+    .reveal-bar.on {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .maplibregl-ctrl-group {
+      border: 2px solid var(--leather) !important;
+      border-radius: 0 !important;
+      background: var(--parchment) !important;
+      box-shadow: none !important;
+    }
+
+    .maplibregl-ctrl button {
+      background-color: transparent !important;
+    }
+
+    @media (max-width: 640px) {
+      .hud {
+        top: auto;
+        bottom: 10px;
+        left: 10px;
+        right: 10px;
+        width: auto;
+        max-height: 48vh;
+      }
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .toast { bottom: calc(48vh + 18px); }
+      .reveal-bar { bottom: calc(48vh + 18px); }
+      .corner-stamp { width: 72px; height: 72px; font-size: 0.52rem; top: 10px; right: 10px; }
+      .era-tip {
+        bottom: calc(48vh + 14px);
+        top: auto !important;
+        left: 12px !important;
+        right: 12px;
+        width: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <div class="film" aria-hidden="true"></div>
+  <div class="corner-stamp">Field<br />Permit<br />1936</div>
+  <div id="error"></div>
+  <div class="toast" id="toast"></div>
+
+  <div class="start-screen on" id="startScreen" role="dialog" aria-labelledby="startTitle" aria-modal="true">
+    <div class="start-card">
+      <p class="eyebrow">Hellenic Antiquities Service · Field dossier</p>
+      <h1 id="startTitle">Raiders of Antikythera</h1>
+      <p class="tagline">
+        One year. One purse. One fogged Greek isle. Excavate real survey tracts, climb the academic ranks,
+        and recover the island’s lost chapters before the boats leave.
+      </p>
+
+      <h2>The dig</h2>
+      <ul>
+        <li>Mark fogged survey tracts (up to your crew size), then <strong>Excavate</strong>.</li>
+        <li><strong>Study landscape</strong> to read geology, terraces, and ruins — dig smarter, not just harder.</li>
+        <li>Finds fill five era chapters. Finish them all for museum glory; barren ground costs reputation.</li>
+        <li>Hire diggers, survive field events, and climb from Unknown toward Museum director.</li>
+      </ul>
+
+      <h2>Real archaeology under the fog</h2>
+      <p>
+        Every square is a real unit from the <strong>Antikythera Survey Project</strong> (Andrew Bevan &amp; James Conolly) —
+        an intensive, island-wide surface survey that walked the rock recording pottery, lithics, structures, terraces, and geology.
+        Digging a tract reveals the actual finds mapped for that patch of ground. No random loot table dressed up as science.
+      </p>
+      <p class="cite">
+        Archive:
+        <a href="https://doi.org/10.5284/1012484" target="_blank" rel="noopener">ADS 10.5284/1012484</a>
+        · CC BY 3.0 · served here as GeoJSON + PMTiles on MapTiler satellite basemap.
+      </p>
+
+      <h2>Field notes &amp; fun facts</h2>
+      <div class="start-facts">
+        <div class="start-fact">
+          <strong>The mechanism</strong>
+          Offshore, sponge divers found a 1st-century BC wreck that held the Antikythera mechanism — a bronze geared
+          “computer” for celestial cycles. The island’s fame outgrew the island.
+        </div>
+        <div class="start-fact">
+          <strong>A speck with sea lanes</strong>
+          Only ~21 km², yet it sits between Kythera and Crete on routes that linked the Aegean for millennia —
+          hunters with Melian obsidian, Bronze Age farms, a Hellenistic stronghold (often called a pirate nest), then Late Roman villages.
+        </div>
+        <div class="start-fact">
+          <strong>Walked, not guessed</strong>
+          The survey divided the island into tracts and counted what lay on the surface. Your fog is that grid;
+          pottery sherds and chipped stone are the same points archaeologists bagged in the field.
+        </div>
+        <div class="start-fact">
+          <strong>Fortune has a price</strong>
+          Empty digs drain glory. Chapters and paydirt promote you. Dig like your dissertation — and your tenure — depend on it.
+        </div>
+      </div>
+
+      <div class="start-actions">
+        <button type="button" class="primary" id="btnStart">Stamp the permit</button>
+        <p class="start-ready" id="startReady">Loading charts from Athens…</p>
+      </div>
+    </div>
+  </div>
+  <div class="dig-event" id="digEvent" aria-live="polite">
+    <div class="dig-event-card" id="digEventCard">
+      <p class="eyebrow" id="digEventEyebrow">Field dispatch</p>
+      <h2 id="digEventTitle">Excavation</h2>
+      <p class="summary" id="digEventSummary"></p>
+      <div class="dig-sites" id="digEventSites"></div>
+      <div class="row">
+        <button type="button" class="primary" id="digEventOk">Back to the journal</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="dig-event" id="fieldEvent" aria-live="polite">
+    <div class="dig-event-card" id="fieldEventCard">
+      <p class="eyebrow" id="fieldEventEyebrow">Cable from the mainland</p>
+      <h2 id="fieldEventTitle">Something turns up</h2>
+      <p class="summary" id="fieldEventSummary"></p>
+      <p class="effect" id="fieldEventEffect"></p>
+      <div class="row">
+        <button type="button" class="primary" id="fieldEventOk">Carry on</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="isle-brief" id="isleBrief" role="dialog" aria-labelledby="isleTitle" aria-modal="true">
+    <div class="isle-card">
+      <p class="eyebrow">Expedition briefing</p>
+      <h2 id="isleTitle">Antikythera</h2>
+      <div id="aegeanMap" aria-label="Map of Antikythera in the Aegean Sea"></div>
+      <p class="muted">
+        Between Kythera and Crete, on the sea lanes of the southern Aegean — a speck that punched above its weight.
+      </p>
+      <p>
+        Antikythera is a small Greek island (~21 km²) perched between the Peloponnese and Crete.
+        Remote on a map, it sits on routes that linked the eastern and central Mediterranean for millennia.
+      </p>
+      <p>
+        That geography wrote an episodic history: Neolithic visitors with Melian obsidian, Bronze Age farms
+        tied to Crete, a Hellenistic fortified community (often read as a pirate stronghold), Late Roman villages,
+        thin Byzantine returns — and, offshore, the famous 1st-century BC wreck that yielded the Antikythera mechanism,
+        the ancient geared “computer” that made the island’s name immortal.
+      </p>
+      <p>
+        The dig board you are playing uses the Antikythera Survey Project (Bevan &amp; Conolly) — an intensive,
+        island-wide surface survey that mapped tracts, terraces, geology, and finds across the whole rock.
+        Your fogged squares are real survey units; the glory is in reading the landscape like an archaeologist.
+      </p>
+      <p class="muted">
+        Red pin = the isle. Zoom out to place it against Crete (south), Kythera (north), and the Aegean.
+      </p>
+      <div class="row">
+        <button type="button" class="primary" id="isleBriefOk">Back to the dig</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="chapter-brief" id="chapterBrief" role="dialog" aria-labelledby="chapterTitle" aria-modal="true">
+    <div class="chapter-card">
+      <p class="eyebrow" id="chapterEyebrow">Chapter recovered</p>
+      <h2 id="chapterTitle">Lost chapter</h2>
+      <p class="when" id="chapterWhen"></p>
+      <p id="chapterStory"></p>
+      <p id="chapterWhere"></p>
+      <p id="chapterLook" class="muted" style="color:var(--muted);font-size:0.8rem"></p>
+      <div class="museum" id="chapterMuseum"></div>
+      <div class="row">
+        <button type="button" class="primary" id="chapterBriefOk">Continue the dig</button>
+      </div>
+    </div>
+  </div>
+
+  <aside class="hud">
+    <p class="eyebrow">Confidential expedition journal</p>
+    <h1>Raiders of <button type="button" class="isle-link" id="btnIsle" title="About the island">Antikythera</button></h1>
+    <p class="lede">
+      Fortune and glory on a forgotten Greek isle. You’ve got one year, a battered purse,
+      and a crew that works for drachmas. Mark the fogged tracts. Dig like your dissertation depends on it.
+    </p>
+
+    <div class="stats">
+      <div class="stat"><span class="k">Purse</span><span class="v" id="statMoney">€8,000</span></div>
+      <div class="stat"><span class="k">Days</span><span class="v" id="statDays">365</span></div>
+      <div class="stat"><span class="k">Crew</span><span class="v" id="statWorkers">3</span></div>
+      <div class="stat">
+        <span class="k">Glory</span>
+        <span class="v" id="statScore">0</span>
+        <span class="rank" id="statRank">Unknown</span>
+      </div>
+    </div>
+
+    <p class="phase" id="phase">
+      Pencil the map — click fogged tracts (up to your crew), then strike with <strong>Excavate</strong>.
+    </p>
+
+    <div class="scout-legend" id="scoutLegend">
+      <strong>Landscape desk</strong>
+      <span class="lede-mini">Click a rock unit or terrace line for field notes. Fog &amp; finds stay hidden.</span>
+      <span class="scout-swatch" style="background:#d4a017"></span>Alluvium
+      <span class="scout-swatch" style="background:#f0e6c8"></span>Nummulitic ls.
+      <span class="scout-swatch" style="background:#c9b8a0"></span>Rudist ls.<br />
+      <span class="scout-swatch" style="background:#a89a88"></span>Brecciated ls.
+      <span class="scout-swatch" style="background:#b5a67a"></span>Clastic carbonate
+      <span class="scout-swatch" style="background:#6b4f2e"></span>Flysch<br />
+      <span class="scout-swatch" style="background:#7a6b4a"></span>Marls / ss.
+      <span class="scout-swatch" style="background:#8a8478"></span>Scree
+      <span class="scout-swatch line"></span>Terrace risers<br />
+      <span class="scout-swatch" style="background:#8b2e2e;border-radius:50%"></span>House
+      <span class="scout-swatch" style="background:#5c6b3a;border-radius:50%"></span>Shelter
+      <span class="scout-swatch" style="background:#3a6a8a;border-radius:50%"></span>Well / cistern
+      <span class="scout-swatch" style="background:#c4963a;border-radius:50%"></span>Threshing / press
+      <span class="scout-swatch" style="background:#6b4a6b;border-radius:50%"></span>Tomb?
+      <span class="scout-swatch" style="background:#4a5a6b;border-radius:50%"></span>Rock shelter
+    </div>
+
+    <div class="row">
+      <button type="button" class="primary" id="btnDig" disabled>Excavate</button>
+      <button type="button" id="btnClear">Erase marks</button>
+      <button type="button" id="btnHire">Hire digger (€500)</button>
+      <button type="button" class="survey" id="btnSurvey" title="Pause digging and study geology &amp; terraces">Study landscape</button>
+    </div>
+
+    <div class="mystery">
+      <h2>Lost chapters of the isle</h2>
+      <p class="mystery-note">Hover a chapter for field notes · click to glance that stretch of coast.</p>
+      <div id="eras"></div>
+    </div>
+
+    <div class="log" id="log"></div>
+
+    <p class="hint">
+      Survey truth courtesy of Bevan &amp; Conolly —
+      <a href="https://doi.org/10.5284/1012484" target="_blank" rel="noopener">ADS 10.5284/1012484</a>, CC BY 3.0.
+      Satellites by MapTiler. Survey overlays via PMTiles. Whips not included.
+    </p>
+  </aside>
+
+  <div class="era-tip" id="eraTip" role="tooltip" hidden></div>
+
+  <div class="final" id="final">
+    <div class="final-card">
+      <h2 id="finalTitle">Season closed</h2>
+      <div class="big" id="finalScore">0</div>
+      <p id="finalRank" style="font-family:Cinzel,serif;letter-spacing:0.08em;text-transform:uppercase;color:var(--brass);margin:0 0 10px;font-size:0.85rem"></p>
+      <p id="finalBlurb">The dig ends.</p>
+      <div class="row final-actions">
+        <button type="button" class="primary" id="btnAgain">Restart</button>
+        <button type="button" id="btnReveal">Reveal all archaeological materials</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="reveal-bar" id="revealBar" role="status">
+    <span>Fog lifted — pottery, lithics, grids &amp; structures exposed.</span>
+    <button type="button" class="primary" id="btnRestartReveal">Restart</button>
+  </div>
+
+  <script src="../admin-boundaries/js/config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pmtiles@3.2.0/dist/pmtiles.js"></script>
+  <script src="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.umd.min.js"></script>
+  <script>
+    const TRACTS_URL = "/maptiler-playground/data/antikythera/geojson/tracts.geojson";
+    const SCORES_URL = "/maptiler-playground/data/antikythera/tract-scores.json";
+    const TRACTS_FALLBACK =
+      "https://raw.githubusercontent.com/jwitcoski/jwitcoski.github.io/master/Antikythera/data/tracts.geojson";
+    const DIGBOARD_URL = "/maptiler-playground/data/antikythera/pmtiles/antikythera-digboard.pmtiles";
+    const FINDS_URL = "/maptiler-playground/data/antikythera/pmtiles/antikythera-finds.pmtiles";
+    const SURVEY_URL = "/maptiler-playground/data/antikythera/pmtiles/antikythera.pmtiles";
+    const CENTER = [23.294, 35.872];
+    const ISLAND_BOUNDS = [23.268, 35.822, 23.330, 35.907];
+
+    const MYSTERY = [
+      {
+        id: "neolithic",
+        label: "Stone-age hunters",
+        keys: ["MNLN", "FNEB1"],
+        need: 8,
+        museumBonus: 900,
+        gloryBonus: 60,
+        when: "Late Neolithic → early Bronze · c. 5th–3rd mill. BC",
+        blurb:
+          "Not villages — short visits by mobile groups tied to the Cyclades. They left Melian obsidian and local chert tools: hunting kits more than farmsteads.",
+        story:
+          "You have enough early lithics and rare early pottery to write the island’s opening chapter. Antikythera was not yet a settled farmscape — it was a stop on a wider Aegean network. Melian obsidian means boats, contacts, and hunters who knew these coasts long before the palaces of Crete.",
+        where:
+          "Sparse lithic scatters, mostly the southern half. Projectiles tend to hug the coasts; blade debris sits a little inland.",
+        look: "Lithics first; early pottery is scarce.",
+        hint: { lng: 23.308, lat: 35.864, radiusKm: 1.4, zoom: 13.4 },
+      },
+      {
+        id: "bronze",
+        label: "Bronze Age farms",
+        keys: ["EB2", "LPrePal", "FPal", "SPal", "TPal"],
+        need: 40,
+        museumBonus: 1400,
+        gloryBonus: 100,
+        when: "Bronze Age · Minoan-linked centuries",
+        blurb:
+          "Small farming families working fertile pockets, with strong cultural links to Crete during the palace period — Antikythera’s densest prehistoric landscape.",
+        story:
+          "The museum will take this seriously: a solid Bronze Age farmscape with Cretan ties. These were not pirates yet — they were households on soft soils and terraces, plugged into the world of the Minoan palaces. Antikythera briefly looked like a proper agricultural island.",
+        where:
+          "Concentrate on the south and centre. Look for soft soils and terrace country, not the rocky northern tip.",
+        look: "Pottery-heavy tracts (especially Early Bronze / EB2).",
+        hint: { lng: 23.305, lat: 35.866, radiusKm: 1.8, zoom: 13.1 },
+      },
+      {
+        id: "hellenistic",
+        label: "Pirate stronghold",
+        keys: ["Hell", "Class", "Arch"],
+        need: 6,
+        museumBonus: 1600,
+        gloryBonus: 120,
+        when: "Hellenistic · late 4th → mid-1st c. BC",
+        blurb:
+          "A fortified community perched on the island’s shipping lanes — the same strategic waters that later claimed the famous Antikythera wreck and its geared mechanism.",
+        story:
+          "The northern citadel comes into focus: a fortified Hellenistic community watching the sea lanes. Same centuries as the wreck that made “Antikythera” a household word — pirates, refugees, and hard power on a rock that commanded the channel between Crete and the Peloponnese.",
+        where:
+          "Almost entirely the northern tip. If you dig south of the waist of the island, you are hunting the wrong century.",
+        look: "Hellenistic pottery and standing structures near the citadel coast.",
+        hint: { lng: 23.296, lat: 35.887, radiusKm: 0.9, zoom: 14.0 },
+      },
+      {
+        id: "roman",
+        label: "Late Roman villages",
+        keys: ["ERom", "MRom", "LRom"],
+        need: 20,
+        museumBonus: 1200,
+        gloryBonus: 90,
+        when: "Roman → Late Roman",
+        blurb:
+          "After earlier abandonments, a clutch of farming villages re-seeded the island. Late Roman sherds are among the survey’s commonest finds.",
+        story:
+          "You have mapped a Late Roman reoccupation — not one capital, but several farming villages after earlier abandonments. The sherds are common for a reason: this is when the island again looked lived-in, with fields, water works, and ordinary imperial-era life.",
+        where:
+          "Scattered mid- and southern settlements rather than one capital. Several modest clusters beat one big hole.",
+        look: "Broad pottery spreads — Late Roman (LRom) especially.",
+        hint: { lng: 23.301, lat: 35.868, radiusKm: 1.7, zoom: 13.0 },
+      },
+      {
+        id: "byzantine",
+        label: "Byzantine return",
+        keys: ["EByz", "MByz"],
+        need: 4,
+        museumBonus: 1100,
+        gloryBonus: 80,
+        when: "Early–Middle Byzantine",
+        blurb:
+          "A thin reoccupation after Late Antique decline — glimpses more than towns. Easy to miss unless you are reading the labels.",
+        story:
+          "Byzantine material is scarce and precious. You have enough to argue for a thin return after Late Antique decline — not a boom town, but a stubborn foothold. The museum loves rare periods; every sherd here is a footnote that almost did not survive.",
+        where:
+          "Sparse southern finds. Treat every Byzantine sherd as precious; the chapter is short.",
+        look: "Rare EByz / MByz pottery in already-promising southern tracts.",
+        hint: { lng: 23.306, lat: 35.861, radiusKm: 1.3, zoom: 13.3 },
+      },
+    ];
+
+    const HIRE_COST = 500;
+    const MAX_WORKERS = 8;
+    const MIN_WORKERS = 1;
+    const DIG_COST_PER_TRACT = 120;
+    const DAYS_PER_TRACT = 4;
+    const FIELD_EVENT_CHANCE = 0.45;
+    /** Reputation hit for opening a barren tract — empty ground wastes the season. */
+    const GLORY_EMPTY_PENALTY = 40;
+
+    /**
+     * Academic glory ladder — score thresholds (inclusive min).
+     * Empty digs hurt; chapters and finds climb the ranks.
+     */
+    const GLORY_RANKS = [
+      {
+        min: 0,
+        title: "Unknown",
+        blurb: "No one in Athens has heard of you. Dig wisely — barren squares cost reputation.",
+      },
+      {
+        min: 120,
+        title: "Field assistant",
+        blurb: "You can hold a trowel without embarrassing the permit. Still disposable.",
+      },
+      {
+        min: 350,
+        title: "Graduate student",
+        blurb: "Notebooks, sunburn, and a thesis outline. The museum nods politely.",
+      },
+      {
+        min: 700,
+        title: "Lecturer",
+        blurb: "You teach the odd seminar. Students steal your jokes; journals ignore you.",
+      },
+      {
+        min: 1200,
+        title: "Assistant professor",
+        blurb: "Tenure track, thin salary, thicker correspondence. Peers start to watch.",
+      },
+      {
+        min: 2000,
+        title: "Associate professor",
+        blurb: "Your Antikythera notes circulate. Invitations arrive; so do rivals.",
+      },
+      {
+        min: 3200,
+        title: "Professor",
+        blurb: "Named chairs whisper your surname. The Aegean is your lecture hall.",
+      },
+      {
+        min: 4800,
+        title: "Department chair",
+        blurb: "You assign permits and crush mediocre abstracts. Power, with paperwork.",
+      },
+      {
+        min: 7000,
+        title: "Dean of the college",
+        blurb: "Budgets bend. Expeditions launch on your signature. Fortune — and glory — are institutional.",
+      },
+      {
+        min: 10000,
+        title: "Museum director",
+        blurb: "It belongs in a museum — and you run the museum. Legend of the dig.",
+      },
+    ];
+
+    /**
+     * Random field events — fortune, folly, and paperwork.
+     * apply(state) mutates and returns a short effect line for the card.
+     */
+    const FIELD_EVENTS = [
+      {
+        id: "benefactor",
+        tone: "good",
+        eyebrow: "Cable from Athens",
+        title: "A wealthy benefactor",
+        blurb:
+          "A industrialist who once wintered on Kythera wires funds to your dig account — “for science, and a footnote.”",
+        weight: 1.1,
+        apply(s) {
+          const n = 1200 + Math.floor(Math.random() * 1300);
+          s.money += n;
+          return `Purse +${money(n)}.`;
+        },
+      },
+      {
+        id: "students",
+        tone: "good",
+        eyebrow: "Boat from Piraeus",
+        title: "Archaeology students arrive",
+        blurb:
+          "A sunburned seminar group staggers ashore with notebooks and idealism. They work for board and glory.",
+        weight: 1,
+        canFire(s) { return s.workers < MAX_WORKERS; },
+        apply(s) {
+          const n = Math.min(2, MAX_WORKERS - s.workers);
+          s.workers += n;
+          return `Crew +${n} (now ${s.workers}).`;
+        },
+      },
+      {
+        id: "tourists",
+        tone: "mixed",
+        eyebrow: "Day-trippers",
+        title: "Tourists with deep pockets",
+        blurb:
+          "A steamer unloads sightseers hungry for “real archaeology.” They tip generously — and commandeer half your crew as guides.",
+        weight: 1.15,
+        canFire(s) { return s.workers >= 2; },
+        apply(s) {
+          const pay = 800 + Math.floor(Math.random() * 900);
+          const busy = Math.max(1, Math.floor(s.workers / 2));
+          s.money += pay;
+          s.busyWorkers = busy;
+          s.busyDigsLeft = 3;
+          return `+${money(pay)}, but ${busy} digger${busy > 1 ? "s" : ""} busy with tourists for the next 3 digs.`;
+        },
+      },
+      {
+        id: "rainstorm",
+        tone: "bad",
+        eyebrow: "Weather report",
+        title: "Aegean rainstorm",
+        blurb:
+          "The sky opens. Trenches flood, notebooks dissolve, and the foreman declares an early knock-off.",
+        weight: 1.2,
+        apply(s) {
+          const d = 8 + Math.floor(Math.random() * 10);
+          s.days = Math.max(0, s.days - d);
+          return `−${d} days on the permit.`;
+        },
+      },
+      {
+        id: "desertion",
+        tone: "bad",
+        eyebrow: "Dawn roll-call",
+        title: "Half the crew vanishes",
+        blurb:
+          "Beds empty, boots gone. Rumour says a better-paying survey on Crete — or a quarrel over last night’s raki.",
+        weight: 0.85,
+        canFire(s) { return s.workers >= 3; },
+        apply(s) {
+          const lost = Math.max(1, Math.floor(s.workers / 2));
+          s.workers = Math.max(MIN_WORKERS, s.workers - lost);
+          s.busyWorkers = Math.min(s.busyWorkers, Math.max(0, s.workers - 1));
+          return `Crew −${lost} (now ${s.workers}).`;
+        },
+      },
+      {
+        id: "museum_grant",
+        tone: "good",
+        eyebrow: "Official letter",
+        title: "Museum grant approved",
+        blurb:
+          "A dusty committee in Athens stamps your petition. The cheque is smaller than promised — still a cheque.",
+        weight: 1,
+        apply(s) {
+          const n = 900 + Math.floor(Math.random() * 800);
+          s.money += n;
+          return `Purse +${money(n)}.`;
+        },
+      },
+      {
+        id: "fair_weather",
+        tone: "good",
+        eyebrow: "Barometer rising",
+        title: "A week of perfect skies",
+        blurb:
+          "No wind, no rain, no ferry drama. The crew works like a machine and you claw back schedule.",
+        weight: 1,
+        apply(s) {
+          const d = 6 + Math.floor(Math.random() * 8);
+          s.days += d;
+          return `+${d} days restored to the calendar.`;
+        },
+      },
+      {
+        id: "customs",
+        tone: "bad",
+        eyebrow: "Harbour office",
+        title: "Customs seizes a crate",
+        blurb:
+          "Inspectors decide your “study collection” looks like smuggling. Fines, forms, and a lost afternoon.",
+        weight: 1,
+        apply(s) {
+          const fine = 400 + Math.floor(Math.random() * 500);
+          const d = 3 + Math.floor(Math.random() * 5);
+          s.money = Math.max(0, s.money - fine);
+          s.days = Math.max(0, s.days - d);
+          return `−${money(fine)} · −${d} days.`;
+        },
+      },
+      {
+        id: "ferry_strike",
+        tone: "bad",
+        eyebrow: "Harbour gossip",
+        title: "Ferry strike",
+        blurb:
+          "No boats, no bread, no new shovels. You wait for the mainland to remember Antikythera exists.",
+        weight: 1,
+        apply(s) {
+          const d = 5 + Math.floor(Math.random() * 8);
+          s.days = Math.max(0, s.days - d);
+          return `−${d} days stranded.`;
+        },
+      },
+      {
+        id: "food_poisoning",
+        tone: "bad",
+        eyebrow: "Camp infirmary",
+        title: "Bad octopus",
+        blurb:
+          "Last night’s stew was a mistake. Half the crew is green; trenches stay quiet.",
+        weight: 1,
+        canFire(s) { return s.workers >= 2; },
+        apply(s) {
+          const d = 4 + Math.floor(Math.random() * 5);
+          s.days = Math.max(0, s.days - d);
+          s.busyWorkers = Math.max(s.busyWorkers, Math.floor(s.workers / 2));
+          s.busyDigsLeft = Math.max(s.busyDigsLeft, 2);
+          return `−${d} days · half the crew sick for 2 digs.`;
+        },
+      },
+      {
+        id: "permit_paper",
+        tone: "bad",
+        eyebrow: "Ephorate memo",
+        title: "Permit paperwork",
+        blurb:
+          "A missing stamp. A wrong form. A clerk who has never heard of your dig. Bureaucracy is its own archaeology.",
+        weight: 1,
+        apply(s) {
+          const fine = 250 + Math.floor(Math.random() * 350);
+          const d = 2 + Math.floor(Math.random() * 4);
+          s.money = Math.max(0, s.money - fine);
+          s.days = Math.max(0, s.days - d);
+          return `−${money(fine)} · −${d} days.`;
+        },
+      },
+      {
+        id: "goats",
+        tone: "bad",
+        eyebrow: "Incident report",
+        title: "Goats in the trench",
+        blurb:
+          "A local herd discovers your open squares. Context is scrambled; tempers are worse.",
+        weight: 0.9,
+        apply(s) {
+          const g = 40 + Math.floor(Math.random() * 80);
+          const d = 2 + Math.floor(Math.random() * 3);
+          s.score = Math.max(0, s.score - g);
+          s.days = Math.max(0, s.days - d);
+          return `−${g} glory · −${d} days re-trowelling.`;
+        },
+      },
+      {
+        id: "rival",
+        tone: "bad",
+        eyebrow: "Camp rumour",
+        title: "Rival team poaches a digger",
+        blurb:
+          "A smoother-talking director from another permit offers higher wages. One of yours takes the bait.",
+        weight: 1,
+        canFire(s) { return s.workers > MIN_WORKERS; },
+        apply(s) {
+          s.workers = Math.max(MIN_WORKERS, s.workers - 1);
+          s.busyWorkers = Math.min(s.busyWorkers, Math.max(0, s.workers - 1));
+          return `Crew −1 (now ${s.workers}).`;
+        },
+      },
+      {
+        id: "tent_storm",
+        tone: "bad",
+        eyebrow: "Night watch",
+        title: "Gale shreds the tents",
+        blurb:
+          "Canvas flies toward Crete. You replace gear at island prices — which is to say, piracy.",
+        weight: 1,
+        apply(s) {
+          const cost = 350 + Math.floor(Math.random() * 450);
+          s.money = Math.max(0, s.money - cost);
+          return `−${money(cost)} for new canvas and rope.`;
+        },
+      },
+      {
+        id: "journal",
+        tone: "good",
+        eyebrow: "Press cutting",
+        title: "Your dig makes the papers",
+        blurb:
+          "A breathless column in a mainland paper calls you “the new Schliemann” — inaccurate, but useful.",
+        weight: 0.95,
+        apply(s) {
+          const g = 80 + Math.floor(Math.random() * 120);
+          s.score += g;
+          return `+${g} glory.`;
+        },
+      },
+      {
+        id: "fisherman",
+        tone: "good",
+        eyebrow: "Harbour tip",
+        title: "A fisherman’s tip",
+        blurb:
+          "Over coffee he sketches the northern cliffs: “Old walls up there, where the pirates watched the ships.”",
+        weight: 1,
+        apply(s) {
+          const g = 50 + Math.floor(Math.random() * 70);
+          s.score += g;
+          return `+${g} glory · check the northern citadel when you can.`;
+        },
+      },
+      {
+        id: "film_crew",
+        tone: "mixed",
+        eyebrow: "Hollywood on a mule",
+        title: "A film crew barges in",
+        blurb:
+          "They pay for “atmosphere,” block your best trench for “continuity,” and leave cigarette butts in a Late Roman bag.",
+        weight: 0.9,
+        apply(s) {
+          const pay = 600 + Math.floor(Math.random() * 700);
+          const d = 3 + Math.floor(Math.random() * 4);
+          s.money += pay;
+          s.days = Math.max(0, s.days - d);
+          return `+${money(pay)} · −${d} days of disruption.`;
+        },
+      },
+      {
+        id: "supply_boat",
+        tone: "good",
+        eyebrow: "Cargo manifest",
+        title: "Supply boat early",
+        blurb:
+          "Tinned beef, fresh pencils, and a crate of decent wine arrive a week ahead of schedule.",
+        weight: 1,
+        apply(s) {
+          const n = 500 + Math.floor(Math.random() * 400);
+          const d = 3 + Math.floor(Math.random() * 4);
+          s.money += n;
+          s.days += d;
+          return `+${money(n)} · +${d} days of morale.`;
+        },
+      },
+      {
+        id: "local_feast",
+        tone: "mixed",
+        eyebrow: "Village invitation",
+        title: "Saint’s day feast",
+        blurb:
+          "You cannot refuse. Dancing until dawn, free lamb, and a crew that will not lift a trowel tomorrow.",
+        weight: 0.95,
+        apply(s) {
+          const d = 1 + Math.floor(Math.random() * 2);
+          const g = 30 + Math.floor(Math.random() * 40);
+          s.days = Math.max(0, s.days - d);
+          s.score += g;
+          return `−${d} day${d > 1 ? "s" : ""} · +${g} glory (and a hangover).`;
+        },
+      },
+      {
+        id: "volunteer_priest",
+        tone: "good",
+        eyebrow: "Unexpected ally",
+        title: "The priest lends a hand",
+        blurb:
+          "He knows every terrace path and every goat track. For a week, your survey lines run true.",
+        weight: 0.9,
+        apply(s) {
+          const d = 4 + Math.floor(Math.random() * 5);
+          s.days += d;
+          if (s.workers < MAX_WORKERS && Math.random() < 0.4) {
+            s.workers += 1;
+            return `+${d} days · crew +1 (now ${s.workers}).`;
+          }
+          return `+${d} days of good guidance.`;
+        },
+      },
+    ];
+
+    /** Field notes for landscape desk (geology Type → dig guidance). */
+    const GEOLOGY_NOTES = {
+      Alluvium: {
+        title: "Alluvium",
+        kind: "Soft valley fill · Quaternary",
+        blurb:
+          "Young valley and pocket soils washed down from higher ground. Softer to dig, better water retention — the kind of ground Mediterranean farmers chase.",
+        dig: "Strong bet for Bronze Age and later farm pottery. Mark tracts that sit on these gold patches.",
+      },
+      "Nummulitic limestones": {
+        title: "Nummulitic limestones",
+        kind: "Hard bedrock",
+        blurb:
+          "Pale limestone packed with fossil coin-shaped forams (nummulites). Thin, rocky soils over tough rock.",
+        dig: "Expect thinner artefact carpets. Useful near coasts for lithics; farms prefer the softer neighbours.",
+      },
+      "Rudist bearing limestones": {
+        title: "Rudist-bearing limestones",
+        kind: "Hard bedrock",
+        blurb:
+          "Limestone with fossil rudist clams — another hard shelf of the island’s skeleton.",
+        dig: "Rocky and stingy for plough soils. Look for terraces where people forced farms onto the slopes.",
+      },
+      "Brecciated limestones": {
+        title: "Brecciated limestones",
+        kind: "Broken / cemented rock",
+        blurb:
+          "Fractured limestone rubble cemented back together. Rough walking, patchy soils.",
+        dig: "Mixed results — check adjoining alluvium or dense terrace webs before spending crew days.",
+      },
+      "Clastic carbonate series": {
+        title: "Clastic carbonate series",
+        kind: "Bedrock · mixed sediments",
+        blurb:
+          "Broken-up carbonate rocks and related sediments — somewhere between pure limestone and softer fills.",
+        dig: "Decent middle ground. Pair with terrace density when choosing where to open fog.",
+      },
+      Flysch: {
+        title: "Flysch",
+        kind: "Softer bedrock · erodible",
+        blurb:
+          "Stacked sandstones, shales and related beds that weather faster than limestone. Often cut into terraces.",
+        dig: "Good hunting for long-farmed slopes. Terrace lines on flysch are a classic Bronze / Roman signal.",
+      },
+      "Marls,Sandstones,Conglomerates": {
+        title: "Marls, sandstones & conglomerates",
+        kind: "Mixed soft rock",
+        blurb:
+          "A muddle of marl, sandstone and pebble beds — more workeable than pure limestone, less forgiving than true alluvium.",
+        dig: "Worth a shovel if terraces or structures sit nearby.",
+      },
+      Scree: {
+        title: "Scree",
+        kind: "Slope debris",
+        blurb:
+          "Loose rock fallen from cliffs and slopes — not a soil people choose to farm.",
+        dig: "Usually thin pickings. Walk past unless a chapter hint points you here.",
+      },
+    };
+
+    const GEOLOGY_FALLBACK = {
+      title: "Bedrock unit",
+      kind: "Survey geology",
+      blurb: "A mapped rock unit from the Antikythera Survey Project bedrock map.",
+      dig: "Compare with terrace density and chapter field notes before you dig.",
+    };
+
+    /**
+     * Terrace riser lines (ASP): each line is a wall holding a stepped farming shelf.
+     * `code` is the survey’s class label on the riser (0–2); treat denser webs as long investment.
+     */
+    const TERRACE_NOTES = {
+      0: {
+        title: "Terrace riser · class 0",
+        kind: "Agricultural terrace wall",
+        blurb:
+          "A terrace is a stepped farming shelf: a stone riser (this line) holds soil on a hillside so people can plough or plant where the slope would otherwise wash away.",
+        dig: "Even sparse risers mark human labour. Prefer denser terrace neighbourhoods for farm-period finds.",
+      },
+      1: {
+        title: "Terrace riser · class 1",
+        kind: "Agricultural terrace wall",
+        blurb:
+          "Clear terrace wall — part of the island’s ~12,000 mapped risers. These are landscape capital: generations of work, not a one-season camp.",
+        dig: "Solid cue for Bronze Age / Roman / later farming. Dig fogged tracts that sit inside terrace webs.",
+      },
+      2: {
+        title: "Terrace riser · class 2",
+        kind: "Agricultural terrace wall",
+        blurb:
+          "Well-expressed terrace riser. Dense copper-coloured hatchings = slopes people bothered to rebuild again and again.",
+        dig: "Prime scouting signal. Chapter hints that say “south / farms” love these lines.",
+      },
+    };
+
+    const TERRACE_FALLBACK = TERRACE_NOTES[2];
+
+    const STRUCTURE_NOTES = {
+      "old house": {
+        title: "Old house",
+        kind: "Domestic ruin",
+        blurb:
+          "Abandoned dwelling fabric from earlier settlement pulses. Often stone footings and collapsed walls still readable in the landscape.",
+        dig: "Settlement signal — dig neighbouring fogged tracts for pottery from the same occupation.",
+      },
+      "new house": {
+        title: "New house",
+        kind: "Recent domestic",
+        blurb:
+          "More recent housing stock. Useful as a landmark, less as a deep-time chapter clue.",
+        dig: "Navigate by it; spend shovels on older farm ground and terrace webs nearby.",
+      },
+      shelter: {
+        title: "Shelter",
+        kind: "Agricultural / pastoral shelter",
+        blurb:
+          "A small built shelter for people, tools, or animals while working the fields — part of everyday farming kit.",
+        dig: "Points to worked farmland. Open tracts around dense shelter clusters.",
+      },
+      "rock shelter": {
+        title: "Rock shelter",
+        kind: "Natural overhang · cave-like",
+        blurb:
+          "A natural rock overhang or shallow cave used (or usable) as shelter. On Antikythera these sit with the island’s cliffs and limestone shelves — closest thing in the survey to “caves.”",
+        dig: "Worth a look for lithics and early visits; also check Comments for tomb / rock-cutting notes.",
+      },
+      well: {
+        title: "Well",
+        kind: "Water source",
+        blurb:
+          "A dug well — scarce fresh water made these precious nodes. Farms and houses cluster toward reliable water.",
+        dig: "High-value landmark. Dig fog around wells when chasing Roman or later village chapters.",
+      },
+      cistern: {
+        title: "Cistern",
+        kind: "Water storage",
+        blurb:
+          "Built tank for catching and storing rain — another answer to a dry island.",
+        dig: "Same logic as wells: settlement and farming nearby are more likely.",
+      },
+      "threshing floor": {
+        title: "Threshing floor",
+        kind: "Agricultural installation",
+        blurb:
+          "A circular or paved floor where grain was threshed after harvest. Classic Mediterranean farm furniture — proof of cereal agriculture, not just grazing.",
+        dig: "Strong farm-period cue. Pair with terraces and alluvium when spending crew days.",
+      },
+      "wine press": {
+        title: "Wine press",
+        kind: "Agricultural installation",
+        blurb:
+          "Rock-cut or built press for crushing grapes. Signals vine husbandry and processing on or near the plot.",
+        dig: "Agricultural investment — dig adjacent tracts for related pottery.",
+      },
+      press: {
+        title: "Press",
+        kind: "Agricultural installation",
+        blurb: "A processing press (often for oil or wine) recorded by the survey.",
+        dig: "Treat like other farm kit — search the surrounding fog.",
+      },
+      "tomb?": {
+        title: "Tomb?",
+        kind: "Possible burial",
+        blurb:
+          "A feature the survey flagged as a possible tomb. Comments often note rock-cuttings or cist graves.",
+        dig: "Mortuary spots can sit apart from dense farm pottery — still mark nearby tracts if a chapter needs them.",
+      },
+      "possible limekiln": {
+        title: "Possible limekiln",
+        kind: "Industrial / craft",
+        blurb: "A candidate lime-burning kiln — craft industry tied to building and field walls.",
+        dig: "Landmark more than treasure; useful for reading post-medieval and recent activity.",
+      },
+      church: {
+        title: "Church",
+        kind: "Religious building",
+        blurb: "A church or chapel — later landmark and community focus.",
+        dig: "Orient yourself; dig older chapters in the farmland around it, not only at the door.",
+      },
+      windmill: {
+        title: "Windmill",
+        kind: "Industrial / milling",
+        blurb: "Wind-powered mill — another processing node in the farming landscape.",
+        dig: "Recent-leaning landmark; still a useful pin when navigating.",
+      },
+      watermill: {
+        title: "Watermill",
+        kind: "Industrial / milling",
+        blurb: "Water-powered mill — rare and tied to reliable runoff.",
+        dig: "Note the water story; dig nearby farm ground.",
+      },
+      "gun emplacement": {
+        title: "Gun emplacement",
+        kind: "Military · modern",
+        blurb:
+          "Twentieth-century military fitting — Antikythera sat on strategic sea lanes well into WWII.",
+        dig: "Modern noise for prehistoric chapters; ignore when hunting stone-age or Bronze Age glory.",
+      },
+      lighthouse: {
+        title: "Lighthouse",
+        kind: "Maritime landmark",
+        blurb: "Coastal navigation aid — modern seamanship, not ancient pottery.",
+        dig: "Use it to find yourself on the map, then dig inland farms and the northern citadel as needed.",
+      },
+    };
+
+    const STRUCTURE_FALLBACK = {
+      title: "Standing structure",
+      kind: "Survey landmark",
+      blurb:
+        "A built or rock-cut feature recorded by the Antikythera Survey — houses, shelters, wells, presses, tombs, and more.",
+      dig: "Read the type, then dig neighbouring fogged tracts for the pottery that dates the story.",
+    };
+
+    const errEl = document.getElementById("error");
+    function fail(msg, err) {
+      console.error(msg, err);
+      errEl.style.display = "block";
+      errEl.textContent = msg + (err && err.message ? "\n\n" + err.message : "");
+    }
+
+    function toast(msg, kind) {
+      const el = document.getElementById("toast");
+      el.textContent = msg;
+      el.classList.remove("hit", "miss");
+      if (kind === "hit" || kind === "miss") el.classList.add(kind);
+      el.classList.add("show");
+      clearTimeout(toast._t);
+      toast._t = setTimeout(() => {
+        el.classList.remove("show", "hit", "miss");
+      }, kind === "hit" ? 3200 : 2200);
+    }
+
+    function money(n) {
+      return "€" + Math.round(n).toLocaleString("en-US");
+    }
+
+    /** True when the expedition cannot open even one more tract. */
+    function cannotAffordDig() {
+      return state.money < DIG_COST_PER_TRACT || state.days < DAYS_PER_TRACT;
+    }
+
+    function gloryRank(score) {
+      let rank = GLORY_RANKS[0];
+      const s = Math.max(0, score || 0);
+      for (const r of GLORY_RANKS) {
+        if (s >= r.min) rank = r;
+      }
+      return rank;
+    }
+
+    function nextGloryRank(score) {
+      const s = Math.max(0, score || 0);
+      for (const r of GLORY_RANKS) {
+        if (r.min > s) return r;
+      }
+      return null;
+    }
+
+    function applyGlory(delta) {
+      const before = gloryRank(state.score);
+      state.score = Math.max(0, state.score + (delta || 0));
+      const after = gloryRank(state.score);
+      if (after.title !== before.title) {
+        const up = after.min > before.min;
+        logLine(
+          `<span class="${up ? "hit" : "miss"}">${up ? "Promotion" : "Demotion"}</span> · ` +
+            `${before.title} → <strong>${after.title}</strong>`,
+          up ? "hit" : "miss"
+        );
+        toast(
+          up ? `Promoted — ${after.title}` : `Reputation slips — ${after.title}`,
+          up ? "hit" : "miss"
+        );
+      }
+      return after;
+    }
+
+    function effectiveCrew() {
+      return Math.max(MIN_WORKERS, (state.workers || 1) - (state.busyWorkers || 0));
+    }
+
+    function trimSelectionToCrew() {
+      const cap = effectiveCrew();
+      while (state.selected.size > cap) {
+        const id = [...state.selected].pop();
+        state.selected.delete(id);
+        if (id != null) setTractState(id, { selected: false, dug: false, hit: false });
+      }
+    }
+
+    function tickBusyCrew() {
+      if (state.busyDigsLeft > 0) {
+        state.busyDigsLeft -= 1;
+        if (state.busyDigsLeft <= 0) {
+          state.busyWorkers = 0;
+          state.busyDigsLeft = 0;
+          logLine("The busy hands are back on the shovels.");
+        }
+      }
+    }
+
+    function pickFieldEvent() {
+      const pool = FIELD_EVENTS.filter((ev) => {
+        if (ev.once && state.eventsSeen.has(ev.id)) return false;
+        if (typeof ev.canFire === "function" && !ev.canFire(state)) return false;
+        return true;
+      });
+      if (!pool.length) return null;
+      const total = pool.reduce((n, ev) => n + (ev.weight || 1), 0);
+      let r = Math.random() * total;
+      for (const ev of pool) {
+        r -= ev.weight || 1;
+        if (r <= 0) return ev;
+      }
+      return pool[pool.length - 1];
+    }
+
+    function showFieldEvent(ev, effectLine) {
+      hideFindHover();
+      const card = document.getElementById("fieldEventCard");
+      card.classList.remove("good-card", "bad-card", "mixed-card", "hit-card", "miss-card");
+      card.classList.add((ev.tone || "mixed") + "-card");
+      document.getElementById("fieldEventEyebrow").textContent = ev.eyebrow || "Field cable";
+      document.getElementById("fieldEventTitle").textContent = ev.title;
+      document.getElementById("fieldEventSummary").textContent = ev.blurb;
+      document.getElementById("fieldEventEffect").textContent = effectLine;
+      document.getElementById("fieldEvent").classList.add("on");
+    }
+
+    function hideFieldEvent() {
+      document.getElementById("fieldEvent").classList.remove("on");
+    }
+
+    function runFieldEvent(ev) {
+      if (!ev) return;
+      const beforeTitle = gloryRank(state.score).title;
+      const effectLine = ev.apply(state) || "";
+      state.score = Math.max(0, state.score);
+      state.eventsSeen.add(ev.id);
+      trimSelectionToCrew();
+      const toneCls = ev.tone === "good" ? "hit" : ev.tone === "bad" ? "miss" : "";
+      logLine(
+        `<span class="${toneCls || "hit"}">${ev.title}</span> · ${effectLine}`,
+        toneCls || undefined
+      );
+      const after = gloryRank(state.score);
+      if (after.title !== beforeTitle) {
+        const prev = GLORY_RANKS.find((r) => r.title === beforeTitle) || GLORY_RANKS[0];
+        const promoted = after.min > prev.min;
+        logLine(
+          `<span class="${promoted ? "hit" : "miss"}">${promoted ? "Promotion" : "Demotion"}</span> · ` +
+            `${beforeTitle} → <strong>${after.title}</strong>`,
+          promoted ? "hit" : "miss"
+        );
+        toast(
+          promoted ? `Promoted — ${after.title}` : `Reputation slips — ${after.title}`,
+          promoted ? "hit" : "miss"
+        );
+      }
+      showFieldEvent(ev, effectLine);
+      renderHud();
+    }
+
+    function maybeFieldEventAfterDig() {
+      if (state.ended) return false;
+      if (state.digsDone < 1) return false;
+      if (Math.random() > FIELD_EVENT_CHANCE) return false;
+      const ev = pickFieldEvent();
+      if (!ev) return false;
+      runFieldEvent(ev);
+      return true;
+    }
+
+    function eraHave(m) {
+      let have = 0;
+      for (const k of m.keys) have += state.periods[k] || 0;
+      return have;
+    }
+
+    function newlyCompletedChapters() {
+      const out = [];
+      for (const m of MYSTERY) {
+        if (state.chaptersSolved.has(m.id)) continue;
+        if (eraHave(m) >= m.need) out.push(m);
+      }
+      return out;
+    }
+
+    function hideChapterBrief() {
+      document.getElementById("chapterBrief").classList.remove("on");
+      clearPeriodHint();
+    }
+
+    function showChapterComplete(m) {
+      hideFindHover();
+      hideDigEvent();
+      hideFieldEvent();
+      const bonus = m.museumBonus || 1000;
+      const glory = m.gloryBonus || 50;
+      state.money += bonus;
+      applyGlory(glory);
+      state.chaptersSolved.add(m.id);
+
+      document.getElementById("chapterEyebrow").textContent =
+        `Chapter ${state.chaptersSolved.size} of ${MYSTERY.length} · Museum stipend`;
+      document.getElementById("chapterTitle").textContent = m.label;
+      document.getElementById("chapterWhen").textContent = m.when || "";
+      document.getElementById("chapterStory").textContent = m.story || m.blurb || "";
+      document.getElementById("chapterWhere").innerHTML =
+        `<strong>Where it lived on the isle:</strong> ${m.where || ""}`;
+      document.getElementById("chapterLook").textContent = m.look
+        ? `In the dirt: ${m.look}`
+        : "";
+      document.getElementById("chapterMuseum").innerHTML =
+        `<strong>Museum cable:</strong> Your report on <em>${m.label}</em> has been accepted. ` +
+        `A stipend of <strong>${money(bonus)}</strong> is wired to the expedition — plus <strong>+${glory} glory</strong>.`;
+
+      const ok = document.getElementById("chapterBriefOk");
+      ok.textContent =
+        state.chaptersSolved.size >= MYSTERY.length
+          ? "Seal the season"
+          : state.chapterQueue.length
+            ? "Next chapter"
+            : "Continue the dig";
+
+      document.getElementById("chapterBrief").classList.add("on");
+      setPeriodHint(m);
+      if (map && m.hint) {
+        map.easeTo({
+          center: [m.hint.lng, m.hint.lat],
+          zoom: m.hint.zoom,
+          duration: 900,
+        });
+      }
+      logLine(
+        `<span class="hit">Chapter · ${m.label}</span> · museum +${money(bonus)} · +${glory} glory`,
+        "hit"
+      );
+      toast(`Chapter sealed — ${m.label} (+${money(bonus)})`, "hit");
+      renderHud();
+    }
+
+    function advanceChapterQueue() {
+      hideChapterBrief();
+      if (state.chapterQueue.length) {
+        showChapterComplete(state.chapterQueue.shift());
+        return true;
+      }
+      return false;
+    }
+
+    function finishAfterModals() {
+      if (advanceChapterQueue()) return;
+      if (digSelected._pendingWin) {
+        digSelected._pendingWin = false;
+        endSeason(true);
+        return;
+      }
+      // Re-check after museum stipends — a chapter payout can rescue a broke dig.
+      digSelected._pendingLose = false;
+      if (cannotAffordDig()) {
+        endSeason(false);
+        return;
+      }
+      maybeFieldEventAfterDig();
+    }
+
+    function finishDigModalFlow() {
+      hideDigEvent();
+      finishAfterModals();
+    }
+
+    function finishChapterModalFlow() {
+      finishAfterModals();
+    }
+
+    const PERIOD_LABELS = {
+      MNLN: "Mid–Late Neolithic",
+      FNEB1: "Final Neo / EB1",
+      EB2: "Early Bronze 2",
+      LPrePal: "Late Prepalatial",
+      FPal: "First Palace",
+      SPal: "Second Palace",
+      TPal: "Third Palace",
+      Arch: "Archaic",
+      Class: "Classical",
+      Hell: "Hellenistic",
+      ERom: "Early Roman",
+      MRom: "Middle Roman",
+      LRom: "Late Roman",
+      EByz: "Early Byzantine",
+      MByz: "Middle Byzantine",
+      Other: "Other / undated",
+      Recent: "Recent",
+    };
+
+    /** Why a period find is cool — hover copy for excavated tracts. */
+    const PERIOD_WHY = {
+      MNLN: "Mid–Late Neolithic material is vanishingly scarce here — early island visitors, not villages.",
+      FNEB1: "Final Neolithic / early Bronze — the island’s first stubborn fingerprints, often tied to Melian obsidian.",
+      EB2: "Early Bronze 2 pottery means farming families were already working this ground as Cretan culture stirred.",
+      LPrePal: "Late Prepalatial sherds sit on the doorstep of Crete’s first palaces — Antikythera looking south.",
+      FPal: "First Palace–period ware — Minoan-linked centuries when this isle was a farmed outpost.",
+      SPal: "Second Palace pottery — still in the Minoan orbit, when Crete’s great houses ruled the sea lanes.",
+      TPal: "Third Palace / Late Bronze traces — the last prehistoric farming pulse before long abandonments.",
+      Arch: "Archaic pottery — after the Bronze Age gap, Greek-speaking centuries creeping back onto the map.",
+      Class: "Classical sherds — city-state Greece’s wider world brushing this lonely rock.",
+      Hell: "Hellenistic pottery — same centuries as the northern pirate stronghold and the famous wreck.",
+      ERom: "Early Roman ware — the empire’s quiet farming reoccupation of a strategic speck.",
+      MRom: "Middle Roman pottery — mid-imperial life in the fields, not just at the fort.",
+      LRom: "Late Roman sherds are among the survey’s commonest — several villages reseeding the isle.",
+      EByz: "Early Byzantine material is rare gold — a thin return after Late Antique decline.",
+      MByz: "Middle Byzantine finds — glimpses of reoccupation, easy to miss unless you read the labels.",
+      Other: "Undated or mixed pieces — still proof someone walked this square of earth.",
+      Recent: "Recent material — modern noise for deep-time chapters, but it marks living memory of the land.",
+    };
+
+    const FIND_KIND_WHY = {
+      pottery:
+        "Fired clay outlasts empires. Every sherd is a dated breadcrumb of who cooked, traded, and farmed here.",
+      lithics:
+        "Struck stone tools — hunting kits and early craft. Obsidian can travel from Melos across a hundred kilometres of sea.",
+      structures:
+        "Built fabric in the tract — someone invested labour here beyond a one-night camp.",
+      other:
+        "Oddments from the sieve — small finds that still pin human presence to this patch of ground.",
+      empty:
+        "A clean miss teaches the map too — not every square of an island was lived on equally.",
+    };
+
+    const state = {
+      money: 8000,
+      days: 365,
+      workers: 3,
+      busyWorkers: 0,
+      busyDigsLeft: 0,
+      score: 0,
+      selected: new Set(),
+      dug: new Set(),
+      periods: Object.create(null),
+      scores: {},
+      reports: Object.create(null),
+      tractIndex: Object.create(null),
+      eventsSeen: new Set(),
+      chaptersSolved: new Set(),
+      chapterQueue: [],
+      digsDone: 0,
+      ended: false,
+      paused: false,
+      revealed: false,
+      started: false,
+    };
+
+    let bootDone = false;
+    let bootWelcome = { tractCount: 0, digZooms: "", findsZooms: "" };
+
+    let map;
+    let aegeanMap;
+    let landscapePopup;
+    let findHoverPopup;
+    let hoverKey = null;
+    let digFlashTimer;
+
+    function openIsleBriefing() {
+      const el = document.getElementById("isleBrief");
+      el.classList.add("on");
+      hideFindHover();
+
+      const bootInset = () => {
+        if (!window.maptilersdk || !window.MAPTILER_API_KEY) return;
+        maptilersdk.config.apiKey = window.MAPTILER_API_KEY;
+        if (!aegeanMap) {
+          aegeanMap = new maptilersdk.Map({
+            container: "aegeanMap",
+            style: maptilersdk.MapStyle.HYBRID,
+            center: [24.15, 36.75],
+            zoom: 6.15,
+            navigationControl: true,
+            geolocateControl: false,
+          });
+          aegeanMap.on("load", () => {
+            const marker = new maptilersdk.Marker({ color: "#8b2e2e" })
+              .setLngLat(CENTER)
+              .setPopup(
+                new maptilersdk.Popup({ offset: 12, className: "dig-popup" }).setHTML(
+                  `<div class="dig-pop"><p class="kind">Southern Aegean</p>` +
+                    `<h3>Antikythera</h3>` +
+                    `<p>Between Kythera (N) and Crete (S). Strategic pinch-point on ancient sea lanes.</p></div>`
+                )
+              )
+              .addTo(aegeanMap);
+            marker.togglePopup();
+
+            const neighbours = [
+              { name: "Kythera", lng: 22.98, lat: 36.25 },
+              { name: "Crete", lng: 24.9, lat: 35.25 },
+              { name: "Melos (obsidian)", lng: 24.45, lat: 36.72 },
+            ];
+            for (const n of neighbours) {
+              new maptilersdk.Marker({ color: "#a67c2d" })
+                .setLngLat([n.lng, n.lat])
+                .setPopup(
+                  new maptilersdk.Popup({ offset: 10, className: "dig-popup" }).setText(n.name)
+                )
+                .addTo(aegeanMap);
+            }
+          });
+        } else {
+          aegeanMap.resize();
+        }
+      };
+
+      // Map container is display:none until .on — resize after paint
+      requestAnimationFrame(() => requestAnimationFrame(bootInset));
+    }
+
+    function closeIsleBriefing() {
+      document.getElementById("isleBrief").classList.remove("on");
+    }
+
+    const VESSEL_TYPE = {
+      U: "Unidentified vessel",
+      JCon: "Closed jar / container",
+      "JCon?": "Closed jar / container?",
+      CPot: "Cooking pot",
+      "CPot?": "Cooking pot?",
+      LOpe: "Large open vessel",
+      "LOpe?": "Large open vessel?",
+      SOpe: "Small open vessel",
+      "SOpe?": "Small open vessel?",
+      JOpe: "Open jar",
+      "JOpe?": "Open jar?",
+      Pith: "Pithos (storage jar)",
+      "Pith?": "Pithos?",
+      Clo: "Closed form",
+      Oth: "Other form",
+      Open: "Open form",
+      SClo: "Small closed form",
+    };
+
+    const VESSEL_PART = {
+      B: "Body sherd",
+      H: "Handle",
+      R: "Rim",
+      Ba: "Base",
+      "R?": "Rim?",
+      "Ba?": "Base?",
+      L: "Leg / foot",
+      "H?": "Handle?",
+      "R and H": "Rim and handle",
+      T: "Spout / tube",
+      U: "Unidentified part",
+    };
+
+    const COARSENESS = { C: "Coarse", F: "Fine", M: "Medium" };
+    const THICKNESS = { M: "Medium wall", Tn: "Thin wall", Tk: "Thick wall" };
+
+    const LITHIC_MATERIAL = {
+      o: "Obsidian (likely Melos)",
+      wc: "White / pale chert",
+      rc: "Red chert",
+      Ba: "Basalt",
+      Wq: "White quartz",
+      gc: "Grey chert",
+      Brn: "Brown stone",
+      Beach: "Beach pebble",
+      c: "Chert",
+    };
+
+    const LITHIC_BLANK = {
+      flake: "Flake",
+      shatter: "Shatter",
+      blade: "Blade",
+      core: "Core",
+      chip: "Chip",
+      indeterminate: "Indeterminate blank",
+      spall: "Spall",
+    };
+
+    const LITHIC_TOOL = {
+      n: "Unretouched piece",
+      pe: "Pièce esquillée (splintered piece)",
+      "retouched blade": "Retouched blade",
+      "other retouched tools": "Retouched tool",
+      "flake scraper": "Flake scraper",
+      "retouched flake": "Retouched flake",
+      "biface fragment": "Biface fragment",
+      biface: "Biface",
+    };
+
+    const PERIOD_SCORE_KEYS = [
+      "MNLN", "FNEB1", "EB2", "LPrePal", "FPal", "SPal", "TPal", "PPalPG", "Geom",
+      "Arch", "Class", "Hell", "ERom", "MRom", "LRom", "EByz", "MByz",
+      "EVen", "MVen", "LVen", "Recent", "Other",
+    ];
+
+    function landscapePopupHtml(note) {
+      return (
+        `<div class="dig-pop">` +
+        `<p class="kind">${note.kind}</p>` +
+        `<h3>${note.title}</h3>` +
+        `<p>${note.blurb}</p>` +
+        `<p class="dig-tip"><strong>Dig tip:</strong> ${note.dig}</p>` +
+        `</div>`
+      );
+    }
+
+    function noteForGeology(props) {
+      const type = (props && props.Type) || "";
+      const base = GEOLOGY_NOTES[type] || {
+        ...GEOLOGY_FALLBACK,
+        title: type || GEOLOGY_FALLBACK.title,
+      };
+      const age = props && props.Age ? String(props.Age) : "";
+      return {
+        ...base,
+        kind: age ? base.kind + " · " + age : base.kind,
+      };
+    }
+
+    function noteForTerrace(props) {
+      const raw = props && props.code;
+      const code = Number(raw);
+      const key = Number.isFinite(code) ? code : 2;
+      return TERRACE_NOTES[key] || TERRACE_FALLBACK;
+    }
+
+    function noteForStructure(props) {
+      const type = (props && props.Type) || "";
+      const base = STRUCTURE_NOTES[type] || {
+        ...STRUCTURE_FALLBACK,
+        title: type || STRUCTURE_FALLBACK.title,
+      };
+      const comments = props && props.Comments ? String(props.Comments) : "";
+      const loc = props && props.LocErr != null ? String(props.LocErr) : "";
+      let blurb = base.blurb;
+      if (comments) blurb += ` Survey note: ${comments}.`;
+      let kind = base.kind;
+      if (loc) kind += ` · loc. ±${loc} m`;
+      return { ...base, blurb, kind };
+    }
+
+    function closeLandscapePopup() {
+      if (landscapePopup) landscapePopup.remove();
+    }
+
+    function openLandscapePopup(lngLat, note) {
+      if (!map || !note) return;
+      if (!landscapePopup) {
+        landscapePopup = new maptilersdk.Popup({
+          closeButton: true,
+          closeOnClick: true,
+          maxWidth: "300px",
+          className: "dig-popup",
+          offset: 12,
+        });
+      }
+      landscapePopup.setLngLat(lngLat).setHTML(landscapePopupHtml(note)).addTo(map);
+    }
+
+    function setLayerVis(id, visible) {
+      if (!map || !map.getLayer(id)) return;
+      map.setLayoutProperty(id, "visibility", visible ? "visible" : "none");
+    }
+
+    function setSurveyMode(on) {
+      if (!map || !state.started || state.ended) return;
+      state.paused = !!on;
+
+      if (state.paused) {
+        for (const id of state.selected) {
+          setTractState(id, {
+            selected: false,
+            dug: state.dug.has(id),
+            hit: !!(state.reports[id] && state.reports[id].hit),
+          });
+        }
+        state.selected.clear();
+        hideEraTip();
+        hideDigEvent();
+        hideFindHover();
+        hideFieldEvent();
+        hideChapterBrief();
+        closeLandscapePopup();
+      } else {
+        closeLandscapePopup();
+      }
+
+      // Dig board off while scouting
+      setLayerVis("tracts-fog", !state.paused);
+      setLayerVis("tracts-outline", !state.paused);
+      setLayerVis("tracts-pick", !state.paused);
+      setLayerVis("pottery-dots", !state.paused);
+      setLayerVis("lithics-dots", !state.paused);
+      setLayerVis("grids-line", !state.paused);
+      setLayerVis("dig-flash-fill", !state.paused);
+      setLayerVis("dig-flash-line", !state.paused);
+
+      // Landscape layers on
+      setLayerVis("terraces-line", state.paused);
+      setLayerVis("geology-outline", state.paused);
+      setLayerVis("structures-dots", true);
+      setLayerVis("geology-fill", true);
+      setLayerVis("find-heat", true);
+
+      if (map.getLayer("geology-fill")) {
+        map.setPaintProperty("geology-fill", "fill-opacity", state.paused ? 0.72 : 0.18);
+      }
+      if (map.getLayer("geology-outline")) {
+        map.setPaintProperty("geology-outline", "line-opacity", state.paused ? 0.9 : 0);
+      }
+
+      document.querySelector(".hud").classList.toggle("paused", state.paused);
+      const btn = document.getElementById("btnSurvey");
+      btn.classList.toggle("on", state.paused);
+      btn.textContent = state.paused ? "Resume digging" : "Study landscape";
+
+      toast(state.paused
+        ? "Dig paused — click geology or terraces for notes"
+        : "Fog restored — shovels ready");
+      renderHud();
+    }
+
+    function circlePolygon(lng, lat, radiusKm, steps) {
+      const n = steps || 48;
+      const ring = [];
+      const cosLat = Math.cos((lat * Math.PI) / 180);
+      for (let i = 0; i <= n; i++) {
+        const a = (i / n) * Math.PI * 2;
+        const dLng = (radiusKm / (111.32 * cosLat)) * Math.cos(a);
+        const dLat = (radiusKm / 110.57) * Math.sin(a);
+        ring.push([lng + dLng, lat + dLat]);
+      }
+      return { type: "Polygon", coordinates: [ring] };
+    }
+
+    function setPeriodHint(m) {
+      if (!map || !map.getSource("period-hint") || !m || !m.hint) return;
+      map.getSource("period-hint").setData({
+        type: "FeatureCollection",
+        features: [
+          {
+            type: "Feature",
+            properties: { id: m.id, label: m.label },
+            geometry: circlePolygon(m.hint.lng, m.hint.lat, m.hint.radiusKm),
+          },
+        ],
+      });
+    }
+
+    function clearPeriodHint() {
+      if (!map || !map.getSource("period-hint")) return;
+      map.getSource("period-hint").setData({ type: "FeatureCollection", features: [] });
+    }
+
+    function placeEraTip(anchorEl) {
+      const tip = document.getElementById("eraTip");
+      const r = anchorEl.getBoundingClientRect();
+      const tipW = Math.min(300, window.innerWidth - 24);
+      let left = r.right + 12;
+      if (left + tipW > window.innerWidth - 12) left = Math.max(12, r.left - tipW - 12);
+      if (window.innerWidth < 720) left = Math.max(12, (window.innerWidth - tipW) / 2);
+      let top = r.top;
+      tip.hidden = false;
+      tip.classList.add("on");
+      tip.style.width = tipW + "px";
+      tip.style.left = left + "px";
+      // measure after show
+      requestAnimationFrame(() => {
+        const h = tip.offsetHeight || 160;
+        if (top + h > window.innerHeight - 12) top = Math.max(12, window.innerHeight - h - 12);
+        tip.style.top = top + "px";
+      });
+    }
+
+    function showEraTip(m, anchorEl) {
+      const tip = document.getElementById("eraTip");
+      tip.innerHTML =
+        `<p class="when">${m.when}</p>` +
+        `<h3>${m.label}</h3>` +
+        `<p>${m.blurb}</p>` +
+        `<p class="where"><strong>Where to look:</strong> ${m.where}</p>` +
+        `<p class="where"><strong>In the dirt:</strong> ${m.look}</p>`;
+      placeEraTip(anchorEl);
+      setPeriodHint(m);
+    }
+
+    function hideEraTip() {
+      const tip = document.getElementById("eraTip");
+      tip.classList.remove("on");
+      tip.hidden = true;
+      clearPeriodHint();
+    }
+
+    function glanceEra(m) {
+      if (!map || !m.hint) return;
+      setPeriodHint(m);
+      map.easeTo({
+        center: [m.hint.lng, m.hint.lat],
+        zoom: m.hint.zoom,
+        duration: 900,
+      });
+      toast(`Field note · ${m.label}`);
+    }
+
+    function renderHud() {
+      document.getElementById("statMoney").textContent = money(state.money);
+      document.getElementById("statDays").textContent = String(state.days);
+      const crewEl = document.getElementById("statWorkers");
+      const free = effectiveCrew();
+      if (state.busyWorkers > 0) {
+        crewEl.textContent = `${free}/${state.workers}`;
+        crewEl.title = `${state.busyWorkers} busy (tourists/illness) · ${state.busyDigsLeft} dig(s) left`;
+        crewEl.classList.add("busy");
+      } else {
+        crewEl.textContent = String(state.workers);
+        crewEl.title = "";
+        crewEl.classList.remove("busy");
+      }
+      document.getElementById("statScore").textContent = String(state.score);
+      const rank = gloryRank(state.score);
+      const nxt = nextGloryRank(state.score);
+      const rankEl = document.getElementById("statRank");
+      rankEl.textContent = rank.title;
+      rankEl.title = nxt
+        ? `${rank.blurb} · Next: ${nxt.title} at ${nxt.min} glory (${nxt.min - state.score} to go)`
+        : rank.blurb;
+      document.getElementById("btnDig").disabled =
+        !state.started || state.ended || state.paused || state.selected.size === 0 || state.days <= 0 || state.money < DIG_COST_PER_TRACT
+        || document.getElementById("chapterBrief").classList.contains("on");
+      document.getElementById("btnHire").disabled =
+        !state.started || state.ended || state.paused || state.workers >= MAX_WORKERS || state.money < HIRE_COST
+        || document.getElementById("chapterBrief").classList.contains("on");
+      document.getElementById("btnClear").disabled =
+        !state.started || state.ended || state.paused || state.selected.size === 0
+        || document.getElementById("chapterBrief").classList.contains("on");
+      document.getElementById("btnSurvey").disabled =
+        !state.started || state.ended || document.getElementById("chapterBrief").classList.contains("on");
+
+      const phase = document.getElementById("phase");
+      if (!state.started) {
+        phase.innerHTML = "Awaiting permit stamp…";
+      } else if (state.ended && state.revealed) {
+        phase.innerHTML =
+          "<strong>Spoiler map</strong> — all archaeological materials shown. Restart when you’re done touring.";
+      } else if (state.ended) {
+        phase.innerHTML = "Pack it in — the permit has expired.";
+      } else if (document.getElementById("chapterBrief").classList.contains("on")) {
+        phase.innerHTML = "<strong>Chapter pause</strong> — the museum is reading your report. Digging waits.";
+      } else if (state.paused) {
+        phase.innerHTML =
+          "<strong>Landscape desk</strong> — click geology, terraces, or structure dots (wells, shelters, threshing floors…) then <strong>Resume digging</strong>.";
+      } else if (cannotAffordDig()) {
+        phase.innerHTML =
+          "Purse or days exhausted — the boats won’t wait for another trench.";
+      } else if (state.selected.size) {
+        phase.innerHTML =
+          `<strong>${state.selected.size}</strong> site(s) marked · crew can open <strong>${free}</strong>` +
+          (state.busyWorkers ? ` <span style="color:var(--warn)">(${state.busyWorkers} busy)</span>` : "") +
+          ` · ${money(state.selected.size * DIG_COST_PER_TRACT)} and ${state.selected.size * DAYS_PER_TRACT} days on the line.`;
+      } else {
+        phase.innerHTML = `Pencil the map — click fogged tracts (up to your crew), then strike with <strong>Excavate</strong>.`;
+      }
+
+      // If already insolvent with no modal open (e.g. after a purse-draining event), close the season.
+      if (
+        state.started &&
+        !state.ended &&
+        cannotAffordDig() &&
+        !document.getElementById("digEvent").classList.contains("on") &&
+        !document.getElementById("chapterBrief").classList.contains("on") &&
+        !document.getElementById("fieldEvent").classList.contains("on") &&
+        !document.getElementById("startScreen").classList.contains("on")
+      ) {
+        queueMicrotask(() => {
+          if (!state.ended && cannotAffordDig()) endSeason(false);
+        });
+      }
+
+      const eras = document.getElementById("eras");
+      eras.innerHTML = "";
+      let solved = 0;
+      for (const m of MYSTERY) {
+        let have = 0;
+        for (const k of m.keys) have += state.periods[k] || 0;
+        const pct = Math.min(100, Math.round((have / m.need) * 100));
+        const done = have >= m.need;
+        if (done) solved += 1;
+        const row = document.createElement("div");
+        row.className = "era" + (done ? " done" : "");
+        row.tabIndex = 0;
+        row.setAttribute("role", "button");
+        row.setAttribute("aria-label", m.label + " — field notes");
+        row.innerHTML =
+          `<span class="name">${done ? "★ " : ""}${m.label}</span>` +
+          `<span>${Math.min(have, m.need)}/${m.need}</span>` +
+          `<div class="bar"><span style="width:${pct}%"></span></div>`;
+        row.addEventListener("mouseenter", () => showEraTip(m, row));
+        row.addEventListener("mouseleave", hideEraTip);
+        row.addEventListener("focus", () => showEraTip(m, row));
+        row.addEventListener("blur", hideEraTip);
+        row.addEventListener("click", () => glanceEra(m));
+        row.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            glanceEra(m);
+          }
+        });
+        eras.appendChild(row);
+      }
+      return solved;
+    }
+
+    function logLine(html, cls) {
+      const log = document.getElementById("log");
+      const div = document.createElement("div");
+      if (cls) div.className = cls;
+      div.innerHTML = html;
+      log.prepend(div);
+    }
+
+    function setTractState(tractId, patch) {
+      try {
+        // Prefer vector digboard (PMTiles); fall back to geojson source
+        if (map.getSource("digboard")) {
+          map.setFeatureState(
+            { source: "digboard", sourceLayer: "tracts", id: tractId },
+            patch
+          );
+        }
+        if (map.getSource("tracts")) {
+          map.setFeatureState({ source: "tracts", id: tractId }, patch);
+        }
+      } catch (_) {
+        /* feature may not be ready */
+      }
+    }
+
+    function refreshTractStates() {
+      for (const id of state.dug) {
+        const hit = !!(state.reports[id] && state.reports[id].hit);
+        setTractState(id, { dug: true, selected: false, hit });
+      }
+      for (const id of state.selected) {
+        if (!state.dug.has(id)) setTractState(id, { selected: true, dug: false, hit: false });
+      }
+    }
+
+    function topPeriodKey(periods) {
+      let best = null;
+      let n = -1;
+      for (const [k, v] of Object.entries(periods || {})) {
+        if (v > n) {
+          n = v;
+          best = k;
+        }
+      }
+      return best;
+    }
+
+    function findHoverStory(r) {
+      const top = topPeriodKey(r.periods);
+      const periodLabel = top ? (PERIOD_LABELS[top] || top) : null;
+      const why =
+        (top && PERIOD_WHY[top]) ||
+        FIND_KIND_WHY[r.kind] ||
+        FIND_KIND_WHY.empty;
+      const chapterLine = (r.chapters || [])
+        .slice(0, 2)
+        .map((c) => `${c.label} (+${c.n})`)
+        .join(" · ");
+      const title = r.hit
+        ? (periodLabel ? periodLabel + " ground" : "Fruitful tract")
+        : "Barren tract";
+      const found = r.hit
+        ? r.detail
+        : "Opened and empty — the crew bags nothing but dust.";
+      return { title, found, why, chapterLine, periodLabel };
+    }
+
+    function findHoverHtml(r) {
+      const story = findHoverStory(r);
+      return (
+        `<div class="dig-pop">` +
+        `<p class="kind">Tract ${r.id}${r.hit ? " · excavated" : " · excavated (empty)"}</p>` +
+        `<h3>${story.title}</h3>` +
+        `<p><strong>What turned up:</strong> ${story.found}</p>` +
+        (story.chapterLine ? `<p><strong>Chapters:</strong> ${story.chapterLine}</p>` : "") +
+        `<p class="dig-tip"><strong>Why it matters:</strong> ${story.why}</p>` +
+        `</div>`
+      );
+    }
+
+    function topScoredPeriod(props) {
+      let best = null;
+      let n = 0;
+      for (const k of PERIOD_SCORE_KEYS) {
+        const v = Number(props && props[k]);
+        if (Number.isFinite(v) && v > n) {
+          n = v;
+          best = k;
+        }
+      }
+      return best ? { key: best, score: n } : null;
+    }
+
+    function noteForPottery(props) {
+      const p = props || {};
+      const vessel = VESSEL_TYPE[p.VesselType] || p.VesselType || "Pottery sherd";
+      const part = VESSEL_PART[p.VesselPart] || p.VesselPart || "Sherd";
+      const other = p.OtherType && p.OtherType !== "U" ? String(p.OtherType) : "";
+      const fabric = p.FabricType ? String(p.FabricType) : "";
+      const coarse = COARSENESS[p.Coarseness] || "";
+      const thick = THICKNESS[p.Thickness] || "";
+      const dated = topScoredPeriod(p);
+      const periodLine = dated
+        ? `${PERIOD_LABELS[dated.key] || dated.key} (survey confidence ${dated.score}%)`
+        : "Period uncertain";
+      const why = (dated && PERIOD_WHY[dated.key]) || FIND_KIND_WHY.pottery;
+      const bits = [part, coarse, thick].filter(Boolean).join(" · ");
+      let blurb = `${vessel}${other ? " — " + other : ""}.`;
+      if (fabric) blurb += ` Fabric: ${fabric}.`;
+      if (p.Comments) blurb += ` ${String(p.Comments).slice(0, 160)}${String(p.Comments).length > 160 ? "…" : ""}`;
+      return {
+        kind: "Pottery · " + periodLine,
+        title: other && other.length < 40 ? other : vessel,
+        blurb: bits ? `${bits}. ${blurb}` : blurb,
+        dig: why,
+        key: "p:" + (p.UID || Math.random()),
+      };
+    }
+
+    function noteForLithic(props) {
+      const p = props || {};
+      const mat = LITHIC_MATERIAL[p.Material] || LITHIC_MATERIAL[p.MatSimple] || p.Material || "Stone";
+      const blank = LITHIC_BLANK[p.PrimBlank] || p.PrimBlank || "Lithic";
+      const tool = LITHIC_TOOL[p.ToolType] || p.ToolType || "";
+      const sec = p.SecBlank ? String(p.SecBlank) : "";
+      const isObsidian = p.MatSimple === "o" || p.Material === "o";
+      const title = tool && tool !== "Unretouched piece" ? tool : blank;
+      let blurb = `${mat}. Primary form: ${blank}${sec ? " (" + sec + ")" : ""}.`;
+      if (tool) blurb += ` Tool class: ${tool}.`;
+      if (p.Length && p.Length !== "NA") {
+        blurb += ` Size ~${p.Length}×${p.Width || "?"}×${p.Thickness || "?"} mm.`;
+      }
+      if (p.ProjNotes) blurb += ` Note: ${p.ProjNotes}.`;
+      const dig = isObsidian
+        ? "Obsidian almost certainly crossed the sea from Melos — a portable clue to early Aegean networks, not local bedrock."
+        : (tool && tool !== "Unretouched piece"
+          ? "A shaped tool means someone finished the job here — hunting, cutting, or craft — not just discarded waste."
+          : FIND_KIND_WHY.lithics);
+      return {
+        kind: "Lithic · stone tool / debitage",
+        title,
+        blurb,
+        dig,
+        key: "l:" + (p.UID || Math.random()),
+      };
+    }
+
+    function artefactHoverHtml(note) {
+      return (
+        `<div class="dig-pop">` +
+        `<p class="kind">${note.kind}</p>` +
+        `<h3>${note.title}</h3>` +
+        `<p>${note.blurb}</p>` +
+        `<p class="dig-tip"><strong>Why it matters:</strong> ${note.dig}</p>` +
+        `</div>`
+      );
+    }
+
+    function hideFindHover() {
+      hoverKey = null;
+      if (findHoverPopup) findHoverPopup.remove();
+    }
+
+    function ensureFindHoverPopup() {
+      if (!findHoverPopup) {
+        findHoverPopup = new maptilersdk.Popup({
+          closeButton: false,
+          closeOnClick: false,
+          maxWidth: "300px",
+          className: "dig-popup",
+          offset: 14,
+        });
+      }
+      return findHoverPopup;
+    }
+
+    function showArtefactHover(feature, lngLat) {
+      if (!map || state.paused || state.ended) return;
+      if (document.getElementById("digEvent").classList.contains("on")) return;
+      const layerId = feature.layer && feature.layer.id;
+      const note = layerId === "lithics-dots"
+        ? noteForLithic(feature.properties)
+        : noteForPottery(feature.properties);
+      const popup = ensureFindHoverPopup();
+      if (hoverKey !== note.key) {
+        hoverKey = note.key;
+        popup.setHTML(artefactHoverHtml(note));
+      }
+      popup.setLngLat(lngLat).addTo(map);
+    }
+
+    function showFindHover(id, lngLat) {
+      if (!map || state.paused || state.ended) return;
+      if (document.getElementById("digEvent").classList.contains("on")) return;
+      const r = state.reports[id] || buildTractReport(id);
+      state.reports[id] = r;
+      const popup = ensureFindHoverPopup();
+      const key = "t:" + id;
+      if (hoverKey !== key) {
+        hoverKey = key;
+        popup.setHTML(findHoverHtml(r));
+      }
+      popup.setLngLat(lngLat).addTo(map);
+    }
+
+    function queryArtefactAt(point) {
+      const pad = 5;
+      return map.queryRenderedFeatures(
+        [
+          [point.x - pad, point.y - pad],
+          [point.x + pad, point.y + pad],
+        ],
+        { layers: ["pottery-dots", "lithics-dots"] }
+      );
+    }
+
+    function handleDugHover(e, tractId) {
+      const artefacts = queryArtefactAt(e.point);
+      if (artefacts.length) {
+        map.getCanvas().style.cursor = "help";
+        showArtefactHover(artefacts[0], e.lngLat);
+        return;
+      }
+      map.getCanvas().style.cursor = "help";
+      showFindHover(tractId, e.lngLat);
+    }
+
+    function topPeriods(periods, limit) {
+      return Object.entries(periods || {})
+        .filter(([, n]) => n > 0)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, limit || 3)
+        .map(([k, n]) => `${PERIOD_LABELS[k] || k} ×${n}`);
+    }
+
+    function buildTractReport(id) {
+      const s = state.scores[id] || {
+        pottery: 0, lithics: 0, other: 0, structures: 0, periods: {}, value: 0, lng: null, lat: null,
+      };
+      const pottery = s.pottery || 0;
+      const lithics = s.lithics || 0;
+      const structures = s.structures || 0;
+      const other = s.other || 0;
+      const finds = pottery + lithics + structures + other;
+      const hit = finds > 0 || (s.value || 0) > 0;
+      let kind = "empty";
+      if (pottery >= lithics && pottery >= structures && pottery > 0) kind = "pottery";
+      else if (lithics >= structures && lithics > 0) kind = "lithics";
+      else if (structures > 0) kind = "structures";
+      else if (other > 0) kind = "other";
+      const chapters = [];
+      for (const m of MYSTERY) {
+        let n = 0;
+        for (const k of m.keys) n += (s.periods || {})[k] || 0;
+        if (n > 0) chapters.push({ id: m.id, label: m.label, n });
+      }
+      return {
+        id,
+        hit,
+        kind,
+        pottery,
+        lithics,
+        structures,
+        other,
+        finds,
+        value: s.value || 0,
+        periods: s.periods || {},
+        chapters,
+        lng: s.lng,
+        lat: s.lat,
+        detail: hit
+          ? [
+              pottery ? `${pottery} pottery` : null,
+              lithics ? `${lithics} lithics` : null,
+              structures ? `${structures} structures` : null,
+              other ? `${other} other` : null,
+              s.value ? `+${s.value} glory` : null,
+            ].filter(Boolean).join(" · ")
+          : `The sieve is empty — −${GLORY_EMPTY_PENALTY} glory`,
+      };
+    }
+
+    function updateFindMarkers(freshIds) {
+      const fresh = freshIds || new Set();
+      const feats = [];
+      for (const id of state.dug) {
+        const r = state.reports[id] || buildTractReport(id);
+        if (!r.hit || r.lng == null || r.lat == null) continue;
+        feats.push({
+          type: "Feature",
+          properties: {
+            id,
+            value: r.value,
+            pottery: r.pottery,
+            lithics: r.lithics,
+            structures: r.structures,
+            kind: r.kind,
+            fresh: fresh.has(id) ? 1 : 0,
+            label: r.detail,
+          },
+          geometry: { type: "Point", coordinates: [r.lng, r.lat] },
+        });
+      }
+      const src = map.getSource("find-markers");
+      if (src) src.setData({ type: "FeatureCollection", features: feats });
+    }
+
+    function flashDugTracts(reports) {
+      if (!map || !map.getSource("dig-flash")) return;
+      const features = [];
+      for (const r of reports) {
+        const f = state.tractIndex[r.id];
+        if (!f || !f.geometry) continue;
+        features.push({
+          type: "Feature",
+          properties: { id: r.id, hit: r.hit ? 1 : 0 },
+          geometry: f.geometry,
+        });
+      }
+      map.getSource("dig-flash").setData({ type: "FeatureCollection", features });
+      clearTimeout(digFlashTimer);
+      digFlashTimer = setTimeout(() => {
+        if (map.getSource("dig-flash")) {
+          map.getSource("dig-flash").setData({ type: "FeatureCollection", features: [] });
+        }
+      }, 5500);
+    }
+
+    function focusDigBatch(reports) {
+      if (!map || !reports.length) return;
+      const coords = [];
+      for (const r of reports) {
+        if (r.lng != null && r.lat != null) coords.push([r.lng, r.lat]);
+        else {
+          const f = state.tractIndex[r.id];
+          if (f && f.geometry && f.geometry.type === "Polygon") {
+            coords.push(f.geometry.coordinates[0][0]);
+          }
+        }
+      }
+      if (!coords.length) return;
+      if (coords.length === 1) {
+        map.easeTo({ center: coords[0], zoom: Math.max(map.getZoom(), 15.2), duration: 900 });
+        return;
+      }
+      let minX = coords[0][0], maxX = coords[0][0], minY = coords[0][1], maxY = coords[0][1];
+      for (const [x, y] of coords) {
+        minX = Math.min(minX, x); maxX = Math.max(maxX, x);
+        minY = Math.min(minY, y); maxY = Math.max(maxY, y);
+      }
+      map.fitBounds(
+        [[minX, minY], [maxX, maxY]],
+        { padding: { top: 80, bottom: 80, left: 420, right: 80 }, maxZoom: 15.5, duration: 900 }
+      );
+    }
+
+    function siteRowHtml(r) {
+      const stamp = r.hit ? "FIND" : "DUST";
+      const cls = r.hit ? "hit" : "miss";
+      const periods = topPeriods(r.periods, 2);
+      const chapters = (r.chapters || []).map((c) => `${c.label} +${c.n}`).join(" · ");
+      const extra = [
+        periods.length ? periods.join(", ") : null,
+        chapters || null,
+      ].filter(Boolean).join(" · ");
+      return (
+        `<div class="dig-site ${cls}">` +
+          `<span class="peg">${stamp}</span>` +
+          `<span class="site-title">Tract ${r.id}</span>` +
+          `<span class="site-detail">${r.detail}${extra ? "<br/>" + extra : ""}</span>` +
+        `</div>`
+      );
+    }
+
+    function showDigEvent(reports) {
+      hideFindHover();
+      const finds = reports.filter((r) => r.hit);
+      const dust = reports.filter((r) => !r.hit);
+      const gained = reports.reduce((n, r) => n + (r.value || 0), 0);
+      const emptyPenalty = dust.length * GLORY_EMPTY_PENALTY;
+      const netGlory = gained - emptyPenalty;
+      const card = document.getElementById("digEventCard");
+      const el = document.getElementById("digEvent");
+      card.classList.toggle("hit-card", finds.length > 0);
+      card.classList.toggle("miss-card", finds.length === 0);
+      document.getElementById("digEventEyebrow").textContent =
+        finds.length ? "From the trench" : "Empty ground";
+      document.getElementById("digEventTitle").textContent =
+        finds.length
+          ? (finds.length === reports.length ? "Fortune and glory!" : "A mixed dig")
+          : "Nothing but dust";
+      let summary = finds.length
+        ? `${finds.length} fruitful · ${dust.length} barren`
+        : `${reports.length} tract${reports.length === 1 ? "" : "s"} opened — empty sieve.`;
+      if (gained > 0) summary += ` · finds +${gained} glory`;
+      if (emptyPenalty > 0) {
+        summary += ` · barren −${emptyPenalty} glory (−${GLORY_EMPTY_PENALTY} each)`;
+      }
+      summary += ` · net ${netGlory >= 0 ? "+" : ""}${netGlory}. Rank: ${gloryRank(state.score).title}.`;
+      document.getElementById("digEventSummary").textContent = summary;
+      document.getElementById("digEventSites").innerHTML = reports.map(siteRowHtml).join("");
+      el.classList.add("on");
+    }
+
+    function hideDigEvent() {
+      document.getElementById("digEvent").classList.remove("on");
+    }
+
+    function showTractReport(id) {
+      const r = state.reports[id] || buildTractReport(id);
+      state.reports[id] = r;
+      showDigEvent([r]);
+      flashDugTracts([r]);
+      if (r.lng != null) {
+        map.easeTo({ center: [r.lng, r.lat], zoom: Math.max(map.getZoom(), 15), duration: 600 });
+      }
+    }
+
+    function welcomeAboard() {
+      const ready = document.getElementById("startReady");
+      if (ready) {
+        ready.textContent = "Charts aboard — stamp when ready";
+        ready.classList.add("ok");
+      }
+      if (!state.started) return;
+      toast("Permit stamped — charts loaded");
+      logLine(
+        `Day 1 · ${bootWelcome.tractCount} fogged tracts · ` +
+          `PMTiles digboard ${bootWelcome.digZooms} · finds ${bootWelcome.findsZooms}`
+      );
+      renderHud();
+    }
+
+    function startExpedition() {
+      if (state.started) return;
+      state.started = true;
+      document.getElementById("startScreen").classList.remove("on");
+      document.body.classList.add("playing");
+      if (bootDone) welcomeAboard();
+      else toast("Charts still arriving from Athens…");
+      renderHud();
+    }
+
+    function markChartsReady(tractCount, digHeader, findsHeader) {
+      bootDone = true;
+      bootWelcome = {
+        tractCount,
+        digZooms: `z${digHeader.minZoom}–${digHeader.maxZoom}`,
+        findsZooms: `z${findsHeader.minZoom}–${findsHeader.maxZoom}`,
+      };
+      welcomeAboard();
+    }
+
+    function endSeason(won) {
+      state.ended = true;
+      state.selected.clear();
+      state.chapterQueue = [];
+      hideDigEvent();
+      hideFieldEvent();
+      hideChapterBrief();
+      renderHud();
+      const final = document.getElementById("final");
+      document.getElementById("finalTitle").textContent = won
+        ? "It belongs in a museum"
+        : "Storm season";
+      document.getElementById("finalScore").textContent = String(state.score);
+      const rank = gloryRank(state.score);
+      document.getElementById("finalRank").textContent = rank.title;
+      document.getElementById("finalBlurb").textContent = won
+        ? `You cracked the island’s lost chapters before the rains. Final rank: ${rank.title}. ${rank.blurb}`
+        : `The boats are leaving. ${state.dug.size} tracts opened, ${document.querySelectorAll(".era.done").length}/5 chapters recovered. Final rank: ${rank.title}. Next year, perhaps.`;
+      final.classList.add("on");
+    }
+
+    function revealAllMaterials() {
+      if (!map || state.revealed) return;
+      state.revealed = true;
+      state.paused = false;
+      document.getElementById("final").classList.remove("on");
+      document.getElementById("revealBar").classList.add("on");
+      document.querySelector(".hud")?.classList.remove("paused");
+
+      // Lift every fog square so PMTiles finds show through.
+      for (const tid of Object.keys(state.tractIndex)) {
+        state.dug.add(tid);
+        const hit = !!(state.reports[tid] && state.reports[tid].hit);
+        setTractState(tid, { dug: true, selected: false, hit });
+      }
+
+      setLayerVis("tracts-fog", false);
+      setLayerVis("tracts-outline", true);
+      setLayerVis("tracts-pick", true);
+      setLayerVis("pottery-dots", true);
+      setLayerVis("lithics-dots", true);
+      setLayerVis("grids-line", true);
+      setLayerVis("structures-dots", true);
+      setLayerVis("find-heat", true);
+      setLayerVis("terraces-line", true);
+      setLayerVis("geology-fill", true);
+      setLayerVis("geology-outline", true);
+      setLayerVis("dig-flash-fill", false);
+      setLayerVis("dig-flash-line", false);
+
+      if (map.getLayer("geology-fill")) {
+        map.setPaintProperty("geology-fill", "fill-opacity", 0.22);
+      }
+      if (map.getLayer("geology-outline")) {
+        map.setPaintProperty("geology-outline", "line-opacity", 0.55);
+      }
+
+      // Show find dots from farther out so the island reads as a survey map.
+      for (const id of ["pottery-dots", "lithics-dots", "structures-dots"]) {
+        if (map.getLayer(id)) map.setLayerZoomRange(id, 11, 24);
+      }
+      if (map.getLayer("pottery-dots")) {
+        map.setPaintProperty("pottery-dots", "circle-opacity", 0.9);
+      }
+      if (map.getLayer("lithics-dots")) {
+        map.setPaintProperty("lithics-dots", "circle-opacity", 0.9);
+      }
+
+      map.fitBounds(
+        [
+          [ISLAND_BOUNDS[0], ISLAND_BOUNDS[1]],
+          [ISLAND_BOUNDS[2], ISLAND_BOUNDS[3]],
+        ],
+        { padding: 48, duration: 1400, maxZoom: 13.6 }
+      );
+
+      toast("Fog lifted — the island’s archaeology laid bare", "hit");
+      logLine(
+        `<span class="hit">Reveal</span> · pottery, lithics, grids &amp; structures shown island-wide`,
+        "hit"
+      );
+      renderHud();
+    }
+
+    function digSelected() {
+      if (!state.started || state.ended || state.paused || !state.selected.size) return;
+      const batch = [...state.selected];
+      const cost = batch.length * DIG_COST_PER_TRACT;
+      const days = batch.length * DAYS_PER_TRACT;
+      if (state.money < cost) {
+        toast("Purse is empty — the diggers won’t lift a shovel.");
+        return;
+      }
+      if (state.days < days) {
+        toast("No days left on the permit.");
+        return;
+      }
+
+      state.money -= cost;
+      state.days -= days;
+
+      const reports = [];
+      let pottery = 0;
+      let lithics = 0;
+      let structures = 0;
+      let gained = 0;
+
+      for (const id of batch) {
+        state.selected.delete(id);
+        if (state.dug.has(id)) continue;
+        state.dug.add(id);
+        const r = buildTractReport(id);
+        state.reports[id] = r;
+        setTractState(id, { dug: true, selected: false, hit: r.hit });
+        reports.push(r);
+        pottery += r.pottery;
+        lithics += r.lithics;
+        structures += r.structures;
+        gained += r.value;
+        for (const [k, v] of Object.entries(r.periods || {})) {
+          state.periods[k] = (state.periods[k] || 0) + v;
+        }
+      }
+
+      if (!reports.length) {
+        renderHud();
+        return;
+      }
+
+      const emptyCount = reports.filter((r) => !r.hit).length;
+      const emptyPenalty = emptyCount * GLORY_EMPTY_PENALTY;
+      applyGlory(gained - emptyPenalty);
+      state.digsDone += 1;
+      tickBusyCrew();
+      const fresh = new Set(reports.filter((r) => r.hit).map((r) => r.id));
+      updateFindMarkers(fresh);
+      flashDugTracts(reports);
+      focusDigBatch(reports);
+      showDigEvent(reports);
+
+      const finds = pottery + lithics + structures;
+      const fruitful = reports.filter((r) => r.hit).length;
+      const net = gained - emptyPenalty;
+      if (fruitful > 0) {
+        logLine(
+          `<span class="hit">Paydirt ×${fruitful}</span> · ` +
+            `${pottery} sherds · ${lithics} lithics · ${structures} ruins · ` +
+            `glory ${net >= 0 ? "+" : ""}${net}` +
+            (emptyCount ? ` (${emptyCount} barren)` : ""),
+          "hit"
+        );
+        toast(
+          `Paydirt — net ${net >= 0 ? "+" : ""}${net} glory` +
+            (emptyCount ? ` (−${emptyPenalty} barren)` : ""),
+          "hit"
+        );
+      } else {
+        logLine(
+          `<span class="miss">Dust</span> · ${reports.length} barren · −${emptyPenalty} glory`,
+          "miss"
+        );
+        toast(`Barren ground — −${emptyPenalty} glory`, "miss");
+      }
+
+      clearTimeout(updateFindMarkers._freshT);
+      updateFindMarkers._freshT = setTimeout(() => updateFindMarkers(), 5000);
+
+      state.chapterQueue = newlyCompletedChapters();
+      const solved = renderHud();
+      if (solved >= MYSTERY.length) {
+        digSelected._pendingWin = true;
+        return;
+      }
+      digSelected._pendingWin = false;
+      digSelected._pendingLose = cannotAffordDig();
+    }
+
+    function onTractClick(e) {
+      if (!state.started || state.ended || state.paused) return;
+      if (document.getElementById("chapterBrief").classList.contains("on")) return;
+      const f = (e.features || [])[0];
+      if (!f) return;
+      const id = String(f.id != null ? f.id : (f.properties && f.properties.Tract) || "");
+      if (!id) return;
+      if (state.dug.has(id)) {
+        showTractReport(id);
+        return;
+      }
+      if (state.selected.has(id)) {
+        state.selected.delete(id);
+        setTractState(id, { selected: false, dug: false, hit: false });
+      } else {
+        if (state.selected.size >= effectiveCrew()) {
+          toast(
+            state.busyWorkers
+              ? `Only ${effectiveCrew()} free diggers (${state.busyWorkers} busy).`
+              : `Only ${state.workers} diggers on the payroll. Hire help.`
+          );
+          return;
+        }
+        state.selected.add(id);
+        setTractState(id, { selected: true, dug: false, hit: false });
+      }
+      renderHud();
+    }
+
+    async function loadJson(url, fallbackUrl) {
+      let res = await fetch(url);
+      if (!res.ok && fallbackUrl) res = await fetch(fallbackUrl);
+      if (!res.ok) throw new Error("Failed to load " + url + " (" + res.status + ")");
+      return res.json();
+    }
+
+    function absUrl(path) {
+      if (/^https?:\/\//i.test(path)) return path;
+      return new URL(path, window.location.origin).href;
+    }
+
+    /**
+     * MapLibre mangles pmtiles://http://... into a relative http/localhost:... path.
+     * Use short archive keys instead: pmtiles://digboard/{z}/{x}/{y}
+     */
+    function registerNamedPmtilesProtocol(archives) {
+      if (!window.pmtiles || !pmtiles.PMTiles) {
+        throw new Error("pmtiles library failed to load");
+      }
+      if (typeof maptilersdk.addProtocol !== "function") {
+        throw new Error("maptilersdk.addProtocol missing — check MapTiler SDK CDN");
+      }
+
+      maptilersdk.addProtocol("pmtiles", async (params, abortController) => {
+        const raw = String(params.url || "");
+        const m = /^pmtiles:\/\/([A-Za-z0-9_-]+)(?:\/(\d+)\/(\d+)\/(\d+))?/.exec(raw);
+        if (!m) throw new Error("Invalid pmtiles url: " + raw);
+
+        const instance = archives[m[1]];
+        if (!instance) throw new Error("Unknown pmtiles archive: " + m[1]);
+
+        // TileJSON / metadata style request
+        if (params.type === "json" || m[2] == null) {
+          const h = await instance.getHeader();
+          return {
+            data: {
+              tiles: ["pmtiles://" + m[1] + "/{z}/{x}/{y}"],
+              minzoom: h.minZoom,
+              maxzoom: h.maxZoom,
+              bounds: [h.minLon, h.minLat, h.maxLon, h.maxLat],
+            },
+          };
+        }
+
+        const z = Number(m[2]);
+        const x = Number(m[3]);
+        const y = Number(m[4]);
+        const resp = await instance.getZxy(z, x, y, abortController && abortController.signal);
+        if (resp) {
+          return {
+            data: new Uint8Array(resp.data),
+            cacheControl: resp.cacheControl,
+            expires: resp.expires,
+          };
+        }
+        // Empty MVT for missing tiles
+        return { data: new Uint8Array() };
+      });
+    }
+
+    function addPmtilesVectorSource(sourceId, archiveKey, promoteId) {
+      map.addSource(sourceId, {
+        type: "vector",
+        tiles: ["pmtiles://" + archiveKey + "/{z}/{x}/{y}"],
+        minzoom: 10,
+        maxzoom: 17,
+        bounds: ISLAND_BOUNDS,
+        attribution: "Bevan & Conolly / ADS 10.5284/1012484 (CC-BY 3.0)",
+        ...(promoteId ? { promoteId } : {}),
+      });
+    }
+
+    async function boot() {
+      if (!window.MAPTILER_API_KEY) {
+        throw new Error("Set window.MAPTILER_API_KEY in admin-boundaries/js/config.js");
+      }
+      maptilersdk.config.apiKey = window.MAPTILER_API_KEY;
+
+      const digboardHref = absUrl(DIGBOARD_URL);
+      const findsHref = absUrl(FINDS_URL);
+      const surveyHref = absUrl(SURVEY_URL);
+      console.info("[Antikythera Dig] digboard", digboardHref);
+      console.info("[Antikythera Dig] finds", findsHref);
+      console.info("[Antikythera Dig] survey", surveyHref);
+
+      const digHead = await fetch(digboardHref, { method: "HEAD" });
+      const findsHead = await fetch(findsHref, { method: "HEAD" });
+      const surveyHead = await fetch(surveyHref, { method: "HEAD" });
+      if (!digHead.ok) throw new Error("Digboard PMTiles HTTP " + digHead.status + " at " + digboardHref);
+      if (!findsHead.ok) throw new Error("Finds PMTiles HTTP " + findsHead.status + " at " + findsHref);
+      if (!surveyHead.ok) throw new Error("Survey PMTiles HTTP " + surveyHead.status + " at " + surveyHref);
+
+      const digArchive = new pmtiles.PMTiles(digboardHref);
+      const findsArchive = new pmtiles.PMTiles(findsHref);
+      const surveyArchive = new pmtiles.PMTiles(surveyHref);
+      registerNamedPmtilesProtocol({
+        digboard: digArchive,
+        finds: findsArchive,
+        survey: surveyArchive,
+      });
+
+      const [scores, tractsFc, digHeader, findsHeader] = await Promise.all([
+        loadJson(SCORES_URL),
+        loadJson(TRACTS_URL, TRACTS_FALLBACK),
+        digArchive.getHeader(),
+        findsArchive.getHeader(),
+      ]);
+      state.scores = scores;
+      console.info(
+        "[Antikythera Dig] archives ok",
+        "digboard z" + digHeader.minZoom + "-" + digHeader.maxZoom,
+        "finds z" + findsHeader.minZoom + "-" + findsHeader.maxZoom
+      );
+
+      for (const f of tractsFc.features || []) {
+        const tid = String((f.properties && f.properties.Tract) || "");
+        f.id = tid;
+        if (f.properties) f.properties.Tract = tid;
+        if (tid) state.tractIndex[tid] = f;
+      }
+
+      map = new maptilersdk.Map({
+        container: "map",
+        style: maptilersdk.MapStyle.HYBRID,
+        center: CENTER,
+        zoom: 13.2,
+        pitch: 0,
+        maxPitch: 60,
+        navigationControl: true,
+        geolocateControl: false,
+      });
+
+      map.on("error", (e) => {
+        const msg = (e && e.error && e.error.message) || "Map error";
+        console.warn(msg, e);
+        if (/api.?key|401|403/i.test(msg)) fail("MapTiler API key issue: " + msg, e.error);
+        else if (/pmtiles|Invalid PMTiles|Failed to fetch|Unknown pmtiles/i.test(msg)) {
+          logLine(`<span class="miss">Chart fault</span> · ${msg}`);
+        }
+      });
+
+      await new Promise((resolve) => map.once("load", resolve));
+
+      map.addSource("tracts", {
+        type: "geojson",
+        data: tractsFc,
+        promoteId: "Tract",
+      });
+
+      addPmtilesVectorSource("digboard", "digboard", {
+        tracts: "Tract",
+        grids: "Square",
+        structures: "SID",
+      });
+      addPmtilesVectorSource("finds", "finds");
+      addPmtilesVectorSource("survey", "survey");
+
+      map.addSource("find-markers", {
+        type: "geojson",
+        data: { type: "FeatureCollection", features: [] },
+      });
+
+      map.addSource("period-hint", {
+        type: "geojson",
+        data: { type: "FeatureCollection", features: [] },
+      });
+
+      map.addSource("dig-flash", {
+        type: "geojson",
+        data: { type: "FeatureCollection", features: [] },
+      });
+
+      // Survey detail sits UNDER fog so undug tracts hide pottery/grids/ruins.
+      // Digging drops fog opacity to 0 and the real finds show through the hole.
+      map.addLayer({
+        id: "geology-fill",
+        type: "fill",
+        source: "digboard",
+        "source-layer": "geology",
+        paint: {
+          "fill-color": [
+            "match", ["get", "Type"],
+            "Alluvium", "#d4a017",
+            "Scree", "#8a8478",
+            "Flysch", "#6b4f2e",
+            "Nummulitic limestones", "#f0e6c8",
+            "Rudist bearing limestones", "#c9b8a0",
+            "Brecciated limestones", "#a89a88",
+            "Clastic carbonate series", "#b5a67a",
+            "Marls,Sandstones,Conglomerates", "#7a6b4a",
+            "#9a8b6e",
+          ],
+          "fill-opacity": 0.18,
+          "fill-antialias": true,
+        },
+      });
+
+      map.addLayer({
+        id: "geology-outline",
+        type: "line",
+        source: "digboard",
+        "source-layer": "geology",
+        layout: { visibility: "none" },
+        paint: {
+          "line-color": "#2a1f14",
+          "line-width": [
+            "interpolate", ["linear"], ["zoom"],
+            12, 0.6,
+            15, 1.2,
+            17, 1.8,
+          ],
+          "line-opacity": 0.85,
+        },
+      });
+
+      map.addLayer({
+        id: "terraces-line",
+        type: "line",
+        source: "survey",
+        "source-layer": "terraces",
+        layout: { visibility: "none", "line-cap": "round", "line-join": "round" },
+        minzoom: 11,
+        paint: {
+          "line-color": [
+            "match", ["to-number", ["get", "code"]],
+            0, "#8a4a2a",
+            1, "#c45c26",
+            2, "#b85c38",
+            "#b85c38",
+          ],
+          "line-width": [
+            "interpolate", ["linear"], ["zoom"],
+            11, 0.5,
+            13, 0.9,
+            15, 1.5,
+            17, 2.4,
+          ],
+          "line-opacity": [
+            "match", ["to-number", ["get", "code"]],
+            0, 0.55,
+            1, 0.8,
+            2, 0.95,
+            0.85,
+          ],
+        },
+      });
+
+      map.addLayer({
+        id: "grids-line",
+        type: "line",
+        source: "digboard",
+        "source-layer": "grids",
+        minzoom: 14,
+        paint: {
+          "line-color": "rgba(166,124,45,0.7)",
+          "line-width": 1.0,
+        },
+      });
+
+      map.addLayer({
+        id: "structures-dots",
+        type: "circle",
+        source: "digboard",
+        "source-layer": "structures",
+        minzoom: 12,
+        paint: {
+          "circle-radius": [
+            "match", ["get", "Type"],
+            "church", 5.5,
+            "lighthouse", 5.5,
+            "windmill", 5,
+            "watermill", 5,
+            "threshing floor", 4.8,
+            "wine press", 4.5,
+            "well", 4.5,
+            "cistern", 4.3,
+            "rock shelter", 4.2,
+            3.4,
+          ],
+          "circle-color": [
+            "match", ["get", "Type"],
+            "old house", "#8b2e2e",
+            "new house", "#b85a4a",
+            "shelter", "#5c6b3a",
+            "rock shelter", "#4a5a6b",
+            "well", "#2f6f8f",
+            "cistern", "#3a6a8a",
+            "threshing floor", "#c4963a",
+            "wine press", "#b8860b",
+            "press", "#a67c2d",
+            "tomb?", "#6b4a6b",
+            "possible limekiln", "#6a5a48",
+            "church", "#e8d9b8",
+            "windmill", "#5a5a5a",
+            "watermill", "#4a5a6a",
+            "gun emplacement", "#3a4030",
+            "lighthouse", "#d4a017",
+            "#8b2e2e",
+          ],
+          "circle-stroke-width": [
+            "match", ["get", "Type"],
+            "church", 1.6,
+            "threshing floor", 1.4,
+            "well", 1.3,
+            1,
+          ],
+          "circle-stroke-color": [
+            "match", ["get", "Type"],
+            "church", "#5c1c1c",
+            "#e8d9b8",
+          ],
+          "circle-opacity": 0.92,
+        },
+      });
+
+      map.addLayer({
+        id: "pottery-dots",
+        type: "circle",
+        source: "finds",
+        "source-layer": "pottery",
+        minzoom: 14,
+        paint: {
+          "circle-radius": [
+            "interpolate", ["linear"], ["zoom"],
+            14, 2.4,
+            16, 4.2,
+            17, 5.5,
+          ],
+          "circle-color": "#c4963a",
+          "circle-opacity": 0.95,
+          "circle-stroke-width": 0.6,
+          "circle-stroke-color": "#fff6d0",
+        },
+      });
+
+      map.addLayer({
+        id: "lithics-dots",
+        type: "circle",
+        source: "finds",
+        "source-layer": "lithics",
+        minzoom: 14,
+        paint: {
+          "circle-radius": [
+            "interpolate", ["linear"], ["zoom"],
+            14, 2.6,
+            16, 4.5,
+            17, 5.8,
+          ],
+          "circle-color": "#5c6b8a",
+          "circle-opacity": 0.95,
+          "circle-stroke-width": 0.6,
+          "circle-stroke-color": "#dce4f0",
+        },
+      });
+
+      // Solid cover until excavated — undug/selected stay fully opaque.
+      map.addLayer({
+        id: "tracts-fog",
+        type: "fill",
+        source: "tracts",
+        paint: {
+          "fill-color": [
+            "case",
+            ["boolean", ["feature-state", "dug"], false], "#000000",
+            ["boolean", ["feature-state", "selected"], false], "#a67c2d",
+            "#2a2116",
+          ],
+          "fill-opacity": [
+            "case",
+            ["boolean", ["feature-state", "dug"], false], 0,
+            1,
+          ],
+        },
+      });
+
+      map.addLayer({
+        id: "tracts-outline",
+        type: "line",
+        source: "tracts",
+        paint: {
+          "line-color": [
+            "case",
+            ["boolean", ["feature-state", "selected"], false], "#e8c56a",
+            ["all",
+              ["boolean", ["feature-state", "dug"], false],
+              ["boolean", ["feature-state", "hit"], false]
+            ], "#d4a017",
+            ["boolean", ["feature-state", "dug"], false], "#6a7060",
+            "rgba(232,217,184,0.35)",
+          ],
+          "line-width": [
+            "case",
+            ["boolean", ["feature-state", "selected"], false], 2.8,
+            ["all",
+              ["boolean", ["feature-state", "dug"], false],
+              ["boolean", ["feature-state", "hit"], false]
+            ], 3.2,
+            ["boolean", ["feature-state", "dug"], false], 1.6,
+            0.55,
+          ],
+          "line-opacity": [
+            "case",
+            ["boolean", ["feature-state", "dug"], false], 0.95,
+            0.55,
+          ],
+        },
+      });
+
+      // Temporary dig flash on just-opened tracts (under pick so clicks still work)
+      map.addLayer({
+        id: "dig-flash-fill",
+        type: "fill",
+        source: "dig-flash",
+        paint: {
+          "fill-color": [
+            "case",
+            ["==", ["get", "hit"], 1], "#d4a017",
+            "#6a7060",
+          ],
+          "fill-opacity": 0.4,
+        },
+      });
+
+      map.addLayer({
+        id: "dig-flash-line",
+        type: "line",
+        source: "dig-flash",
+        paint: {
+          "line-color": [
+            "case",
+            ["==", ["get", "hit"], 1], "#f0d060",
+            "#9aa090",
+          ],
+          "line-width": 3.5,
+          "line-opacity": 0.95,
+        },
+      });
+
+      // Invisible pick layer so dug (clear) tracts stay clickable for find reports
+      map.addLayer({
+        id: "tracts-pick",
+        type: "fill",
+        source: "tracts",
+        paint: {
+          "fill-color": "#000000",
+          "fill-opacity": 0.01,
+        },
+      });
+
+      // Soft “search here” halo from journal chapter hover — sits on fog, hides no finds.
+      map.addLayer({
+        id: "period-hint-fill",
+        type: "fill",
+        source: "period-hint",
+        paint: {
+          "fill-color": "#c4963a",
+          "fill-opacity": 0.22,
+        },
+      });
+
+      map.addLayer({
+        id: "period-hint-line",
+        type: "line",
+        source: "period-hint",
+        paint: {
+          "line-color": "#e8c56a",
+          "line-width": 2.2,
+          "line-dasharray": [1.2, 1.2],
+          "line-opacity": 0.9,
+        },
+      });
+
+      // Glory markers on fruitful digs — kind-colored, fresh ones read larger
+      map.addLayer({
+        id: "find-heat",
+        type: "circle",
+        source: "find-markers",
+        paint: {
+          "circle-radius": [
+            "interpolate", ["linear"], ["zoom"],
+            12,
+            ["case", ["==", ["get", "fresh"], 1], 10, 5],
+            15,
+            [
+              "case",
+              ["==", ["get", "fresh"], 1],
+              ["interpolate", ["linear"], ["get", "value"], 0, 12, 500, 18, 3000, 26],
+              ["interpolate", ["linear"], ["get", "value"], 0, 6, 500, 12, 3000, 20],
+            ],
+          ],
+          "circle-color": [
+            "match", ["get", "kind"],
+            "pottery", "#c4963a",
+            "lithics", "#5c6b8a",
+            "structures", "#8b2e2e",
+            "other", "#8b7355",
+            "#c4963a",
+          ],
+          "circle-opacity": [
+            "case",
+            ["==", ["get", "fresh"], 1], 0.95,
+            0.75,
+          ],
+          "circle-stroke-width": [
+            "case",
+            ["==", ["get", "fresh"], 1], 3.5,
+            1.6,
+          ],
+          "circle-stroke-color": [
+            "case",
+            ["==", ["get", "fresh"], 1], "#fff6d0",
+            "#e8d9b8",
+          ],
+        },
+      });
+
+      map.on("mousemove", "tracts-pick", (e) => {
+        if (!state.started || state.paused || state.ended) return;
+        const f = (e.features || [])[0];
+        if (!f) return;
+        const id = String(f.id != null ? f.id : (f.properties && f.properties.Tract) || "");
+        if (!id) return;
+        if (!state.dug.has(id)) {
+          hideFindHover();
+          map.getCanvas().style.cursor = "pointer";
+          return;
+        }
+        handleDugHover(e, id);
+      });
+      map.on("mouseleave", "tracts-pick", () => {
+        hideFindHover();
+        map.getCanvas().style.cursor = "";
+      });
+      map.on("click", "tracts-pick", onTractClick);
+
+      map.on("mousemove", "find-heat", (e) => {
+        if (!state.started || state.paused || state.ended) return;
+        const artefacts = queryArtefactAt(e.point);
+        if (artefacts.length) {
+          map.getCanvas().style.cursor = "help";
+          showArtefactHover(artefacts[0], e.lngLat);
+          return;
+        }
+        const f = (e.features || [])[0];
+        const id = f && f.properties && f.properties.id;
+        if (!id) return;
+        map.getCanvas().style.cursor = "help";
+        showFindHover(String(id), e.lngLat);
+      });
+      map.on("mouseleave", "find-heat", () => {
+        hideFindHover();
+        map.getCanvas().style.cursor = "";
+      });
+      map.on("click", "find-heat", (e) => {
+        if (!state.started || state.paused) return;
+        hideFindHover();
+        const f = (e.features || [])[0];
+        const id = f && f.properties && f.properties.id;
+        if (id) showTractReport(String(id));
+      });
+
+      const scoutLayers = ["structures-dots", "terraces-line", "geology-fill"];
+      map.on("click", (e) => {
+        if (!state.paused) return;
+        const hits = map.queryRenderedFeatures(e.point, { layers: scoutLayers });
+        if (!hits.length) {
+          closeLandscapePopup();
+          return;
+        }
+        const f = hits[0];
+        let note = null;
+        if (f.layer.id === "terraces-line") note = noteForTerrace(f.properties);
+        else if (f.layer.id === "geology-fill") note = noteForGeology(f.properties);
+        else if (f.layer.id === "structures-dots") note = noteForStructure(f.properties);
+        if (note) openLandscapePopup(e.lngLat, note);
+      });
+      for (const lid of scoutLayers) {
+        map.on("mouseenter", lid, () => {
+          if (state.paused) map.getCanvas().style.cursor = "help";
+        });
+        map.on("mouseleave", lid, () => {
+          map.getCanvas().style.cursor = "";
+        });
+      }
+
+      map.on("sourcedata", (e) => {
+        if ((e.sourceId === "tracts" || e.sourceId === "digboard") && e.isSourceLoaded) {
+          refreshTractStates();
+        }
+      });
+
+      document.getElementById("btnDig").addEventListener("click", digSelected);
+      document.getElementById("btnIsle").addEventListener("click", openIsleBriefing);
+      document.getElementById("isleBriefOk").addEventListener("click", closeIsleBriefing);
+      document.getElementById("isleBrief").addEventListener("click", (e) => {
+        if (e.target.id === "isleBrief") closeIsleBriefing();
+      });
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && document.getElementById("isleBrief").classList.contains("on")) {
+          closeIsleBriefing();
+        }
+      });
+      document.getElementById("digEventOk").addEventListener("click", finishDigModalFlow);
+      document.getElementById("chapterBriefOk").addEventListener("click", finishChapterModalFlow);
+      document.getElementById("fieldEventOk").addEventListener("click", () => {
+        hideFieldEvent();
+        if (state.days <= 0 || cannotAffordDig()) {
+          endSeason(false);
+          return;
+        }
+        renderHud();
+      });
+      document.getElementById("btnSurvey").addEventListener("click", () => {
+        setSurveyMode(!state.paused);
+      });
+      document.getElementById("btnClear").addEventListener("click", () => {
+        if (!state.started || state.paused) return;
+        for (const id of state.selected) setTractState(id, { selected: false });
+        state.selected.clear();
+        renderHud();
+      });
+      document.getElementById("btnHire").addEventListener("click", () => {
+        if (!state.started || state.paused || state.workers >= MAX_WORKERS || state.money < HIRE_COST) return;
+        state.money -= HIRE_COST;
+        state.workers += 1;
+        toast(`Another shovel on the payroll · crew of ${state.workers}`);
+        renderHud();
+      });
+      document.getElementById("btnAgain").addEventListener("click", () => {
+        location.reload();
+      });
+      document.getElementById("btnReveal").addEventListener("click", () => {
+        revealAllMaterials();
+      });
+      document.getElementById("btnRestartReveal").addEventListener("click", () => {
+        location.reload();
+      });
+      document.getElementById("btnStart").addEventListener("click", startExpedition);
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && document.getElementById("startScreen").classList.contains("on")) {
+          e.preventDefault();
+          startExpedition();
+        }
+      });
+
+      markChartsReady(
+        (tractsFc.features || []).length,
+        digHeader,
+        findsHeader
+      );
+    }
+
+    boot().catch((e) => fail("Expedition grounded — journal failed to open.", e));
+  </script>
+</body>
+</html>
