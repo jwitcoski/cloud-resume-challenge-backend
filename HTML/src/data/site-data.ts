@@ -19,7 +19,7 @@ export const experienceData = [
         endYear: "Present",
         bulletPoints: [
             "Build ArcGIS-connected web tools and Python pipelines for map editing, validation, and data extraction",
-            "Ship Global Ski Atlas (3,000+ ski areas) as a live JavaScript web mapping demo with automated ETL"
+            "Ship Global Ski Atlas (3,000+ ski areas) as a live MapTiler web map with automated ETL"
         ]
     },
     {
@@ -79,8 +79,8 @@ export const projectOverview = {
     sideProjects: [
         { name: "Global Ski Atlas", url: "https://globalskiatlas.com" },
         { name: "Vector Scope AI", url: "https://vectorscopeai.com" },
-        { name: "Raiders of Antikythera", url: "/maptiler-playground/antikythera-dig.html" },
-        { name: "MapTiler Agent Grader", url: "/maptiler-playground/index.html" },
+        { name: "Raiders of Antikythera", url: "https://github.com/jwitcoski/raiders-of-antikythera" },
+        { name: "MapTiler Playground", url: "/maptiler-playground/" },
         { name: "AWS SAA Study Plan", url: "/aws-solutions-architect-study.html" },
     ]
 };
@@ -88,8 +88,8 @@ export const projectOverview = {
 export const featureWork = [
     {
         title: "Global Ski Atlas",
-        description: "Web GIS with Python ETL, JavaScript mapping, and automated geospatial workflows.",
-        roles: ["ArcGIS API for JavaScript", "Python", "ETL", "Web GIS"],
+        description: "Web GIS of 3,000+ ski areas on a MapTiler basemap, with Python ETL and automated geospatial workflows.",
+        roles: ["MapTiler", "JavaScript", "Python", "ETL", "Web GIS"],
         image: "/images/feature-work/feature-img-1.jpg",
         url: "https://globalskiatlas.com"
     },
@@ -108,11 +108,11 @@ export const featureWork = [
         url: "/admin-boundaries/tool.html"
     },
     {
-        title: "MapTiler Agent Grader",
-        description: "Scoreboard that grades AI agents on MapTiler SDK challenges — static checks, harsh training mode, and skill-driven feedback.",
-        roles: ["MapTiler SDK", "Agent eval", "JavaScript", "Web GIS"],
+        title: "MapTiler Playground",
+        description: "Why I build with MapTiler — plus the maps, dig games, labs, and agent graders I've shipped on the SDK.",
+        roles: ["MapTiler SDK", "Web GIS", "PMTiles", "Agent eval"],
         image: "/images/feature-work/maptiler-agent-grader.png",
-        url: "/maptiler-playground/index.html"
+        url: "/maptiler-playground/"
     },
     {
         title: "Raiders of Antikythera",

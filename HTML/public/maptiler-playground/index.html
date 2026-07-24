@@ -3,1345 +3,730 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>MapTiler Agent Skill Scoreboard</title>
+  <title>MapTiler Playground — Jonathan Witcoski</title>
+  <meta name="description" content="Why I build with MapTiler — and the maps, games, tools, and agent graders I've shipped with the SDK." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.css" rel="stylesheet" />
   <style>
     :root {
-      --bg: #0b1020;
-      --panel: #121a2e;
-      --line: rgba(255,255,255,.12);
-      --ink: #e8eefc;
-      --muted: #93a0bd;
-      --accent: #6ec8ff;
-      --good: #4ade80;
-      --bad: #f87171;
-      --warn: #fbbf24;
-      --core: #38bdf8;
-      --extreme: #fb923c;
-      --insane: #e879f9;
+      --ink: #edf3f0;
+      --muted: #9aafa6;
+      --line: rgba(237, 243, 240, 0.14);
+      --accent: #c8f542;
+      --accent-ink: #0a1208;
+      --deep: #06110e;
+      --panel: rgba(8, 22, 18, 0.72);
+      --warm: #f0b45a;
+      --font-display: "Syne", sans-serif;
+      --font-body: "Figtree", sans-serif;
     }
+
     * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
     body {
       margin: 0;
-      font-family: "Segoe UI", "Avenir Next", system-ui, sans-serif;
-      background: radial-gradient(1200px 600px at 10% -10%, #1a2744, var(--bg));
       color: var(--ink);
-      min-height: 100vh;
+      background: var(--deep);
+      font-family: var(--font-body);
+      line-height: 1.55;
+      overflow-x: hidden;
     }
-    header {
-      padding: 20px 24px 12px;
-      border-bottom: 1px solid var(--line);
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      align-items: flex-end;
-      justify-content: space-between;
-    }
-    header h1 { margin: 0; font-size: 1.35rem; }
-    header p { margin: 4px 0 0; color: var(--muted); font-size: 0.88rem; max-width: 52rem; }
-    header a { color: var(--accent); }
-    .scores {
-      display: flex; gap: 8px; flex-wrap: wrap;
-    }
-    .pill {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 8px 12px;
-      min-width: 88px;
-      text-align: center;
-    }
-    .pill b { display: block; font-size: 1.15rem; }
-    .pill span { font-size: 0.65rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
-    .pill.core b { color: var(--core); }
-    .pill.extreme b { color: var(--extreme); }
-    .pill.insane b { color: var(--insane); }
-    .pill.combined b { color: var(--good); }
 
-    .score-block {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      align-items: flex-end;
-    }
-    .compare {
+    a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 0.18em; }
+    a:hover { color: #e8ff8a; }
+
+    /* —— Hero —— */
+    .hero {
+      position: relative;
+      min-height: 100svh;
       display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      gap: 8px;
-      align-items: stretch;
-      width: min(100%, 520px);
-      font-size: 0.72rem;
+      align-items: end;
+      isolation: isolate;
     }
-    .compare-card {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 8px 10px;
-      min-width: 0;
+
+    #heroMap {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
     }
-    .compare-card h3 {
-      margin: 0 0 6px;
-      font-size: 0.65rem;
-      text-transform: uppercase;
-      letter-spacing: .06em;
-      color: var(--muted);
-      font-weight: 650;
+
+    .hero-veil {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background:
+        linear-gradient(180deg, rgba(6, 17, 14, 0.25) 0%, rgba(6, 17, 14, 0.55) 42%, rgba(6, 17, 14, 0.92) 100%),
+        radial-gradient(900px 480px at 18% 78%, rgba(200, 245, 66, 0.12), transparent 60%);
     }
-    .compare-card.skill h3 { color: var(--accent); }
-    .compare-card.baseline h3 { color: var(--warn); }
-    .compare-card.upload h3 { color: var(--good); }
-    .compare-card .sub {
-      display: block;
-      font-size: 0.62rem;
-      font-weight: 400;
-      color: var(--muted);
-      margin-top: 2px;
-      text-transform: none;
-      letter-spacing: 0;
+
+    .topo {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      opacity: 0.18;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cpath fill='none' stroke='%23c8f542' stroke-width='0.6' d='M0 70c20-30 40-30 70 0s50 30 70 0M0 30c25-20 45-20 70 0s45 20 70 0M0 110c25-20 45-20 70 0s45 20 70 0'/%3E%3C/svg%3E");
+      mix-blend-mode: screen;
     }
-    .compare-rows {
-      display: grid;
-      grid-template-columns: auto 1fr;
-      gap: 2px 8px;
-      color: var(--ink);
+
+    .hero-inner {
+      position: relative;
+      z-index: 2;
+      width: min(1120px, calc(100% - 2.5rem));
+      margin: 0 auto;
+      padding: 5.5rem 0 3.25rem;
     }
-    .compare-rows span:nth-child(odd) { color: var(--muted); }
-    .compare-rows b { font-variant-numeric: tabular-nums; }
-    .compare-delta {
+
+    .nav {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 3;
+      width: min(1120px, calc(100% - 2.5rem));
       display: flex;
-      flex-direction: column;
-      justify-content: center;
       align-items: center;
-      gap: 2px;
-      padding: 6px 4px;
-      min-width: 72px;
-      text-align: center;
-      color: var(--muted);
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1.15rem 0;
+      font-size: 0.92rem;
     }
-    .compare-delta .delta-val {
-      font-size: 1.05rem;
+
+    .nav a.home {
+      color: var(--ink);
+      text-decoration: none;
+      font-weight: 600;
+      opacity: 0.88;
+    }
+
+    .nav a.home:hover { opacity: 1; color: var(--accent); }
+
+    .nav-links {
+      display: flex;
+      gap: 1.15rem;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .nav-links a:hover { color: var(--ink); }
+
+    .brand {
+      margin: 0;
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(3.4rem, 11vw, 7.2rem);
+      line-height: 0.92;
+      letter-spacing: -0.04em;
+      text-transform: uppercase;
+      color: var(--ink);
+      text-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+      opacity: 0;
+      transform: translateY(18px);
+      animation: rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.15s forwards;
+    }
+
+    .brand span {
+      display: block;
+      color: var(--accent);
+    }
+
+    .headline {
+      margin: 1.1rem 0 0;
+      max-width: 28rem;
+      font-family: var(--font-display);
       font-weight: 700;
-      font-variant-numeric: tabular-nums;
+      font-size: clamp(1.35rem, 2.6vw, 1.85rem);
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      opacity: 0;
+      transform: translateY(14px);
+      animation: rise 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.35s forwards;
     }
-    .compare-delta .delta-val.up { color: var(--good); }
-    .compare-delta .delta-val.down { color: var(--bad); }
-    .compare-delta .delta-val.flat { color: var(--muted); }
-    .compare-empty {
-      grid-column: 1 / -1;
+
+    .lede {
+      margin: 0.75rem 0 0;
+      max-width: 34rem;
       color: var(--muted);
-      text-align: center;
-      padding: 8px;
-      border: 1px dashed var(--line);
-      border-radius: 12px;
+      font-size: 1.05rem;
+      opacity: 0;
+      transform: translateY(14px);
+      animation: rise 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.5s forwards;
     }
-    .compare-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
-      gap: 8px;
-      width: min(100%, 560px);
-    }
-    .compare-deltas {
+
+    .cta-row {
       display: flex;
       flex-wrap: wrap;
-      gap: 6px;
-      justify-content: flex-end;
-      width: min(100%, 560px);
-    }
-    .delta-chip {
-      background: rgba(255,255,255,.04);
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      padding: 4px 10px;
-      font-size: 0.68rem;
-      color: var(--muted);
-    }
-    .delta-chip b { font-variant-numeric: tabular-nums; margin-left: 4px; }
-    .delta-chip b.up { color: var(--good); }
-    .delta-chip b.down { color: var(--bad); }
-    .delta-chip b.flat { color: var(--muted); }
-    .active-run-label {
-      font-size: 0.65rem;
-      color: var(--muted);
-      text-align: right;
-      width: min(100%, 560px);
-    }
-    @media (max-width: 720px) {
-      .score-block { align-items: stretch; width: 100%; }
-      .compare-grid, .compare-deltas, .active-run-label { width: 100%; }
-      .compare-delta { flex-direction: row; gap: 8px; }
+      gap: 0.75rem;
+      margin-top: 1.6rem;
+      opacity: 0;
+      transform: translateY(14px);
+      animation: rise 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.65s forwards;
     }
 
-    main {
-      display: grid;
-      grid-template-columns: minmax(280px, 340px) 1fr;
-      gap: 16px;
-      padding: 16px 24px 32px;
-    }
-    @media (max-width: 960px) {
-      main { grid-template-columns: 1fr; }
-    }
-    .panel {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 14px;
-    }
-    .panel h2 {
-      margin: 0 0 10px;
-      font-size: 0.95rem;
-      letter-spacing: .04em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-    .tier-label {
-      font-size: 0.7rem;
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      padding: 0.78rem 1.2rem;
+      border-radius: 999px;
+      font-family: var(--font-body);
       font-weight: 700;
-      letter-spacing: .08em;
-      margin: 12px 0 6px;
-      text-transform: uppercase;
-    }
-    .tier-label.core { color: var(--core); }
-    .tier-label.extreme { color: var(--extreme); }
-    .tier-label.insane { color: var(--insane); }
-
-    .chal {
-      width: 100%;
-      text-align: left;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.03);
-      color: var(--ink);
-      border-radius: 10px;
-      padding: 8px 10px;
-      margin-bottom: 6px;
-      cursor: pointer;
-      font: inherit;
-    }
-    .chal:hover { border-color: rgba(110,200,255,.45); }
-    .chal.active { border-color: var(--accent); background: rgba(110,200,255,.12); }
-    .chal .t { font-weight: 650; font-size: 0.88rem; }
-    .chal .m { color: var(--muted); font-size: 0.72rem; margin-top: 2px; }
-    .badge {
-      display: inline-block;
-      font-size: 0.65rem;
-      padding: 1px 6px;
-      border-radius: 999px;
-      border: 1px solid var(--line);
-      margin-left: 4px;
-    }
-    .badge.pass { color: var(--good); border-color: rgba(74,222,128,.4); }
-    .badge.fail { color: var(--bad); border-color: rgba(248,113,113,.4); }
-    .badge.static { color: var(--warn); }
-
-    label { display: block; font-size: 0.72rem; color: var(--muted); margin: 8px 0 4px; text-transform: uppercase; letter-spacing: .05em; }
-    input, select, textarea, button.btn {
-      font: inherit;
-      border-radius: 10px;
-      border: 1px solid var(--line);
-      background: rgba(0,0,0,.25);
-      color: var(--ink);
-      padding: 8px 10px;
-      width: 100%;
-    }
-    textarea { min-height: 220px; font-family: ui-monospace, Consolas, monospace; font-size: 0.8rem; }
-    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-    .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
-    button.btn { width: auto; cursor: pointer; }
-    button.btn.primary { background: rgba(110,200,255,.2); border-color: var(--accent); font-weight: 650; }
-    button.btn:hover { border-color: rgba(110,200,255,.55); }
-    .prompt {
-      background: rgba(0,0,0,.28);
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 12px;
-      font-size: 0.88rem;
-      line-height: 1.45;
-      white-space: pre-wrap;
-      margin-bottom: 8px;
-    }
-    .checks { margin-top: 12px; }
-    .check {
-      display: flex; gap: 8px; align-items: flex-start;
-      padding: 6px 8px; border-radius: 8px; font-size: 0.82rem;
+      font-size: 0.95rem;
+      text-decoration: none;
       border: 1px solid transparent;
+      transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
     }
-    .check.ok { background: rgba(74,222,128,.08); }
-    .check.no { background: rgba(248,113,113,.08); }
-    .check .id { font-family: ui-monospace, Consolas, monospace; color: var(--muted); min-width: 10rem; }
-    .board table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
-    .board th, .board td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); }
-    .board th { color: var(--muted); font-weight: 600; }
-    .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; align-items: center; }
-    .filters select, .filters input { width: auto; min-width: 120px; }
-    .status { color: var(--muted); font-size: 0.82rem; margin-top: 8px; min-height: 1.2em; }
-    .toggle-row { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
-    .toggle-row input { width: auto; }
+
+    .btn:hover { transform: translateY(-1px); }
+
+    .btn-primary {
+      background: var(--accent);
+      color: var(--accent-ink);
+    }
+
+    .btn-primary:hover {
+      background: #e8ff8a;
+      color: var(--accent-ink);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--ink);
+      border-color: var(--line);
+    }
+
+    .btn-ghost:hover {
+      border-color: rgba(200, 245, 66, 0.45);
+      color: var(--accent);
+    }
+
+    .map-credit {
+      position: absolute;
+      right: 1rem;
+      bottom: 0.75rem;
+      z-index: 3;
+      font-size: 0.7rem;
+      color: rgba(237, 243, 240, 0.55);
+    }
+
+    .map-credit a { color: inherit; }
+
+    @keyframes rise {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* —— Sections —— */
+    main {
+      position: relative;
+      z-index: 2;
+      background:
+        radial-gradient(800px 400px at 90% 0%, rgba(200, 245, 66, 0.06), transparent 55%),
+        linear-gradient(180deg, #071612 0%, #0a1a16 40%, #06110e 100%);
+    }
+
+    .section {
+      width: min(1120px, calc(100% - 2.5rem));
+      margin: 0 auto;
+      padding: 4.5rem 0;
+    }
+
+    .section + .section {
+      border-top: 1px solid var(--line);
+    }
+
+    .eyebrow {
+      margin: 0 0 0.65rem;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .section h2 {
+      margin: 0;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(1.85rem, 4vw, 2.6rem);
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      max-width: 18ch;
+    }
+
+    .section-intro {
+      margin: 0.85rem 0 0;
+      max-width: 38rem;
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+
+    .reasons {
+      margin: 2.4rem 0 0;
+      display: grid;
+      gap: 1.75rem 2.5rem;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      counter-reset: reason;
+    }
+
+    .reason {
+      position: relative;
+      padding-top: 0.35rem;
+      border-top: 1px solid var(--line);
+    }
+
+    .reason::before {
+      counter-increment: reason;
+      content: counter(reason, decimal-leading-zero);
+      display: block;
+      margin-bottom: 0.55rem;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      color: var(--warm);
+    }
+
+    .reason h3 {
+      margin: 0 0 0.4rem;
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .reason p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.98rem;
+    }
+
+    /* Work list — editorial rows, not card chrome */
+    .work-list {
+      margin: 2.5rem 0 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .work {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 1.4fr);
+      gap: 1.5rem 2rem;
+      align-items: center;
+      padding: 1.75rem 0;
+      border-top: 1px solid var(--line);
+      text-decoration: none;
+      color: inherit;
+      transition: background 0.25s ease;
+    }
+
+    .work:last-child { border-bottom: 1px solid var(--line); }
+
+    .work:hover .work-title { color: var(--accent); }
+    .work:hover .work-go { transform: translateX(4px); color: var(--accent); }
+
+    .work-visual {
+      position: relative;
+      aspect-ratio: 16 / 10;
+      overflow: hidden;
+      background: #0d221c;
+      min-height: 140px;
+    }
+
+    .work-visual img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: saturate(1.05) contrast(1.05);
+      transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .work:hover .work-visual img { transform: scale(1.04); }
+
+    .work-visual.fallback {
+      display: grid;
+      place-items: center;
+      background:
+        linear-gradient(135deg, #0f2a22 0%, #16382e 50%, #0a1c18 100%);
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.35rem;
+      letter-spacing: -0.02em;
+      color: rgba(200, 245, 66, 0.55);
+    }
+
+    .work-body { min-width: 0; }
+
+    .work-meta {
+      margin: 0 0 0.35rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--warm);
+    }
+
+    .work-title {
+      margin: 0;
+      font-family: var(--font-display);
+      font-size: clamp(1.25rem, 2.4vw, 1.65rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      transition: color 0.2s ease;
+    }
+
+    .work-desc {
+      margin: 0.55rem 0 0;
+      color: var(--muted);
+      font-size: 0.98rem;
+      max-width: 36rem;
+    }
+
+    .work-go {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      margin-top: 0.9rem;
+      font-weight: 700;
+      font-size: 0.92rem;
+      color: var(--ink);
+      transition: transform 0.2s ease, color 0.2s ease;
+    }
+
+    .links-strip {
+      margin-top: 2.25rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.85rem 1.5rem;
+      font-size: 0.95rem;
+    }
+
+    .links-strip a {
+      color: var(--muted);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      padding-bottom: 1px;
+      transition: color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .links-strip a:hover {
+      color: var(--accent);
+      border-color: rgba(200, 245, 66, 0.4);
+    }
+
+    footer {
+      width: min(1120px, calc(100% - 2.5rem));
+      margin: 0 auto;
+      padding: 1.5rem 0 2.5rem;
+      border-top: 1px solid var(--line);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1.5rem;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    footer a { color: var(--muted); text-decoration: none; }
+    footer a:hover { color: var(--accent); }
+
+    #mapError {
+      display: none;
+      position: absolute;
+      inset: auto 1rem 3.5rem;
+      z-index: 4;
+      max-width: 28rem;
+      padding: 0.75rem 1rem;
+      background: rgba(20, 8, 8, 0.85);
+      border: 1px solid rgba(255, 120, 100, 0.35);
+      color: #ffb4a8;
+      font-size: 0.85rem;
+    }
+
+    @media (max-width: 780px) {
+      .work {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+
+      .hero-inner { padding-top: 6.5rem; }
+
+      .nav-links { display: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .brand, .headline, .lede, .cta-row {
+        animation: none;
+        opacity: 1;
+        transform: none;
+      }
+      .work:hover .work-visual img { transform: none; }
+    }
   </style>
 </head>
 <body>
-  <header>
-    <div>
-      <h1>MapTiler Agent Skill Scoreboard</h1>
-      <p>
-        Grade agent MapTiler code against
-        <a href="https://github.com/maptiler/maptiler-skills" target="_blank" rel="noopener">maptiler-skills</a>.
-        <strong>Demo:</strong> Grade example pack from <code>solutions/</code>.
-        <strong>Your run:</strong> Copy ALL → agent writes files → upload them here (or paste one challenge).
-        Leave <strong>Harsh grading</strong> on while training the agent (stricter bars + extra rigor checks).
-        Demos: <a href="./earth-lab.html">Earth Lab</a> · <a href="./pin-quest.html">Pin Quest</a>
+  <header class="hero">
+    <div id="heroMap" aria-hidden="true"></div>
+    <div class="hero-veil"></div>
+    <div class="topo" aria-hidden="true"></div>
+    <div id="mapError"></div>
+
+    <nav class="nav" aria-label="Primary">
+      <a class="home" href="/">Witcoski Tech</a>
+      <div class="nav-links">
+        <a href="#why">Why MapTiler</a>
+        <a href="#work">Work</a>
+        <a href="https://www.maptiler.com/" target="_blank" rel="noopener">maptiler.com</a>
+      </div>
+    </nav>
+
+    <div class="hero-inner">
+      <h1 class="brand">Map<span>Tiler</span></h1>
+      <p class="headline">The mapping stack I reach for when the map is the product.</p>
+      <p class="lede">
+        Vector tiles, terrain, weather, geocoding, and a MapLibre-based SDK —
+        one cloud key for prototypes that grow into real GIS apps.
       </p>
-    </div>
-    <div class="score-block">
-      <div class="scores">
-        <div class="pill core"><b id="pctCore">—</b><span>Core</span></div>
-        <div class="pill extreme"><b id="pctExtreme">—</b><span>Extreme</span></div>
-        <div class="pill insane"><b id="pctInsane">—</b><span>Insane</span></div>
-        <div class="pill combined"><b id="pctCombined">—</b><span>Combined</span></div>
-      </div>
-      <p class="active-run-label" id="activeRunLabel">Pills: grade a pack or upload to see tier averages</p>
-      <div id="runCompareWrap" style="width:min(100%,560px);display:flex;flex-direction:column;gap:8px;align-items:flex-end">
-        <div class="compare-grid" id="runCompare" aria-label="Run comparison"></div>
-        <div class="compare-deltas" id="runCompareDeltas" hidden></div>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="#work">See what I've built</a>
+        <a class="btn btn-ghost" href="#why">Why I use it</a>
       </div>
     </div>
+    <p class="map-credit">
+      <a href="https://www.maptiler.com/copyright/" target="_blank" rel="noopener">© MapTiler</a>
+      ·
+      <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap</a>
+    </p>
   </header>
 
   <main>
-    <aside class="panel" id="listPanel">
-      <h2>Challenges</h2>
-      <div class="actions" style="margin:0 0 10px">
-        <button type="button" class="btn primary" id="btnCopyBatch">Copy ALL challenges prompt</button>
-      </div>
-      <div class="actions" style="margin:0 0 10px">
-        <button type="button" class="btn" id="btnGradeAll" title="Loads the checked-in example pack under solutions/">Grade example solutions/</button>
-        <button type="button" class="btn" id="btnGradeNoAgent" title="Loads the Cursor baseline pack under NoAgentSolutions/ (no MapTiler agent, no local skill)">No Maptiler Agent Run</button>
-      </div>
-      <div class="status" id="batchStatus" style="margin-bottom:10px">
-        Example pack is demo output only. <strong>No Maptiler Agent Run</strong> grades <code>NoAgentSolutions/</code> (Cursor baseline). Upload grades <em>only</em> the files you select (replaces the scoreboard — it will not pull in <code>solutions/</code> for missing ids).
-      </div>
-      <div style="margin-bottom:12px;padding:10px;border:1px dashed var(--line);border-radius:8px">
-        <label for="uploadPack" style="margin:0 0 6px;display:block">Upload your solutions</label>
-        <input id="uploadPack" type="file" multiple accept=".html,.js,.mjs,.ts,.tsx,.jsx,.swift,.kt,.dart,.json,.txt" style="font-size:0.78rem;width:100%" />
-        <p class="status" style="margin:6px 0 8px">
-          Select <code>C1.html</code> + <code>C1.meta.json</code> (etc.). Names must start with the challenge id.
-          Partial uploads grade only those ids; other challenges stay ungraded.
-        </p>
-        <button type="button" class="btn primary" id="btnGradeUpload" style="width:100%">Grade uploaded files</button>
-        <button type="button" class="btn" id="btnClearBoard" style="width:100%;margin-top:6px" title="Wipe localStorage scoreboard">Clear scoreboard</button>
-      </div>
-      <div id="challengeList"></div>
-    </aside>
+    <section class="section" id="why">
+      <p class="eyebrow">Why MapTiler</p>
+      <h2>Maps without the platform tax</h2>
+      <p class="section-intro">
+        I've spent years in ArcGIS Enterprise and cloud GIS. MapTiler is what I use when I want
+        modern web maps fast — open styles, sane billing, and an SDK that feels like writing the web.
+      </p>
 
-    <section>
-      <div class="panel" style="margin-bottom:16px">
-        <h2 style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
-          Challenge
-          <a id="exampleLink" href="#" target="_blank" rel="noopener noreferrer" hidden style="font-size:0.8rem;font-weight:600;letter-spacing:0;text-transform:none;color:var(--accent)">View example</a>
-        </h2>
-        <div id="chalMeta" class="status">Select a challenge.</div>
-        <div class="prompt" id="promptBox">—</div>
-        <div class="actions">
-          <button type="button" class="btn" id="btnCopy">Copy prompt</button>
-        </div>
+      <div class="reasons">
+        <article class="reason">
+          <h3>MapLibre at the core</h3>
+          <p>
+            The SDK sits on MapLibre GL JS, so styles, expressions, and PMTiles workflows transfer.
+            I'm not locked into a closed renderer.
+          </p>
+        </article>
+        <article class="reason">
+          <h3>One key, many services</h3>
+          <p>
+            Basemaps, geocoding, elevation, weather, and terrain mesh from the same Cloud account —
+            enough to ship a globe demo or a field game without wiring five vendors.
+          </p>
+        </article>
+        <article class="reason">
+          <h3>Built for agents &amp; humans</h3>
+          <p>
+            I maintain MapTiler challenges and grading tooling against
+            <a href="https://github.com/maptiler/maptiler-skills" target="_blank" rel="noopener">maptiler-skills</a>
+            so coding agents learn the platform the way I use it.
+          </p>
+        </article>
+        <article class="reason">
+          <h3>Real data, real tiles</h3>
+          <p>
+            Satellite, outdoor, ocean, and custom PMTiles sit beside Natural Earth and survey GeoJSON —
+            the same stack I use for archaeology games and admin-boundary tools.
+          </p>
+        </article>
       </div>
+    </section>
 
-      <div class="panel" style="margin-bottom:16px">
-        <h2>Run metadata</h2>
-        <div class="row">
-          <div>
-            <label>Agent / product</label>
-            <select id="metaAgent">
-              <option>Cursor Agent</option>
-              <option>Cursor Chat</option>
-              <option>Claude Code</option>
-              <option>ChatGPT</option>
-              <option>Gemini</option>
-              <option>Copilot</option>
-              <option>Other</option>
-            </select>
-          </div>
-          <div>
-            <label>Provider</label>
-            <select id="metaProvider">
-              <option value="cursor">cursor</option>
-              <option value="anthropic">anthropic</option>
-              <option value="openai">openai</option>
-              <option value="google">google</option>
-              <option value="other">other</option>
-            </select>
-          </div>
-        </div>
-        <label>Model</label>
-        <input id="metaModel" placeholder="e.g. composer / claude-opus / gpt-5" />
-        <div class="toggle-row">
-          <input type="checkbox" id="metaSkill" checked />
-          <label for="metaSkill" style="margin:0;text-transform:none;letter-spacing:0">maptiler-skills loaded for this run</label>
-        </div>
-        <div class="toggle-row">
-          <input type="checkbox" id="gradeHarsh" checked />
-          <label for="gradeHarsh" style="margin:0;text-transform:none;letter-spacing:0" title="Higher substance bars, stricter letter grades, extra rigor checks auto-added">Harsh grading (training)</label>
-        </div>
-        <div class="row3">
-          <div>
-            <label>Tokens in</label>
-            <input id="tokIn" type="number" min="0" placeholder="optional" />
-          </div>
-          <div>
-            <label>Tokens out</label>
-            <input id="tokOut" type="number" min="0" placeholder="optional" />
-          </div>
-          <div>
-            <label>Tokens total</label>
-            <input id="tokTotal" type="number" min="0" placeholder="optional" />
-          </div>
-        </div>
-        <div class="row3">
-          <div>
-            <label>Cost USD</label>
-            <input id="metaCost" type="number" step="0.0001" min="0" placeholder="optional" />
-          </div>
-          <div>
-            <label>Latency (sec)</label>
-            <input id="metaLatency" type="number" step="0.1" min="0" placeholder="optional" />
-          </div>
-          <div>
-            <label>Attempts</label>
-            <input id="metaAttempts" type="number" min="1" value="1" />
-          </div>
-        </div>
-        <label>Notes</label>
-        <input id="metaNotes" placeholder="retries, prompt tweaks, …" />
-      </div>
+    <section class="section" id="work">
+      <p class="eyebrow">Built with MapTiler</p>
+      <h2>Playground projects</h2>
+      <p class="section-intro">
+        Games, labs, grading tools, and boundary surgery — all powered by the MapTiler SDK and Cloud APIs.
+      </p>
 
-      <div class="panel" style="margin-bottom:16px">
-        <h2>Single challenge (paste or one file)</h2>
-        <p class="status" style="margin:0 0 8px">
-          For one challenge only. For a full agent run, use <strong>Upload your solutions</strong> in the left rail.
-        </p>
-        <div class="actions" style="margin-bottom:8px">
-          <label class="btn" for="uploadOne" style="cursor:pointer;display:inline-block">Choose file…</label>
-          <input id="uploadOne" type="file" accept=".html,.js,.mjs,.ts,.tsx,.jsx,.swift,.kt,.dart,.txt" style="display:none" />
-        </div>
-        <textarea id="source" placeholder="Paste HTML / JS / Swift / Kotlin / Dart / TS here…"></textarea>
-        <div class="actions">
-          <button type="button" class="btn primary" id="btnGrade">Grade</button>
-          <button type="button" class="btn" id="btnLive">Grade + live smoke</button>
-        </div>
-        <div class="status" id="gradeStatus"></div>
-        <div class="checks" id="checkResults"></div>
-      </div>
+      <div class="work-list">
+        <a class="work" href="./antikythera-dig.html">
+          <div class="work-visual">
+            <img src="/images/feature-work/raiders-of-antikythera.png" alt="Raiders of Antikythera dig map" width="640" height="400" loading="lazy" />
+          </div>
+          <div class="work-body">
+            <p class="work-meta">Game · Archaeology · PMTiles</p>
+            <h3 class="work-title">Raiders of Antikythera</h3>
+            <p class="work-desc">
+              Indiana Jones–flavored dig on real Antikythera Survey Project tracts —
+              fogged GeoJSON, finds overlays, MapTiler satellite, and chapter recovery.
+            </p>
+            <span class="work-go">Play the dig →</span>
+          </div>
+        </a>
 
-      <div class="panel board">
-        <h2>Scoreboard</h2>
-        <div class="filters">
-          <select id="filterSkill">
-            <option value="all">Skill: all</option>
-            <option value="yes">Skill: on</option>
-            <option value="no">Skill: off</option>
-          </select>
-          <input id="filterModel" placeholder="Filter model…" />
-          <button type="button" class="btn" id="btnExport">Export JSON</button>
-          <button type="button" class="btn" id="btnClear">Clear scores</button>
-        </div>
-        <table>
-          <thead>
-            <tr>
-              <th>When</th>
-              <th>Chal</th>
-              <th>Model</th>
-              <th>Skill</th>
-              <th>Score</th>
-              <th>Tokens</th>
-              <th>Letter</th>
-            </tr>
-          </thead>
-          <tbody id="boardBody"></tbody>
-        </table>
-        <div class="status" id="boardEmpty">No runs yet.</div>
+        <a class="work" href="./earth-lab.html">
+          <div class="work-visual">
+            <img src="/images/feature-work/earth-lab.png" alt="MapTiler Earth Lab globe" width="640" height="400" loading="lazy" />
+          </div>
+          <div class="work-body">
+            <p class="work-meta">Demo · Globe · Weather · Terrain</p>
+            <h3 class="work-title">Earth Lab</h3>
+            <p class="work-desc">
+              Interactive globe with atmosphere, weather particles, 3D terrain, geocoding,
+              and elevation probes — click anywhere to sample the planet.
+            </p>
+            <span class="work-go">Open Earth Lab →</span>
+          </div>
+        </a>
+
+        <a class="work" href="./pin-quest.html">
+          <div class="work-visual">
+            <img src="/images/feature-work/pin-quest.png" alt="MapTiler Pin Quest globe game" width="640" height="400" loading="lazy" />
+          </div>
+          <div class="work-body">
+            <p class="work-meta">Demo · Satellite · Globe · Elevation</p>
+            <h3 class="work-title">Pin Quest</h3>
+            <p class="work-desc">
+              Scout a mystery satellite view, then pin where you think you are on the globe —
+              five rounds scored by distance, built on MapTiler satellite and elevation.
+            </p>
+            <span class="work-go">Start Pin Quest →</span>
+          </div>
+        </a>
+
+        <a class="work" href="https://globalskiatlas.com" target="_blank" rel="noopener">
+          <div class="work-visual">
+            <img src="/images/feature-work/feature-img-1.jpg" alt="Global Ski Atlas map" width="640" height="400" loading="lazy" />
+          </div>
+          <div class="work-body">
+            <p class="work-meta">Product · MapTiler basemap · Ski GIS</p>
+            <h3 class="work-title">Global Ski Atlas</h3>
+            <p class="work-desc">
+              3,000+ ski areas on a MapTiler basemap — Python ETL, JavaScript mapping,
+              and automated geospatial workflows for a live world ski atlas.
+            </p>
+            <span class="work-go">Visit globalskiatlas.com →</span>
+          </div>
+        </a>
+
+        <a class="work" href="/admin-boundaries/tool.html">
+          <div class="work-visual">
+            <img src="/images/feature-work/admin-boundary-tool.png" alt="Admin boundary exclusion map" width="640" height="400" loading="lazy" />
+          </div>
+          <div class="work-body">
+            <p class="work-meta">Tool · GeoJSON · Natural Earth</p>
+            <h3 class="work-title">Admin Boundary Tool</h3>
+            <p class="work-desc">
+              Punch any state or province out of a country polygon for map highlights —
+              MapTiler basemap plus pre-built exclusion GeoJSON.
+            </p>
+            <span class="work-go">Open the tool →</span>
+          </div>
+        </a>
+
+        <a class="work" href="./agent-grader.html">
+          <div class="work-visual">
+            <img src="/images/feature-work/maptiler-agent-grader.png" alt="MapTiler agent skill scoreboard" width="640" height="400" loading="lazy" />
+          </div>
+          <div class="work-body">
+            <p class="work-meta">Eval · Agent skills · Scoreboard</p>
+            <h3 class="work-title">Agent Skill Scoreboard</h3>
+            <p class="work-desc">
+              Grades AI agents on MapTiler SDK challenges — static checks, harsh training mode,
+              and skill-driven feedback against maptiler-skills.
+            </p>
+            <span class="work-go">Open the grader →</span>
+          </div>
+        </a>
       </div>
 
-      <div class="panel board" style="margin-top:16px">
-        <h2>Agent improvement report</h2>
-        <p class="status" style="margin:0 0 10px">
-          Built from the latest graded run per challenge (example pack or your uploads).
-        </p>
-        <div class="actions" style="margin-bottom:10px">
-          <button type="button" class="btn primary" id="btnImproveRefresh">Refresh report</button>
-          <button type="button" class="btn" id="btnImproveMd">Export Markdown</button>
-          <button type="button" class="btn" id="btnImproveJson">Export JSON</button>
-        </div>
-        <div id="improveSummary" class="status"></div>
-        <ol id="improveList" style="margin:10px 0 0;padding-left:1.2rem;font-size:0.85rem;line-height:1.45;color:var(--text)"></ol>
+      <div class="links-strip">
+        <a href="https://github.com/maptiler/maptiler-skills" target="_blank" rel="noopener">maptiler-skills on GitHub</a>
+        <a href="https://docs.maptiler.com/" target="_blank" rel="noopener">MapTiler docs</a>
+        <a href="https://github.com/jwitcoski/raiders-of-antikythera" target="_blank" rel="noopener">Raiders repo</a>
+        <a href="/">Back to witcoskitech.com</a>
       </div>
     </section>
   </main>
 
-  <script src="./challenges/checks.js"></script>
-  <script src="./challenges/harness.js"></script>
-  <script src="./challenges/improvement.js"></script>
+  <footer>
+    <span>MapTiler Playground · Jonathan Witcoski</span>
+    <span>
+      <a href="https://linkedin.com/in/jonathanwitcoski" target="_blank" rel="noopener">LinkedIn</a>
+      ·
+      <a href="https://www.maptiler.com/" target="_blank" rel="noopener">MapTiler</a>
+    </span>
+  </footer>
+
+  <script src="../admin-boundaries/js/config.js"></script>
+  <script src="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.umd.min.js"></script>
   <script>
-    let catalog = null;
-    let selected = null;
-    /** @type {Record<string, { source: string, ext?: string, meta?: object|null }>} */
-    let uploadedPack = {};
-    /** @type {Record<string, { source: string, ext?: string }>} */
-    let pastedByChallenge = {};
-
-    function applyGradeMode() {
-      const harsh = document.getElementById("gradeHarsh")?.checked !== false;
-      if (globalThis.MapTilerSkillChecks?.setMode) {
-        MapTilerSkillChecks.setMode(harsh ? "harsh" : "normal");
+    (function () {
+      const err = document.getElementById("mapError");
+      function showError(msg) {
+        err.style.display = "block";
+        err.textContent = msg;
       }
-      return harsh ? "harsh" : "normal";
-    }
 
-    const PACK_SNAPSHOT_KEY = "maptiler-pack-snapshots-v1";
-    const LAST_GRADED_SOURCE_KEY = "maptiler-last-graded-source";
-
-    const SOURCE_LABELS = {
-      "example-solutions": "Example solutions/",
-      "no-agent-baseline": "No MapTiler Agent",
-      upload: "Your upload",
-    };
-
-    function loadPackSnapshots() {
-      try {
-        return JSON.parse(localStorage.getItem(PACK_SNAPSHOT_KEY) || "{}");
-      } catch {
-        return {};
-      }
-    }
-
-    function savePackSnapshots(snaps) {
-      localStorage.setItem(PACK_SNAPSHOT_KEY, JSON.stringify(snaps));
-    }
-
-    function tierPctsFromRuns(runs) {
-      if (!catalog) return null;
-      const best = {};
-      for (const r of runs) {
-        if (!best[r.challengeId]) best[r.challengeId] = r;
-      }
-      const avg = (tier) => {
-        const list = catalog.challenges.filter((c) => c.tier === tier);
-        const scored = list.map((c) => best[c.id]?.pct).filter((x) => x != null);
-        if (!scored.length) return null;
-        return Math.round(scored.reduce((a, b) => a + b, 0) / scored.length);
-      };
-      const core = avg("core");
-      const extreme = avg("extreme");
-      const insane = avg("insane");
-      let combined = null;
-      if ([core, extreme, insane].some((x) => x != null)) {
-        const c = core ?? 0, e = extreme ?? 0, i = insane ?? 0;
-        const wC = core != null ? 1 : 0;
-        const wE = extreme != null ? 1.25 : 0;
-        const wI = insane != null ? 1.5 : 0;
-        const w = wC + wE + wI;
-        combined = Math.round((c * wC + e * wE + i * wI) / w);
-      }
-      return {
-        core,
-        extreme,
-        insane,
-        combined,
-        graded: Object.keys(best).length,
-        at: new Date().toISOString(),
-      };
-    }
-
-    function fmtPct(n) {
-      return n == null ? "—" : n + "%";
-    }
-
-    function fmtDelta(n) {
-      if (n == null) return { text: "—", cls: "flat" };
-      if (n === 0) return { text: "0", cls: "flat" };
-      const sign = n > 0 ? "+" : "";
-      return { text: sign + n, cls: n > 0 ? "up" : "down" };
-    }
-
-    function updateActiveRunLabel() {
-      const el = document.getElementById("activeRunLabel");
-      if (!el) return;
-      const src = localStorage.getItem(LAST_GRADED_SOURCE_KEY);
-      if (!src || !SOURCE_LABELS[src]) {
-        el.textContent = "Pills: grade a pack or upload to see tier averages";
-        return;
-      }
-      el.textContent = "Pills show latest grade: " + SOURCE_LABELS[src];
-    }
-
-    function updateRunCompare() {
-      const grid = document.getElementById("runCompare");
-      const deltasEl = document.getElementById("runCompareDeltas");
-      if (!grid) return;
-      const snaps = loadPackSnapshots();
-      const baseline = snaps["no-agent-baseline"];
-      const skill = snaps["example-solutions"];
-      const upload = snaps.upload;
-
-      if (!skill && !baseline && !upload) {
-        grid.innerHTML =
-          '<div class="compare-empty">' +
-          "Grade <strong>No MapTiler Agent Run</strong> for the baseline, then compare with " +
-          "<strong>Grade example solutions/</strong> or <strong>Grade uploaded files</strong> (your run)." +
-          "</div>";
-        if (deltasEl) deltasEl.hidden = true;
+      if (typeof maptilersdk === "undefined") {
+        showError("MapTiler SDK failed to load.");
         return;
       }
 
-      const card = (cls, title, sub, s) => {
-        const subHtml = sub ? `<span class="sub">${escapeHtml(sub)}</span>` : "";
-        if (!s) {
-          return (
-            `<div class="compare-card ${cls}"><h3>${title}${subHtml}</h3>` +
-            `<div class="compare-rows"><span>status</span><b>not graded yet</b></div></div>`
-          );
-        }
-        return (
-          `<div class="compare-card ${cls}"><h3>${title}${subHtml}</h3>` +
-          `<div class="compare-rows">` +
-          `<span>Core</span><b>${fmtPct(s.core)}</b>` +
-          `<span>Extreme</span><b>${fmtPct(s.extreme)}</b>` +
-          `<span>Insane</span><b>${fmtPct(s.insane)}</b>` +
-          `<span>Combined</span><b>${fmtPct(s.combined)}</b>` +
-          `</div></div>`
-        );
-      };
-
-      const subFor = (s) => {
-        if (!s) return "";
-        const bits = [];
-        if (s.model) bits.push(s.model);
-        if (s.skillUsed === true) bits.push("skill on");
-        if (s.skillUsed === false) bits.push("skill off");
-        if (s.graded != null) bits.push(s.graded + " challenges");
-        return bits.join(" · ");
-      };
-
-      grid.innerHTML =
-        card("baseline", "No MapTiler Agent", subFor(baseline), baseline) +
-        card("skill", "Example solutions/", subFor(skill), skill) +
-        card("upload", "Your upload", subFor(upload), upload);
-
-      const chips = [];
-      function chip(label, a, b) {
-        if (!a || !b || a.combined == null || b.combined == null) return;
-        const d = fmtDelta(a.combined - b.combined);
-        chips.push(
-          `<span class="delta-chip">${label} vs baseline <b class="${d.cls}">${d.text}</b> combined</span>`
-        );
-      }
-      chip("Your upload", upload, baseline);
-      chip("Example", skill, baseline);
-      if (upload && skill && upload.combined != null && skill.combined != null) {
-        const d = fmtDelta(upload.combined - skill.combined);
-        chips.push(
-          `<span class="delta-chip">Your upload vs example <b class="${d.cls}">${d.text}</b> combined</span>`
-        );
-      }
-
-      if (deltasEl) {
-        if (chips.length) {
-          deltasEl.hidden = false;
-          deltasEl.innerHTML = chips.join("");
-        } else {
-          deltasEl.hidden = true;
-          deltasEl.innerHTML = "";
-        }
-      }
-    }
-
-    function rememberPackSnapshot(sourceTag, runs, extra) {
-      const allowed = ["example-solutions", "no-agent-baseline", "upload"];
-      if (!allowed.includes(sourceTag)) return;
-      const snap = tierPctsFromRuns(runs);
-      if (!snap) return;
-      Object.assign(snap, extra || {});
-      const snaps = loadPackSnapshots();
-      snaps[sourceTag] = snap;
-      savePackSnapshots(snaps);
-      updateRunCompare();
-    }
-
-    async function boot() {
-      const res = await fetch("./challenges/catalog.json");
-      catalog = await res.json();
-      applyGradeMode();
-      renderList();
-      renderBoard();
-      updateTierPcts();
-      updateActiveRunLabel();
-      updateRunCompare();
-      renderImprovement();
-    }
-
-    function byTier() {
-      const groups = { core: [], extreme: [], insane: [] };
-      for (const c of catalog.challenges) groups[c.tier].push(c);
-      return groups;
-    }
-
-    function bestByChallenge() {
-      // Latest run per challenge (runs are stored newest-first). Do not keep
-      // "best ever" across packs — that made example-pack scores stick after a
-      // partial upload.
-      const runs = MapTilerHarness.loadRuns();
-      const best = {};
-      for (const r of runs) {
-        if (!best[r.challengeId]) best[r.challengeId] = r;
-      }
-      return best;
-    }
-
-    function renderList() {
-      const best = bestByChallenge();
-      const wrap = document.getElementById("challengeList");
-      wrap.innerHTML = "";
-      const groups = byTier();
-      for (const tier of ["core", "extreme", "insane"]) {
-        const h = document.createElement("div");
-        h.className = "tier-label " + tier;
-        h.textContent = tier;
-        wrap.appendChild(h);
-        for (const c of groups[tier]) {
-          const b = document.createElement("button");
-          b.type = "button";
-          b.className = "chal" + (selected && selected.id === c.id ? " active" : "");
-          const br = best[c.id];
-          const badge = br
-            ? `<span class="badge ${br.pct >= 70 ? "pass" : "fail"}">${br.pct}%</span>`
-            : "";
-          const mode = c.mode === "static" ? `<span class="badge static">static</span>` : "";
-          b.innerHTML = `<div class="t">${c.id} · ${c.title} ${mode} ${badge}</div>
-            <div class="m">${c.tags.join(" · ")} · max ${c.maxScore}</div>`;
-          b.addEventListener("click", () => selectChallenge(c.id));
-          wrap.appendChild(b);
-        }
-      }
-    }
-
-    function selectChallenge(id) {
-      selected = catalog.challenges.find((c) => c.id === id);
-      document.getElementById("promptBox").textContent = selected.prompt;
-      document.getElementById("chalMeta").textContent =
-        `${selected.id} · ${selected.tier} · tags: ${selected.tags.join(", ")}` +
-        (selected.mode === "static" ? " · static-only grading" : "");
-      renderList();
-      document.getElementById("checkResults").innerHTML = "";
-      document.getElementById("gradeStatus").textContent = "";
-      updateExampleLink(selected);
-
-      const pasted = pastedByChallenge[id];
-      if (pasted?.source) {
-        document.getElementById("source").value = pasted.source;
-      } else if (uploadedPack[id]?.source) {
-        document.getElementById("source").value = uploadedPack[id].source;
-      } else {
-        document.getElementById("source").value = "";
-      }
-    }
-
-    function updateExampleLink(challenge) {
-      const link = document.getElementById("exampleLink");
-      if (!challenge) {
-        link.hidden = true;
-        link.removeAttribute("href");
-        return;
-      }
-      const ext = extFor(challenge)[0];
-      const file = challenge.id + ext;
-      link.href = "./solutions/" + file;
-      link.textContent = "View example (" + file + ")";
-      link.hidden = false;
-    }
-
-    function rememberPasteForSelected(source, ext) {
-      if (!selected || !source) return;
-      pastedByChallenge[selected.id] = {
-        source,
-        ext: ext || extFor(selected)[0],
-      };
-    }
-
-    function numOrNull(id) {
-      const v = document.getElementById(id).value;
-      if (v === "" || v == null) return null;
-      const n = Number(v);
-      return Number.isFinite(n) ? n : null;
-    }
-
-    function collectMeta() {
-      const model = document.getElementById("metaModel").value.trim();
-      if (!model) {
-        throw new Error("Model is required in run metadata.");
-      }
-      const tin = numOrNull("tokIn");
-      const tout = numOrNull("tokOut");
-      let ttot = numOrNull("tokTotal");
-      if (ttot == null && tin != null && tout != null) ttot = tin + tout;
-      return {
-        agentLabel: document.getElementById("metaAgent").value,
-        provider: document.getElementById("metaProvider").value,
-        model,
-        skillUsed: document.getElementById("metaSkill").checked,
-        skillVersionNote: "maptiler-skills @ local .agents",
-        tokens: { input: tin, output: tout, total: ttot },
-        costUsd: numOrNull("metaCost"),
-        latencySec: numOrNull("metaLatency"),
-        attempts: numOrNull("metaAttempts") || 1,
-        notes: document.getElementById("metaNotes").value.trim(),
-      };
-    }
-
-    async function doGrade(withLive) {
-      if (!selected) {
-        document.getElementById("gradeStatus").textContent = "Pick a challenge first.";
-        return;
-      }
-      const source = document.getElementById("source").value;
-      if (!source.trim()) {
-        document.getElementById("gradeStatus").textContent = "Paste agent code first.";
-        return;
-      }
-      rememberPasteForSelected(source, null);
-      applyGradeMode();
-      let meta;
-      try {
-        meta = collectMeta();
-      } catch (err) {
-        document.getElementById("gradeStatus").textContent = err.message;
+      const key = window.MAPTILER_API_KEY;
+      if (!key || key === "YOUR_MAPTILER_KEY_HERE") {
+        showError("Add your MapTiler key in /admin-boundaries/js/config.js to light up the hero map.");
         return;
       }
 
-      const result = MapTilerSkillChecks.grade(source, selected.checks);
-      let live = { skipped: true };
-      if (withLive && selected.mode !== "static") {
-        document.getElementById("gradeStatus").textContent = "Running live smoke…";
-        live = await MapTilerHarness.runLiveSmoke(source, 4500);
-      }
+      maptilersdk.config.apiKey = key;
 
-      const run = {
-        runId: MapTilerHarness.uuid(),
-        timestamp: new Date().toISOString(),
-        challengeId: selected.id,
-        tier: selected.tier,
-        ...meta,
-        checks: result.checks,
-        score: result.score,
-        maxScore: result.maxScore,
-        pct: result.pct,
-        letter: result.letter,
-        live,
-      };
+      const map = new maptilersdk.Map({
+        container: "heroMap",
+        style: maptilersdk.MapStyle.HYBRID,
+        center: [22.07, 36.86],
+        zoom: 2.15,
+        pitch: 42,
+        bearing: -18,
+        interactive: false,
+        attributionControl: false,
+        navigationControl: false,
+        geolocateControl: false,
+      });
 
-      const runs = MapTilerHarness.loadRuns();
-      runs.unshift(run);
-      MapTilerHarness.saveRuns(runs);
+      map.on("error", (e) => {
+        showError("Map error: " + (e.error?.message || e.error || "unknown"));
+      });
 
-      renderChecks(result);
-      let msg = `Score ${result.score}/${result.maxScore} (${result.pct}% · ${result.letter})`;
-      if (live && !live.skipped) msg += live.ok ? " · live smoke OK" : ` · live: ${live.reason || "fail"}`;
-      document.getElementById("gradeStatus").textContent = msg;
-      renderBoard();
-      renderList();
-      updateTierPcts();
-      renderImprovement();
-    }
-
-    function renderChecks(result) {
-      const el = document.getElementById("checkResults");
-      el.innerHTML = result.checks
-        .map(
-          (c) =>
-            `<div class="check ${c.pass ? "ok" : "no"}">
-              <span>${c.pass ? "✓" : "✗"}</span>
-              <span class="id">${c.id}</span>
-              <span>${c.detail} <em style="color:var(--muted)">(+${c.points}/${c.weight})</em></span>
-            </div>`
-        )
-        .join("");
-    }
-
-    function renderBoard() {
-      let runs = MapTilerHarness.loadRuns();
-      const skillF = document.getElementById("filterSkill").value;
-      const modelF = document.getElementById("filterModel").value.trim().toLowerCase();
-      if (skillF === "yes") runs = runs.filter((r) => r.skillUsed);
-      if (skillF === "no") runs = runs.filter((r) => !r.skillUsed);
-      if (modelF) runs = runs.filter((r) => (r.model || "").toLowerCase().includes(modelF));
-
-      const body = document.getElementById("boardBody");
-      document.getElementById("boardEmpty").style.display = runs.length ? "none" : "block";
-      body.innerHTML = runs
-        .slice(0, 80)
-        .map((r) => {
-          const tok = r.tokens?.total != null ? r.tokens.total : "—";
-          const when = new Date(r.timestamp).toLocaleString();
-          return `<tr>
-            <td>${when}</td>
-            <td>${r.challengeId}</td>
-            <td>${escapeHtml(r.model)}</td>
-            <td>${r.skillUsed ? "on" : "off"}</td>
-            <td>${r.score}/${r.maxScore} (${r.pct}%)</td>
-            <td>${tok}</td>
-            <td>${r.letter}</td>
-          </tr>`;
-        })
-        .join("");
-    }
-
-    function escapeHtml(s) {
-      return String(s)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;");
-    }
-
-    function updateTierPcts() {
-      const best = bestByChallenge();
-      if (!catalog) return;
-      const avg = (tier) => {
-        const list = catalog.challenges.filter((c) => c.tier === tier);
-        const scored = list.map((c) => best[c.id]?.pct).filter((x) => x != null);
-        if (!scored.length) return null;
-        return Math.round(scored.reduce((a, b) => a + b, 0) / scored.length);
-      };
-      const core = avg("core");
-      const extreme = avg("extreme");
-      const insane = avg("insane");
-      document.getElementById("pctCore").textContent = core == null ? "—" : core + "%";
-      document.getElementById("pctExtreme").textContent = extreme == null ? "—" : extreme + "%";
-      document.getElementById("pctInsane").textContent = insane == null ? "—" : insane + "%";
-      const parts = [core, extreme, insane].filter((x) => x != null);
-      // Weight extreme/insane slightly higher in combined
-      let combined = null;
-      if (parts.length) {
-        const c = core ?? 0, e = extreme ?? 0, i = insane ?? 0;
-        const wC = core != null ? 1 : 0;
-        const wE = extreme != null ? 1.25 : 0;
-        const wI = insane != null ? 1.5 : 0;
-        const w = wC + wE + wI;
-        combined = Math.round((c * wC + e * wE + i * wI) / w);
-      }
-      document.getElementById("pctCombined").textContent = combined == null ? "—" : combined + "%";
-    }
-
-    function extFor(c) {
-      if (c.id === "I4") return [".swift", ".txt"];
-      if (c.id === "I5") return [".kt", ".kotlin", ".txt"];
-      if (c.id === "I6") return [".dart", ".txt"];
-      if (c.id === "I7") return [".tsx", ".ts", ".jsx", ".js", ".txt"];
-      if (c.id === "I8") return [".js", ".ts", ".mjs", ".txt"];
-      return [".html", ".js", ".txt"];
-    }
-
-    function buildBatchPrompt() {
-      const model = document.getElementById("metaModel").value.trim() || "YOUR_MODEL_NAME";
-      const agent = document.getElementById("metaAgent").value;
-      const provider = document.getElementById("metaProvider").value;
-      const skillOn = document.getElementById("metaSkill").checked;
-      const tokIn = numOrNull("tokIn");
-      const tokOut = numOrNull("tokOut");
-      let tokTotal = numOrNull("tokTotal");
-      if (tokTotal == null && tokIn != null && tokOut != null) tokTotal = tokIn + tokOut;
-      const costUsd = numOrNull("metaCost");
-      const latencySec = numOrNull("metaLatency");
-      const attempts = numOrNull("metaAttempts") || 1;
-      const notes = document.getElementById("metaNotes").value.trim() || "user-upload";
-
-      const metaTemplate = {
-        agentLabel: agent,
-        provider,
-        model,
-        skillUsed: skillOn,
-        skillVersionNote: "maptiler-skills @ local .agents",
-        tokens: { input: tokIn, output: tokOut, total: tokTotal },
-        costUsd,
-        latencySec,
-        attempts,
-        notes,
-      };
-
-      const lines = [];
-      lines.push("Use the MapTiler skill: read .agents/skills/maptiler/SKILL.md first.");
-      lines.push("");
-      lines.push("For EVERY challenge below, create TWO files (downloadable / saveable locally):");
-      lines.push("");
-      lines.push("File 1 — the solution (name by challenge id):");
-      lines.push("  C1.html, C2.html, … X8.html, I1.html, I2.html, I3.html");
-      lines.push("  I4.swift, I5.kt, I6.dart, I7.tsx, I8.js");
-      lines.push("");
-      lines.push("File 2 — metadata (same id):");
-      lines.push("  C1.meta.json, C2.meta.json, … (one per challenge)");
-      lines.push("");
-      lines.push("The user will UPLOAD these files into the MapTiler Agent Skill Scoreboard to grade them.");
-      lines.push("Do not assume a repo path — emit complete file contents the user can save and upload.");
-      lines.push("");
-      lines.push("Each .meta.json MUST include tokens (input/output/total), costUsd, and latencySec.");
-      lines.push("Use these run-metadata values (update per challenge if you track separately):");
-      lines.push(JSON.stringify(metaTemplate));
-      lines.push("");
-      lines.push("Field meanings:");
-      lines.push("- tokens.input — prompt/input token count (number or null)");
-      lines.push("- tokens.output — completion/output token count (number or null)");
-      lines.push("- tokens.total — input+output if known (number or null)");
-      lines.push("- costUsd — estimated USD cost for the run (number or null)");
-      lines.push("- latencySec — wall time in seconds (number or null)");
-      lines.push("- attempts — how many tries before the final solution (integer ≥ 1)");
-      lines.push("If you do not know a value, keep null — do not omit the keys.");
-      lines.push("");
-      lines.push("Hard rules: @maptiler/sdk CDN v4.0.2 only (never maplibre-gl); coordinates [lng,lat]; no streets-v2/basic-v2; no {{ }}; browser pages load key from ../admin-boundaries/js/config.js as window.MAPTILER_API_KEY.");
-      lines.push("Write all files. Do not stop early.");
-      lines.push("");
-      for (const c of catalog.challenges) {
-        lines.push(`---`);
-        lines.push(`${c.id} [${c.tier}] ${c.title}`);
-        lines.push(c.prompt);
-        lines.push("");
-      }
-      return lines.join("\n");
-    }
-
-    async function fetchSolution(id, exts, dir = "solutions") {
-      for (const ext of exts) {
+      map.on("load", () => {
         try {
-          const res = await fetch(`./${dir}/${id}${ext}`, { cache: "no-store" });
-          if (res.ok) return { source: await res.text(), ext };
-        } catch { /* try next */ }
-      }
-      return null;
-    }
+          map.setProjection({ type: "globe" });
+        } catch (_) { /* older fallbacks ignore */ }
 
-    async function fetchMeta(id, dir = "solutions") {
-      try {
-        const res = await fetch(`./${dir}/${id}.meta.json`, { cache: "no-store" });
-        if (res.ok) return await res.json();
-      } catch { /* ignore */ }
-      return null;
-    }
+        const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        if (reduce) return;
 
-    function defaultBatchMeta(notes) {
-      try {
-        const m = collectMeta();
-        return { ...m, notes: notes || m.notes };
-      } catch {
-        return {
-          agentLabel: document.getElementById("metaAgent").value,
-          provider: document.getElementById("metaProvider").value,
-          model: document.getElementById("metaModel").value.trim() || "batch-unknown",
-          skillUsed: document.getElementById("metaSkill").checked,
-          skillVersionNote: "maptiler-skills @ local .agents",
-          tokens: { input: null, output: null, total: null },
-          costUsd: null,
-          latencySec: null,
-          attempts: 1,
-          notes: notes || "batch grade (form model fallback)",
+        let bearing = -18;
+        const tick = () => {
+          bearing += 0.012;
+          map.setBearing(bearing);
+          requestAnimationFrame(tick);
         };
-      }
-    }
-
-    /**
-     * @param {Record<string, { source: string, ext?: string, meta?: object|null }>} pack
-     * @param {{ label: string, sourceTag: string, replace?: boolean }} opts
-     *   replace (default true): wipe prior scoreboard so missing ids stay ungraded
-     *   instead of showing leftover example-pack / older upload scores.
-     */
-    function gradePack(pack, opts) {
-      if (!catalog) return;
-      applyGradeMode();
-      const status = document.getElementById("batchStatus");
-      const formMeta = defaultBatchMeta(opts.label);
-      const replace = opts.replace !== false;
-      const runs = replace ? [] : MapTilerHarness.loadRuns().slice();
-      let ok = 0;
-      let missing = 0;
-      const summary = [];
-      const missingIds = [];
-      const mode = MapTilerSkillChecks.getMode?.() || "harsh";
-
-      for (const c of catalog.challenges) {
-        const file = pack[c.id];
-        if (!file || !file.source) {
-          missing++;
-          missingIds.push(c.id);
-          summary.push(`${c.id}: missing`);
-          continue;
-        }
-        const fileMeta = file.meta || null;
-        const meta = {
-          ...formMeta,
-          ...(fileMeta || {}),
-          tokens: {
-            input: fileMeta?.tokens?.input ?? formMeta.tokens.input,
-            output: fileMeta?.tokens?.output ?? formMeta.tokens.output,
-            total: fileMeta?.tokens?.total ?? formMeta.tokens.total,
-          },
-          notes: [formMeta.notes, fileMeta?.notes, `${opts.sourceTag}:${c.id}${file.ext || ""}`]
-            .filter(Boolean)
-            .join(" | "),
-        };
-        if (!meta.model) meta.model = formMeta.model;
-
-        const result = MapTilerSkillChecks.grade(file.source, c.checks);
-        runs.unshift({
-          runId: MapTilerHarness.uuid(),
-          timestamp: new Date().toISOString(),
-          challengeId: c.id,
-          tier: c.tier,
-          ...meta,
-          checks: result.checks,
-          score: result.score,
-          maxScore: result.maxScore,
-          pct: result.pct,
-          letter: result.letter,
-          live: { skipped: true, reason: opts.sourceTag },
-        });
-        ok++;
-        summary.push(`${c.id}: ${result.pct}% ${result.letter}`);
-      }
-
-      MapTilerHarness.saveRuns(runs);
-      localStorage.setItem(LAST_GRADED_SOURCE_KEY, opts.sourceTag);
-      rememberPackSnapshot(opts.sourceTag, runs, {
-        label: opts.label,
-        model: formMeta.model,
-        skillUsed: formMeta.skillUsed,
+        requestAnimationFrame(tick);
       });
-      renderBoard();
-      renderList();
-      updateTierPcts();
-      updateActiveRunLabel();
-      updateRunCompare();
-      renderImprovement();
-      const missNote =
-        missing > 0
-          ? ` Missing (not graded): ${missingIds.slice(0, 12).join(", ")}${missingIds.length > 12 ? "…" : ""}.`
-          : "";
-      status.textContent =
-        `[${mode}] ${opts.label}: ${ok} graded, ${missing} missing.` +
-        missNote +
-        (replace ? " Scoreboard replaced with this pack only." : "") +
-        " " +
-        summary.filter((s) => !s.endsWith("missing")).slice(0, 8).join(" · ") +
-        (ok > 8 ? "…" : "");
-    }
-
-    async function gradePackFromDir(dir, { label, sourceTag }) {
-      if (!catalog) return;
-      const status = document.getElementById("batchStatus");
-      status.textContent = `Loading ${dir}/…`;
-      const pack = {};
-      for (const c of catalog.challenges) {
-        const file = await fetchSolution(c.id, extFor(c), dir);
-        if (!file) continue;
-        pack[c.id] = {
-          source: file.source,
-          ext: file.ext,
-          meta: await fetchMeta(c.id, dir),
-        };
-      }
-      // Keep in memory so selecting a challenge opens this pack (same as upload)
-      uploadedPack = pack;
-      gradePack(pack, { label, sourceTag });
-    }
-
-    async function gradeAllFromSolutions() {
-      await gradePackFromDir("solutions", {
-        label: "Example pack",
-        sourceTag: "example-solutions",
-      });
-    }
-
-    async function gradeNoAgentRun() {
-      await gradePackFromDir("NoAgentSolutions", {
-        label: "No MapTiler Agent Run",
-        sourceTag: "no-agent-baseline",
-      });
-    }
-
-    function parseChallengeFileName(name) {
-      // C1.html, X3.meta.json, I7.tsx, c1.HTML
-      const base = name.split(/[/\\]/).pop() || name;
-      const meta = base.match(/^([CXI]\d+)\.meta\.json$/i);
-      if (meta) return { id: meta[1].toUpperCase(), kind: "meta" };
-      const sol = base.match(/^([CXI]\d+)\.[a-z0-9]+$/i);
-      if (sol) return { id: sol[1].toUpperCase(), kind: "solution", ext: "." + base.split(".").pop() };
-      return null;
-    }
-
-    async function readUploadPack(fileList) {
-      const pack = {};
-      const ignored = [];
-      for (const file of fileList) {
-        const parsed = parseChallengeFileName(file.name);
-        if (!parsed) {
-          ignored.push(file.name);
-          continue;
-        }
-        const text = await file.text();
-        if (!pack[parsed.id]) pack[parsed.id] = { source: "", ext: "", meta: null };
-        if (parsed.kind === "meta") {
-          try {
-            pack[parsed.id].meta = JSON.parse(text);
-          } catch {
-            ignored.push(file.name + " (bad JSON)");
-          }
-        } else {
-          pack[parsed.id].source = text;
-          pack[parsed.id].ext = parsed.ext || "";
-        }
-      }
-      return { pack, ignored };
-    }
-
-    async function gradeUploadedFiles() {
-      if (!catalog) return;
-      const input = document.getElementById("uploadPack");
-      const files = input.files;
-      const status = document.getElementById("batchStatus");
-      if (!files || !files.length) {
-        status.textContent = "Choose solution files first (e.g. C1.html, C1.meta.json, …).";
-        return;
-      }
-      status.textContent = `Reading ${files.length} uploaded file(s)…`;
-      const { pack, ignored } = await readUploadPack(files);
-      const ids = Object.keys(pack).filter((id) => pack[id].source);
-      if (!ids.length) {
-        status.textContent =
-          "No challenge solution files recognized. Name files like C1.html / X2.html / I8.js.";
-        return;
-      }
-      gradePack(pack, { label: "Your upload", sourceTag: "upload" });
-      uploadedPack = pack;
-      if (ignored.length) {
-        status.textContent += ` · ignored: ${ignored.slice(0, 4).join(", ")}${ignored.length > 4 ? "…" : ""}`;
-      }
-    }
-
-    function renderImprovement() {
-      if (!globalThis.MapTilerImprovement) return;
-      const report = MapTilerImprovement.buildReport(MapTilerHarness.loadRuns());
-      const sum = document.getElementById("improveSummary");
-      const list = document.getElementById("improveList");
-      if (!report.challengesGraded) {
-        sum.textContent = "No graded runs yet.";
-        list.innerHTML = "";
-        return;
-      }
-      sum.textContent =
-        `Avg ${report.avgPct}% · Core ${report.byTier.core ?? "—"}% · Extreme ${report.byTier.extreme ?? "—"}% · Insane ${report.byTier.insane ?? "—"}% · ${report.themes.length} improvement themes`;
-      list.innerHTML = report.themes
-        .map(
-          (t) =>
-            `<li style="margin-bottom:10px"><strong>${t.theme}</strong> (${t.count}×) — ${t.do}` +
-            (t.challenges.length ? ` <span style="color:var(--muted)">[${t.challenges.join(", ")}]</span>` : "") +
-            `</li>`
-        )
-        .join("");
-    }
-
-    function downloadText(filename, text, type) {
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(new Blob([text], { type: type || "text/plain" }));
-      a.download = filename;
-      a.click();
-    }
-
-    document.getElementById("btnCopy").addEventListener("click", async () => {
-      if (!selected) return;
-      await navigator.clipboard.writeText(selected.prompt);
-      document.getElementById("gradeStatus").textContent = "Prompt copied.";
-    });
-    document.getElementById("source").addEventListener("change", () => {
-      rememberPasteForSelected(document.getElementById("source").value, null);
-    });
-    document.getElementById("source").addEventListener("blur", () => {
-      const v = document.getElementById("source").value.trim();
-      if (v) rememberPasteForSelected(v, null);
-    });
-    document.getElementById("btnCopyBatch").addEventListener("click", async () => {
-      if (!catalog) return;
-      const text = buildBatchPrompt();
-      await navigator.clipboard.writeText(text);
-      document.getElementById("batchStatus").textContent =
-        "Copied. Paste into your agent with the MapTiler skill. Then upload the output files here to grade (do not rely on the example solutions/ pack).";
-    });
-    document.getElementById("btnGradeAll").addEventListener("click", () => gradeAllFromSolutions());
-    document.getElementById("btnGradeNoAgent").addEventListener("click", () => gradeNoAgentRun());
-    document.getElementById("btnGradeUpload").addEventListener("click", () => gradeUploadedFiles());
-    document.getElementById("gradeHarsh").addEventListener("change", () => {
-      const mode = applyGradeMode();
-      document.getElementById("batchStatus").textContent =
-        `Grading mode → ${mode}. Re-run Grade uploaded / example pack to refresh scores.`;
-    });
-    document.getElementById("btnClearBoard").addEventListener("click", () => {
-      MapTilerHarness.clearRuns();
-      localStorage.removeItem(PACK_SNAPSHOT_KEY);
-      localStorage.removeItem(LAST_GRADED_SOURCE_KEY);
-      uploadedPack = {};
-      pastedByChallenge = {};
-      renderBoard();
-      renderList();
-      updateTierPcts();
-      updateActiveRunLabel();
-      updateRunCompare();
-      renderImprovement();
-      document.getElementById("batchStatus").textContent =
-        "Scoreboard cleared. Upload files or grade the example pack.";
-    });
-    document.getElementById("uploadOne").addEventListener("change", async (e) => {
-      const file = e.target.files && e.target.files[0];
-      if (!file) return;
-      const text = await file.text();
-      document.getElementById("source").value = text;
-      const ext = "." + (file.name.split(".").pop() || "html");
-      rememberPasteForSelected(text, ext);
-      // If filename is C1.html etc., bind to that challenge and select it
-      const parsed = parseChallengeFileName(file.name);
-      if (parsed && parsed.kind === "solution") {
-        pastedByChallenge[parsed.id] = { source: text, ext: parsed.ext || ext };
-        if (catalog) selectChallenge(parsed.id);
-      }
-      document.getElementById("gradeStatus").textContent = `Loaded ${file.name} — click Grade.`;
-      e.target.value = "";
-    });
-    document.getElementById("btnGrade").addEventListener("click", () => doGrade(false));
-    document.getElementById("btnLive").addEventListener("click", () => doGrade(true));
-    document.getElementById("filterSkill").addEventListener("change", renderBoard);
-    document.getElementById("filterModel").addEventListener("input", renderBoard);
-    document.getElementById("btnClear").addEventListener("click", () => {
-      if (confirm("Clear all scoreboard runs?")) {
-        MapTilerHarness.clearRuns();
-        renderBoard();
-        renderList();
-        updateTierPcts();
-        renderImprovement();
-      }
-    });
-    document.getElementById("btnExport").addEventListener("click", () => {
-      const blob = new Blob([JSON.stringify(MapTilerHarness.loadRuns(), null, 2)], {
-        type: "application/json",
-      });
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = "maptiler-agent-scoreboard.json";
-      a.click();
-    });
-    document.getElementById("btnImproveRefresh").addEventListener("click", renderImprovement);
-    document.getElementById("btnImproveMd").addEventListener("click", () => {
-      const report = MapTilerImprovement.buildReport(MapTilerHarness.loadRuns());
-      downloadText("maptiler-agent-improvement.md", MapTilerImprovement.toMarkdown(report), "text/markdown");
-    });
-    document.getElementById("btnImproveJson").addEventListener("click", () => {
-      const report = MapTilerImprovement.buildReport(MapTilerHarness.loadRuns());
-      downloadText("maptiler-agent-improvement.json", JSON.stringify(report, null, 2), "application/json");
-    });
-
-    boot().catch((err) => {
-      document.getElementById("chalMeta").textContent = "Failed to load catalog: " + err.message;
-    });
+    })();
   </script>
 </body>
 </html>
