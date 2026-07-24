@@ -452,6 +452,20 @@
 
     .chapter-card .museum strong { color: var(--good); }
 
+    .chapter-card .chapter-art {
+      display: block;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      margin: 0 0 12px;
+      border: 2px solid rgba(63, 90, 40, 0.45);
+      background: rgba(255, 248, 230, 0.4);
+    }
+
+    .chapter-card .chapter-art[hidden] {
+      display: none;
+    }
+
     .chapter-card .row { margin: 0; justify-content: flex-end; }
 
     @media (max-width: 640px) {
@@ -604,7 +618,7 @@
       box-shadow: var(--panel-shadow);
       color: var(--ink);
       font-family: "Special Elite", "Courier New", monospace;
-      max-width: 280px;
+      max-width: 320px;
     }
 
     .maplibregl-popup.dig-popup .maplibregl-popup-tip {
@@ -637,6 +651,16 @@
       font-size: 0.95rem;
       color: var(--leather);
       font-weight: 700;
+    }
+
+    .dig-pop .landscape-art {
+      display: block;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      margin: 0 0 8px;
+      border: 1px solid rgba(74, 47, 28, 0.35);
+      background: rgba(255, 248, 230, 0.45);
     }
 
     .dig-pop p {
@@ -720,7 +744,7 @@
     .era-tip {
       position: fixed;
       z-index: 8;
-      width: min(300px, calc(100vw - 24px));
+      width: min(340px, calc(100vw - 24px));
       padding: 12px 14px;
       border: 2px solid var(--leather);
       background:
@@ -737,6 +761,16 @@
     .era-tip.on {
       opacity: 1;
       transform: translateY(0);
+    }
+
+    .era-tip .era-art {
+      display: block;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      margin: 0 0 10px;
+      border: 1px solid rgba(74, 47, 28, 0.35);
+      background: rgba(255, 248, 230, 0.4);
     }
 
     .era-tip .when {
@@ -843,7 +877,7 @@
 
     .dig-event-card {
       width: min(420px, 100%);
-      max-height: min(70vh, 520px);
+      max-height: min(88vh, 720px);
       overflow: auto;
       padding: 22px 20px 18px;
       border: 3px solid var(--leather);
@@ -945,6 +979,21 @@
       color: var(--ink);
     }
 
+    .dig-event-card .event-art {
+      display: block;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      margin: 0 0 12px;
+      border: 2px solid rgba(74, 47, 28, 0.35);
+      background: rgba(255, 248, 230, 0.4);
+      image-rendering: auto;
+    }
+
+    .dig-event-card .event-art[hidden] {
+      display: none;
+    }
+
     .stat .v.busy { color: var(--warn); }
 
     .stat .rank {
@@ -956,6 +1005,299 @@
       text-transform: uppercase;
       color: var(--brass);
       line-height: 1.2;
+      cursor: help;
+    }
+
+    .glory-tip {
+      position: fixed;
+      z-index: 9;
+      width: min(320px, calc(100vw - 24px));
+      padding: 12px 14px;
+      border: 2px solid var(--leather);
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.22), transparent 45%),
+        var(--parchment);
+      color: var(--ink);
+      box-shadow: var(--panel-shadow);
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity 0.15s ease, transform 0.15s ease;
+    }
+
+    .glory-tip.on {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .glory-tip .rank-art {
+      display: block;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      margin: 0 0 10px;
+      border: 1px solid rgba(74, 47, 28, 0.35);
+      background: rgba(255, 248, 230, 0.4);
+    }
+
+    .glory-tip .eyebrow {
+      margin: 0 0 4px;
+      font-size: 0.62rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--stamp);
+    }
+
+    .glory-tip h3 {
+      margin: 0 0 8px;
+      font-family: "Cinzel", serif;
+      font-size: 0.95rem;
+      color: var(--leather);
+    }
+
+    .glory-tip p {
+      margin: 0;
+      font-size: 0.78rem;
+      line-height: 1.45;
+      color: var(--ink);
+    }
+
+    .final-card .rank-art {
+      display: block;
+      width: 100%;
+      max-width: 360px;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      margin: 0 auto 14px;
+      border: 2px solid rgba(166, 124, 45, 0.55);
+      background: rgba(255, 248, 230, 0.4);
+    }
+
+    .final-card .rank-art[hidden] {
+      display: none;
+    }
+
+    .start-actions .hard-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      text-align: left;
+      font-size: 0.78rem;
+      line-height: 1.4;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .start-actions .hard-row input {
+      margin-top: 3px;
+    }
+
+    .start-actions .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .start-actions .btn-row button {
+      flex: 1 1 140px;
+    }
+
+    .tutorial-banner {
+      display: none;
+      position: absolute;
+      z-index: 4;
+      left: 50%;
+      top: 14px;
+      transform: translateX(-50%);
+      max-width: min(520px, calc(100% - 28px));
+      padding: 10px 14px;
+      border: 2px solid var(--brass);
+      background: var(--parchment);
+      box-shadow: var(--panel-shadow);
+      font-size: 0.82rem;
+      line-height: 1.4;
+      color: var(--ink);
+      text-align: center;
+    }
+
+    .tutorial-banner.on { display: block; }
+    .tutorial-banner strong {
+      font-family: "Cinzel", serif;
+      color: var(--leather);
+      letter-spacing: 0.04em;
+    }
+
+    .folio-modal, .recap-modal {
+      display: none;
+      position: absolute;
+      z-index: 7;
+      inset: 0;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(42, 31, 20, 0.72);
+    }
+
+    .folio-modal.on, .recap-modal.on { display: flex; }
+
+    .folio-card, .recap-card {
+      width: min(560px, 100%);
+      max-height: min(88vh, 720px);
+      overflow: auto;
+      padding: 20px 18px 16px;
+      border: 3px solid var(--leather);
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent 42%),
+        var(--parchment);
+      box-shadow: var(--panel-shadow);
+      text-align: left;
+    }
+
+    .folio-card h2, .recap-card h2 {
+      margin: 0 0 8px;
+      font-family: "Cinzel", serif;
+      color: var(--leather);
+      font-size: 1.35rem;
+    }
+
+    .folio-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      gap: 10px;
+      margin: 12px 0 16px;
+    }
+
+    .folio-stamp {
+      border: 1px solid rgba(74, 47, 28, 0.35);
+      background: rgba(255, 248, 230, 0.5);
+      padding: 4px;
+      text-align: center;
+      width: 100%;
+      font: inherit;
+      color: inherit;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    .folio-stamp.unlocked {
+      cursor: zoom-in;
+    }
+
+    .folio-stamp.unlocked:hover {
+      border-color: var(--brass);
+      box-shadow: 0 0 0 1px rgba(166, 124, 45, 0.35);
+    }
+
+    .folio-stamp img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+    }
+
+    .folio-stamp .cap {
+      font-size: 0.62rem;
+      margin-top: 4px;
+      color: var(--muted);
+      line-height: 1.25;
+    }
+
+    .folio-stamp.locked {
+      opacity: 0.35;
+      filter: grayscale(1);
+      cursor: default;
+    }
+
+    .folio-lightbox {
+      display: none;
+      position: absolute;
+      z-index: 8;
+      inset: 0;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(42, 31, 20, 0.88);
+      cursor: zoom-out;
+    }
+
+    .folio-lightbox.on {
+      display: flex;
+    }
+
+    .folio-lightbox-inner {
+      width: min(720px, 100%);
+      max-height: min(92vh, 900px);
+      overflow: auto;
+      padding: 14px 14px 12px;
+      border: 3px solid var(--leather);
+      background: var(--parchment);
+      box-shadow: var(--panel-shadow);
+      cursor: default;
+      text-align: center;
+    }
+
+    .folio-lightbox-inner img {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: min(72vh, 640px);
+      object-fit: contain;
+      background: rgba(255, 248, 230, 0.5);
+      border: 1px solid rgba(74, 47, 28, 0.3);
+    }
+
+    .folio-lightbox-inner h3 {
+      margin: 10px 0 4px;
+      font-family: "Cinzel", serif;
+      font-size: 1.1rem;
+      color: var(--leather);
+    }
+
+    .folio-lightbox-inner .hint {
+      margin: 0 0 10px;
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    .recap-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin: 10px 0 14px;
+      font-size: 0.84rem;
+    }
+
+    .recap-stats div {
+      padding: 8px 10px;
+      border: 1px dashed rgba(74, 47, 28, 0.35);
+      background: rgba(255, 248, 230, 0.45);
+    }
+
+    .recap-stats .k {
+      display: block;
+      font-size: 0.62rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .recap-punch {
+      margin: 0 0 14px;
+      padding: 10px 12px;
+      border-left: 3px solid var(--brass);
+      font-size: 0.9rem;
+      line-height: 1.45;
+      color: var(--ink);
+      background: rgba(255, 248, 230, 0.55);
+    }
+
+    #recapCanvas {
+      display: none;
+    }
+
+    .hud .folio-btn {
+      margin-top: 8px;
+      width: 100%;
     }
 
     @keyframes dig-pulse {
@@ -1145,11 +1487,21 @@
       </div>
 
       <div class="start-actions">
-        <button type="button" class="primary" id="btnStart">Stamp the permit</button>
+        <label class="hard-row">
+          <input type="checkbox" id="chkHard" />
+          <span><strong>Hard mode</strong> — thinner purse, shorter season, no museum bailouts, barren digs hurt more.</span>
+        </label>
+        <div class="btn-row">
+          <button type="button" class="primary" id="btnContinue" hidden>Continue expedition</button>
+          <button type="button" class="primary" id="btnStart">Stamp the permit</button>
+        </div>
+        <button type="button" id="btnFolioStart">Field folio</button>
         <p class="start-ready" id="startReady">Loading charts from Athens…</p>
       </div>
     </div>
   </div>
+
+  <div class="tutorial-banner" id="tutorialBanner" role="status"></div>
   <div class="dig-event" id="digEvent" aria-live="polite">
     <div class="dig-event-card" id="digEventCard">
       <p class="eyebrow" id="digEventEyebrow">Field dispatch</p>
@@ -1166,6 +1518,7 @@
     <div class="dig-event-card" id="fieldEventCard">
       <p class="eyebrow" id="fieldEventEyebrow">Cable from the mainland</p>
       <h2 id="fieldEventTitle">Something turns up</h2>
+      <img class="event-art" id="fieldEventArt" alt="" hidden />
       <p class="summary" id="fieldEventSummary"></p>
       <p class="effect" id="fieldEventEffect"></p>
       <div class="row">
@@ -1211,6 +1564,7 @@
       <p class="eyebrow" id="chapterEyebrow">Chapter recovered</p>
       <h2 id="chapterTitle">Lost chapter</h2>
       <p class="when" id="chapterWhen"></p>
+      <img class="chapter-art" id="chapterArt" alt="" hidden />
       <p id="chapterStory"></p>
       <p id="chapterWhere"></p>
       <p id="chapterLook" class="muted" style="color:var(--muted);font-size:0.8rem"></p>
@@ -1233,10 +1587,10 @@
       <div class="stat"><span class="k">Purse</span><span class="v" id="statMoney">€8,000</span></div>
       <div class="stat"><span class="k">Days</span><span class="v" id="statDays">365</span></div>
       <div class="stat"><span class="k">Crew</span><span class="v" id="statWorkers">3</span></div>
-      <div class="stat">
+      <div class="stat" id="gloryStat">
         <span class="k">Glory</span>
         <span class="v" id="statScore">0</span>
-        <span class="rank" id="statRank">Unknown</span>
+        <span class="rank" id="statRank" tabindex="0" role="button" aria-describedby="gloryTip">Unknown</span>
       </div>
     </div>
 
@@ -1269,6 +1623,7 @@
       <button type="button" id="btnClear">Erase marks</button>
       <button type="button" id="btnHire">Hire digger (€500)</button>
       <button type="button" class="survey" id="btnSurvey" title="Pause digging and study geology &amp; terraces">Study landscape</button>
+      <button type="button" id="btnFolio" class="folio-btn" title="Sketches unlocked this campaign">Field folio</button>
     </div>
 
     <div class="mystery">
@@ -1287,19 +1642,52 @@
   </aside>
 
   <div class="era-tip" id="eraTip" role="tooltip" hidden></div>
+  <div class="glory-tip" id="gloryTip" role="tooltip" hidden></div>
 
   <div class="final" id="final">
     <div class="final-card">
       <h2 id="finalTitle">Season closed</h2>
       <div class="big" id="finalScore">0</div>
+      <img class="rank-art" id="finalRankArt" alt="" hidden />
       <p id="finalRank" style="font-family:Cinzel,serif;letter-spacing:0.08em;text-transform:uppercase;color:var(--brass);margin:0 0 10px;font-size:0.85rem"></p>
       <p id="finalBlurb">The dig ends.</p>
+      <div id="finalRecapStats" class="recap-stats" hidden></div>
+      <p class="recap-punch" id="finalPunch" hidden></p>
       <div class="row final-actions">
         <button type="button" class="primary" id="btnAgain">Restart</button>
         <button type="button" id="btnReveal">Reveal all archaeological materials</button>
+        <button type="button" id="btnFolioFinal">Field folio</button>
+        <button type="button" id="btnCopyRecap">Copy report</button>
+        <button type="button" id="btnDownloadRecap">Download PNG</button>
       </div>
     </div>
   </div>
+
+  <div class="folio-modal" id="folioModal" role="dialog" aria-labelledby="folioTitle" aria-modal="true">
+    <div class="folio-card">
+      <p class="eyebrow">Expedition album</p>
+      <h2 id="folioTitle">Field folio</h2>
+      <p class="summary" style="margin:0 0 8px;font-size:0.82rem;color:var(--muted)">
+        Sketches unlocked by field cables, sealed chapters, and promotions. Stamps persist across seasons.
+        Click an unlocked stamp to enlarge.
+      </p>
+      <div class="folio-grid" id="folioGrid"></div>
+      <div class="row" style="justify-content:flex-end">
+        <button type="button" class="primary" id="folioClose">Close folio</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="folio-lightbox" id="folioLightbox" role="dialog" aria-modal="true" aria-label="Sketch preview" hidden>
+    <div class="folio-lightbox-inner" id="folioLightboxInner">
+      <img id="folioLightboxImg" alt="" />
+      <h3 id="folioLightboxTitle"></h3>
+      <p class="hint">Click outside or press Esc to close</p>
+      <button type="button" class="primary" id="folioLightboxClose">Close</button>
+    </div>
+  </div>
+
+  <canvas id="recapCanvas" width="900" height="1200" aria-hidden="true"></canvas>
 
   <div class="reveal-bar" id="revealBar" role="status">
     <span>Fog lifted — pottery, lithics, grids &amp; structures exposed.</span>
@@ -1423,51 +1811,61 @@
      */
     const GLORY_RANKS = [
       {
+        id: "unknown",
         min: 0,
         title: "Unknown",
         blurb: "No one in Athens has heard of you. Dig wisely — barren squares cost reputation.",
       },
       {
+        id: "field-assistant",
         min: 120,
         title: "Field assistant",
         blurb: "You can hold a trowel without embarrassing the permit. Still disposable.",
       },
       {
+        id: "graduate-student",
         min: 350,
         title: "Graduate student",
         blurb: "Notebooks, sunburn, and a thesis outline. The museum nods politely.",
       },
       {
+        id: "lecturer",
         min: 700,
         title: "Lecturer",
         blurb: "You teach the odd seminar. Students steal your jokes; journals ignore you.",
       },
       {
+        id: "assistant-professor",
         min: 1200,
         title: "Assistant professor",
         blurb: "Tenure track, thin salary, thicker correspondence. Peers start to watch.",
       },
       {
+        id: "associate-professor",
         min: 2000,
         title: "Associate professor",
         blurb: "Your Antikythera notes circulate. Invitations arrive; so do rivals.",
       },
       {
+        id: "professor",
         min: 3200,
         title: "Professor",
         blurb: "Named chairs whisper your surname. The Aegean is your lecture hall.",
       },
       {
+        id: "department-chair",
         min: 4800,
         title: "Department chair",
         blurb: "You assign permits and crush mediocre abstracts. Power, with paperwork.",
       },
       {
+        id: "dean",
         min: 7000,
         title: "Dean of the college",
         blurb: "Budgets bend. Expeditions launch on your signature. Fortune — and glory — are institutional.",
       },
       {
+        id: "museum-director",
         min: 10000,
         title: "Museum director",
         blurb: "It belongs in a museum — and you run the museum. Legend of the dig.",
@@ -1786,11 +2184,135 @@
           return `+${d} days of good guidance.`;
         },
       },
+      {
+        id: "earthquake",
+        tone: "bad",
+        eyebrow: "Seismograph",
+        title: "A tremor cracks the baulk",
+        blurb:
+          "The island shrugs. A carefully cut wall collapses into the trench — a day of digging becomes a day of sorting rubble.",
+        weight: 0.85,
+        apply(s) {
+          const d = 3 + Math.floor(Math.random() * 5);
+          const g = 20 + Math.floor(Math.random() * 40);
+          s.days = Math.max(0, s.days - d);
+          s.score = Math.max(0, s.score - g);
+          return `−${d} days · −${g} glory (context scrambled).`;
+        },
+      },
+      {
+        id: "eclipse",
+        tone: "good",
+        eyebrow: "Sky omen",
+        title: "Solar eclipse over the dig",
+        blurb:
+          "Work stops. The crew watches the sun go out over the Aegean. Someone mutters about the Mechanism. Morale soars.",
+        weight: 0.75,
+        apply(s) {
+          const g = 90 + Math.floor(Math.random() * 110);
+          const d = 1;
+          s.score += g;
+          s.days = Math.max(0, s.days - d);
+          return `+${g} glory · −${d} day of awe.`;
+        },
+      },
+      {
+        id: "wedding",
+        tone: "mixed",
+        eyebrow: "Village invitation",
+        title: "You are guest of honour",
+        blurb:
+          "A wedding on the island — you cannot refuse. Wine, dancing, a gift purse… and a crew that sleeps until noon.",
+        weight: 0.9,
+        apply(s) {
+          const pay = 200 + Math.floor(Math.random() * 300);
+          const g = 40 + Math.floor(Math.random() * 50);
+          const d = 1 + Math.floor(Math.random() * 2);
+          s.money += pay;
+          s.score += g;
+          s.days = Math.max(0, s.days - d);
+          return `+${money(pay)} gift · +${g} glory · −${d} day${d > 1 ? "s" : ""}.`;
+        },
+      },
+      {
+        id: "heatwave",
+        tone: "bad",
+        eyebrow: "Thermometer",
+        title: "Heatwave shuts the trenches",
+        blurb:
+          "The rock radiates. Trowels burn to the touch. The foreman calls it: siesta until the haze breaks.",
+        weight: 1,
+        apply(s) {
+          const d = 4 + Math.floor(Math.random() * 6);
+          s.days = Math.max(0, s.days - d);
+          return `−${d} days waiting out the sun.`;
+        },
+      },
+      {
+        id: "mechanism",
+        tone: "good",
+        eyebrow: "Dream from the deep",
+        title: "A diver’s rumour",
+        blurb:
+          "An old sponge diver swears bronze gears once came up in a net north of the cape — a sky-machine older than the empire. You cannot dig the wreck from shore… but the rumour is glory enough to fill a museum.",
+        weight: 0.45,
+        canFire(s) {
+          return (
+            !s.mechanismFound &&
+            (s.chaptersSolved.has("hellenistic") || (s.periods.Hell || 0) >= 2 || s.digsDone >= 10)
+          );
+        },
+        apply(s) {
+          s.mechanismFound = true;
+          const g = 220 + Math.floor(Math.random() * 120);
+          s.score += g;
+          return `+${g} glory · the Mechanism enters the journal.`;
+        },
+      },
+      {
+        id: "philip-coin",
+        tone: "good",
+        once: true,
+        weight: 0,
+        relicTracts: ["4327"],
+        eyebrow: "Special find",
+        title: "Philip’s copper",
+        blurb:
+          "In the sieve: a thumb-sized copper coin. The portrait is worn, but the catalogue already knows him — Philip II of Macedon, 359–336 BC. A king’s face from before Alexander, lying in Antikythera dust.",
+        canFire() {
+          return false;
+        },
+        apply(s) {
+          const g = 200 + Math.floor(Math.random() * 100);
+          s.score += g;
+          return `+${g} glory · National Geographic would kill for this headline.`;
+        },
+      },
+      {
+        id: "binda-button",
+        tone: "good",
+        once: true,
+        weight: 0,
+        relicTracts: ["3017"],
+        eyebrow: "Special find",
+        title: "A Binda · Milano",
+        blurb:
+          "Not ancient gold — a copper-alloy button with a naval emblem on the face and, on the reverse, a maker’s boast: *A BINDA * MILANO. Some sailor’s coat left its calling card in the scrub.",
+        canFire() {
+          return false;
+        },
+        apply(s) {
+          const g = 120 + Math.floor(Math.random() * 80);
+          s.score += g;
+          return `+${g} glory · modern flotsam with a story.`;
+        },
+      },
     ];
 
     /** Field notes for landscape desk (geology Type → dig guidance). */
     const GEOLOGY_NOTES = {
       Alluvium: {
+        art: "geo-alluvium",
         title: "Alluvium",
         kind: "Soft valley fill · Quaternary",
         blurb:
@@ -1798,6 +2320,7 @@
         dig: "Strong bet for Bronze Age and later farm pottery. Mark tracts that sit on these gold patches.",
       },
       "Nummulitic limestones": {
+        art: "geo-nummulitic",
         title: "Nummulitic limestones",
         kind: "Hard bedrock",
         blurb:
@@ -1805,6 +2328,7 @@
         dig: "Expect thinner artefact carpets. Useful near coasts for lithics; farms prefer the softer neighbours.",
       },
       "Rudist bearing limestones": {
+        art: "geo-rudist",
         title: "Rudist-bearing limestones",
         kind: "Hard bedrock",
         blurb:
@@ -1812,6 +2336,7 @@
         dig: "Rocky and stingy for plough soils. Look for terraces where people forced farms onto the slopes.",
       },
       "Brecciated limestones": {
+        art: "geo-brecciated",
         title: "Brecciated limestones",
         kind: "Broken / cemented rock",
         blurb:
@@ -1819,6 +2344,7 @@
         dig: "Mixed results — check adjoining alluvium or dense terrace webs before spending crew days.",
       },
       "Clastic carbonate series": {
+        art: "geo-clastic",
         title: "Clastic carbonate series",
         kind: "Bedrock · mixed sediments",
         blurb:
@@ -1826,6 +2352,7 @@
         dig: "Decent middle ground. Pair with terrace density when choosing where to open fog.",
       },
       Flysch: {
+        art: "geo-flysch",
         title: "Flysch",
         kind: "Softer bedrock · erodible",
         blurb:
@@ -1833,6 +2360,7 @@
         dig: "Good hunting for long-farmed slopes. Terrace lines on flysch are a classic Bronze / Roman signal.",
       },
       "Marls,Sandstones,Conglomerates": {
+        art: "geo-marls",
         title: "Marls, sandstones & conglomerates",
         kind: "Mixed soft rock",
         blurb:
@@ -1840,6 +2368,7 @@
         dig: "Worth a shovel if terraces or structures sit nearby.",
       },
       Scree: {
+        art: "geo-scree",
         title: "Scree",
         kind: "Slope debris",
         blurb:
@@ -1861,6 +2390,7 @@
      */
     const TERRACE_NOTES = {
       0: {
+        art: "terrace-0",
         title: "Terrace riser · class 0",
         kind: "Agricultural terrace wall",
         blurb:
@@ -1868,6 +2398,7 @@
         dig: "Even sparse risers mark human labour. Prefer denser terrace neighbourhoods for farm-period finds.",
       },
       1: {
+        art: "terrace-1",
         title: "Terrace riser · class 1",
         kind: "Agricultural terrace wall",
         blurb:
@@ -1875,6 +2406,7 @@
         dig: "Solid cue for Bronze Age / Roman / later farming. Dig fogged tracts that sit inside terrace webs.",
       },
       2: {
+        art: "terrace-2",
         title: "Terrace riser · class 2",
         kind: "Agricultural terrace wall",
         blurb:
@@ -1887,6 +2419,7 @@
 
     const STRUCTURE_NOTES = {
       "old house": {
+        art: "struct-old-house",
         title: "Old house",
         kind: "Domestic ruin",
         blurb:
@@ -1894,6 +2427,7 @@
         dig: "Settlement signal — dig neighbouring fogged tracts for pottery from the same occupation.",
       },
       "new house": {
+        art: "struct-new-house",
         title: "New house",
         kind: "Recent domestic",
         blurb:
@@ -1901,6 +2435,7 @@
         dig: "Navigate by it; spend shovels on older farm ground and terrace webs nearby.",
       },
       shelter: {
+        art: "struct-shelter",
         title: "Shelter",
         kind: "Agricultural / pastoral shelter",
         blurb:
@@ -1908,6 +2443,7 @@
         dig: "Points to worked farmland. Open tracts around dense shelter clusters.",
       },
       "rock shelter": {
+        art: "struct-rock-shelter",
         title: "Rock shelter",
         kind: "Natural overhang · cave-like",
         blurb:
@@ -1915,6 +2451,7 @@
         dig: "Worth a look for lithics and early visits; also check Comments for tomb / rock-cutting notes.",
       },
       well: {
+        art: "struct-well",
         title: "Well",
         kind: "Water source",
         blurb:
@@ -1922,6 +2459,7 @@
         dig: "High-value landmark. Dig fog around wells when chasing Roman or later village chapters.",
       },
       cistern: {
+        art: "struct-cistern",
         title: "Cistern",
         kind: "Water storage",
         blurb:
@@ -1929,6 +2467,7 @@
         dig: "Same logic as wells: settlement and farming nearby are more likely.",
       },
       "threshing floor": {
+        art: "struct-threshing-floor",
         title: "Threshing floor",
         kind: "Agricultural installation",
         blurb:
@@ -1936,6 +2475,7 @@
         dig: "Strong farm-period cue. Pair with terraces and alluvium when spending crew days.",
       },
       "wine press": {
+        art: "struct-wine-press",
         title: "Wine press",
         kind: "Agricultural installation",
         blurb:
@@ -1943,12 +2483,14 @@
         dig: "Agricultural investment — dig adjacent tracts for related pottery.",
       },
       press: {
+        art: "struct-press",
         title: "Press",
         kind: "Agricultural installation",
         blurb: "A processing press (often for oil or wine) recorded by the survey.",
         dig: "Treat like other farm kit — search the surrounding fog.",
       },
       "tomb?": {
+        art: "struct-tomb",
         title: "Tomb?",
         kind: "Possible burial",
         blurb:
@@ -1956,30 +2498,35 @@
         dig: "Mortuary spots can sit apart from dense farm pottery — still mark nearby tracts if a chapter needs them.",
       },
       "possible limekiln": {
+        art: "struct-limekiln",
         title: "Possible limekiln",
         kind: "Industrial / craft",
         blurb: "A candidate lime-burning kiln — craft industry tied to building and field walls.",
         dig: "Landmark more than treasure; useful for reading post-medieval and recent activity.",
       },
       church: {
+        art: "struct-church",
         title: "Church",
         kind: "Religious building",
         blurb: "A church or chapel — later landmark and community focus.",
         dig: "Orient yourself; dig older chapters in the farmland around it, not only at the door.",
       },
       windmill: {
+        art: "struct-windmill",
         title: "Windmill",
         kind: "Industrial / milling",
         blurb: "Wind-powered mill — another processing node in the farming landscape.",
         dig: "Recent-leaning landmark; still a useful pin when navigating.",
       },
       watermill: {
+        art: "struct-watermill",
         title: "Watermill",
         kind: "Industrial / milling",
         blurb: "Water-powered mill — rare and tied to reliable runoff.",
         dig: "Note the water story; dig nearby farm ground.",
       },
       "gun emplacement": {
+        art: "struct-gun",
         title: "Gun emplacement",
         kind: "Military · modern",
         blurb:
@@ -1987,6 +2534,7 @@
         dig: "Modern noise for prehistoric chapters; ignore when hunting stone-age or Bronze Age glory.",
       },
       lighthouse: {
+        art: "struct-lighthouse",
         title: "Lighthouse",
         kind: "Maritime landmark",
         blurb: "Coastal navigation aid — modern seamanship, not ancient pottery.",
@@ -2062,6 +2610,11 @@
           up ? `Promoted — ${after.title}` : `Reputation slips — ${after.title}`,
           up ? "hit" : "miss"
         );
+        if (up && after.id) {
+          if (collectFolio("rank:" + after.id)) {
+            /* stamp unlocked quietly — promotion toast already fired */
+          }
+        }
       }
       return after;
     }
@@ -2115,7 +2668,24 @@
       document.getElementById("fieldEventTitle").textContent = ev.title;
       document.getElementById("fieldEventSummary").textContent = ev.blurb;
       document.getElementById("fieldEventEffect").textContent = effectLine;
+      const art = document.getElementById("fieldEventArt");
+      const artSrc =
+        ev.art ||
+        "images/events/event-" + encodeURIComponent(ev.id) + ".png";
+      art.hidden = true;
+      art.onload = () => {
+        art.hidden = false;
+      };
+      art.onerror = () => {
+        art.hidden = true;
+        art.removeAttribute("src");
+      };
+      art.alt = ev.title || "Field event sketch";
+      art.src = artSrc;
       document.getElementById("fieldEvent").classList.add("on");
+      collectFolio("event:" + ev.id);
+      if (ev.id === "goats") state.goatsHits = (state.goatsHits || 0) + 1;
+      saveGame();
     }
 
     function hideFieldEvent() {
@@ -2152,8 +2722,24 @@
       renderHud();
     }
 
+    function relicEventForReports(reports) {
+      const dugIds = new Set((reports || []).map((r) => String(r.id)));
+      for (const ev of FIELD_EVENTS) {
+        if (!ev.relicTracts || !ev.relicTracts.length) continue;
+        if (ev.once && state.eventsSeen.has(ev.id)) continue;
+        if (ev.relicTracts.some((t) => dugIds.has(String(t)))) return ev;
+      }
+      return null;
+    }
+
     function maybeFieldEventAfterDig() {
       if (state.ended) return false;
+      const relic = digSelected._pendingRelic;
+      digSelected._pendingRelic = null;
+      if (relic) {
+        runFieldEvent(relic);
+        return true;
+      }
       if (state.digsDone < 1) return false;
       if (Math.random() > FIELD_EVENT_CHANCE) return false;
       const ev = pickFieldEvent();
@@ -2182,20 +2768,48 @@
       clearPeriodHint();
     }
 
+    function chapterArtUrl(id) {
+      return "images/chapters/era-" + encodeURIComponent(id) + ".png";
+    }
+
+    function rankArtUrl(id) {
+      return "images/ranks/rank-" + encodeURIComponent(id || "unknown") + ".png";
+    }
+
+    function bindSketchImg(imgEl, src, alt) {
+      if (!imgEl) return;
+      imgEl.hidden = true;
+      imgEl.onload = () => {
+        imgEl.hidden = false;
+      };
+      imgEl.onerror = () => {
+        imgEl.hidden = true;
+        imgEl.removeAttribute("src");
+      };
+      imgEl.alt = alt || "";
+      imgEl.src = src;
+    }
+
     function showChapterComplete(m) {
       hideFindHover();
       hideDigEvent();
       hideFieldEvent();
-      const bonus = m.museumBonus || 1000;
+      const bonus = state.hardMode ? 0 : (m.museumBonus || 1000);
       const glory = m.gloryBonus || 50;
       state.money += bonus;
       applyGlory(glory);
       state.chaptersSolved.add(m.id);
+      collectFolio("chapter:" + m.id);
 
       document.getElementById("chapterEyebrow").textContent =
         `Chapter ${state.chaptersSolved.size} of ${MYSTERY.length} · Museum stipend`;
       document.getElementById("chapterTitle").textContent = m.label;
       document.getElementById("chapterWhen").textContent = m.when || "";
+      bindSketchImg(
+        document.getElementById("chapterArt"),
+        m.art || chapterArtUrl(m.id),
+        m.label
+      );
       document.getElementById("chapterStory").textContent = m.story || m.blurb || "";
       document.getElementById("chapterWhere").innerHTML =
         `<strong>Where it lived on the isle:</strong> ${m.where || ""}`;
@@ -2203,8 +2817,10 @@
         ? `In the dirt: ${m.look}`
         : "";
       document.getElementById("chapterMuseum").innerHTML =
-        `<strong>Museum cable:</strong> Your report on <em>${m.label}</em> has been accepted. ` +
-        `A stipend of <strong>${money(bonus)}</strong> is wired to the expedition — plus <strong>+${glory} glory</strong>.`;
+        state.hardMode
+          ? `<strong>Museum cable:</strong> Your report on <em>${m.label}</em> is accepted — but hard mode grants <strong>no stipend</strong>. Glory alone: <strong>+${glory}</strong>.`
+          : `<strong>Museum cable:</strong> Your report on <em>${m.label}</em> has been accepted. ` +
+            `A stipend of <strong>${money(bonus)}</strong> is wired to the expedition — plus <strong>+${glory} glory</strong>.`;
 
       const ok = document.getElementById("chapterBriefOk");
       ok.textContent =
@@ -2227,7 +2843,8 @@
         `<span class="hit">Chapter · ${m.label}</span> · museum +${money(bonus)} · +${glory} glory`,
         "hit"
       );
-      toast(`Chapter sealed — ${m.label} (+${money(bonus)})`, "hit");
+      toast(`Chapter sealed — ${m.label}` + (bonus ? ` (+${money(bonus)})` : " (hard · no stipend)"), "hit");
+      saveGame();
       renderHud();
     }
 
@@ -2257,7 +2874,10 @@
     }
 
     function finishDigModalFlow() {
+      const reviewOnly = !!showDigEvent._reviewOnly;
+      showDigEvent._reviewOnly = false;
       hideDigEvent();
+      if (reviewOnly) return;
       finishAfterModals();
     }
 
@@ -2319,6 +2939,10 @@
         "A clean miss teaches the map too — not every square of an island was lived on equally.",
     };
 
+    const SAVE_KEY = "antikythera-dig-save-v1";
+    const FOLIO_KEY = "antikythera-dig-folio-v1";
+    const TUTORIAL_KEY = "antikythera-dig-tutorial-done-v1";
+
     const state = {
       money: 8000,
       days: 365,
@@ -2340,10 +2964,397 @@
       paused: false,
       revealed: false,
       started: false,
+      hardMode: false,
+      tutorialStep: null, // survey | mark | dig | done | null
+      mechanismFound: false,
+      folio: new Set(),
+      goatsHits: 0,
+      barrenDigs: 0,
+      fruitfulDigs: 0,
     };
 
     let bootDone = false;
     let bootWelcome = { tractCount: 0, digZooms: "", findsZooms: "" };
+    let pendingSaveRestore = null;
+
+    function emptyPenaltyPerTract() {
+      return Math.round(GLORY_EMPTY_PENALTY * (state.hardMode ? 1.75 : 1));
+    }
+
+    function loadFolioFromDisk() {
+      try {
+        const raw = localStorage.getItem(FOLIO_KEY);
+        if (!raw) return;
+        const arr = JSON.parse(raw);
+        if (Array.isArray(arr)) arr.forEach((k) => state.folio.add(k));
+      } catch (_) { /* ignore */ }
+    }
+
+    function persistFolio() {
+      try {
+        localStorage.setItem(FOLIO_KEY, JSON.stringify([...state.folio]));
+      } catch (_) { /* ignore */ }
+    }
+
+    function collectFolio(key, label) {
+      if (!key || state.folio.has(key)) return false;
+      state.folio.add(key);
+      persistFolio();
+      return true;
+    }
+
+    function folioMeta(key) {
+      if (key.startsWith("event:")) {
+        const id = key.slice(6);
+        const ev = FIELD_EVENTS.find((e) => e.id === id);
+        return {
+          src: "images/events/event-" + id + ".png",
+          label: (ev && ev.title) || id,
+        };
+      }
+      if (key.startsWith("chapter:")) {
+        const id = key.slice(8);
+        const m = MYSTERY.find((x) => x.id === id);
+        return {
+          src: chapterArtUrl(id),
+          label: (m && m.label) || id,
+        };
+      }
+      if (key.startsWith("rank:")) {
+        const id = key.slice(5);
+        const r = GLORY_RANKS.find((x) => x.id === id) || GLORY_RANKS[0];
+        return {
+          src: rankArtUrl(id),
+          label: r.title,
+        };
+      }
+      return { src: "", label: key };
+    }
+
+    function allFolioKeys() {
+      const keys = [];
+      for (const ev of FIELD_EVENTS) keys.push("event:" + ev.id);
+      for (const m of MYSTERY) keys.push("chapter:" + m.id);
+      for (const r of GLORY_RANKS) keys.push("rank:" + r.id);
+      return keys;
+    }
+
+    function openFolio() {
+      const grid = document.getElementById("folioGrid");
+      const keys = allFolioKeys();
+      grid.innerHTML = keys
+        .map((key) => {
+          const meta = folioMeta(key);
+          const unlocked = state.folio.has(key);
+          return (
+            `<button type="button" class="folio-stamp${unlocked ? " unlocked" : " locked"}"` +
+            (unlocked
+              ? ` data-folio-src="${meta.src}" data-folio-label="${meta.label.replace(/"/g, "&quot;")}"`
+              : ` disabled aria-disabled="true"`) +
+            `>` +
+            (unlocked
+              ? `<img src="${meta.src}" alt="${meta.label}" loading="lazy" />`
+              : `<div style="aspect-ratio:4/3;display:grid;place-items:center;font-size:1.4rem;color:var(--muted)">?</div>`) +
+            `<div class="cap">${unlocked ? meta.label : "Not yet"}</div></button>`
+          );
+        })
+        .join("");
+      grid.querySelectorAll(".folio-stamp.unlocked").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          openFolioLightbox(btn.getAttribute("data-folio-src"), btn.getAttribute("data-folio-label"));
+        });
+      });
+      document.getElementById("folioModal").classList.add("on");
+    }
+
+    function openFolioLightbox(src, label) {
+      if (!src) return;
+      const box = document.getElementById("folioLightbox");
+      const img = document.getElementById("folioLightboxImg");
+      img.src = src;
+      img.alt = label || "Field sketch";
+      document.getElementById("folioLightboxTitle").textContent = label || "Field sketch";
+      box.hidden = false;
+      box.classList.add("on");
+    }
+
+    function closeFolioLightbox() {
+      const box = document.getElementById("folioLightbox");
+      box.classList.remove("on");
+      box.hidden = true;
+      document.getElementById("folioLightboxImg").removeAttribute("src");
+    }
+
+    function closeFolio() {
+      closeFolioLightbox();
+      document.getElementById("folioModal").classList.remove("on");
+    }
+
+    function serializeGame() {
+      return {
+        v: 1,
+        money: state.money,
+        days: state.days,
+        workers: state.workers,
+        busyWorkers: state.busyWorkers,
+        busyDigsLeft: state.busyDigsLeft,
+        score: state.score,
+        dug: [...state.dug],
+        selected: [...state.selected],
+        periods: { ...state.periods },
+        reports: state.reports,
+        eventsSeen: [...state.eventsSeen],
+        chaptersSolved: [...state.chaptersSolved],
+        digsDone: state.digsDone,
+        hardMode: state.hardMode,
+        tutorialStep: state.tutorialStep,
+        mechanismFound: state.mechanismFound,
+        goatsHits: state.goatsHits,
+        barrenDigs: state.barrenDigs,
+        fruitfulDigs: state.fruitfulDigs,
+        ended: state.ended,
+        started: true,
+      };
+    }
+
+    function saveGame() {
+      if (!state.started || state.revealed) return;
+      try {
+        if (state.ended) {
+          localStorage.removeItem(SAVE_KEY);
+          return;
+        }
+        localStorage.setItem(SAVE_KEY, JSON.stringify(serializeGame()));
+      } catch (_) { /* ignore */ }
+    }
+
+    function peekSave() {
+      try {
+        const raw = localStorage.getItem(SAVE_KEY);
+        if (!raw) return null;
+        const data = JSON.parse(raw);
+        if (!data || data.ended || !data.started) return null;
+        return data;
+      } catch (_) {
+        return null;
+      }
+    }
+
+    function applySaveData(data) {
+      state.money = data.money;
+      state.days = data.days;
+      state.workers = data.workers;
+      state.busyWorkers = data.busyWorkers || 0;
+      state.busyDigsLeft = data.busyDigsLeft || 0;
+      state.score = data.score || 0;
+      state.dug = new Set(data.dug || []);
+      state.selected = new Set(data.selected || []);
+      state.periods = Object.assign(Object.create(null), data.periods || {});
+      state.reports = data.reports || Object.create(null);
+      state.eventsSeen = new Set(data.eventsSeen || []);
+      state.chaptersSolved = new Set(data.chaptersSolved || []);
+      state.digsDone = data.digsDone || 0;
+      state.hardMode = !!data.hardMode;
+      state.tutorialStep = data.tutorialStep || "done";
+      state.mechanismFound = !!data.mechanismFound;
+      state.goatsHits = data.goatsHits || 0;
+      state.barrenDigs = data.barrenDigs || 0;
+      state.fruitfulDigs = data.fruitfulDigs || 0;
+      state.ended = false;
+      state.revealed = false;
+      state.paused = false;
+      state.started = true;
+    }
+
+    function updateTutorialBanner() {
+      const el = document.getElementById("tutorialBanner");
+      if (!el) return;
+      const steps = {
+        survey:
+          "<strong>Field school · 1/3</strong> — Hit <em>Study landscape</em>, click a rock unit or terrace, then resume digging.",
+        mark:
+          "<strong>Field school · 2/3</strong> — Pencil one fogged tract on the map (crew size is your mark limit).",
+        dig:
+          "<strong>Field school · 3/3</strong> — Strike <em>Excavate</em>. Fortune — or dust — awaits.",
+      };
+      if (state.tutorialStep && steps[state.tutorialStep]) {
+        el.innerHTML = steps[state.tutorialStep];
+        el.classList.add("on");
+      } else {
+        el.classList.remove("on");
+        el.innerHTML = "";
+      }
+    }
+
+    function advanceTutorial(from) {
+      if (state.tutorialStep !== from) return;
+      if (from === "survey") state.tutorialStep = "mark";
+      else if (from === "mark") state.tutorialStep = "dig";
+      else if (from === "dig") {
+        state.tutorialStep = "done";
+        try {
+          localStorage.setItem(TUTORIAL_KEY, "1");
+        } catch (_) { /* ignore */ }
+        toast("Field school complete — dig like you mean it", "hit");
+      }
+      updateTutorialBanner();
+      saveGame();
+    }
+
+    function seasonPunchline(won) {
+      if (state.eventsSeen.has("philip-coin")) {
+        return "A Macedonian king in the sieve — try explaining that at the café.";
+      }
+      if (state.eventsSeen.has("binda-button")) {
+        return "Milano left a button. The island kept the joke.";
+      }
+      if (state.mechanismFound) {
+        return "It belongs in a museum — and so do the gears.";
+      }
+      if (state.goatsHits >= 2) {
+        return "The goats have entered the chat. Context will never be the same.";
+      }
+      if (state.barrenDigs > state.fruitfulDigs && state.dug.size > 4) {
+        return "More dust than destiny — but the map learned something.";
+      }
+      if (won) {
+        return "Five chapters sealed. Athens will pretend they always believed in you.";
+      }
+      if (state.hardMode) {
+        return "Hard mode does not negotiate. The boats still leave.";
+      }
+      const chapters = state.chaptersSolved.size;
+      if (chapters === 0) return "Zero chapters. Maximum character development.";
+      return `${chapters}/5 chapters recovered. Next year, sharper pencils.`;
+    }
+
+    function fillSeasonRecap(won) {
+      const rank = gloryRank(state.score);
+      const stats = document.getElementById("finalRecapStats");
+      stats.hidden = false;
+      stats.innerHTML =
+        `<div><span class="k">Tracts</span>${state.dug.size} opened</div>` +
+        `<div><span class="k">Chapters</span>${state.chaptersSolved.size}/5 sealed</div>` +
+        `<div><span class="k">Mode</span>${state.hardMode ? "Hard" : "Standard"}</div>` +
+        `<div><span class="k">Mechanism</span>${state.mechanismFound ? "Rumoured" : "Silent"}</div>` +
+        `<div><span class="k">Philip II</span>${state.eventsSeen.has("philip-coin") ? "Found" : "—"}</div>` +
+        `<div><span class="k">Binda button</span>${state.eventsSeen.has("binda-button") ? "Found" : "—"}</div>` +
+        `<div><span class="k">Paydirt</span>${state.fruitfulDigs} fruitful</div>` +
+        `<div><span class="k">Dust</span>${state.barrenDigs} barren</div>`;
+      const punch = document.getElementById("finalPunch");
+      punch.hidden = false;
+      punch.textContent = seasonPunchline(won);
+      return {
+        won,
+        rank,
+        punch: punch.textContent,
+      };
+    }
+
+    function recapText(won) {
+      const rank = gloryRank(state.score);
+      return [
+        "RAIDERS OF ANTIKYTHERA — EXPEDITION REPORT",
+        won ? "Outcome: It belongs in a museum" : "Outcome: Storm season",
+        `Glory: ${state.score} · Rank: ${rank.title}`,
+        `Tracts: ${state.dug.size} · Chapters: ${state.chaptersSolved.size}/5`,
+        `Mode: ${state.hardMode ? "Hard" : "Standard"} · Mechanism: ${state.mechanismFound ? "yes" : "no"}` +
+          ` · Philip II: ${state.eventsSeen.has("philip-coin") ? "yes" : "no"}` +
+          ` · Binda: ${state.eventsSeen.has("binda-button") ? "yes" : "no"}`,
+        seasonPunchline(won),
+        typeof location !== "undefined" ? location.href.split("#")[0] : "",
+      ].join("\n");
+    }
+
+    async function copyRecap() {
+      const won = /museum/i.test(document.getElementById("finalTitle").textContent || "");
+      const text = recapText(won);
+      try {
+        await navigator.clipboard.writeText(text);
+        toast("Expedition report copied", "hit");
+      } catch (_) {
+        toast("Could not copy — select the report manually");
+      }
+    }
+
+    async function downloadRecapPng() {
+      const won = /museum/i.test(document.getElementById("finalTitle").textContent || "");
+      const rank = gloryRank(state.score);
+      const canvas = document.getElementById("recapCanvas");
+      const ctx = canvas.getContext("2d");
+      const W = canvas.width;
+      const H = canvas.height;
+      ctx.fillStyle = "#e8d9b8";
+      ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = "#4a2f1c";
+      ctx.fillRect(36, 36, W - 72, H - 72);
+      ctx.fillStyle = "#e8d9b8";
+      ctx.fillRect(48, 48, W - 96, H - 96);
+
+      ctx.fillStyle = "#8b2e2e";
+      ctx.font = "600 28px Cinzel, serif";
+      ctx.fillText("EXPEDITION REPORT", 80, 110);
+      ctx.fillStyle = "#4a2f1c";
+      ctx.font = "700 48px Cinzel, serif";
+      ctx.fillText("Raiders of Antikythera", 80, 170);
+      ctx.font = "600 32px Cinzel, serif";
+      ctx.fillText(won ? "It belongs in a museum" : "Storm season", 80, 220);
+
+      try {
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        await new Promise((resolve, reject) => {
+          img.onload = resolve;
+          img.onerror = reject;
+          img.src = rankArtUrl(rank.id);
+        });
+        ctx.drawImage(img, 80, 250, 740, 555);
+      } catch (_) {
+        ctx.fillStyle = "#d4c19a";
+        ctx.fillRect(80, 250, 740, 400);
+      }
+
+      ctx.fillStyle = "#4a2f1c";
+      ctx.font = "700 36px Cinzel, serif";
+      ctx.fillText(rank.title, 80, 860);
+      ctx.font = "28px Special Elite, monospace";
+      ctx.fillText(`Glory ${state.score}  ·  ${state.dug.size} tracts  ·  ${state.chaptersSolved.size}/5 chapters`, 80, 910);
+      ctx.fillText(state.hardMode ? "HARD MODE" : "STANDARD", 80, 955);
+      if (state.mechanismFound) ctx.fillText("Mechanism rumoured", 80, 1000);
+      const eggBits = [];
+      if (state.eventsSeen.has("philip-coin")) eggBits.push("Philip II coin");
+      if (state.eventsSeen.has("binda-button")) eggBits.push("Binda Milano");
+      if (eggBits.length) ctx.fillText("Special finds: " + eggBits.join(" · "), 80, 1040);
+
+      ctx.fillStyle = "#6b5340";
+      ctx.font = "26px Special Elite, monospace";
+      const punch = seasonPunchline(won);
+      const words = punch.split(" ");
+      let line = "";
+      let y = 1060;
+      for (const w of words) {
+        const test = line ? line + " " + w : w;
+        if (ctx.measureText(test).width > W - 160) {
+          ctx.fillText(line, 80, y);
+          line = w;
+          y += 34;
+        } else line = test;
+      }
+      if (line) ctx.fillText(line, 80, y);
+
+      canvas.toBlob((blob) => {
+        if (!blob) {
+          toast("PNG export failed");
+          return;
+        }
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "raiders-of-antikythera-report.png";
+        a.click();
+        URL.revokeObjectURL(a.href);
+        toast("Report downloaded", "hit");
+      }, "image/png");
+    }
 
     let map;
     let aegeanMap;
@@ -2479,17 +3490,87 @@
       biface: "Biface",
     };
 
+    /* Top 10 pottery vessel forms (normalized VesselType) — field sketches for hover */
+    const POTTERY_ART = {
+      U: "pot-u",
+      JCon: "pot-jcon",
+      CPot: "pot-cpot",
+      LOpe: "pot-lope",
+      SOpe: "pot-sope",
+      JOpe: "pot-jope",
+      Pith: "pot-pith",
+      Clo: "pot-clo",
+      Oth: "pot-oth",
+      Open: "pot-open",
+    };
+
+    /* Top 10 lithic classes: finished tools first, else blank × material */
+    const LITHIC_TOOL_ART = {
+      pe: "lithic-pe",
+      "retouched blade": "lithic-retouched-blade",
+      "other retouched tools": "lithic-scraper",
+      "flake scraper": "lithic-scraper",
+      "retouched flake": "lithic-scraper",
+      "biface fragment": "lithic-biface",
+      biface: "lithic-biface",
+    };
+
+    const LITHIC_BLANK_ART = {
+      "flake|c": "lithic-flake-chert",
+      "flake|o": "lithic-flake-obsidian",
+      "shatter|c": "lithic-shatter",
+      "shatter|o": "lithic-shatter",
+      "blade|o": "lithic-blade-obsidian",
+      "chip|o": "lithic-chip",
+      "core|c": "lithic-core",
+    };
+
     const PERIOD_SCORE_KEYS = [
       "MNLN", "FNEB1", "EB2", "LPrePal", "FPal", "SPal", "TPal", "PPalPG", "Geom",
       "Arch", "Class", "Hell", "ERom", "MRom", "LRom", "EByz", "MByz",
       "EVen", "MVen", "LVen", "Recent", "Other",
     ];
 
+    function landscapeArtUrl(art) {
+      if (!art) return "";
+      return "images/landscape/" + encodeURIComponent(art) + ".png";
+    }
+
+    function findArtUrl(art) {
+      if (!art) return "";
+      return "images/finds/" + encodeURIComponent(art) + ".png";
+    }
+
+    function normalizeVesselType(raw) {
+      if (!raw) return "";
+      return String(raw).replace(/\?+$/, "").trim();
+    }
+
+    function artForPottery(props) {
+      const key = normalizeVesselType(props && props.VesselType);
+      return POTTERY_ART[key] || "";
+    }
+
+    function artForLithic(props) {
+      const p = props || {};
+      const tool = p.ToolType;
+      if (tool && tool !== "n" && LITHIC_TOOL_ART[tool]) return LITHIC_TOOL_ART[tool];
+      const blank = String(p.PrimBlank || "").toLowerCase();
+      const raw = p.MatSimple || p.Material || "";
+      const mat = raw === "o" ? "o" : "c";
+      return LITHIC_BLANK_ART[blank + "|" + mat] || "";
+    }
+
     function landscapePopupHtml(note) {
+      const artSrc = landscapeArtUrl(note.art);
+      const artHtml = artSrc
+        ? `<img class="landscape-art" src="${artSrc}" alt="${note.title || "Landscape"}" />`
+        : "";
       return (
         `<div class="dig-pop">` +
         `<p class="kind">${note.kind}</p>` +
         `<h3>${note.title}</h3>` +
+        artHtml +
         `<p>${note.blurb}</p>` +
         `<p class="dig-tip"><strong>Dig tip:</strong> ${note.dig}</p>` +
         `</div>`
@@ -2541,7 +3622,7 @@
         landscapePopup = new maptilersdk.Popup({
           closeButton: true,
           closeOnClick: true,
-          maxWidth: "300px",
+          maxWidth: "340px",
           className: "dig-popup",
           offset: 12,
         });
@@ -2609,7 +3690,9 @@
       toast(state.paused
         ? "Dig paused — click geology or terraces for notes"
         : "Fog restored — shovels ready");
+      if (!state.paused) advanceTutorial("survey");
       renderHud();
+      saveGame();
     }
 
     function circlePolygon(lng, lat, radiusKm, steps) {
@@ -2666,12 +3749,18 @@
 
     function showEraTip(m, anchorEl) {
       const tip = document.getElementById("eraTip");
+      const artSrc = m.art || chapterArtUrl(m.id);
       tip.innerHTML =
+        `<img class="era-art" src="${artSrc}" alt="${m.label}" />` +
         `<p class="when">${m.when}</p>` +
         `<h3>${m.label}</h3>` +
         `<p>${m.blurb}</p>` +
         `<p class="where"><strong>Where to look:</strong> ${m.where}</p>` +
         `<p class="where"><strong>In the dirt:</strong> ${m.look}</p>`;
+      const tipImg = tip.querySelector(".era-art");
+      if (tipImg) {
+        tipImg.onerror = () => tipImg.remove();
+      }
       placeEraTip(anchorEl);
       setPeriodHint(m);
     }
@@ -2713,9 +3802,12 @@
       const nxt = nextGloryRank(state.score);
       const rankEl = document.getElementById("statRank");
       rankEl.textContent = rank.title;
-      rankEl.title = nxt
-        ? `${rank.blurb} · Next: ${nxt.title} at ${nxt.min} glory (${nxt.min - state.score} to go)`
-        : rank.blurb;
+      rankEl.title = "";
+      rankEl.dataset.rankId = rank.id || "unknown";
+      const nextLine = nxt
+        ? `Next: ${nxt.title} at ${nxt.min} glory (${nxt.min - state.score} to go)`
+        : "Top of the ladder.";
+      rankEl.dataset.rankBlurb = rank.blurb + " · " + nextLine;
       document.getElementById("btnDig").disabled =
         !state.started || state.ended || state.paused || state.selected.size === 0 || state.days <= 0 || state.money < DIG_COST_PER_TRACT
         || document.getElementById("chapterBrief").classList.contains("on");
@@ -2741,6 +3833,13 @@
       } else if (state.paused) {
         phase.innerHTML =
           "<strong>Landscape desk</strong> — click geology, terraces, or structure dots (wells, shelters, threshing floors…) then <strong>Resume digging</strong>.";
+      } else if (state.tutorialStep === "survey" || state.tutorialStep === "mark" || state.tutorialStep === "dig") {
+        phase.innerHTML =
+          state.tutorialStep === "survey"
+            ? "<strong>Field school</strong> — Study landscape, then resume."
+            : state.tutorialStep === "mark"
+              ? "<strong>Field school</strong> — Mark one fogged tract."
+              : "<strong>Field school</strong> — Excavate your mark.";
       } else if (cannotAffordDig()) {
         phase.innerHTML =
           "Purse or days exhausted — the boats won’t wait for another trench.";
@@ -2917,6 +4016,7 @@
         title: other && other.length < 40 ? other : vessel,
         blurb: bits ? `${bits}. ${blurb}` : blurb,
         dig: why,
+        art: artForPottery(p),
         key: "p:" + (p.UID || Math.random()),
       };
     }
@@ -2945,15 +4045,21 @@
         title,
         blurb,
         dig,
+        art: artForLithic(p),
         key: "l:" + (p.UID || Math.random()),
       };
     }
 
     function artefactHoverHtml(note) {
+      const artSrc = findArtUrl(note.art);
+      const artHtml = artSrc
+        ? `<img class="landscape-art" src="${artSrc}" alt="${note.title || "Find"}" />`
+        : "";
       return (
         `<div class="dig-pop">` +
         `<p class="kind">${note.kind}</p>` +
         `<h3>${note.title}</h3>` +
+        artHtml +
         `<p>${note.blurb}</p>` +
         `<p class="dig-tip"><strong>Why it matters:</strong> ${note.dig}</p>` +
         `</div>`
@@ -3080,7 +4186,7 @@
               other ? `${other} other` : null,
               s.value ? `+${s.value} glory` : null,
             ].filter(Boolean).join(" · ")
-          : `The sieve is empty — −${GLORY_EMPTY_PENALTY} glory`,
+          : `The sieve is empty — −${emptyPenaltyPerTract()} glory`,
       };
     }
 
@@ -3176,33 +4282,48 @@
       );
     }
 
-    function showDigEvent(reports) {
+    function showDigEvent(reports, opts) {
       hideFindHover();
+      const reviewOnly = !!(opts && opts.review);
+      showDigEvent._reviewOnly = reviewOnly;
       const finds = reports.filter((r) => r.hit);
       const dust = reports.filter((r) => !r.hit);
       const gained = reports.reduce((n, r) => n + (r.value || 0), 0);
-      const emptyPenalty = dust.length * GLORY_EMPTY_PENALTY;
+      const emptyPenalty = dust.length * emptyPenaltyPerTract();
       const netGlory = gained - emptyPenalty;
       const card = document.getElementById("digEventCard");
       const el = document.getElementById("digEvent");
       card.classList.toggle("hit-card", finds.length > 0);
       card.classList.toggle("miss-card", finds.length === 0);
-      document.getElementById("digEventEyebrow").textContent =
-        finds.length ? "From the trench" : "Empty ground";
-      document.getElementById("digEventTitle").textContent =
-        finds.length
+      document.getElementById("digEventEyebrow").textContent = reviewOnly
+        ? "Trench notes"
+        : finds.length
+          ? "From the trench"
+          : "Empty ground";
+      document.getElementById("digEventTitle").textContent = reviewOnly
+        ? (finds.length ? "Earlier paydirt" : "Earlier empty ground")
+        : finds.length
           ? (finds.length === reports.length ? "Fortune and glory!" : "A mixed dig")
           : "Nothing but dust";
-      let summary = finds.length
-        ? `${finds.length} fruitful · ${dust.length} barren`
-        : `${reports.length} tract${reports.length === 1 ? "" : "s"} opened — empty sieve.`;
-      if (gained > 0) summary += ` · finds +${gained} glory`;
-      if (emptyPenalty > 0) {
-        summary += ` · barren −${emptyPenalty} glory (−${GLORY_EMPTY_PENALTY} each)`;
+      let summary;
+      if (reviewOnly) {
+        summary = finds.length
+          ? `Already excavated · ${finds.length} fruitful · ${dust.length} barren. No new costs or events.`
+          : `Already excavated — this square stayed barren. No new costs or events.`;
+      } else {
+        summary = finds.length
+          ? `${finds.length} fruitful · ${dust.length} barren`
+          : `${reports.length} tract${reports.length === 1 ? "" : "s"} opened — empty sieve.`;
+        if (gained > 0) summary += ` · finds +${gained} glory`;
+        if (emptyPenalty > 0) {
+          summary += ` · barren −${emptyPenalty} glory (−${emptyPenaltyPerTract()} each)`;
+        }
+        summary += ` · net ${netGlory >= 0 ? "+" : ""}${netGlory}. Rank: ${gloryRank(state.score).title}.`;
       }
-      summary += ` · net ${netGlory >= 0 ? "+" : ""}${netGlory}. Rank: ${gloryRank(state.score).title}.`;
       document.getElementById("digEventSummary").textContent = summary;
       document.getElementById("digEventSites").innerHTML = reports.map(siteRowHtml).join("");
+      const ok = document.getElementById("digEventOk");
+      if (ok) ok.textContent = reviewOnly ? "Back to the map" : "Back to the journal";
       el.classList.add("on");
     }
 
@@ -3213,35 +4334,84 @@
     function showTractReport(id) {
       const r = state.reports[id] || buildTractReport(id);
       state.reports[id] = r;
-      showDigEvent([r]);
+      showDigEvent([r], { review: true });
       flashDugTracts([r]);
       if (r.lng != null) {
         map.easeTo({ center: [r.lng, r.lat], zoom: Math.max(map.getZoom(), 15), duration: 600 });
       }
     }
 
-    function welcomeAboard() {
+    function welcomeAboard(opts) {
       const ready = document.getElementById("startReady");
       if (ready) {
         ready.textContent = "Charts aboard — stamp when ready";
         ready.classList.add("ok");
       }
       if (!state.started) return;
-      toast("Permit stamped — charts loaded");
-      logLine(
-        `Day 1 · ${bootWelcome.tractCount} fogged tracts · ` +
-          `PMTiles digboard ${bootWelcome.digZooms} · finds ${bootWelcome.findsZooms}`
-      );
+      if (opts && opts.resumed) {
+        toast(
+          state.hardMode
+            ? "Hard expedition resumed — charts reloaded"
+            : "Expedition resumed — charts reloaded",
+          "hit"
+        );
+        logLine(
+          `Resume · ${state.dug.size} tracts already open · ${bootWelcome.tractCount} on the board`
+        );
+      } else {
+        toast(
+          state.hardMode ? "Hard permit stamped — charts loaded" : "Permit stamped — charts loaded",
+          "hit"
+        );
+        logLine(
+          `Day 1 · ${bootWelcome.tractCount} fogged tracts · ` +
+            `PMTiles digboard ${bootWelcome.digZooms} · finds ${bootWelcome.findsZooms}` +
+            (state.hardMode ? " · HARD MODE" : "")
+        );
+      }
+      updateTutorialBanner();
       renderHud();
+      saveGame();
     }
 
     function startExpedition() {
       if (state.started) return;
+      state.hardMode = !!(document.getElementById("chkHard") && document.getElementById("chkHard").checked);
+      if (state.hardMode) {
+        state.money = 4500;
+        state.days = 280;
+        state.workers = 2;
+      }
+      let tutorialDone = false;
+      try {
+        tutorialDone = localStorage.getItem(TUTORIAL_KEY) === "1";
+      } catch (_) { /* ignore */ }
+      state.tutorialStep = tutorialDone ? "done" : "survey";
       state.started = true;
+      collectFolio("rank:unknown");
       document.getElementById("startScreen").classList.remove("on");
       document.body.classList.add("playing");
       if (bootDone) welcomeAboard();
       else toast("Charts still arriving from Athens…");
+      updateTutorialBanner();
+      renderHud();
+      saveGame();
+    }
+
+    function continueExpedition() {
+      const data = peekSave();
+      if (!data || state.started) return;
+      applySaveData(data);
+      document.getElementById("startScreen").classList.remove("on");
+      document.body.classList.add("playing");
+      if (bootDone) {
+        refreshTractStates();
+        welcomeAboard({ resumed: true });
+      } else {
+        pendingSaveRestore = true;
+        toast("Charts still arriving — save will restore when ready");
+      }
+      updateTutorialBanner();
       renderHud();
     }
 
@@ -3252,7 +4422,55 @@
         digZooms: `z${digHeader.minZoom}–${digHeader.maxZoom}`,
         findsZooms: `z${findsHeader.minZoom}–${findsHeader.maxZoom}`,
       };
-      welcomeAboard();
+      if (pendingSaveRestore && state.started) {
+        pendingSaveRestore = false;
+        refreshTractStates();
+        welcomeAboard({ resumed: true });
+      } else {
+        welcomeAboard();
+      }
+    }
+
+    function placeGloryTip(anchorEl) {
+      const tip = document.getElementById("gloryTip");
+      tip.hidden = false;
+      tip.classList.add("on");
+      const r = anchorEl.getBoundingClientRect();
+      const tipW = Math.min(320, window.innerWidth - 24);
+      let left = r.right + 12;
+      if (left + tipW > window.innerWidth - 12) left = Math.max(12, r.left - tipW - 12);
+      tip.style.left = left + "px";
+      tip.style.width = tipW + "px";
+      requestAnimationFrame(() => {
+        const h = tip.offsetHeight || 200;
+        let top = r.top;
+        if (top + h > window.innerHeight - 12) top = Math.max(12, window.innerHeight - h - 12);
+        tip.style.top = top + "px";
+      });
+    }
+
+    function showGloryTip(anchorEl) {
+      const rank = gloryRank(state.score);
+      const nxt = nextGloryRank(state.score);
+      const tip = document.getElementById("gloryTip");
+      const nextLine = nxt
+        ? `Next: ${nxt.title} at ${nxt.min} glory (${Math.max(0, nxt.min - state.score)} to go).`
+        : "You sit at the top of the ladder.";
+      tip.innerHTML =
+        `<img class="rank-art" src="${rankArtUrl(rank.id)}" alt="${rank.title}" />` +
+        `<p class="eyebrow">Academic rank · ${state.score} glory</p>` +
+        `<h3>${rank.title}</h3>` +
+        `<p>${rank.blurb}</p>` +
+        `<p style="margin-top:8px;color:var(--muted)">${nextLine}</p>`;
+      const tipImg = tip.querySelector(".rank-art");
+      if (tipImg) tipImg.onerror = () => tipImg.remove();
+      placeGloryTip(anchorEl);
+    }
+
+    function hideGloryTip() {
+      const tip = document.getElementById("gloryTip");
+      tip.classList.remove("on");
+      tip.hidden = true;
     }
 
     function endSeason(won) {
@@ -3262,6 +4480,10 @@
       hideDigEvent();
       hideFieldEvent();
       hideChapterBrief();
+      hideGloryTip();
+      try {
+        localStorage.removeItem(SAVE_KEY);
+      } catch (_) { /* ignore */ }
       renderHud();
       const final = document.getElementById("final");
       document.getElementById("finalTitle").textContent = won
@@ -3270,9 +4492,16 @@
       document.getElementById("finalScore").textContent = String(state.score);
       const rank = gloryRank(state.score);
       document.getElementById("finalRank").textContent = rank.title;
+      bindSketchImg(
+        document.getElementById("finalRankArt"),
+        rankArtUrl(rank.id),
+        rank.title
+      );
       document.getElementById("finalBlurb").textContent = won
         ? `You cracked the island’s lost chapters before the rains. Final rank: ${rank.title}. ${rank.blurb}`
-        : `The boats are leaving. ${state.dug.size} tracts opened, ${document.querySelectorAll(".era.done").length}/5 chapters recovered. Final rank: ${rank.title}. Next year, perhaps.`;
+        : `The boats are leaving. ${state.dug.size} tracts opened, ${state.chaptersSolved.size}/5 chapters recovered. Final rank: ${rank.title}. Next year, perhaps.`;
+      fillSeasonRecap(won);
+      collectFolio("rank:" + rank.id);
       final.classList.add("on");
     }
 
@@ -3385,15 +4614,20 @@
       }
 
       const emptyCount = reports.filter((r) => !r.hit).length;
-      const emptyPenalty = emptyCount * GLORY_EMPTY_PENALTY;
+      const emptyPenalty = emptyCount * emptyPenaltyPerTract();
       applyGlory(gained - emptyPenalty);
+      state.barrenDigs += emptyCount;
+      state.fruitfulDigs += reports.filter((r) => r.hit).length;
       state.digsDone += 1;
+      advanceTutorial("dig");
       tickBusyCrew();
       const fresh = new Set(reports.filter((r) => r.hit).map((r) => r.id));
       updateFindMarkers(fresh);
       flashDugTracts(reports);
       focusDigBatch(reports);
+      digSelected._pendingRelic = relicEventForReports(reports);
       showDigEvent(reports);
+      saveGame();
 
       const finds = pottery + lithics + structures;
       const fruitful = reports.filter((r) => r.hit).length;
@@ -3457,8 +4691,10 @@
         }
         state.selected.add(id);
         setTractState(id, { selected: true, dug: false, hit: false });
+        advanceTutorial("mark");
       }
       renderHud();
+      saveGame();
     }
 
     async function loadJson(url, fallbackUrl) {
@@ -4055,6 +5291,12 @@
 
       document.getElementById("btnDig").addEventListener("click", digSelected);
       document.getElementById("btnIsle").addEventListener("click", openIsleBriefing);
+      const gloryStat = document.getElementById("gloryStat");
+      const rankEl = document.getElementById("statRank");
+      gloryStat.addEventListener("mouseenter", () => showGloryTip(rankEl));
+      gloryStat.addEventListener("mouseleave", hideGloryTip);
+      rankEl.addEventListener("focus", () => showGloryTip(rankEl));
+      rankEl.addEventListener("blur", hideGloryTip);
       document.getElementById("isleBriefOk").addEventListener("click", closeIsleBriefing);
       document.getElementById("isleBrief").addEventListener("click", (e) => {
         if (e.target.id === "isleBrief") closeIsleBriefing();
@@ -4072,6 +5314,7 @@
           endSeason(false);
           return;
         }
+        saveGame();
         renderHud();
       });
       document.getElementById("btnSurvey").addEventListener("click", () => {
@@ -4089,23 +5332,62 @@
         state.workers += 1;
         toast(`Another shovel on the payroll · crew of ${state.workers}`);
         renderHud();
+        saveGame();
       });
       document.getElementById("btnAgain").addEventListener("click", () => {
+        try {
+          localStorage.removeItem(SAVE_KEY);
+        } catch (_) { /* ignore */ }
         location.reload();
       });
       document.getElementById("btnReveal").addEventListener("click", () => {
         revealAllMaterials();
       });
       document.getElementById("btnRestartReveal").addEventListener("click", () => {
+        try {
+          localStorage.removeItem(SAVE_KEY);
+        } catch (_) { /* ignore */ }
         location.reload();
       });
       document.getElementById("btnStart").addEventListener("click", startExpedition);
+      document.getElementById("btnContinue").addEventListener("click", continueExpedition);
+      document.getElementById("btnFolio").addEventListener("click", openFolio);
+      document.getElementById("btnFolioStart").addEventListener("click", openFolio);
+      document.getElementById("btnFolioFinal").addEventListener("click", openFolio);
+      document.getElementById("folioClose").addEventListener("click", closeFolio);
+      document.getElementById("folioLightboxClose").addEventListener("click", (e) => {
+        e.stopPropagation();
+        closeFolioLightbox();
+      });
+      document.getElementById("folioLightbox").addEventListener("click", (e) => {
+        if (e.target.id === "folioLightbox") closeFolioLightbox();
+      });
+      document.getElementById("btnCopyRecap").addEventListener("click", copyRecap);
+      document.getElementById("btnDownloadRecap").addEventListener("click", downloadRecapPng);
       document.addEventListener("keydown", (e) => {
         if (e.key === "Enter" && document.getElementById("startScreen").classList.contains("on")) {
           e.preventDefault();
-          startExpedition();
+          if (!document.getElementById("btnContinue").hidden && peekSave()) continueExpedition();
+          else startExpedition();
+        }
+        if (e.key === "Escape") {
+          if (document.getElementById("folioLightbox").classList.contains("on")) {
+            closeFolioLightbox();
+            return;
+          }
+          if (document.getElementById("folioModal").classList.contains("on")) {
+            closeFolio();
+          }
         }
       });
+
+      loadFolioFromDisk();
+      const save = peekSave();
+      const cont = document.getElementById("btnContinue");
+      if (save) {
+        cont.hidden = false;
+        cont.textContent = `Continue expedition (${save.dug?.length || 0} tracts · ${save.score || 0} glory)`;
+      }
 
       markChartsReady(
         (tractsFc.features || []).length,
