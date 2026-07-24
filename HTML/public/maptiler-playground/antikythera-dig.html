@@ -3926,6 +3926,65 @@
       }
     }
 
+    /** Console / #tract=ID helper — fly to a survey tract and pencil it if free. */
+    function flyToTract(rawId, opts) {
+      const id = String(rawId || "").trim();
+      if (!id) return false;
+      const s = state.scores[id];
+      const feat = state.tractIndex[id];
+      let lng = s && s.lng;
+      let lat = s && s.lat;
+      if ((lng == null || lat == null) && feat && feat.geometry) {
+        const g = feat.geometry;
+        const ring =
+          g.type === "Polygon"
+            ? g.coordinates[0]
+            : g.type === "MultiPolygon"
+              ? g.coordinates[0][0]
+              : null;
+        if (ring && ring.length) {
+          let sx = 0;
+          let sy = 0;
+          for (const c of ring) {
+            sx += c[0];
+            sy += c[1];
+          }
+          lng = sx / ring.length;
+          lat = sy / ring.length;
+        }
+      }
+      if (lng == null || lat == null) {
+        toast("Tract " + id + " not on the board");
+        return false;
+      }
+      map.easeTo({
+        center: [lng, lat],
+        zoom: Math.max(map.getZoom(), 16.2),
+        duration: (opts && opts.duration) || 900,
+      });
+      if (state.started && !state.ended && !state.dug.has(id) && !state.selected.has(id)) {
+        if (state.selected.size < effectiveCrew()) {
+          state.selected.add(id);
+          setTractState(id, { selected: true, dug: false, hit: false });
+          renderHud();
+          saveGame();
+        }
+      }
+      toast("Tract " + id + " — zoomed in", "hit");
+      logLine(`Chart jump · tract <strong>${id}</strong>`);
+      return true;
+    }
+
+    window.digFlyToTract = flyToTract;
+
+    function consumeTractHash() {
+      const m = /(?:^|[&#?])tract=([^&#]+)/i.exec(location.hash + location.search);
+      if (!m) return;
+      const id = decodeURIComponent(m[1]).trim();
+      if (!id) return;
+      setTimeout(() => flyToTract(id), 400);
+    }
+
     function refreshTractStates() {
       for (const id of state.dug) {
         const hit = !!(state.reports[id] && state.reports[id].hit);
@@ -4085,7 +4144,7 @@
     }
 
     function showArtefactHover(feature, lngLat) {
-      if (!map || state.paused || state.ended) return;
+      if (!map || state.paused || (state.ended && !state.revealed)) return;
       if (document.getElementById("digEvent").classList.contains("on")) return;
       const layerId = feature.layer && feature.layer.id;
       const note = layerId === "lithics-dots"
@@ -4100,7 +4159,7 @@
     }
 
     function showFindHover(id, lngLat) {
-      if (!map || state.paused || state.ended) return;
+      if (!map || state.paused || (state.ended && !state.revealed)) return;
       if (document.getElementById("digEvent").classList.contains("on")) return;
       const r = state.reports[id] || buildTractReport(id);
       state.reports[id] = r;
@@ -4396,6 +4455,7 @@
       updateTutorialBanner();
       renderHud();
       saveGame();
+      consumeTractHash();
     }
 
     function continueExpedition() {
@@ -4413,6 +4473,7 @@
       }
       updateTutorialBanner();
       renderHud();
+      consumeTractHash();
     }
 
     function markChartsReady(tractCount, digHeader, findsHeader) {
@@ -4426,8 +4487,10 @@
         pendingSaveRestore = false;
         refreshTractStates();
         welcomeAboard({ resumed: true });
+        consumeTractHash();
       } else {
         welcomeAboard();
+        if (state.started) consumeTractHash();
       }
     }
 
@@ -4667,16 +4730,18 @@
     }
 
     function onTractClick(e) {
-      if (!state.started || state.ended || state.paused) return;
+      if (!state.started || state.paused) return;
+      if (state.ended && !state.revealed) return;
       if (document.getElementById("chapterBrief").classList.contains("on")) return;
       const f = (e.features || [])[0];
       if (!f) return;
       const id = String(f.id != null ? f.id : (f.properties && f.properties.Tract) || "");
       if (!id) return;
-      if (state.dug.has(id)) {
+      if (state.dug.has(id) || state.revealed) {
         showTractReport(id);
         return;
       }
+      if (state.ended) return;
       if (state.selected.has(id)) {
         state.selected.delete(id);
         setTractState(id, { selected: false, dug: false, hit: false });
@@ -5215,7 +5280,7 @@
       });
 
       map.on("mousemove", "tracts-pick", (e) => {
-        if (!state.started || state.paused || state.ended) return;
+        if (!state.started || state.paused || (state.ended && !state.revealed)) return;
         const f = (e.features || [])[0];
         if (!f) return;
         const id = String(f.id != null ? f.id : (f.properties && f.properties.Tract) || "");
@@ -5234,7 +5299,7 @@
       map.on("click", "tracts-pick", onTractClick);
 
       map.on("mousemove", "find-heat", (e) => {
-        if (!state.started || state.paused || state.ended) return;
+        if (!state.started || state.paused || (state.ended && !state.revealed)) return;
         const artefacts = queryArtefactAt(e.point);
         if (artefacts.length) {
           map.getCanvas().style.cursor = "help";
