@@ -30,7 +30,7 @@
       <ul>
         <li>Mark fogged survey tracts (up to your crew size), then <strong>Excavate</strong>.</li>
         <li><strong>Study landscape</strong> to read geology, terraces, and ruins — dig smarter, not just harder.</li>
-        <li>Stuck? Open <strong>Need a hint?</strong> for an optional field brief — rough circles on the chart, never a find map.</li>
+        <li>Stuck? Open <strong>Need a hint?</strong> — a paid field brief (€120 + 1 day) inks rough circles on the chart, never a find map.</li>
         <li>Finds fill five era chapters. Finish them all for museum glory; barren ground costs reputation.</li>
         <li>Hire diggers, survive field events, and climb from Unknown toward Museum director.</li>
       </ul>
@@ -212,15 +212,16 @@
 
     <details class="field-brief-hint" id="fieldBriefHint" hidden>
       <summary>
-        <span class="field-brief-sum">Need a hint?</span>
+        <span class="field-brief-sum" id="fieldBriefSum">Need a hint? · costs €120</span>
         <span class="field-brief-active" id="fieldBriefActive" hidden></span>
       </summary>
-      <p class="lede-mini">
-        Commission a field brief, name the lost chapter you’re after, and the charts ink a few rough circles —
+      <p class="lede-mini" id="fieldBriefLede">
+        <strong class="field-brief-cost">Costs money:</strong> €120 and 1 day from your permit.
+        Pay for a field brief, name the lost chapter you’re after, and the charts ink a few rough circles —
         not which square hides the goods. Optional. Fog keeps its secrets either way.
       </p>
       <div class="row field-brief-actions">
-        <button type="button" id="btnSurveyPass" title="Spend purse and days for a field brief">Field brief (€120)</button>
+        <button type="button" id="btnSurveyPass" title="Spend €120 and 1 day for a field brief">Pay €120 for a hint</button>
       </div>
       <div class="hunt-picker" id="huntPicker" hidden></div>
       <p class="hunt-thesis-note" id="huntThesisNote" hidden></p>

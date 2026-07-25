@@ -173,17 +173,40 @@ ns.renderHud = function renderHud() {
   const surveyCost = state.hardMode ? Math.round(SURVEY_PASS_COST * 1.25) : SURVEY_PASS_COST;
   const surveyDays = state.hardMode ? SURVEY_PASS_DAYS + 1 : SURVEY_PASS_DAYS;
   const btnPass = document.getElementById("btnSurveyPass");
+  const briefSum = document.getElementById("fieldBriefSum");
+  const briefLede = document.getElementById("fieldBriefLede");
+  if (briefSum) {
+    briefSum.textContent = state.surveyPass
+      ? "Hint paid · pick a chase"
+      : `Need a hint? · costs €${surveyCost}`;
+  }
+  if (briefLede && !state.surveyPass) {
+    briefLede.innerHTML =
+      `<strong class="field-brief-cost">Costs money:</strong> €${surveyCost} and ${surveyDays} day${surveyDays === 1 ? "" : "s"} from your permit. ` +
+      `Pay for a field brief, name the lost chapter you’re after, and the charts ink a few rough circles — ` +
+      `not which square hides the goods. Optional. Fog keeps its secrets either way.`;
+  } else if (briefLede && state.surveyPass) {
+    briefLede.innerHTML =
+      `Brief already paid (€${surveyCost}). Name a lost chapter below — rough circles ink on the chart. ` +
+      `Hover a circle for why. Fog still hides every sherd.`;
+  }
   if (btnPass) {
     const modalOpen = document.getElementById("chapterBrief").classList.contains("on");
     if (!state.surveyPass) {
-      btnPass.textContent = `Field brief (€${surveyCost})`;
-      btnPass.title =
-        `Spend €${surveyCost} and ${surveyDays} days — name the age you’re after and the charts ink rough search circles. Fog keeps every sherd secret.`;
+      if (btnPass.dataset.confirmSpend === "1") {
+        btnPass.textContent = `Confirm: pay €${surveyCost}?`;
+        btnPass.title = `Click again to spend €${surveyCost} and ${surveyDays} day${surveyDays === 1 ? "" : "s"} from your purse and permit.`;
+      } else {
+        btnPass.textContent = `Pay €${surveyCost} for a hint`;
+        btnPass.title =
+          `Costs €${surveyCost} and ${surveyDays} day${surveyDays === 1 ? "" : "s"} — name the age you’re after and the charts ink rough search circles. Fog keeps every sherd secret.`;
+      }
       btnPass.classList.remove("on");
       btnPass.disabled =
         !state.started || state.ended || state.paused || state.revealed || modalOpen ||
         state.money < surveyCost || state.days < surveyDays;
     } else {
+      delete btnPass.dataset.confirmSpend;
       const meta = state.huntChapter && MYSTERY.find((m) => m.id === state.huntChapter);
       btnPass.textContent = meta ? `Call off · ${meta.label}` : "Name your chase";
       btnPass.title = meta

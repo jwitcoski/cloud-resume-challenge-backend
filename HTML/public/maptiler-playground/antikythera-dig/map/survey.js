@@ -94,7 +94,9 @@ ns.chaseArtUrl = function chaseArtUrl(art) {
 
 /**
  * Why this pocket would hold the chase era — Indy field-journal voice.
- * Geography + chapter lore; never names individual tracts.
+ * Geography + soils/terraces + landscape use; never names individual tracts.
+ * Each circle gets its own plate (…-c1…c4) and its own dig tip — even if two
+ * circles land in the same coarse pocket.
  */
 ns.huntZoneNote = function huntZoneNote(meta, z, i, total) {
   const pocket = ns.islandPocketLabel(z.lng, z.lat);
@@ -108,100 +110,138 @@ ns.huntZoneNote = function huntZoneNote(meta, z, i, total) {
   const byId = {
     neolithic: {
       "the northern tip":
-        "Early visitors hugged coasts and lookouts more than plough soils. Even up here, a thin lithic scatter can mark boat people who knew these cliffs long before farms.",
+        "Bare nummulitic limestone and a paper-thin A-horizon — lookout ledges and overnight camps, not plough soils. Flakes ride the bedrock more than any terrace fill.",
       "the western shore":
-        "Shoreline camps and hunting kits — Melian obsidian and local chert travel with people who stayed a night, not a generation.",
+        "Wave-cut rock and pocket beach earth. Short-stay hunters left lithics on the strand; Melian glass travelled with people who slept a night, not a generation.",
       "the southeastern flanks":
-        "Southern coasts drew the earliest traffic. Projectiles and blade debris cluster where landing and hunting met.",
+        "Flysch meeting limestone above a landing cove. Early paths hugged the contact; projectile waste sits in lean slope soil, not farmed terrace webs.",
       "the far south":
-        "Sparse but stubborn stone-age footprints. Dig for lithics first; early pottery is scarce as gold.",
+        "Scree and hard rock with tiny soil pockets. Stubborn knapping floors cling to flat limestone slabs where earth never thickened enough for farms.",
       "the southern half":
-        "The survey’s early lithic carpet thickens here — short-stay hunters tied to the Cyclades, not villages.",
+        "Mixed limestone ridges and shallow hollows. Foragers used natural soil pockets seasonally — proto-paths, not yet true dry-stone terraces.",
       "the central farms":
-        "A little inland from the beaches, blade waste can sit where hunters worked stone between trips to the shore.",
+        "The isle’s deepest early alluvium. Soft earth invited the first scratched garden plots and low stone lines that catch soil — the seed of terrace farming.",
       default:
-        `Around ${pocket}, the early lithic scatter gathers. Think coastal stopovers and hunting kits — Melian glass and local chert — not farmsteads.`,
+        `Around ${pocket}, thin Mediterranean earth over limestone. Think coastal stopovers and hunting kits on usable soil pockets — not villages.`,
     },
     bronze: {
       "the northern tip":
-        "The rocky north was poor farm country in the Bronze Age. Any signal here is thin — soft soils south of the waist are the real quarry.",
+        "Rocky limestone with scrap terraces at best. Sheep folds and lookouts more than grain — soft soils south of the waist hold the real farmscape.",
       "the northern waist":
-        "Edge of the farmscape. Terrace country begins to matter; follow soft ground and copper-coloured risers downhill.",
+        "Flysch–limestone saddle where dry-stone risers start trapping reddish slope fill for barley and olives. Terrace country begins here.",
       "the central farms":
-        "Prime Bronze Age ground — workable soils and terrace webs where Minoan-linked households piled pottery.",
+        "Thick alluvial hollow, broad terrace webs, packed threshing floors. Minoan-linked households piled pottery where soil depth repaid the wall labour.",
       "the southern half":
-        "The densest prehistoric farmscape on the isle. Soft pockets and long-farmed slopes hide EB2 and palace-period sherds.",
+        "Cascading stone terraces on limestone slopes — the densest prehistoric farmscape. Sherds ride the retained fill, not bare pavement.",
       "the far south":
-        "Southern farm pockets with Cretan ties. Look for alluvium and terraces, not bare limestone.",
+        "Harsh tip: crumbling terrace scraps on scree, thin earth. Fishing and watch more than plough — dig soft pockets, skip dead rock.",
       "the southeastern flanks":
-        "Slopes people bothered to terrace — a classic Bronze Age bet when pottery carpets the surface.",
+        "Flysch slopes cut into cove-facing terraces. Red-brown slope soils behind walls mark people who bothered to farm the approach to the sea.",
       default:
-        `Bronze Age families chased soft earth. ${pocket} shows a cluster of that age in the surface counts — hunt alluvium and terrace webs.`,
+        `Bronze Age families chased soft earth. Around ${pocket}, hunt alluvium and terrace webs — pottery rides the fills people built to keep soil from washing away.`,
     },
     hellenistic: {
       "the northern tip":
-        "The citadel coast. Hellenistic power watched the channel from this rock — pottery and walls pile here like nowhere else on the isle.",
+        "Citadel limestone: thin soil on the ridge, garrison garden terraces below. Power watched the channel from rock; food came from wall-caught earth.",
       "the northern waist":
-        "Approach to the stronghold. Outworks, dumps, and traffic from the pirate centuries cling to this waist of the island.",
+        "Saddle terraces feeding the fort road. Flysch soils in steps — logistics corridor where dumps and traffic cling to workable ground.",
       "the central farms":
-        "South of the citadel the Hellenistic whisper fades. Dig here only if you are chasing a stray sherd, not the stronghold itself.",
+        "Deep alluvial basin and orchard terraces that supplied the garrison. Rich brown earth south of the citadel is farm first, stronghold second.",
       "the southern half":
-        "Wrong end of the island for pirates. Hellenistic material is almost entirely a northern story.",
+        "Wrong end for pirates as a capital, but cascading vine and olive terraces still show how the hinterland fed northern power.",
       default:
-        `Hellenistic centuries hug the northern stronghold and its sea lanes. ${pocket} is a secondary echo — the citadel tip is the true prize.`,
+        `Hellenistic life couples fortress rock with terraced supply farms. Around ${pocket}, read ridge limestone against soft hollow fills.`,
     },
     roman: {
       "the northern tip":
-        "The fort’s shadow lingered, but Late Roman life preferred scattered farming villages mid-isle and south — not one northern capital.",
+        "Lookout limestone and villa garden terraces — thin rocky soil improved only where walls catch earth. Elite overlook, not the village heart.",
       "the central farms":
-        "Classic Late Roman reoccupation — modest village clusters reseeding fields after earlier abandonments. Sherds run thick here.",
+        "Classic Late Roman reseeding: modest clusters on the deepest workable soils and repaired terrace webs after earlier abandonments.",
       "the southern half":
-        "Several farming villages rather than one hub. Broad pottery spreads, especially Late Roman, mark ordinary imperial life.",
+        "Several farming villages on broad pottery spreads. Terrace labour and soft rock — ordinary imperial fields, not one citadel.",
       "the far south":
-        "Southern village ground. Water, fields, and terrace labour — the quiet centuries after the pirates.",
+        "Southern village ground: water, fields, and stone risers holding lean earth through the quiet centuries after the pirates.",
       "the southeastern flanks":
-        "Slope farms of the Roman return. Pair pottery carpets with terrace lines and soft rock.",
+        "Slope farms of the Roman return. Pair pottery carpets with terrace lines where flysch and limestone give soft enough soil.",
       "the western shore":
-        "Coastal and near-coast farms of the reoccupation — look for spreads, not a single citadel.",
+        "Coastal and near-coast farms on pocket soils — reoccupation spreads along workable shore earth, not a single northern capital.",
       default:
-        `After earlier abandonments, Roman villages re-seeded the isle. ${pocket} is one of those clusters — dig for broad pottery, not treasure rooms.`,
+        `Roman villages re-seeded soft ground. Around ${pocket}, dig broad pottery on terrace fills and alluvium — not treasure rooms on bare rock.`,
     },
     byzantine: {
       "the northern tip":
-        "Byzantine return is thin everywhere; the north is not its heart. Treat every sherd as precious if you find one.",
+        "Thin return on northern limestone. Terrace scraps and lean soils — every sherd is precious; the north is not this chapter’s heart.",
       "the southern half":
-        "Sparse southern footholds after Late Antique decline — glimpses more than towns. Easy to miss unless you read the labels.",
+        "Sparse southern footholds on older farm terraces after Late Antique decline. Glimpse settlements riding reused soil catches.",
       "the far south":
-        "The rare Byzantine carpet prefers the south. One good trench can make the museum’s short chapter.",
+        "The rare Byzantine carpet prefers southern earth pockets and repaired risers. One good soft-soil trench can make the short chapter.",
       "the southeastern flanks":
-        "Thin reoccupation on southern slopes. Hunt carefully; the age leaves more whispers than shouts.",
+        "Thin reoccupation on southern slopes — whisper-level pottery in terrace fill where people still coaxed grain from flysch soils.",
       "the central farms":
-        "A stubborn foothold among older farm ground. Byzantine material hides inside already-promising southern and central tracts.",
+        "A stubborn foothold in the alluvial hollow among older farm ground. Byzantine sherds hide inside already-promising soft tracts.",
       default:
-        `Byzantine centuries are scarce gold. Around ${pocket} the survey caught a thin return — dig as if every sherd might be the last.`,
+        `Byzantine centuries are scarce gold. Around ${pocket}, hunt thin returns in terrace fills and soft hollows — dig as if every sherd might be the last.`,
     },
   };
 
   const pack = byId[meta.id] || {};
   const hasPocket = Object.prototype.hasOwnProperty.call(pack, pocket);
-  const blurb = (hasPocket ? pack[pocket] : pack.default) ||
-    `${rank}. The old survey thickens for ${meta.label} around ${pocket}. ${meta.where}`;
-  const artSlug = hasPocket ? ns.pocketArtSlug(pocket) : "default";
-  const art = `${meta.id}-${artSlug}`;
+  const baseBlurb = (hasPocket ? pack[pocket] : pack.default) ||
+    `The old survey thickens for ${meta.label} around ${pocket}. ${meta.where}`;
+
+  // Circle-specific lens so two circles in the same pocket never share a tip.
+  const lenses = [
+    "Start with a soil profile: thick brown fill beats bare limestone every time.",
+    "Walk the dry-stone risers — finds ride the earth those walls were built to keep.",
+    "Work geology contacts (flysch against limestone, scree against alluvium) where paths and plots once clung.",
+    "Prefer hollows and terrace treads over ridge pavement; people farmed what they could hold.",
+  ];
+  const lens = lenses[i % lenses.length];
 
   const digById = {
-    neolithic: "Lithics first; early pottery is scarce. Coasts and short camps beat deep plough soils.",
-    bronze: "Pottery-heavy tracts on soft soils and terraces — skip bare northern limestone when you can.",
-    hellenistic: "Stay north. Citadel coast and structures; south of the waist is usually the wrong century.",
-    roman: "Broad pottery spreads beat one deep hole — several modest clusters tell the village story.",
-    byzantine: "Treat every EByz / MByz sherd as precious; the chapter is short.",
+    neolithic: [
+      "Lithics on thin coastal or ridge soils; skip deep plough fantasy — early pottery is scarce.",
+      "Hunt blade waste in natural soil pockets and strand earth, not built terrace webs.",
+      "Flat limestone slabs and lean hollows: knapping floors before farms.",
+      "If earth deepens inland, treat it as a rare garden pocket — still lithics-first.",
+    ],
+    bronze: [
+      "Pottery on soft soils and terrace fills; bare northern limestone is usually a waste of days.",
+      "Follow copper-coloured risers downhill into thicker fill — that is farm country.",
+      "Threshing floors and alluvial hollows repay trenches; scree tips rarely do.",
+      "Cove-facing terraces on flysch slopes: dig the retained red-brown earth.",
+    ],
+    hellenistic: [
+      "Citadel ridge and garrison garden terraces — stay with northern rock-and-fill pairs.",
+      "Saddle logistics: dumps and traffic on stepped flysch soils toward the fort road.",
+      "Supply farms in deep alluvium; do not confuse hinterland orchards with the stronghold itself.",
+      "Southern terraces may feed the story, but the capital signal is still northern limestone.",
+    ],
+    roman: [
+      "Broad pottery on repaired terrace webs; one deep hole on bare rock will not tell the village story.",
+      "Central alluvium and modest clusters — reseeding after abandonment loves soft earth.",
+      "Southern slope farms: pair sherd carpets with visible stone risers.",
+      "Coastal pocket soils and near-shore fields — spreads, not a citadel dump.",
+    ],
+    byzantine: [
+      "Every EByz / MByz sherd is precious; dig soft southern fills before northern pavement.",
+      "Reuse older terrace catches — thin returns hide inside already-farmed hollows.",
+      "Far-south earth pockets and repaired risers are the short chapter’s best bet.",
+      "Lean slope terraces: whisper-level pottery only — move on if the fill is sterile rock.",
+    ],
   };
+
+  const digs = digById[meta.id] || [meta.look];
+  const dig = digs[i % digs.length] || meta.look;
+
+  // Unique plate per circle (c1…c4) so hover art never collapses across zones.
+  const art = `${meta.id}-c${i + 1}`;
 
   return {
     title: meta.label,
     kind: `Chase circle ${i + 1} of ${total} · ${pocket}`,
-    blurb: `${rank}. ${blurb}`,
-    dig: digById[meta.id] || meta.look,
+    blurb: `${rank}. ${baseBlurb} ${lens}`,
+    dig,
     art,
     artUrl: ns.chaseArtUrl(art),
     pocket,
@@ -497,8 +537,29 @@ ns.buySurveyPass = function buySurveyPass() {
   const cost = state.hardMode ? Math.round(SURVEY_PASS_COST * 1.25) : SURVEY_PASS_COST;
   const days = state.hardMode ? SURVEY_PASS_DAYS + 1 : SURVEY_PASS_DAYS;
   if (state.money < cost || state.days < days) {
-    ns.toast("Need purse and days for a field brief.");
+    ns.toast(`Need €${cost} and ${days} day${days === 1 ? "" : "s"} for a hint.`);
     return;
+  }
+  const btnPass = document.getElementById("btnSurveyPass");
+  // Two-click confirm so the purse hit is deliberate and obvious.
+  if (btnPass && btnPass.dataset.confirmSpend !== "1") {
+    btnPass.dataset.confirmSpend = "1";
+    btnPass.textContent = `Confirm: pay €${cost}?`;
+    btnPass.title = `Click again to spend €${cost} and ${days} day${days === 1 ? "" : "s"}.`;
+    ns.toast(`Hint costs €${cost} + ${days} day${days === 1 ? "" : "s"} — click again to pay`, "warn");
+    if (ns._briefConfirmTimer) clearTimeout(ns._briefConfirmTimer);
+    ns._briefConfirmTimer = setTimeout(() => {
+      if (btnPass.dataset.confirmSpend === "1" && !state.surveyPass) {
+        delete btnPass.dataset.confirmSpend;
+        ns.renderHud();
+      }
+    }, 5000);
+    return;
+  }
+  if (btnPass) delete btnPass.dataset.confirmSpend;
+  if (ns._briefConfirmTimer) {
+    clearTimeout(ns._briefConfirmTimer);
+    ns._briefConfirmTimer = null;
   }
   state.money -= cost;
   state.days -= days;
@@ -506,10 +567,10 @@ ns.buySurveyPass = function buySurveyPass() {
   state.huntChapter = null;
   ns.updateFogPaintForSurvey();
   ns.logLine(
-    `<span class="hit">Field brief</span> · −${money(cost)} · −${days} days · the chase awaits`,
+    `<span class="hit">Hint paid</span> · −${money(cost)} · −${days} day${days === 1 ? "" : "s"} · the chase awaits`,
     "hit"
   );
-  ns.toast("Brief commissioned — name the lost chapter you’re hunting", "hit");
+  ns.toast(`Paid €${cost} — name the lost chapter you’re hunting`, "hit");
   const shell = document.getElementById("fieldBriefHint");
   if (shell) shell.open = true;
   ns.renderHud();

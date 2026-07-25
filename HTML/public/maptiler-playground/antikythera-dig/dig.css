@@ -686,6 +686,21 @@
       color: var(--muted);
     }
 
+    .field-brief-hint > summary .field-brief-sum {
+      color: var(--ink);
+    }
+
+    .field-brief-cost {
+      color: #8a3a1a;
+      font-weight: 700;
+    }
+
+    button#btnSurveyPass:not(.on):not(:disabled) {
+      background: linear-gradient(180deg, #8a5a28, #5a3a18);
+      border-color: #3a2410;
+      color: #f8f0dc;
+    }
+
     .field-brief-hint > .lede-mini,
     .field-brief-hint > .field-brief-actions,
     .field-brief-hint > .hunt-picker,
