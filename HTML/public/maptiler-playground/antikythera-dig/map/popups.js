@@ -59,9 +59,14 @@ ns.artForLithic = function artForLithic(props) {
 
 
 ns.landscapePopupHtml = function landscapePopupHtml(note) {
-  const artSrc = ns.landscapeArtUrl(note.art);
+  const artSrc = note.artUrl || ns.landscapeArtUrl(note.art);
+  const fallback = note.artFallback || "";
   const artHtml = artSrc
-    ? `<img class="landscape-art" src="${artSrc}" alt="${note.title || "Landscape"}" />`
+    ? `<img class="landscape-art" src="${artSrc}" alt="${note.title || "Landscape"}" ` +
+      (fallback
+        ? `data-fallback="${fallback}" onerror="if(this.dataset.fallback){const f=this.dataset.fallback;this.dataset.fallback='';this.src=f;}else{this.remove();}" `
+        : `onerror="this.remove()" `) +
+      `/>`
     : "";
   return (
     `<div class="dig-pop">` +
@@ -130,6 +135,7 @@ ns.openLandscapePopup = function openLandscapePopup(lngLat, note) {
     });
   }
   ns.landscapePopup.setLngLat(lngLat).setHTML(ns.landscapePopupHtml(note)).addTo(ns.map);
+  ns.markLandscapeStudied();
 }
 
 

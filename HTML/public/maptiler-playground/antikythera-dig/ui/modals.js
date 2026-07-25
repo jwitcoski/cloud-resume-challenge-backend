@@ -197,7 +197,13 @@ ns.markChartsReady = function markChartsReady(tractCount, digHeader, findsHeader
     ns.consumeTractHash();
   } else {
     ns.welcomeAboard();
-    if (state.started) ns.consumeTractHash();
+    if (state.started) {
+      if (state.surveyPass) {
+        ns.applySurveyFeatureStates();
+        ns.updateFogPaintForSurvey();
+      }
+      ns.consumeTractHash();
+    }
   }
 }
 

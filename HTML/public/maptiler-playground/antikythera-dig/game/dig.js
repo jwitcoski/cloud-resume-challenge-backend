@@ -110,6 +110,10 @@ ns.refreshTractStates = function refreshTractStates() {
   for (const id of state.selected) {
     if (!state.dug.has(id)) ns.setTractState(id, { selected: true, dug: false, hit: false });
   }
+  if (state.surveyPass) {
+    ns.applySurveyFeatureStates();
+    ns.updateFogPaintForSurvey();
+  }
 }
 
 
@@ -251,9 +255,11 @@ ns.revealAllMaterials = function revealAllMaterials() {
   if (!ns.map || state.revealed) return;
   state.revealed = true;
   state.paused = false;
+  state.huntChapter = null;
   document.getElementById("final").classList.remove("on");
   document.getElementById("revealBar").classList.add("on");
   document.querySelector(".hud")?.classList.remove("paused");
+  ns.updateFogPaintForSurvey();
 
   // Lift every fog square so PMTiles finds show through.
   for (const tid of Object.keys(state.tractIndex)) {
@@ -414,6 +420,7 @@ ns.onTractClick = function onTractClick(e) {
   if (!state.started || state.paused) return;
   if (state.ended && !state.revealed) return;
   if (document.getElementById("chapterBrief").classList.contains("on")) return;
+  ns.hideHuntZoneHover?.();
   const f = (e.features || [])[0];
   if (!f) return;
   const id = String(f.id != null ? f.id : (f.properties && f.properties.Tract) || "");

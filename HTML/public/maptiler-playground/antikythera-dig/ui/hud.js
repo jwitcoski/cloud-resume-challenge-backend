@@ -19,7 +19,7 @@ import {
 import {
   state, boot, SAVE_KEY, FOLIO_KEY, TUTORIAL_KEY,
   HIRE_COST, MAX_WORKERS, MIN_WORKERS, DIG_COST_PER_TRACT, DAYS_PER_TRACT,
-  FIELD_EVENT_CHANCE,
+  FIELD_EVENT_CHANCE, SURVEY_PASS_COST, SURVEY_PASS_DAYS,
   money, gloryRank, nextGloryRank, cannotAffordDig, emptyPenaltyPerTract,
 } from '../game/state.js';
 
@@ -170,6 +170,32 @@ ns.renderHud = function renderHud() {
   document.getElementById("btnSurvey").disabled =
     !state.started || state.ended || document.getElementById("chapterBrief").classList.contains("on");
 
+  const surveyCost = state.hardMode ? Math.round(SURVEY_PASS_COST * 1.25) : SURVEY_PASS_COST;
+  const surveyDays = state.hardMode ? SURVEY_PASS_DAYS + 1 : SURVEY_PASS_DAYS;
+  const btnPass = document.getElementById("btnSurveyPass");
+  if (btnPass) {
+    const modalOpen = document.getElementById("chapterBrief").classList.contains("on");
+    if (!state.surveyPass) {
+      btnPass.textContent = `Field brief (€${surveyCost})`;
+      btnPass.title =
+        `Spend €${surveyCost} and ${surveyDays} days — name the age you’re after and the charts ink rough search circles. Fog keeps every sherd secret.`;
+      btnPass.classList.remove("on");
+      btnPass.disabled =
+        !state.started || state.ended || state.paused || state.revealed || modalOpen ||
+        state.money < surveyCost || state.days < surveyDays;
+    } else {
+      const meta = state.huntChapter && MYSTERY.find((m) => m.id === state.huntChapter);
+      btnPass.textContent = meta ? `Call off · ${meta.label}` : "Name your chase";
+      btnPass.title = meta
+        ? "Wipe the chase circles from the chart"
+        : "Pick a lost chapter — the desk marks where that age gathers";
+      btnPass.classList.toggle("on", !!state.huntChapter);
+      btnPass.disabled =
+        !state.started || state.ended || state.paused || state.revealed || modalOpen;
+    }
+  }
+  if (typeof ns.renderHuntPicker === "function") ns.renderHuntPicker();
+
   const phase = document.getElementById("phase");
   if (!state.started) {
     phase.innerHTML = "Awaiting permit stamp…";
@@ -198,6 +224,10 @@ ns.renderHud = function renderHud() {
       `<strong>${state.selected.size}</strong> site(s) marked · crew can open <strong>${free}</strong>` +
       (state.busyWorkers ? ` <span style="color:var(--warn)">(${state.busyWorkers} busy)</span>` : "") +
       ` · ${money(state.selected.size * DIG_COST_PER_TRACT)} and ${state.selected.size * DAYS_PER_TRACT} days on the line.`;
+  } else if (state.surveyPass && state.huntChapter) {
+    const meta = MYSTERY.find((m) => m.id === state.huntChapter);
+    phase.innerHTML =
+      `<strong>Chase · ${meta ? meta.label : "the past"}</strong> — rough circles on the chart (hover one for why). Fog keeps its secrets; read the rock before you dig.`;
   } else {
     phase.innerHTML = `Pencil the map — click fogged tracts (up to your crew), then strike with <strong>Excavate</strong>.`;
   }

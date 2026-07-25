@@ -42,7 +42,8 @@ ns.newlyCompletedChapters = function newlyCompletedChapters() {
 
 ns.hideChapterBrief = function hideChapterBrief() {
   document.getElementById("chapterBrief").classList.remove("on");
-  ns.clearPeriodHint();
+  if (typeof ns.restoreHuntZone === "function") ns.restoreHuntZone();
+  else ns.clearPeriodHint();
 }
 
 
@@ -235,7 +236,8 @@ ns.hideEraTip = function hideEraTip() {
   const tip = document.getElementById("eraTip");
   tip.classList.remove("on");
   tip.hidden = true;
-  ns.clearPeriodHint();
+  if (typeof ns.restoreHuntZone === "function") ns.restoreHuntZone();
+  else ns.clearPeriodHint();
 }
 
 

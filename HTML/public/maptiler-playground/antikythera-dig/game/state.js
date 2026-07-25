@@ -6,6 +6,9 @@ const MIN_WORKERS = 1;
 const DIG_COST_PER_TRACT = 120;
 const DAYS_PER_TRACT = 4;
 const FIELD_EVENT_CHANCE = 0.45;
+/** One-time field brief — name a chase, ink rough search circles. */
+const SURVEY_PASS_COST = 120;
+const SURVEY_PASS_DAYS = 1;
 /** Reputation hit for opening a barren tract — empty ground wastes the season. */
 export const SAVE_KEY = 'antikythera-dig-save-v1';
 export const FOLIO_KEY = 'antikythera-dig-folio-v1';
@@ -34,6 +37,9 @@ const state = {
   started: false,
   hardMode: false,
   tutorialStep: null, // survey | mark | dig | done | null
+  surveyPass: false, // field brief bought
+  huntChapter: null, // MYSTERY id — active chase
+  landscapeStudied: false, // clicked geology/terrace at least once
   mechanismFound: false,
   folio: new Set(),
   goatsHits: 0,
@@ -48,7 +54,9 @@ export const boot = {
 
 export {
   HIRE_COST, MAX_WORKERS, MIN_WORKERS, DIG_COST_PER_TRACT,
-  DAYS_PER_TRACT, FIELD_EVENT_CHANCE, state,
+  DAYS_PER_TRACT, FIELD_EVENT_CHANCE,
+  SURVEY_PASS_COST, SURVEY_PASS_DAYS,
+  state,
   GLORY_EMPTY_PENALTY, GLORY_RANKS,
 };
 

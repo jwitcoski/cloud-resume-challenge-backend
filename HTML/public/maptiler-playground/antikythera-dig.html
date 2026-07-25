@@ -30,6 +30,7 @@
       <ul>
         <li>Mark fogged survey tracts (up to your crew size), then <strong>Excavate</strong>.</li>
         <li><strong>Study landscape</strong> to read geology, terraces, and ruins — dig smarter, not just harder.</li>
+        <li>Stuck? Open <strong>Need a hint?</strong> for an optional field brief — rough circles on the chart, never a find map.</li>
         <li>Finds fill five era chapters. Finish them all for museum glory; barren ground costs reputation.</li>
         <li>Hire diggers, survive field events, and climb from Unknown toward Museum director.</li>
       </ul>
@@ -208,6 +209,22 @@
       <button type="button" class="survey" id="btnSurvey" title="Pause digging and study geology &amp; terraces">Study landscape</button>
       <button type="button" id="btnFolio" class="folio-btn" title="Sketches unlocked this campaign">Field folio</button>
     </div>
+
+    <details class="field-brief-hint" id="fieldBriefHint" hidden>
+      <summary>
+        <span class="field-brief-sum">Need a hint?</span>
+        <span class="field-brief-active" id="fieldBriefActive" hidden></span>
+      </summary>
+      <p class="lede-mini">
+        Commission a field brief, name the lost chapter you’re after, and the charts ink a few rough circles —
+        not which square hides the goods. Optional. Fog keeps its secrets either way.
+      </p>
+      <div class="row field-brief-actions">
+        <button type="button" id="btnSurveyPass" title="Spend purse and days for a field brief">Field brief (€120)</button>
+      </div>
+      <div class="hunt-picker" id="huntPicker" hidden></div>
+      <p class="hunt-thesis-note" id="huntThesisNote" hidden></p>
+    </details>
 
     <div class="mystery">
       <h2>Lost chapters of the isle</h2>

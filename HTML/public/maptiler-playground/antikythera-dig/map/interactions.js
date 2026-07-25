@@ -32,10 +32,17 @@ ns.wireMapInteractions = function wireMapInteractions() {
     const id = String(f.id != null ? f.id : (f.properties && f.properties.Tract) || "");
     if (!id) return;
     if (!state.dug.has(id)) {
+      if (typeof ns.tryShowHuntZoneAt === "function" && ns.tryShowHuntZoneAt(e.point, e.lngLat)) {
+        ns.hideFindHover();
+        ns.map.getCanvas().style.cursor = "help";
+        return;
+      }
+      ns.hideHuntZoneHover?.();
       ns.hideFindHover();
       ns.map.getCanvas().style.cursor = "pointer";
       return;
     }
+    ns.hideHuntZoneHover?.();
     ns.handleDugHover(e, id);
   });
   ns.map.on("mouseleave", "tracts-pick", () => {
@@ -43,6 +50,20 @@ ns.wireMapInteractions = function wireMapInteractions() {
     ns.map.getCanvas().style.cursor = "";
   });
   ns.map.on("click", "tracts-pick", ns.onTractClick);
+
+  ns.map.on("mousemove", "period-hint-fill", (e) => {
+    if (!state.started || state.paused || state.ended || state.revealed) return;
+    if (!state.surveyPass || !state.huntChapter) return;
+    const f = (e.features || [])[0];
+    if (!f) return;
+    ns.hideFindHover();
+    ns.map.getCanvas().style.cursor = "help";
+    ns.showHuntZoneHover(f, e.lngLat);
+  });
+  ns.map.on("mouseleave", "period-hint-fill", () => {
+    ns.hideHuntZoneHover();
+    ns.map.getCanvas().style.cursor = "";
+  });
 
   ns.map.on("mousemove", "find-heat", (e) => {
     if (!state.started || state.paused || (state.ended && !state.revealed)) return;
@@ -130,6 +151,9 @@ ns.wireMapInteractions = function wireMapInteractions() {
   });
   document.getElementById("btnSurvey").addEventListener("click", () => {
     ns.setSurveyMode(!state.paused);
+  });
+  document.getElementById("btnSurveyPass").addEventListener("click", () => {
+    ns.buySurveyPass();
   });
   document.getElementById("btnClear").addEventListener("click", () => {
     if (!state.started || state.paused) return;

@@ -574,6 +574,168 @@
 
     .hud.paused .scout-legend { display: block; }
 
+    .survey-legend {
+      margin: 0 0 12px 8px;
+      padding: 10px 10px 8px;
+      border: 1px dashed rgba(74, 47, 28, 0.4);
+      background: rgba(255, 248, 230, 0.5);
+      font-size: 0.7rem;
+      line-height: 1.55;
+      color: var(--muted);
+    }
+
+    .survey-legend strong {
+      display: block;
+      color: var(--ink);
+      font-family: "Cinzel", serif;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-size: 0.65rem;
+      margin-bottom: 6px;
+    }
+
+    .survey-legend .lede-mini {
+      display: block;
+      margin-top: 6px;
+      font-size: 0.65rem;
+    }
+
+    .hunt-picker {
+      margin: 8px 0 0;
+      padding: 10px 10px 8px;
+      border: 1px dashed rgba(74, 47, 28, 0.35);
+      background: rgba(255, 248, 230, 0.45);
+      font-size: 0.7rem;
+      line-height: 1.55;
+      color: var(--muted);
+    }
+
+    .hunt-picker strong {
+      display: block;
+      color: var(--ink);
+      font-family: "Cinzel", serif;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-size: 0.65rem;
+      margin-bottom: 8px;
+    }
+
+    .hunt-picker .lede-mini {
+      display: block;
+      margin-top: 8px;
+      font-size: 0.65rem;
+    }
+
+    .hunt-thesis-note {
+      margin: 8px 0 0;
+      padding: 8px 10px;
+      border-left: 3px solid var(--brass, #a67c2d);
+      font-size: 0.72rem;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+
+    .hunt-thesis-note strong {
+      color: var(--ink);
+    }
+
+    .field-brief-hint {
+      margin: 0 0 12px 8px;
+      padding: 0;
+      border: 1px dashed rgba(74, 47, 28, 0.35);
+      background: rgba(255, 248, 230, 0.35);
+      color: var(--muted);
+      font-size: 0.72rem;
+    }
+
+    .field-brief-hint[hidden] {
+      display: none !important;
+    }
+
+    .field-brief-hint > summary {
+      cursor: pointer;
+      list-style: none;
+      padding: 8px 10px;
+      font-family: "Cinzel", serif;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      font-size: 0.68rem;
+      color: var(--ink);
+      user-select: none;
+    }
+
+    .field-brief-hint > summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .field-brief-hint > summary::before {
+      content: "▸ ";
+      color: var(--brass, #a67c2d);
+    }
+
+    .field-brief-hint[open] > summary::before {
+      content: "▾ ";
+    }
+
+    .field-brief-hint > summary .field-brief-active {
+      margin-left: 4px;
+      font-family: "Special Elite", monospace;
+      letter-spacing: 0;
+      text-transform: none;
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    .field-brief-hint > .lede-mini,
+    .field-brief-hint > .field-brief-actions,
+    .field-brief-hint > .hunt-picker,
+    .field-brief-hint > .hunt-thesis-note {
+      margin-left: 10px;
+      margin-right: 10px;
+    }
+
+    .field-brief-hint > .lede-mini {
+      margin-top: 0;
+      margin-bottom: 8px;
+      font-size: 0.68rem;
+      line-height: 1.45;
+    }
+
+    .field-brief-hint > .field-brief-actions {
+      margin-bottom: 8px;
+    }
+
+    .field-brief-hint[open] {
+      padding-bottom: 10px;
+    }
+
+    .hunt-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .hunt-options button {
+      margin: 0;
+      padding: 6px 8px;
+      font-size: 0.65rem;
+      line-height: 1.2;
+      text-transform: none;
+      letter-spacing: 0.02em;
+    }
+
+    .hunt-options button.on {
+      background: linear-gradient(180deg, #6a5020, #4a3818);
+      border-color: #3a2a10;
+      color: #f4ecd8;
+    }
+
+    button#btnSurveyPass.on {
+      background: linear-gradient(180deg, #6a5020, #4a3818);
+      border-color: #3a2a10;
+      color: #f4ecd8;
+    }
+
     .scout-legend strong { color: var(--ink); }
     .scout-legend .lede-mini {
       display: block;
@@ -650,6 +812,15 @@
       margin: 0 0 8px;
       border: 1px solid rgba(74, 47, 28, 0.35);
       background: rgba(255, 248, 230, 0.45);
+    }
+
+    .maplibregl-popup.dig-popup-chase .dig-pop .landscape-art {
+      max-height: 140px;
+      aspect-ratio: auto;
+    }
+
+    .maplibregl-popup.dig-popup-chase .dig-pop p {
+      font-size: 0.74rem;
     }
 
     .dig-pop p {

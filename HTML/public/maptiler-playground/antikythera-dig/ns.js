@@ -4,6 +4,7 @@ export const ns = {
   aegeanMap: null,
   landscapePopup: null,
   findHoverPopup: null,
+  huntZonePopup: null,
   hoverKey: null,
   digFlashTimer: null,
 };
