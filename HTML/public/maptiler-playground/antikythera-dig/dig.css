@@ -11,6 +11,9 @@
       --warn: #9a5b24;
       --dust: #c4b08a;
       --panel-shadow: 0 14px 40px rgba(42, 31, 20, 0.45);
+      --hud-stack: 0px;
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --safe-top: env(safe-area-inset-top, 0px);
     }
 
     * { box-sizing: border-box; }
@@ -18,6 +21,7 @@
     html, body {
       margin: 0;
       height: 100%;
+      height: 100dvh;
       overflow: hidden;
       font-family: "Special Elite", "Courier New", monospace;
       color: var(--ink);
@@ -250,6 +254,7 @@
       left: 14px;
       width: min(400px, calc(100vw - 28px));
       max-height: calc(100vh - 28px);
+      max-height: calc(100dvh - 28px);
       overflow: auto;
       padding: 18px 18px 16px;
       color: var(--ink);
@@ -268,6 +273,18 @@
         inset 0 0 0 1px rgba(166, 124, 45, 0.35),
         inset 0 0 40px rgba(74, 47, 28, 0.08);
       animation: journal-slide 0.55s ease-out both;
+    }
+
+    .hud-grab {
+      display: none;
+    }
+
+    .hud-peek-actions {
+      margin-bottom: 10px;
+    }
+
+    .hud-more-actions {
+      margin-bottom: 10px;
     }
 
     @keyframes journal-slide {
@@ -573,6 +590,22 @@
     }
 
     .hud.paused .scout-legend { display: block; }
+
+    .scout-legend > summary {
+      cursor: pointer;
+      list-style: none;
+      color: var(--ink);
+      font-family: "Cinzel", serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.04em;
+      margin-bottom: 6px;
+    }
+
+    .scout-legend > summary::-webkit-details-marker { display: none; }
+
+    .scout-swatches {
+      line-height: 1.55;
+    }
 
     .survey-legend {
       margin: 0 0 12px 8px;
@@ -1471,8 +1504,9 @@
     }
 
     .hud .folio-btn {
-      margin-top: 8px;
-      width: 100%;
+      margin-top: 0;
+      width: auto;
+      flex: 1 1 auto;
     }
 
     @keyframes dig-pulse {
@@ -1579,24 +1613,283 @@
       background-color: transparent !important;
     }
 
-    @media (max-width: 640px) {
+    @media (max-width: 640px), (max-height: 420px) and (orientation: landscape) {
       .hud {
         top: auto;
-        bottom: 10px;
-        left: 10px;
-        right: 10px;
+        bottom: 0;
+        left: 0;
+        right: 0;
         width: auto;
-        max-height: 48vh;
+        max-height: none;
+        padding: 8px 12px calc(10px + var(--safe-bottom));
+        border-left: none;
+        border-right: none;
+        border-bottom: none;
+        border-radius: 14px 14px 0 0;
+        animation: none;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        transition: max-height 0.22s ease;
       }
-      .stats { grid-template-columns: repeat(2, 1fr); }
-      .toast { bottom: calc(48vh + 18px); }
-      .reveal-bar { bottom: calc(48vh + 18px); }
-      .corner-stamp { width: 72px; height: 72px; font-size: 0.52rem; top: 10px; right: 10px; }
-      .era-tip {
-        bottom: calc(48vh + 14px);
+
+      .hud::before { display: none; }
+
+      .hud.collapsed {
+        max-height: none;
+        height: auto;
+      }
+
+      .hud.expanded {
+        max-height: min(70dvh, calc(100dvh - 72px - var(--safe-top)));
+        height: auto;
+      }
+
+      .hud-grab {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        margin: 0 0 6px;
+        padding: 8px 10px;
+        min-height: 44px;
+        border: none;
+        background: transparent;
+        box-shadow: none;
+        font-family: "Cinzel", serif;
+        font-size: 0.68rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--leather);
+        cursor: pointer;
+      }
+
+      .hud-grab:hover,
+      .hud-grab:active {
+        transform: none;
+        background: transparent;
+      }
+
+      .hud-grab-bar {
+        display: block;
+        width: 42px;
+        height: 4px;
+        border-radius: 999px;
+        background: rgba(74, 47, 28, 0.35);
+      }
+
+      .hud-peek {
+        flex: 0 0 auto;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        background:
+          linear-gradient(135deg, rgba(255, 255, 255, 0.18), transparent 40%),
+          var(--parchment);
+        padding-bottom: 2px;
+      }
+
+      .hud-more {
+        flex: 1 1 auto;
+        overflow: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 4px;
+      }
+
+      .hud.collapsed .hud-more {
+        display: none;
+      }
+
+      .hud.expanded .hud-more {
+        display: block;
+      }
+
+      .stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+        margin-bottom: 8px;
+      }
+
+      .stat {
+        padding: 6px 8px;
+      }
+
+      .hud-peek-actions {
+        display: grid;
+        grid-template-columns: 1.4fr 1fr;
+        gap: 8px;
+        margin: 0 0 4px;
+      }
+
+      .hud-peek-actions #btnDig {
+        width: 100%;
+        min-height: 48px;
+        font-size: 0.8rem;
+      }
+
+      .hud-peek-actions #btnClear {
+        min-height: 48px;
+      }
+
+      .hud-more-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin-left: 0;
+      }
+
+      .hud-more-actions button {
+        min-height: 44px;
+        margin: 0;
+      }
+
+      .hud-more-actions #btnFolio {
+        grid-column: 1 / -1;
+        width: 100%;
+      }
+
+      button {
+        min-height: 44px;
+        padding: 11px 12px;
+        font-size: 0.74rem;
+      }
+
+      .field-brief-hint > summary {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 4px;
+      }
+
+      .hunt-options button {
+        min-height: 44px;
+        padding: 10px 12px;
+        font-size: 0.72rem;
+      }
+
+      .scout-legend {
+        max-height: 28vh;
+        overflow: auto;
+      }
+
+      .scout-swatches {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 10px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 4px;
+        white-space: nowrap;
+        font-size: 0.68rem;
+      }
+
+      .maplibregl-popup.dig-popup .maplibregl-popup-close-button {
+        width: 36px;
+        height: 36px;
+        font-size: 22px;
+        line-height: 36px;
+        padding: 0;
+        right: 2px;
+        top: 2px;
+      }
+
+      .maplibregl-popup.dig-popup .maplibregl-popup-content {
+        max-width: min(320px, calc(100vw - 24px));
+      }
+
+      .toast {
+        bottom: calc(var(--hud-stack, 110px) + 14px);
+        max-width: calc(100vw - 24px);
+      }
+
+      .reveal-bar {
+        bottom: calc(var(--hud-stack, 110px) + 14px);
+        left: 12px;
+        right: 12px;
+        width: auto;
+      }
+
+      .corner-stamp {
+        width: 56px;
+        height: 56px;
+        font-size: 0.45rem;
+        top: calc(8px + var(--safe-top));
+        right: 8px;
+        opacity: 0.72;
+      }
+
+      .tutorial-banner {
+        top: calc(8px + var(--safe-top));
+        left: 12px;
+        right: 12px;
+        transform: none;
+        max-width: none;
+        font-size: 0.74rem;
+        padding: 8px 10px;
+      }
+
+      .era-tip,
+      .glory-tip {
+        bottom: calc(var(--hud-stack, 110px) + 12px);
         top: auto !important;
         left: 12px !important;
         right: 12px;
         width: auto !important;
+        max-height: min(42dvh, 360px);
+        overflow: auto;
+      }
+
+      .start-card,
+      .final-card,
+      .folio-card,
+      .recap-card,
+      .dig-event-card,
+      .isle-card,
+      .chapter-card {
+        max-height: min(90dvh, calc(100dvh - 24px - var(--safe-top) - var(--safe-bottom)));
+        overflow: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .start-actions .btn-row button,
+      .final-actions button {
+        min-height: 48px;
+      }
+
+      .lede {
+        display: none;
+      }
+
+      .eyebrow {
+        font-size: 0.6rem;
+      }
+
+      .hud h1 {
+        font-size: 1.15rem;
+        margin-bottom: 6px;
+      }
+
+      .phase {
+        font-size: 0.82rem;
+        min-height: 0;
+      }
+
+      .log {
+        max-height: 90px;
+      }
+    }
+
+    @media (max-width: 640px) and (max-height: 420px) {
+      .hud.expanded {
+        max-height: min(58dvh, calc(100dvh - 48px));
+      }
+
+      .corner-stamp { display: none; }
+
+      .tutorial-banner {
+        font-size: 0.68rem;
+        padding: 6px 8px;
       }
     }

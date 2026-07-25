@@ -155,6 +155,7 @@ ns.startExpedition = function startExpedition() {
   ns.collectFolio("rank:unknown");
   document.getElementById("startScreen").classList.remove("on");
   document.body.classList.add("playing");
+  ns.initMobileHud?.();
   if (boot.done) ns.welcomeAboard();
   else ns.toast("Charts still arriving from Athens…");
   ns.updateTutorialBanner();
@@ -170,6 +171,7 @@ ns.continueExpedition = function continueExpedition() {
   ns.applySaveData(data);
   document.getElementById("startScreen").classList.remove("on");
   document.body.classList.add("playing");
+  ns.initMobileHud?.();
   if (boot.done) {
     ns.refreshTractStates();
     ns.welcomeAboard({ resumed: true });

@@ -195,16 +195,21 @@ ns.clearPeriodHint = function clearPeriodHint() {
 ns.placeEraTip = function placeEraTip(anchorEl) {
   const tip = document.getElementById("eraTip");
   const r = anchorEl.getBoundingClientRect();
+  tip.hidden = false;
+  tip.classList.add("on");
+  if (ns.isMobileHud()) {
+    tip.style.left = "";
+    tip.style.width = "";
+    tip.style.top = "";
+    return;
+  }
   const tipW = Math.min(300, window.innerWidth - 24);
   let left = r.right + 12;
   if (left + tipW > window.innerWidth - 12) left = Math.max(12, r.left - tipW - 12);
   if (window.innerWidth < 720) left = Math.max(12, (window.innerWidth - tipW) / 2);
   let top = r.top;
-  tip.hidden = false;
-  tip.classList.add("on");
   tip.style.width = tipW + "px";
   tip.style.left = left + "px";
-  // measure after show
   requestAnimationFrame(() => {
     const h = tip.offsetHeight || 160;
     if (top + h > window.innerHeight - 12) top = Math.max(12, window.innerHeight - h - 12);
@@ -216,6 +221,7 @@ ns.placeEraTip = function placeEraTip(anchorEl) {
 ns.showEraTip = function showEraTip(m, anchorEl) {
   const tip = document.getElementById("eraTip");
   const artSrc = m.art || ns.chapterArtUrl(m.id);
+  tip.dataset.eraId = m.id || "";
   tip.innerHTML =
     `<img class="era-art" src="${artSrc}" alt="${m.label}" />` +
     `<p class="when">${m.when}</p>` +
@@ -236,6 +242,7 @@ ns.hideEraTip = function hideEraTip() {
   const tip = document.getElementById("eraTip");
   tip.classList.remove("on");
   tip.hidden = true;
+  tip.dataset.eraId = "";
   if (typeof ns.restoreHuntZone === "function") ns.restoreHuntZone();
   else ns.clearPeriodHint();
 }

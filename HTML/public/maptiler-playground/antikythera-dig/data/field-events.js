@@ -1,4 +1,4 @@
-import { MAX_WORKERS } from '../game/state.js';
+import { MAX_WORKERS, MIN_WORKERS, money } from '../game/state.js';
 
 const FIELD_EVENTS = [
   {

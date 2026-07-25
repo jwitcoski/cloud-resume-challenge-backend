@@ -44,6 +44,86 @@ ns.toast = function toast(msg, kind) {
   }, kind === "hit" ? 3200 : 2200);
 }
 
+/** Narrow / short viewports use the collapsible bottom journal. */
+ns.isMobileHud = function isMobileHud() {
+  return window.matchMedia("(max-width: 640px), (max-height: 420px) and (max-width: 900px)").matches;
+};
+
+ns.isCoarsePointer = function isCoarsePointer() {
+  return window.matchMedia("(pointer: coarse)").matches || ns.isMobileHud();
+};
+
+ns.updateHudStackVar = function updateHudStackVar() {
+  const hud = document.getElementById("hud");
+  if (!hud || !ns.isMobileHud()) {
+    document.documentElement.style.setProperty("--hud-stack", "0px");
+    return;
+  }
+  document.documentElement.style.setProperty("--hud-stack", Math.ceil(hud.getBoundingClientRect().height) + "px");
+};
+
+ns.setHudExpanded = function setHudExpanded(on) {
+  const hud = document.getElementById("hud");
+  const btn = document.getElementById("btnHudToggle");
+  const label = document.getElementById("hudToggleLabel");
+  if (!hud) return;
+  const expand = !!on;
+  hud.classList.toggle("expanded", expand);
+  hud.classList.toggle("collapsed", !expand);
+  if (btn) {
+    btn.setAttribute("aria-expanded", expand ? "true" : "false");
+    btn.title = expand ? "Close expedition journal" : "Open expedition journal";
+  }
+  if (label) label.textContent = expand ? "Close" : "Journal";
+  requestAnimationFrame(() => {
+    ns.updateHudStackVar();
+    if (ns.map && typeof ns.map.resize === "function") {
+      try { ns.map.resize(); } catch (_) { /* ignore */ }
+    }
+  });
+};
+
+ns.collapseHudMobile = function collapseHudMobile() {
+  if (!ns.isMobileHud()) return;
+  if (state.paused) return; // keep journal open while studying landscape
+  ns.setHudExpanded(false);
+};
+
+ns.initMobileHud = function initMobileHud() {
+  const hud = document.getElementById("hud");
+  const btn = document.getElementById("btnHudToggle");
+  if (!hud) return;
+  if (ns.isMobileHud()) {
+    ns.setHudExpanded(false);
+  } else {
+    hud.classList.remove("collapsed", "expanded");
+    if (btn) btn.setAttribute("aria-expanded", "true");
+    document.documentElement.style.setProperty("--hud-stack", "0px");
+  }
+  if (btn && !btn.dataset.wired) {
+    btn.dataset.wired = "1";
+    btn.addEventListener("click", () => {
+      if (!ns.isMobileHud()) return;
+      ns.setHudExpanded(!hud.classList.contains("expanded"));
+    });
+  }
+  if (!ns._hudResizeWired) {
+    ns._hudResizeWired = true;
+    window.addEventListener("resize", () => {
+      if (!ns.isMobileHud()) {
+        hud.classList.remove("collapsed", "expanded");
+        document.documentElement.style.setProperty("--hud-stack", "0px");
+        return;
+      }
+      if (!hud.classList.contains("expanded") && !hud.classList.contains("collapsed")) {
+        ns.setHudExpanded(false);
+      } else {
+        ns.updateHudStackVar();
+      }
+    });
+  }
+};
+
 ns.applyGlory = function applyGlory(delta) {
   const before = gloryRank(state.score);
   state.score = Math.max(0, state.score + (delta || 0));
@@ -288,11 +368,34 @@ ns.renderHud = function renderHud() {
       `<span class="name">${done ? "★ " : ""}${m.label}</span>` +
       `<span>${Math.min(have, m.need)}/${m.need}</span>` +
       `<div class="bar"><span style="width:${pct}%"></span></div>`;
-    row.addEventListener("mouseenter", () => ns.showEraTip(m, row));
-    row.addEventListener("mouseleave", ns.hideEraTip);
+    row.addEventListener("mouseenter", () => {
+      if (ns.isCoarsePointer()) return;
+      ns.showEraTip(m, row);
+    });
+    row.addEventListener("mouseleave", () => {
+      if (ns.isCoarsePointer()) return;
+      ns.hideEraTip();
+    });
     row.addEventListener("focus", () => ns.showEraTip(m, row));
-    row.addEventListener("blur", ns.hideEraTip);
-    row.addEventListener("click", () => ns.glanceEra(m));
+    row.addEventListener("blur", () => {
+      if (ns.isCoarsePointer()) return;
+      ns.hideEraTip();
+    });
+    row.addEventListener("click", (e) => {
+      if (ns.isCoarsePointer()) {
+        const tip = document.getElementById("eraTip");
+        const open = tip && tip.classList.contains("on") && tip.dataset.eraId === m.id;
+        if (!open) {
+          e.preventDefault();
+          tip.dataset.eraId = m.id;
+          ns.showEraTip(m, row);
+          return;
+        }
+        tip.dataset.eraId = "";
+        ns.hideEraTip();
+      }
+      ns.glanceEra(m);
+    });
     row.addEventListener("keydown", (e) => {
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();

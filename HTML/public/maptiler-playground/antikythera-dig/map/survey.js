@@ -638,6 +638,16 @@ ns.setSurveyMode = function setSurveyMode(on) {
   btn.classList.toggle("on", state.paused);
   btn.textContent = state.paused ? "Resume digging" : "Study landscape";
 
+  if (ns.isMobileHud()) {
+    if (state.paused) {
+      ns.setHudExpanded(true);
+      const legend = document.getElementById("scoutLegend");
+      if (legend) legend.open = true;
+    } else {
+      ns.setHudExpanded(false);
+    }
+  }
+
   ns.toast(state.paused
     ? "Shovels down — read the rock, the terraces, the ruins"
     : "Fog restored — shovels ready");
@@ -668,6 +678,12 @@ ns.placeGloryTip = function placeGloryTip(anchorEl) {
   const tip = document.getElementById("gloryTip");
   tip.hidden = false;
   tip.classList.add("on");
+  if (ns.isMobileHud()) {
+    tip.style.left = "";
+    tip.style.width = "";
+    tip.style.top = "";
+    return;
+  }
   const r = anchorEl.getBoundingClientRect();
   const tipW = Math.min(320, window.innerWidth - 24);
   let left = r.right + 12;

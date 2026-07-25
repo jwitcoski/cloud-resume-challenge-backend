@@ -125,10 +125,39 @@ ns.wireMapInteractions = function wireMapInteractions() {
   document.getElementById("btnIsle").addEventListener("click", ns.openIsleBriefing);
   const gloryStat = document.getElementById("gloryStat");
   const rankEl = document.getElementById("statRank");
-  gloryStat.addEventListener("mouseenter", () => ns.showGloryTip(rankEl));
-  gloryStat.addEventListener("mouseleave", ns.hideGloryTip);
+  gloryStat.addEventListener("mouseenter", () => {
+    if (ns.isCoarsePointer()) return;
+    ns.showGloryTip(rankEl);
+  });
+  gloryStat.addEventListener("mouseleave", () => {
+    if (ns.isCoarsePointer()) return;
+    ns.hideGloryTip();
+  });
   rankEl.addEventListener("focus", () => ns.showGloryTip(rankEl));
-  rankEl.addEventListener("blur", ns.hideGloryTip);
+  rankEl.addEventListener("blur", () => {
+    if (ns.isCoarsePointer()) return;
+    ns.hideGloryTip();
+  });
+  gloryStat.addEventListener("click", (e) => {
+    if (!ns.isCoarsePointer()) return;
+    e.preventDefault();
+    const tip = document.getElementById("gloryTip");
+    if (tip && tip.classList.contains("on")) ns.hideGloryTip();
+    else ns.showGloryTip(rankEl);
+  });
+  document.addEventListener("pointerdown", (e) => {
+    if (!ns.isCoarsePointer()) return;
+    const eraTip = document.getElementById("eraTip");
+    const gloryTip = document.getElementById("gloryTip");
+    const t = e.target;
+    if (eraTip && eraTip.classList.contains("on") && !eraTip.contains(t) && !t.closest?.(".era")) {
+      ns.hideEraTip();
+    }
+    if (gloryTip && gloryTip.classList.contains("on") && !gloryTip.contains(t) && !t.closest?.("#gloryStat")) {
+      ns.hideGloryTip();
+    }
+  });
+  ns.initMobileHud?.();
   document.getElementById("isleBriefOk").addEventListener("click", ns.closeIsleBriefing);
   document.getElementById("isleBrief").addEventListener("click", (e) => {
     if (e.target.id === "isleBrief") ns.closeIsleBriefing();

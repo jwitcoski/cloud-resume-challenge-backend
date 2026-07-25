@@ -374,6 +374,7 @@ ns.digSelected = function digSelected() {
   ns.updateFindMarkers(fresh);
   ns.flashDugTracts(reports);
   ns.focusDigBatch(reports);
+  ns.collapseHudMobile?.();
   ns.digSelected._pendingRelic = ns.relicEventForReports(reports);
   ns.showDigEvent(reports);
   ns.saveGame();
@@ -445,6 +446,7 @@ ns.onTractClick = function onTractClick(e) {
     state.selected.add(id);
     ns.setTractState(id, { selected: true, dug: false, hit: false });
     ns.advanceTutorial("mark");
+    ns.collapseHudMobile?.();
   }
   ns.renderHud();
   ns.saveGame();

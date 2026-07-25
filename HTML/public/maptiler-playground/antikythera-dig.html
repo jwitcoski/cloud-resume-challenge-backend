@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Raiders of Antikythera — Field Journal</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -159,87 +159,99 @@
     </div>
   </div>
 
-  <aside class="hud">
-    <p class="eyebrow">Confidential expedition journal</p>
-    <h1>Raiders of <button type="button" class="isle-link" id="btnIsle" title="About the island">Antikythera</button></h1>
-    <p class="lede">
-      Fortune and glory on a forgotten Greek isle. You’ve got one year, a battered purse,
-      and a crew that works for drachmas. Mark the fogged tracts. Dig like your dissertation depends on it.
-    </p>
-
-    <div class="stats">
-      <div class="stat"><span class="k">Purse</span><span class="v" id="statMoney">€8,000</span></div>
-      <div class="stat"><span class="k">Days</span><span class="v" id="statDays">365</span></div>
-      <div class="stat"><span class="k">Crew</span><span class="v" id="statWorkers">3</span></div>
-      <div class="stat" id="gloryStat">
-        <span class="k">Glory</span>
-        <span class="v" id="statScore">0</span>
-        <span class="rank" id="statRank" tabindex="0" role="button" aria-describedby="gloryTip">Unknown</span>
+  <aside class="hud" id="hud">
+    <div class="hud-peek">
+      <button type="button" class="hud-grab" id="btnHudToggle" aria-expanded="false" aria-controls="hudMore" title="Open expedition journal">
+        <span class="hud-grab-bar" aria-hidden="true"></span>
+        <span class="hud-toggle-label" id="hudToggleLabel">Journal</span>
+      </button>
+      <div class="stats">
+        <div class="stat"><span class="k">Purse</span><span class="v" id="statMoney">€8,000</span></div>
+        <div class="stat"><span class="k">Days</span><span class="v" id="statDays">365</span></div>
+        <div class="stat"><span class="k">Crew</span><span class="v" id="statWorkers">3</span></div>
+        <div class="stat" id="gloryStat">
+          <span class="k">Glory</span>
+          <span class="v" id="statScore">0</span>
+          <span class="rank" id="statRank" tabindex="0" role="button" aria-describedby="gloryTip">Unknown</span>
+        </div>
+      </div>
+      <div class="row hud-peek-actions">
+        <button type="button" class="primary" id="btnDig" disabled>Excavate</button>
+        <button type="button" id="btnClear">Erase marks</button>
       </div>
     </div>
 
-    <p class="phase" id="phase">
-      Pencil the map — click fogged tracts (up to your crew), then strike with <strong>Excavate</strong>.
-    </p>
-
-    <div class="scout-legend" id="scoutLegend">
-      <strong>Landscape desk</strong>
-      <span class="lede-mini">Click a rock unit or terrace line for field notes. Fog &amp; finds stay hidden.</span>
-      <span class="scout-swatch" style="background:#d4a017"></span>Alluvium
-      <span class="scout-swatch" style="background:#f0e6c8"></span>Nummulitic ls.
-      <span class="scout-swatch" style="background:#c9b8a0"></span>Rudist ls.<br />
-      <span class="scout-swatch" style="background:#a89a88"></span>Brecciated ls.
-      <span class="scout-swatch" style="background:#b5a67a"></span>Clastic carbonate
-      <span class="scout-swatch" style="background:#6b4f2e"></span>Flysch<br />
-      <span class="scout-swatch" style="background:#7a6b4a"></span>Marls / ss.
-      <span class="scout-swatch" style="background:#8a8478"></span>Scree
-      <span class="scout-swatch line"></span>Terrace risers<br />
-      <span class="scout-swatch" style="background:#8b2e2e;border-radius:50%"></span>House
-      <span class="scout-swatch" style="background:#5c6b3a;border-radius:50%"></span>Shelter
-      <span class="scout-swatch" style="background:#3a6a8a;border-radius:50%"></span>Well / cistern
-      <span class="scout-swatch" style="background:#c4963a;border-radius:50%"></span>Threshing / press
-      <span class="scout-swatch" style="background:#6b4a6b;border-radius:50%"></span>Tomb?
-      <span class="scout-swatch" style="background:#4a5a6b;border-radius:50%"></span>Rock shelter
-    </div>
-
-    <div class="row">
-      <button type="button" class="primary" id="btnDig" disabled>Excavate</button>
-      <button type="button" id="btnClear">Erase marks</button>
-      <button type="button" id="btnHire">Hire digger (€500)</button>
-      <button type="button" class="survey" id="btnSurvey" title="Pause digging and study geology &amp; terraces">Study landscape</button>
-      <button type="button" id="btnFolio" class="folio-btn" title="Sketches unlocked this campaign">Field folio</button>
-    </div>
-
-    <details class="field-brief-hint" id="fieldBriefHint" hidden>
-      <summary>
-        <span class="field-brief-sum" id="fieldBriefSum">Need a hint? · costs €120</span>
-        <span class="field-brief-active" id="fieldBriefActive" hidden></span>
-      </summary>
-      <p class="lede-mini" id="fieldBriefLede">
-        <strong class="field-brief-cost">Costs money:</strong> €120 and 1 day from your permit.
-        Pay for a field brief, name the lost chapter you’re after, and the charts ink a few rough circles —
-        not which square hides the goods. Optional. Fog keeps its secrets either way.
+    <div class="hud-more" id="hudMore">
+      <p class="eyebrow">Confidential expedition journal</p>
+      <h1>Raiders of <button type="button" class="isle-link" id="btnIsle" title="About the island">Antikythera</button></h1>
+      <p class="lede">
+        Fortune and glory on a forgotten Greek isle. You’ve got one year, a battered purse,
+        and a crew that works for drachmas. Mark the fogged tracts. Dig like your dissertation depends on it.
       </p>
-      <div class="row field-brief-actions">
-        <button type="button" id="btnSurveyPass" title="Spend €120 and 1 day for a field brief">Pay €120 for a hint</button>
+
+      <p class="phase" id="phase">
+        Pencil the map — click fogged tracts (up to your crew), then strike with <strong>Excavate</strong>.
+      </p>
+
+      <details class="scout-legend" id="scoutLegend">
+        <summary><strong>Landscape desk</strong> — rock &amp; terrace key</summary>
+        <span class="lede-mini">Tap a rock unit or terrace line for field notes. Fog &amp; finds stay hidden.</span>
+        <div class="scout-swatches">
+          <span class="scout-swatch" style="background:#d4a017"></span>Alluvium
+          <span class="scout-swatch" style="background:#f0e6c8"></span>Nummulitic ls.
+          <span class="scout-swatch" style="background:#c9b8a0"></span>Rudist ls.
+          <span class="scout-swatch" style="background:#a89a88"></span>Brecciated ls.
+          <span class="scout-swatch" style="background:#b5a67a"></span>Clastic carbonate
+          <span class="scout-swatch" style="background:#6b4f2e"></span>Flysch
+          <span class="scout-swatch" style="background:#7a6b4a"></span>Marls / ss.
+          <span class="scout-swatch" style="background:#8a8478"></span>Scree
+          <span class="scout-swatch line"></span>Terrace risers
+          <span class="scout-swatch" style="background:#8b2e2e;border-radius:50%"></span>House
+          <span class="scout-swatch" style="background:#5c6b3a;border-radius:50%"></span>Shelter
+          <span class="scout-swatch" style="background:#3a6a8a;border-radius:50%"></span>Well / cistern
+          <span class="scout-swatch" style="background:#c4963a;border-radius:50%"></span>Threshing / press
+          <span class="scout-swatch" style="background:#6b4a6b;border-radius:50%"></span>Tomb?
+          <span class="scout-swatch" style="background:#4a5a6b;border-radius:50%"></span>Rock shelter
+        </div>
+      </details>
+
+      <div class="row hud-more-actions">
+        <button type="button" id="btnHire">Hire digger (€500)</button>
+        <button type="button" class="survey" id="btnSurvey" title="Pause digging and study geology &amp; terraces">Study landscape</button>
+        <button type="button" id="btnFolio" class="folio-btn" title="Sketches unlocked this campaign">Field folio</button>
       </div>
-      <div class="hunt-picker" id="huntPicker" hidden></div>
-      <p class="hunt-thesis-note" id="huntThesisNote" hidden></p>
-    </details>
 
-    <div class="mystery">
-      <h2>Lost chapters of the isle</h2>
-      <p class="mystery-note">Hover a chapter for field notes · click to glance that stretch of coast.</p>
-      <div id="eras"></div>
+      <details class="field-brief-hint" id="fieldBriefHint" hidden>
+        <summary>
+          <span class="field-brief-sum" id="fieldBriefSum">Need a hint? · costs €120</span>
+          <span class="field-brief-active" id="fieldBriefActive" hidden></span>
+        </summary>
+        <p class="lede-mini" id="fieldBriefLede">
+          <strong class="field-brief-cost">Costs money:</strong> €120 and 1 day from your permit.
+          Pay for a field brief, name the lost chapter you’re after, and the charts ink a few rough circles —
+          not which square hides the goods. Optional. Fog keeps its secrets either way.
+        </p>
+        <div class="row field-brief-actions">
+          <button type="button" id="btnSurveyPass" title="Spend €120 and 1 day for a field brief">Pay €120 for a hint</button>
+        </div>
+        <div class="hunt-picker" id="huntPicker" hidden></div>
+        <p class="hunt-thesis-note" id="huntThesisNote" hidden></p>
+      </details>
+
+      <div class="mystery">
+        <h2>Lost chapters of the isle</h2>
+        <p class="mystery-note">Tap a chapter for field notes · tap again to glance that stretch of coast.</p>
+        <div id="eras"></div>
+      </div>
+
+      <div class="log" id="log"></div>
+
+      <p class="hint">
+        Survey truth courtesy of Bevan &amp; Conolly —
+        <a href="https://doi.org/10.5284/1012484" target="_blank" rel="noopener">ADS 10.5284/1012484</a>, CC BY 3.0.
+        Satellites by MapTiler. Survey overlays via PMTiles. Whips not included.
+      </p>
     </div>
-
-    <div class="log" id="log"></div>
-
-    <p class="hint">
-      Survey truth courtesy of Bevan &amp; Conolly —
-      <a href="https://doi.org/10.5284/1012484" target="_blank" rel="noopener">ADS 10.5284/1012484</a>, CC BY 3.0.
-      Satellites by MapTiler. Survey overlays via PMTiles. Whips not included.
-    </p>
   </aside>
 
   <div class="era-tip" id="eraTip" role="tooltip" hidden></div>
