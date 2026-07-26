@@ -42,7 +42,7 @@ Distractor types (Night 35):
 1. Right family, wrong product  
 2. Missing the toggle  
 3. Solves a different requirement  
-4. Too much ops / too much change  
+4. Too much operational work / too much change  
 5. Fake AWS default magic  
 
 **Pass criteria for booking the real exam**
@@ -57,7 +57,7 @@ Distractor types (Night 35):
 
 ## Block 3 — Optional teardown
 
-If pausing labs: tear down leftover study NAT / Aurora / ElastiCache per earlier night scripts. Don’t tear down production GSA.
+If pausing labs: tear down leftover study NAT gateway / Aurora / ElastiCache per earlier night scripts. Don’t tear down production study-stack resources.
 
 ---
 
