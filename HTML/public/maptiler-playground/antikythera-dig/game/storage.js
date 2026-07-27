@@ -70,6 +70,8 @@ ns.serializeGame = function serializeGame() {
     goatsHits: state.goatsHits,
     barrenDigs: state.barrenDigs,
     fruitfulDigs: state.fruitfulDigs,
+    adventureProgress: { ...(state.adventureProgress || {}) },
+    adventuresDone: [...(state.adventuresDone || [])],
     surveyPass: !!state.surveyPass,
     huntChapter: state.huntChapter || null,
     landscapeStudied: !!state.landscapeStudied,
@@ -124,6 +126,11 @@ ns.applySaveData = function applySaveData(data) {
   state.goatsHits = data.goatsHits || 0;
   state.barrenDigs = data.barrenDigs || 0;
   state.fruitfulDigs = data.fruitfulDigs || 0;
+  state.adventureProgress = Object.assign(
+    Object.create(null),
+    data.adventureProgress || {}
+  );
+  state.adventuresDone = new Set(data.adventuresDone || []);
   state.surveyPass = !!data.surveyPass;
   // Drop legacy prospect / auto-period tints — player must pick a hunt chapter.
   state.huntChapter =

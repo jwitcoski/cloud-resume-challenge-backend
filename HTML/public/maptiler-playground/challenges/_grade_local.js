@@ -12,12 +12,13 @@ const checks = sandbox.MapTilerSkillChecks;
 
 const mode = (process.argv[2] || "harsh").toLowerCase();
 checks.setMode(mode === "normal" ? "normal" : "harsh");
+const folder = process.argv[3] || "solutions";
 
 const cat = JSON.parse(fs.readFileSync(path.join(root, "challenges", "catalog.json"), "utf8"));
 const exts = [".html", ".js", ".swift", ".kt", ".dart", ".tsx", ".ts"];
 function load(id) {
   for (const ext of exts) {
-    const f = path.join(root, "solutions", id + ext);
+    const f = path.join(root, folder, id + ext);
     if (fs.existsSync(f)) return fs.readFileSync(f, "utf8");
   }
   return null;

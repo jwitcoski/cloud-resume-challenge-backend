@@ -1,5 +1,4 @@
 "use client";
-import Image from "next/image"
 import { experienceData } from "@/data/site-data";
 
 const Experience = () => {
@@ -14,12 +13,17 @@ const Experience = () => {
                     </div>
                     <div className="border-t border-primary/10">
                         <div className="flex flex-col max-w-3xl mx-auto px-4 sm:px-7 py-9 md:py-16 ">
-                            {experienceData?.map((value: any, index: any) => {
+                            {experienceData?.map((value, index) => {
                                 return (
                                     <div
                                         key={index}
                                         className="flex flex-col gap-5 border-dashed border-b border-primary/10 last:border-b-0 pt-8 sm:pt-10 pb-8 sm:pb-10 first:pt-0 last:pb-0">
-                                        <Image src={value?.icon} alt="icon" width={32} height={19} />
+                                        <div
+                                            className="flex items-center justify-center w-10 h-10 rounded-lg border border-primary/10 bg-primary/5 text-xs font-semibold tracking-wide text-primary"
+                                            aria-hidden="true"
+                                        >
+                                            {value.initials}
+                                        </div>
                                         <div className="flex flex-wrap gap-5 items-center justify-between">
                                             <h5>{value?.role}</h5>
                                             <div className="flex items-center gap-2.5 border border-primary/10 rounded-lg py-1.5 px-3">
@@ -28,10 +32,10 @@ const Experience = () => {
                                             </div>
                                         </div>
                                         <ul>
-                                            {value?.bulletPoints?.map((point: any, index: any) => {
+                                            {value?.bulletPoints?.map((point, pointIndex) => {
                                                 return (
                                                     <li
-                                                        key={index}
+                                                        key={pointIndex}
                                                         className="flex items-start gap-2 text-base font-normal text-secondary"
                                                     >
                                                         <span className="w-2.5 h-2.5 text-secondary">•</span>

@@ -431,7 +431,451 @@ const FIELD_EVENTS = [
       return `+${g} glory · modern flotsam with a story.`;
     },
   },
+  {
+    id: "bayonet",
+    tone: "good",
+    once: true,
+    weight: 0,
+    relicTracts: ["3003"],
+    eyebrow: "Grid note",
+    title: "Bayonet",
+    blurb:
+      "The square notebook is almost rude in its brevity: bayonet. Steel in the scrub — a soldier’s leftover, not a hoplite’s. Someone walked this grid and wrote one word that still rings.",
+    canFire() {
+      return false;
+    },
+    apply(s) {
+      const g = 110 + Math.floor(Math.random() * 70);
+      s.score += g;
+      return `+${g} glory · wartime iron in the catalogue.`;
+    },
+  },
+  {
+    id: "buckle",
+    tone: "good",
+    once: true,
+    weight: 0,
+    relicTracts: ["3004"],
+    eyebrow: "Grid note",
+    title: "Buckle?",
+    blurb:
+      "Next square over, equally terse: buckle? The question mark does half the work. Belt furniture, kit strap, or wishful thinking — the surveyors left the doubt in the record.",
+    canFire() {
+      return false;
+    },
+    apply(s) {
+      const g = 90 + Math.floor(Math.random() * 60);
+      s.score += g;
+      return `+${g} glory · a question mark that stuck.`;
+    },
+  },
+  {
+    id: "american-clip",
+    tone: "good",
+    once: true,
+    weight: 0,
+    relicTracts: ["12394"],
+    eyebrow: "Special find",
+    title: "Possibly American?",
+    blurb:
+      "A copper-alloy bullet-clip turns up in a grab sample. The catalogue hedges: possibly American? Mid-century flotsam on a Classical isle — someone else’s war washing ashore in brass.",
+    canFire() {
+      return false;
+    },
+    apply(s) {
+      const g = 130 + Math.floor(Math.random() * 70);
+      s.score += g;
+      return `+${g} glory · WWII vibes, Aegean dust.`;
+    },
+  },
+  {
+    id: "cartridge",
+    tone: "good",
+    once: true,
+    weight: 0,
+    relicTracts: ["8102"],
+    eyebrow: "Special find",
+    title: "Pinched & pierced",
+    blurb:
+      "A cartridge case, pinched and pierced — spent, then punched for string or scrap. Not a museum piece; a field note with a bang still echoing in the metal.",
+    canFire() {
+      return false;
+    },
+    apply(s) {
+      const g = 100 + Math.floor(Math.random() * 60);
+      s.score += g;
+      return `+${g} glory · brass with a second life.`;
+    },
+  },
+  {
+    id: "gunstock",
+    tone: "good",
+    once: true,
+    weight: 0,
+    relicTracts: ["8143"],
+    eyebrow: "Special find",
+    title: "Gunstock?",
+    blurb:
+      "Iron in the bag, labelled gunstock? — the surveyor’s shrug preserved forever. Stock furniture, trigger guard, or something else entirely. The question mark earns its keep.",
+    canFire() {
+      return false;
+    },
+    apply(s) {
+      const g = 100 + Math.floor(Math.random() * 70);
+      s.score += g;
+      return `+${g} glory · another lonely “?” in the ledger.`;
+    },
+  },
+  {
+    id: "lepta-coin",
+    tone: "good",
+    once: true,
+    weight: 0,
+    relicTracts: ["8058"],
+    eyebrow: "Special find",
+    title: "Two lepta, pierced",
+    blurb:
+      "A humble 2-lepta copper, pierced for suspension — worn as a charm, not spent at market. Someone hung a coin around a neck on this rock. Cheap metal; expensive story.",
+    canFire() {
+      return false;
+    },
+    apply(s) {
+      const g = 140 + Math.floor(Math.random() * 80);
+      s.score += g;
+      return `+${g} glory · jewelry from small change.`;
+    },
+  },
+  {
+    id: "solarised-glass",
+    tone: "good",
+    once: true,
+    weight: 0,
+    relicTracts: ["10195"],
+    eyebrow: "Special find",
+    title: "Solarised purple",
+    blurb:
+      "Light purple glass — solarised? — the faceted base of a bottle about 5 cm across. Sunlight chemically blushed the glass; the catalogue kept the question, and the colour kept the mystery.",
+    canFire() {
+      return false;
+    },
+    apply(s) {
+      const g = 120 + Math.floor(Math.random() * 70);
+      s.score += g;
+      return `+${g} glory · sun-bleached glass in the bag.`;
+    },
+  },
+  {
+    id: "fish-scale-glass",
+    tone: "good",
+    once: true,
+    weight: 0,
+    relicTracts: ["3019"],
+    eyebrow: "Special find",
+    title: "Fish-scale glass",
+    blurb:
+      "Light blue glass with a raised fish-scale pattern on the exterior. Decorative, deliberate, a little flashy for a speck of island — someone liked their bottles fancy.",
+    canFire() {
+      return false;
+    },
+    apply(s) {
+      const g = 130 + Math.floor(Math.random() * 70);
+      s.score += g;
+      return `+${g} glory · scales without the fish.`;
+    },
+  },
+  {
+    id: "blue-bead",
+    tone: "good",
+    once: true,
+    weight: 0,
+    relicTracts: ["8071"],
+    eyebrow: "Special find",
+    title: "Imitation stone",
+    blurb:
+      "A blue glass bead with white incised lines — probably meant to imitate cut stone. Fake gemstone, real craft. The wearer wanted marble; they got glass and attitude.",
+    canFire() {
+      return false;
+    },
+    apply(s) {
+      const g = 140 + Math.floor(Math.random() * 80);
+      s.score += g;
+      return `+${g} glory · costume jewelry of antiquity.`;
+    },
+  },
+  {
+    id: "rotary-quern",
+    tone: "good",
+    once: true,
+    weight: 0,
+    relicTracts: ["4050"],
+    eyebrow: "Special find",
+    title: "Rotary quern · 34 cm",
+    blurb:
+      "A rotary quern with a circular hole and two flat sides — diameter 34 cm. Farm furniture you can still feel in your shoulders. Grain was ground here; the island ate.",
+    canFire() {
+      return false;
+    },
+    apply(s) {
+      const g = 150 + Math.floor(Math.random() * 80);
+      s.score += g;
+      return `+${g} glory · bread’s heavy cousin.`;
+    },
+  },
+  {
+    id: "bee-swarm",
+    tone: "mixed",
+    once: true,
+    weight: 0,
+    relicTracts: ["8001"],
+    eyebrow: "Walker dispatch",
+    title: "Bee stings & swarms",
+    blurb:
+      "Walkers 002 & 005 abandon their lines — bee stings and chasing swarms. Replacements clock in at 11:35. The archaeology waits; the bees do not.",
+    canFire() {
+      return false;
+    },
+    apply(s) {
+      const g = 80 + Math.floor(Math.random() * 50);
+      const d = 2 + Math.floor(Math.random() * 3);
+      s.score += g;
+      s.days = Math.max(0, s.days - d);
+      return `+${g} glory · −${d} days (first aid & courage).`;
+    },
+  },
+  {
+    id: "dead-bunny",
+    tone: "good",
+    once: true,
+    weight: 0,
+    relicTracts: ["15072"],
+    eyebrow: "Walker dispatch",
+    title: "Dead bunny",
+    blurb:
+      "The tract note opens without ceremony: Dead bunny. Then rock caves, cuttings, and a square limestone block. Science continues. The bunny does not.",
+    canFire() {
+      return false;
+    },
+    apply(s) {
+      const g = 70 + Math.floor(Math.random() * 50);
+      s.score += g;
+      return `+${g} glory · shortest field note, longest memory.`;
+    },
+  },
+  {
+    id: "recent-bones",
+    tone: "good",
+    once: true,
+    weight: 0,
+    relicTracts: ["1006"],
+    eyebrow: "Walker dispatch",
+    title: "Recent bones",
+    blurb:
+      "Rock overhang with recent bones in it — not the glamorous kind. Modern brick nearby, half-finished house upslope. The past shares the ledge with whoever slept here last.",
+    canFire() {
+      return false;
+    },
+    apply(s) {
+      const g = 90 + Math.floor(Math.random() * 60);
+      s.score += g;
+      return `+${g} glory · context, not treasure.`;
+    },
+  },
+  {
+    id: "goat-skull",
+    tone: "good",
+    once: true,
+    weight: 0,
+    relicTracts: ["11190"],
+    eyebrow: "Walker dispatch",
+    title: "Walker 48’s goat skull",
+    blurb:
+      "Sherds: orange, fine. And then, casually: Walker 48 found a goat skull. No drama in the notebook. Plenty in the bag.",
+    canFire() {
+      return false;
+    },
+    apply(s) {
+      const g = 85 + Math.floor(Math.random() * 55);
+      s.score += g;
+      return `+${g} glory · osteology by accident.`;
+    },
+  },
+  {
+    id: "dead-goat-cavity",
+    tone: "good",
+    once: true,
+    weight: 0,
+    relicTracts: ["4219"],
+    eyebrow: "Walker dispatch",
+    title: "Dead goat inside",
+    blurb:
+      "A bedrock cavity — probably natural — with a dead goat inside. A few sherds around the rim, including red micaceous. Nature reclaimed the niche first; pottery came second.",
+    canFire() {
+      return false;
+    },
+    apply(s) {
+      const g = 95 + Math.floor(Math.random() * 55);
+      s.score += g;
+      return `+${g} glory · pastoral archaeology at its frankest.`;
+    },
+  },
+  {
+    id: "goat-carcass-cave",
+    tone: "good",
+    once: true,
+    weight: 0,
+    relicTracts: ["1065"],
+    eyebrow: "Walker dispatch",
+    title: "Cave · carcass · tomb?",
+    blurb:
+      "Large cave at 70–80 m: lots of goat droppings and a goat carcass. Probably — (illegible). And possibly a tomb. The notebook holds its nose and keeps writing.",
+    canFire() {
+      return false;
+    },
+    apply(s) {
+      const g = 110 + Math.floor(Math.random() * 70);
+      s.score += g;
+      return `+${g} glory · sacred and unsanitary.`;
+    },
+  },
+  {
+    id: "snail-tomb",
+    tone: "good",
+    once: true,
+    weight: 0,
+    relicTracts: ["1064"],
+    eyebrow: "Walker dispatch",
+    title: "Full of snails",
+    blurb:
+      "Deepish rock cavity, full of snails. Possible tomb? The surveyors put the fauna first and the funerary question second. Both may be correct.",
+    canFire() {
+      return false;
+    },
+    apply(s) {
+      const g = 100 + Math.floor(Math.random() * 60);
+      s.score += g;
+      return `+${g} glory · gastropods hold the ground.`;
+    },
+  },
+  {
+    id: "snail-cobbling",
+    tone: "good",
+    once: true,
+    weight: 0,
+    relicTracts: ["7058"],
+    eyebrow: "Walker dispatch",
+    title: "Snails & cobbling?",
+    blurb:
+      "Plenty of plastic, four old houses, a well — and a large concentration of snail shells. Wooden something hanging from the eaves; possible cobbling industry. Domestic life, messy and legible.",
+    canFire() {
+      return false;
+    },
+    apply(s) {
+      const g = 105 + Math.floor(Math.random() * 65);
+      s.score += g;
+      return `+${g} glory · industry or lunch? Both.`;
+    },
+  },
+  {
+    id: "furniture-pigeons",
+    tone: "good",
+    once: true,
+    weight: 0,
+    relicTracts: ["4163"],
+    eyebrow: "Walker dispatch",
+    title: "Furniture & pigeons",
+    blurb:
+      "An old house, partially collapsed, still filled with old furniture and equipment — pigeons kept in one room. The past didn’t pack. It just stopped locking the door.",
+    canFire() {
+      return false;
+    },
+    apply(s) {
+      const g = 120 + Math.floor(Math.random() * 70);
+      s.score += g;
+      return `+${g} glory · domestic archaeology with feathers.`;
+    },
+  },
+  {
+    id: "foil-house",
+    tone: "good",
+    once: true,
+    weight: 0,
+    relicTracts: ["4285"],
+    eyebrow: "Walker dispatch",
+    title: "House of foil man",
+    blurb:
+      "House of foil and a small private church — built by house of foil man — holy mother Mirtodiossa and saints Nektarios and Nicholas. Modern devotion wrapped in shiny scrap. The sherds are mostly recent; the faith is not.",
+    canFire() {
+      return false;
+    },
+    apply(s) {
+      const g = 150 + Math.floor(Math.random() * 90);
+      s.score += g;
+      return `+${g} glory · three saints and a roll of foil.`;
+    },
+  },
+  {
+    id: "underground-sanctuary",
+    tone: "good",
+    once: true,
+    weight: 0,
+    relicTracts: ["4303"],
+    eyebrow: "Walker dispatch",
+    title: "Underground sanctuary",
+    blurb:
+      "Walker 29 passes over an underground sanctuary — 3–4 chambers, main entrance, second overhead opening. Nearby: rock cavities with built walls, and the high end of a shipshed. The citadel’s underworld peeks through.",
+    canFire() {
+      return false;
+    },
+    apply(s) {
+      const g = 200 + Math.floor(Math.random() * 100);
+      s.score += g;
+      return `+${g} glory · chambers under the scrub.`;
+    },
+  },
+  {
+    id: "andronicos-mill",
+    tone: "good",
+    once: true,
+    weight: 0,
+    relicTracts: ["8294"],
+    eyebrow: "Standing structure",
+    title: "Andronicos",
+    blurb:
+      "A watermill on the map, tagged simply “Andronicos.” A name stuck to stone and water — someone’s mill, someone’s pride, now a survey point with a surname.",
+    canFire() {
+      return false;
+    },
+    apply(s) {
+      const g = 130 + Math.floor(Math.random() * 70);
+      s.score += g;
+      return `+${g} glory · a name that outlived the wheel.`;
+    },
+  },
+  {
+    id: "lighthouse-1926",
+    tone: "good",
+    once: true,
+    weight: 0,
+    relicTracts: ["12387"],
+    eyebrow: "Standing structure",
+    title: "Lighthouse · 1926",
+    blurb:
+      "The lighthouse comment is a date: built in 1926. Modern light on ancient rock — ships still needed a warning, and the surveyors still needed a landmark.",
+    canFire() {
+      return false;
+    },
+    apply(s) {
+      const g = 120 + Math.floor(Math.random() * 70);
+      s.score += g;
+      return `+${g} glory · a century of warning flashes.`;
+    },
+  },
 ];
+
+/** Relics tied to real survey tracts / structures (weight 0 — dig-triggered only). */
+export function relicEvents() {
+  return FIELD_EVENTS.filter((ev) => Array.isArray(ev.relicTracts) && ev.relicTracts.length);
+}
 
 /** Field notes for landscape desk (geology Type → dig guidance). */
 export { FIELD_EVENTS };

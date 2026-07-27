@@ -20,7 +20,7 @@ const FeaturedWork = () => {
                         </div>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 border-t border-primary/10">
-                        {featureWork?.map((value: any, index: number) => {
+                        {featureWork?.map((value, index) => {
                             const isRightCol = index % 2 === 1;
 
                             return (
@@ -37,11 +37,15 @@ const FeaturedWork = () => {
                                             className="w-full h-full object-cover group-hover:scale-105 transition-all duration-300 ease-in-out"
                                         />
                                     </Link>
-                                    <div className="flex flex-col gap-1 sm:gap-2 px-2 min-h-[4.5rem]">
+                                    <div className="flex flex-col gap-1.5 sm:gap-2 px-2">
                                         <Link href={value?.url ?? "/"}><h4>{value?.title}</h4></Link>
-                                        <div className="flex">
-                                            <p>{value?.roles?.join(', ')}</p>
-                                        </div>
+                                        <p className="text-sm text-secondary">{value?.roles?.join(', ')}</p>
+                                        {value?.outcome && (
+                                            <p className="text-sm sm:text-base text-primary/80 leading-relaxed">
+                                                <span className="font-medium text-primary">Why it matters: </span>
+                                                {value.outcome}
+                                            </p>
+                                        )}
                                     </div>
                                 </div>
                             );

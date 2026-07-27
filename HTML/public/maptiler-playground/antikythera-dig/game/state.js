@@ -45,6 +45,10 @@ const state = {
   goatsHits: 0,
   barrenDigs: 0,
   fruitfulDigs: 0,
+  /** Side-path beat index per adventure id */
+  adventureProgress: Object.create(null),
+  /** Completed adventure ids */
+  adventuresDone: new Set(),
 };
 export const boot = {
   done: false,

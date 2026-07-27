@@ -6,6 +6,7 @@ import {
 import { MYSTERY } from '../data/mystery.js';
 import { GLORY_EMPTY_PENALTY, GLORY_RANKS } from '../data/glory-ranks.js';
 import { FIELD_EVENTS } from '../data/field-events.js';
+import { ADVENTURES } from '../data/adventures.js';
 import {
   GEOLOGY_NOTES, GEOLOGY_FALLBACK, TERRACE_NOTES, TERRACE_FALLBACK,
   STRUCTURE_NOTES, STRUCTURE_FALLBACK,
@@ -32,6 +33,14 @@ ns.folioMeta = function folioMeta(key) {
       label: (ev && ev.title) || id,
     };
   }
+  if (key.startsWith("adventure:")) {
+    const id = key.slice(10);
+    const adv = ADVENTURES.find((a) => a.id === id);
+    return {
+      src: (adv && adv.art) || "images/events/event-mechanism.png",
+      label: (adv && (adv.folioLabel || adv.title)) || id,
+    };
+  }
   if (key.startsWith("chapter:")) {
     const id = key.slice(8);
     const m = MYSTERY.find((x) => x.id === id);
@@ -53,8 +62,15 @@ ns.folioMeta = function folioMeta(key) {
 
 
 ns.allFolioKeys = function allFolioKeys() {
-  const keys = [];
-  for (const ev of FIELD_EVENTS) keys.push("event:" + ev.id);
+  const relics = [];
+  const cables = [];
+  for (const ev of FIELD_EVENTS) {
+    const key = "event:" + ev.id;
+    if (ev.relicTracts && ev.relicTracts.length) relics.push(key);
+    else cables.push(key);
+  }
+  const keys = [...relics, ...cables];
+  for (const adv of ADVENTURES) keys.push("adventure:" + adv.id);
   for (const m of MYSTERY) keys.push("chapter:" + m.id);
   for (const r of GLORY_RANKS) keys.push("rank:" + r.id);
   return keys;

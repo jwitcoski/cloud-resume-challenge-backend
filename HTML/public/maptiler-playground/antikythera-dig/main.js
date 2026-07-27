@@ -5,6 +5,7 @@ import './game/storage.js';
 import './ui/folio.js';
 import './ui/recap.js';
 import './game/field-events-runner.js';
+import './game/adventures-runner.js';
 import './game/chapters.js';
 import './ui/aegean-inset.js';
 import './map/survey.js';

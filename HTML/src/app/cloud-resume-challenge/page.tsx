@@ -21,6 +21,29 @@ export default function CloudResumeChallengePage() {
           <h1 className="text-3xl sm:text-4xl font-bold text-[#444] mb-6">
             Cloud Resume Challenge Journey
           </h1>
+
+          <aside
+            id="visitor-counter"
+            className="mb-8 scroll-mt-8 rounded-lg border border-primary/15 bg-[#f8f9fb] p-5 sm:p-6"
+          >
+            <p className="text-sm tracking-[2px] text-primary uppercase font-medium mb-2">
+              That page-view counter
+            </p>
+            <p className="leading-relaxed mb-3 text-[#333]">
+              The number in the site footer is the classic Cloud Resume Challenge
+              visitor counter: each visit hits{" "}
+              <strong>API Gateway</strong> → <strong>Lambda</strong> →{" "}
+              <strong>DynamoDB</strong>, increments the count, and returns it to the
+              browser. The static site itself is served from{" "}
+              <strong>S3</strong> behind <strong>CloudFront</strong>, with DNS and TLS
+              via <strong>Route 53</strong> and <strong>ACM</strong>.
+            </p>
+            <p className="leading-relaxed text-[#555] text-sm mb-0">
+              Below is the full journey — certification, IaC with SAM, CI/CD, the DNS
+              rabbit hole, and how that counter got built.
+            </p>
+          </aside>
+
           <p className="leading-relaxed mb-4">Hello everyone, I&apos;m Jonathan.</p>
           <p className="leading-relaxed mb-6">
             I&apos;ve been working near the cloud industry for the past few years, but my

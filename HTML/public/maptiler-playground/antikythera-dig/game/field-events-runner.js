@@ -42,13 +42,23 @@ ns.pickFieldEvent = function pickFieldEvent() {
 
 ns.showFieldEvent = function showFieldEvent(ev, effectLine) {
   ns.hideFindHover();
+  ns._adventureSession = null;
   const card = document.getElementById("fieldEventCard");
   card.classList.remove("good-card", "bad-card", "mixed-card", "hit-card", "miss-card");
   card.classList.add((ev.tone || "mixed") + "-card");
   document.getElementById("fieldEventEyebrow").textContent = ev.eyebrow || "Field cable";
   document.getElementById("fieldEventTitle").textContent = ev.title;
   document.getElementById("fieldEventSummary").textContent = ev.blurb;
-  document.getElementById("fieldEventEffect").textContent = effectLine;
+  const effect = document.getElementById("fieldEventEffect");
+  effect.hidden = false;
+  effect.textContent = effectLine;
+  const choices = document.getElementById("fieldEventChoices");
+  if (choices) choices.hidden = true;
+  const okBtn = document.getElementById("fieldEventOk");
+  if (okBtn) {
+    okBtn.hidden = false;
+    okBtn.textContent = "Carry on";
+  }
   const art = document.getElementById("fieldEventArt");
   const artSrc =
     ev.art ||
@@ -72,6 +82,13 @@ ns.showFieldEvent = function showFieldEvent(ev, effectLine) {
 
 ns.hideFieldEvent = function hideFieldEvent() {
   document.getElementById("fieldEvent").classList.remove("on");
+  const choices = document.getElementById("fieldEventChoices");
+  if (choices) choices.hidden = true;
+  const okBtn = document.getElementById("fieldEventOk");
+  if (okBtn) {
+    okBtn.hidden = false;
+    okBtn.textContent = "Carry on";
+  }
 }
 
 
@@ -123,6 +140,9 @@ ns.maybeFieldEventAfterDig = function maybeFieldEventAfterDig() {
   ns.digSelected._pendingRelic = null;
   if (relic) {
     ns.runFieldEvent(relic);
+    return true;
+  }
+  if (typeof ns.maybeAdventureAfterDig === "function" && ns.maybeAdventureAfterDig()) {
     return true;
   }
   if (state.digsDone < 1) return false;

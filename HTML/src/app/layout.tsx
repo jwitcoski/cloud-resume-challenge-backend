@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Header from "./components/layout/header";
 import Footer from "./components/layout/footer";
 
 const inter = Inter({
@@ -10,8 +9,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Jonathan Witcoski — GIS Architect & Vector Scope AI",
-  description: "Founder & GIS Architect at Vector Scope AI. Vector Ledger: collaborative map updates on Apache Iceberg and GeoParquet, validation APIs, changelog history—ArcGIS meets the lakehouse.",
+  title: "Jonathan Witcoski — Solutions Architect · GIS & Cloud",
+  description: "Solutions Architect–track GIS engineer. 15+ years designing enterprise geospatial systems on ArcGIS, AWS, and spatial data platforms for CDC, utilities, and federal clients.",
 };
 
 export default function RootLayout({
@@ -22,7 +21,6 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <Header/>
         {children}
         <Footer/>
       </body>

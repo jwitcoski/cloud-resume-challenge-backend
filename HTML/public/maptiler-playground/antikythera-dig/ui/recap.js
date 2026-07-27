@@ -5,7 +5,7 @@ import {
 } from '../config.js';
 import { MYSTERY } from '../data/mystery.js';
 import { GLORY_EMPTY_PENALTY, GLORY_RANKS } from '../data/glory-ranks.js';
-import { FIELD_EVENTS } from '../data/field-events.js';
+import { FIELD_EVENTS, relicEvents } from '../data/field-events.js';
 import {
   GEOLOGY_NOTES, GEOLOGY_FALLBACK, TERRACE_NOTES, TERRACE_FALLBACK,
   STRUCTURE_NOTES, STRUCTURE_FALLBACK,
@@ -23,18 +23,48 @@ import {
   money, gloryRank, nextGloryRank, cannotAffordDig, emptyPenaltyPerTract,
 } from '../game/state.js';
 
+ns.foundRelics = function foundRelics() {
+  return relicEvents().filter((ev) => state.eventsSeen.has(ev.id));
+};
+
+
 ns.seasonPunchline = function seasonPunchline(won) {
+  if (state.eventsSeen.has("foil-house")) {
+    return "Three saints, one roll of foil — the island’s best parish.";
+  }
+  if (state.adventuresDone && state.adventuresDone.has("gift-shop-idol")) {
+    return "It belongs in a gift shop. The pedestal still clicks in your dreams.";
+  }
+  if (state.adventuresDone && state.adventuresDone.has("why-snails")) {
+    return "Why did it have to be snails? The boulder was a water tin.";
+  }
+  if (state.eventsSeen.has("underground-sanctuary")) {
+    return "You walked over an underground sanctuary. The map still feels haunted.";
+  }
   if (state.eventsSeen.has("philip-coin")) {
     return "A Macedonian king in the sieve — try explaining that at the café.";
   }
+  if (state.eventsSeen.has("bee-swarm")) {
+    return "The bees filed the only protest that stuck.";
+  }
+  if (state.eventsSeen.has("dead-bunny")) {
+    return "Dead bunny. Science continued. Respect.";
+  }
   if (state.eventsSeen.has("binda-button")) {
     return "Milano left a button. The island kept the joke.";
+  }
+  if (state.eventsSeen.has("snail-tomb")) {
+    return "Possible tomb. Definite snails.";
   }
   if (state.mechanismFound) {
     return "It belongs in a museum — and so do the gears.";
   }
   if (state.goatsHits >= 2) {
     return "The goats have entered the chat. Context will never be the same.";
+  }
+  const relics = ns.foundRelics();
+  if (relics.length >= 3) {
+    return `${relics.length} oddball finds bagged. The field notebook is getting weird.`;
   }
   if (state.barrenDigs > state.fruitfulDigs && state.dug.size > 4) {
     return "More dust than destiny — but the map learned something.";
@@ -60,8 +90,7 @@ ns.fillSeasonRecap = function fillSeasonRecap(won) {
     `<div><span class="k">Chapters</span>${state.chaptersSolved.size}/5 sealed</div>` +
     `<div><span class="k">Mode</span>${state.hardMode ? "Hard" : "Standard"}</div>` +
     `<div><span class="k">Mechanism</span>${state.mechanismFound ? "Rumoured" : "Silent"}</div>` +
-    `<div><span class="k">Philip II</span>${state.eventsSeen.has("philip-coin") ? "Found" : "—"}</div>` +
-    `<div><span class="k">Binda button</span>${state.eventsSeen.has("binda-button") ? "Found" : "—"}</div>` +
+    `<div><span class="k">Odd finds</span>${ns.foundRelics().length}/${relicEvents().length}</div>` +
     `<div><span class="k">Paydirt</span>${state.fruitfulDigs} fruitful</div>` +
     `<div><span class="k">Dust</span>${state.barrenDigs} barren</div>`;
   const punch = document.getElementById("finalPunch");
@@ -83,8 +112,7 @@ ns.recapText = function recapText(won) {
     `Glory: ${state.score} · Rank: ${rank.title}`,
     `Tracts: ${state.dug.size} · Chapters: ${state.chaptersSolved.size}/5`,
     `Mode: ${state.hardMode ? "Hard" : "Standard"} · Mechanism: ${state.mechanismFound ? "yes" : "no"}` +
-      ` · Philip II: ${state.eventsSeen.has("philip-coin") ? "yes" : "no"}` +
-      ` · Binda: ${state.eventsSeen.has("binda-button") ? "yes" : "no"}`,
+      ` · Odd finds: ${ns.foundRelics().length}/${relicEvents().length}`,
     ns.seasonPunchline(won),
     typeof location !== "undefined" ? location.href.split("#")[0] : "",
   ].join("\n");
@@ -147,10 +175,12 @@ ns.downloadRecapPng = async function downloadRecapPng() {
   ctx.fillText(`Glory ${state.score}  ·  ${state.dug.size} tracts  ·  ${state.chaptersSolved.size}/5 chapters`, 80, 910);
   ctx.fillText(state.hardMode ? "HARD MODE" : "STANDARD", 80, 955);
   if (state.mechanismFound) ctx.fillText("Mechanism rumoured", 80, 1000);
-  const eggBits = [];
-  if (state.eventsSeen.has("philip-coin")) eggBits.push("Philip II coin");
-  if (state.eventsSeen.has("binda-button")) eggBits.push("Binda Milano");
-  if (eggBits.length) ctx.fillText("Special finds: " + eggBits.join(" · "), 80, 1040);
+  const found = ns.foundRelics();
+  if (found.length) {
+    const labels = found.slice(0, 4).map((ev) => ev.title);
+    const more = found.length > 4 ? ` +${found.length - 4}` : "";
+    ctx.fillText("Odd finds: " + labels.join(" · ") + more, 80, 1040);
+  }
 
   ctx.fillStyle = "#6b5340";
   ctx.font = "26px Special Elite, monospace";

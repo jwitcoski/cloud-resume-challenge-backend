@@ -170,6 +170,10 @@ ns.wireMapInteractions = function wireMapInteractions() {
   document.getElementById("digEventOk").addEventListener("click", ns.finishDigModalFlow);
   document.getElementById("chapterBriefOk").addEventListener("click", ns.finishChapterModalFlow);
   document.getElementById("fieldEventOk").addEventListener("click", () => {
+    if (ns._adventureSession) {
+      ns.finishAdventureNode();
+      return;
+    }
     ns.hideFieldEvent();
     if (state.days <= 0 || cannotAffordDig()) {
       ns.endSeason(false);
@@ -177,6 +181,12 @@ ns.wireMapInteractions = function wireMapInteractions() {
     }
     ns.saveGame();
     ns.renderHud();
+  });
+  document.getElementById("fieldEventYes").addEventListener("click", () => {
+    ns.resolveAdventureChoice(true);
+  });
+  document.getElementById("fieldEventNo").addEventListener("click", () => {
+    ns.resolveAdventureChoice(false);
   });
   document.getElementById("btnSurvey").addEventListener("click", () => {
     ns.setSurveyMode(!state.paused);

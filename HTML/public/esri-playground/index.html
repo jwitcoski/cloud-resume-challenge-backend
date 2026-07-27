@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Esri Playground — Jonathan Witcoski</title>
+  <meta name="description" content="ArcGIS Maps SDK, Enterprise, and web GIS patterns from federal and utility work." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/playground-shared.css" />
+  <style>
+    :root {
+      --ink: #e8f4f8;
+      --muted: #8fadb8;
+      --line: rgba(232, 244, 248, 0.14);
+      --accent: #3dd6c6;
+      --accent-ink: #04201c;
+      --deep: #06141a;
+      --warm: #f4a261;
+      --hero-glow: rgba(61, 214, 198, 0.14);
+      --main-glow: rgba(61, 214, 198, 0.06);
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-canvas" aria-hidden="true"></div>
+    <div class="hero-veil"></div>
+    <div class="topo" aria-hidden="true"></div>
+
+    <nav class="nav" aria-label="Primary">
+      <a class="home" href="/">Witcoski Tech</a>
+      <div class="nav-links">
+        <a href="#why">Why Esri</a>
+        <a href="#work">Work</a>
+        <a href="#labs">All labs</a>
+        <a href="https://www.esri.com/" target="_blank" rel="noopener">esri.com</a>
+      </div>
+    </nav>
+
+    <div class="hero-inner">
+      <h1 class="brand">Esri<span>ArcGIS</span></h1>
+      <p class="headline">Enterprise GIS where the system of record still wins.</p>
+      <p class="lede">ArcGIS Enterprise, Online, Pro, and the Maps SDK for JavaScript — the stack behind CDC, utility, Census, and IC/DoD work I've shipped for 15+ years.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="#work">See what's here</a>
+        <a class="btn btn-ghost" href="#why">Why Esri</a>
+      </div>
+    </div>
+    <p class="map-credit">Esri / ArcGIS playground</p>
+  </header>
+
+  <main>
+    <section class="section" id="why">
+      <p class="eyebrow">Why Esri</p>
+      <h2>When ArcGIS is the architecture</h2>
+      <p class="section-intro">Most of my career lives here: Portal, Server, geodatabases, Python ETL, and secure web maps. This lab is where I show modern Maps SDK patterns on top of that foundation.</p>
+      <div class="reasons">
+        <article class="reason">
+          <h3>System of record</h3>
+          <p>Feature services, enterprise geodatabases, and identity — Esri still owns the operational GIS layer for many federal and utility orgs.</p>
+        </article>
+        <article class="reason">
+          <h3>Maps SDK for JS</h3>
+          <p>Modern web clients can sit on the same services as ArcGIS Pro. I use that bridge for dashboards, editing tools, and Vector Ledger–style workflows.</p>
+        </article>
+        <article class="reason">
+          <h3>Python + geoprocessing</h3>
+          <p>ArcPy, REST admin APIs, and scheduled ETL remain how large agencies keep layers trustworthy at scale.</p>
+        </article>
+        <article class="reason">
+          <h3>Security context</h3>
+          <p>TS/SCI environments, Portal auth, and network isolation change how you design maps. This hub will document those constraints honestly.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="work">
+      <p class="eyebrow">Built with Esri</p>
+      <h2>Playground projects</h2>
+      <p class="section-intro">Live client work stays private. Public demos and architecture notes will land here alongside Vector Ledger.</p>
+      <div class="work-list">
+        <a class="work" href="https://vectorscopeai.com" target="_blank" rel="noopener">
+          <div class="work-visual">
+            <img src="/images/feature-work/VectorLedger_AWS_ESRI_Architecture.png" alt="Vector Ledger architecture" width="640" height="400" loading="lazy" />
+          </div>
+          <div class="work-body">
+            <p class="work-meta">Product · ArcGIS · Lakehouse</p>
+            <h3 class="work-title">Vector Ledger</h3>
+            <p class="work-desc">ArcGIS-connected editing and validation with lakehouse patterns — Iceberg, GeoParquet, and changelog history.</p>
+            <span class="work-go">Visit Vector Scope AI →</span>
+          </div>
+        </a>
+
+        <div class="work is-soon">
+          <div class="work-visual fallback">Maps SDK</div>
+          <div class="work-body">
+            <p class="work-meta">Demo · Maps SDK · FeatureLayer</p>
+            <h3 class="work-title">Maps SDK scratchpad</h3>
+            <p class="work-desc">A public Maps SDK for JavaScript lab — layers, popups, and editing patterns without client data.</p>
+            <span class="work-go">Coming soon</span>
+          </div>
+        </div>
+      </div>
+      <div class="links-strip">
+        <a href="https://developers.arcgis.com/" target="_blank" rel="noopener">ArcGIS developers</a>
+        <a href="https://vectorscopeai.com" target="_blank" rel="noopener">Vector Scope AI</a>
+        <a href="/">Back to witcoskitech.com</a>
+      </div>
+    </section>
+
+    <section class="section" id="labs">
+      <p class="eyebrow">Platform labs</p>
+      <h2>Same pattern, more stacks</h2>
+      <p class="section-intro">
+        Mapping and cloud playgrounds — each hub explains why I use the platform and links demos as they ship.
+      </p>
+      <div class="labs">
+        <a class="lab-chip" href="/maptiler-playground/">
+          <strong>MapTiler</strong>
+          <span>Maps</span>
+        </a>
+        <a class="lab-chip" href="/mapbox-playground/">
+          <strong>Mapbox</strong>
+          <span>Maps</span>
+        </a>
+        <a class="lab-chip is-current" href="/esri-playground/" aria-current="page">
+          <strong>Esri</strong>
+          <span>Maps</span>
+        </a>
+        <a class="lab-chip" href="/google-maps-playground/">
+          <strong>Google Maps</strong>
+          <span>Maps</span>
+        </a>
+        <a class="lab-chip" href="/aws-playground/">
+          <strong>AWS</strong>
+          <span>Cloud</span>
+        </a>
+        <a class="lab-chip" href="/azure-playground/">
+          <strong>Azure</strong>
+          <span>Cloud</span>
+        </a>
+        <a class="lab-chip" href="/gcp-playground/">
+          <strong>GCP</strong>
+          <span>Cloud</span>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-foot">
+    <span>Esri Playground · Jonathan Witcoski</span>
+    <span>
+      <a href="https://linkedin.com/in/jonathanwitcoski" target="_blank" rel="noopener">LinkedIn</a>
+      ·
+      <a href="/">Home</a>
+    </span>
+  </footer>
+</body>
+</html>

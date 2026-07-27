@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
+import { skills } from "@/data/site-data";
 
 const AboutMe = () => {
-    const servicesBedge = ["ArcGIS Enterprise", "ArcGIS Online", "ArcGIS Pro", "ArcGIS API for JavaScript", "Python", "R", "JavaScript", "SQL", "REST APIs", "SQL Server", "PostgreSQL/PostGIS", "GeoParquet", "PMTiles", "Spatial Analyst", "ETL Automation", "AWS", "Azure", "React", "Power BI", "Docker", "Jenkins", "GitLab", "CI/CD", "Agile/Scrum"];
     return (
         <section>
             <div className="container">
@@ -9,18 +9,29 @@ const AboutMe = () => {
                     <div className="flex flex-col gap-9 sm:gap-12 max-w-3xl mx-auto px-4 sm:px-7 py-11 md:py-20">
                         <div className="flex flex-col gap-4">
                             <p className="text-sm tracking-[2px] text-primary uppercase font-medium">About Me</p>
-                            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-[32px]">Hey there. I'm Jonathan — a GIS developer with 15+ years building <span className="border-b-2">enterprise geospatial applications</span> for CDC, utilities, and federal clients. I work in ArcGIS Enterprise, Python, JavaScript, and PostGIS, with a focus on web mapping, spatial databases, and automated ETL workflows.</h2>
-                            <h5 className="text-secondary font-normal">Currently at DRT Strategies (CDC). Also building tools at <a href="https://vectorscopeai.com" target="_blank" rel="noopener noreferrer" className="hover:underline">Vector Scope AI</a>. Previously National Grid, U.S. Census Bureau, C2 Solutions (Reston, VA), and Booz Allen Hamilton (FEMA/DHS).</h5>
+                            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-[32px]">I&apos;m Jonathan, a GIS engineer building toward Solutions Architect roles, with 15+ years designing <span className="border-b-2">enterprise geospatial systems</span> for CDC, utilities, and federal clients. I connect ArcGIS, cloud platforms, and spatial data pipelines so maps and services scale.</h2>
+                            <h5 className="text-secondary font-normal">Currently Geospatial Engineer at INCATech. Previously DRT Strategies (CDC), National Grid, U.S. Census Bureau, C2 Solutions, and Booz Allen Hamilton (FEMA/DHS). Studying for AWS Solutions Architect – Associate; also shipping tools at <a href="https://vectorscopeai.com" target="_blank" rel="noopener noreferrer" className="hover:underline">Vector Scope AI</a>.</h5>
                         </div>
                         <div className="flex flex-col gap-4">
                             <p className="text-sm text-primary uppercase font-medium">Core Skills</p>
-                            <div className="flex flex-wrap gap-2 sm:gap-3">
-                                {servicesBedge?.map((value, index) => {
+                            <div className="flex flex-wrap gap-2 sm:gap-3 items-center">
+                                {skills.map((skill) => {
+                                    const isPrimary = skill.level === "primary";
                                     return (
-                                        <Badge variant={"outline"} key={index} className="py-1.5 px-3 rounded-lg">
-                                            <p className="text-xs sm:text-sm font-medium text-primary">{value}</p>
+                                        <Badge
+                                            key={skill.name}
+                                            variant={isPrimary ? "default" : "outline"}
+                                            className={
+                                                isPrimary
+                                                    ? "py-2 px-3.5 rounded-lg text-sm sm:text-base font-semibold"
+                                                    : "py-1.5 px-3 rounded-lg"
+                                            }
+                                        >
+                                            <p className={`font-medium ${isPrimary ? "text-primary-foreground text-sm sm:text-base" : "text-xs sm:text-sm text-primary"}`}>
+                                                {skill.name}
+                                            </p>
                                         </Badge>
-                                    )
+                                    );
                                 })}
                             </div>
                         </div>

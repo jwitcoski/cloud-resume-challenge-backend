@@ -1187,6 +1187,20 @@
       color: var(--ink);
     }
 
+    .dig-event-card .field-event-choices {
+      margin: 0 0 10px;
+      justify-content: stretch;
+      gap: 8px;
+    }
+
+    .dig-event-card .field-event-choices[hidden] {
+      display: none !important;
+    }
+
+    .dig-event-card .field-event-choices button {
+      flex: 1;
+    }
+
     .dig-event-card .event-art {
       display: block;
       width: 100%;

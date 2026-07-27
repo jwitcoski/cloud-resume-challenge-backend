@@ -1,18 +1,31 @@
+export const skills = [
+    { name: "AWS", level: "primary" as const },
+    { name: "ArcGIS Enterprise", level: "primary" as const },
+    { name: "Python", level: "primary" as const },
+    { name: "PostgreSQL/PostGIS", level: "primary" as const },
+    { name: "System Design", level: "primary" as const },
+    { name: "REST APIs", level: "secondary" as const },
+    { name: "JavaScript / React", level: "secondary" as const },
+    { name: "ETL Automation", level: "secondary" as const },
+    { name: "GeoParquet / PMTiles", level: "secondary" as const },
+    { name: "CI/CD", level: "secondary" as const },
+];
+
 export const experienceData = [
     {
-        icon: "/images/icon/asana-icon.svg",
-        role: "Geographer | DRT Strategies (CDC)",
-        location: "Remote",
-        startYear: "2022",
+        initials: "INCA",
+        role: "Geospatial Engineer | INCATech",
+        location: "Northern Virginia",
+        startYear: "2026",
         endYear: "Present",
         bulletPoints: [
-            "Develop web mapping applications and dashboards with ArcGIS Enterprise, JavaScript, React, and Power BI for CDC surveillance programs",
-            "Use R and Python to build PMTiles and GeoParquet datasets that feed those dashboards and web maps",
-            "Build SQL Server and PostgreSQL/PostGIS databases and Python/SQL ETL pipelines for recurring geospatial updates"
+            "Design, build, and maintain enterprise geodatabases and geospatial workflows with ArcGIS Enterprise, Online, and Desktop for IC and DoD missions",
+            "Automate spatial analysis, data validation, and ETL with Python and SQL across Oracle, SQL Server, and PostgreSQL",
+            "Produce web maps and visualizations, and support GIS users with troubleshooting, migrations, and documentation"
         ]
     },
     {
-        icon: "/images/icon/tailwind-icon.svg",
+        initials: "VS",
         role: "Founder | Vector Scope AI LLC",
         location: "Remote",
         startYear: "2025",
@@ -23,7 +36,19 @@ export const experienceData = [
         ]
     },
     {
-        icon: "/images/icon/tailwind-icon.svg",
+        initials: "DRT",
+        role: "Geographer | DRT Strategies (CDC)",
+        location: "Remote",
+        startYear: "2022",
+        endYear: "2026",
+        bulletPoints: [
+            "Develop web mapping applications and dashboards with ArcGIS Enterprise, JavaScript, React, and Power BI for CDC surveillance programs",
+            "Use R and Python to build PMTiles and GeoParquet datasets that feed those dashboards and web maps",
+            "Build SQL Server and PostgreSQL/PostGIS databases and Python/SQL ETL pipelines for recurring geospatial updates"
+        ]
+    },
+    {
+        initials: "NG",
         role: "GIS Data Engineer & Scrum Master | Saicon (National Grid)",
         location: "Remote",
         startYear: "2021",
@@ -34,7 +59,7 @@ export const experienceData = [
         ]
     },
     {
-        icon: "/images/icon/asana-icon.svg",
+        initials: "CB",
         role: "Geographer | U.S. Census Bureau",
         location: "Suitland, MD",
         startYear: "2016",
@@ -45,7 +70,7 @@ export const experienceData = [
         ]
     },
     {
-        icon: "/images/icon/tailwind-icon.svg",
+        initials: "C2",
         role: "GIS Systems Administrator & Software Engineer | C2 Solutions Group Inc.",
         location: "Reston, VA",
         startYear: "2014",
@@ -56,7 +81,7 @@ export const experienceData = [
         ]
     },
     {
-        icon: "/images/icon/asana-icon.svg",
+        initials: "BAH",
         role: "Geospatial Analyst | Booz Allen Hamilton (DHS/FEMA)",
         location: "Philadelphia, PA & Arlington, VA",
         startYear: "2009",
@@ -70,25 +95,16 @@ export const experienceData = [
 
 export const educationData = [
     { date: "2007", title: "Master of Science in Geography", subtitle: "University of Tennessee, Knoxville" },
-    { date: "—", title: "Bachelor of Arts, Geography and Anthropology", subtitle: "Penn State University — Minor in GIS" },
+    { date: "2004", title: "Bachelor of Arts, Geography and Anthropology", subtitle: "Penn State University — Minor in GIS" },
     { date: "2021", title: "AWS Certified Cloud Practitioner", subtitle: "Amazon Web Services" },
     { date: "2026", title: "AWS Solutions Architect – Associate (SAA-C03)", subtitle: "In progress — see study plan", url: "/aws-solutions-architect-study.html" }
 ];
-
-export const projectOverview = {
-    sideProjects: [
-        { name: "Global Ski Atlas", url: "https://globalskiatlas.com" },
-        { name: "Vector Scope AI", url: "https://vectorscopeai.com" },
-        { name: "Raiders of Antikythera", url: "https://github.com/jwitcoski/raiders-of-antikythera" },
-        { name: "MapTiler Playground", url: "/maptiler-playground/" },
-        { name: "AWS SAA Study Plan", url: "/aws-solutions-architect-study.html" },
-    ]
-};
 
 export const featureWork = [
     {
         title: "Global Ski Atlas",
         description: "Web GIS of 3,000+ ski areas on a MapTiler basemap, with Python ETL and automated geospatial workflows.",
+        outcome: "Makes 3,000+ ski areas searchable on one live map, kept current by automated Python ETL instead of hand-edited data.",
         roles: ["MapTiler", "JavaScript", "Python", "ETL", "Web GIS"],
         image: "/images/feature-work/feature-img-1.jpg",
         url: "https://globalskiatlas.com"
@@ -96,6 +112,7 @@ export const featureWork = [
     {
         title: "Vector Ledger",
         description: "ArcGIS-integrated editing and validation tools with Python pipelines and REST APIs.",
+        outcome: "Bridges ArcGIS editing with lakehouse patterns (Iceberg, GeoParquet) so map updates are validated, versioned, and queryable.",
         roles: ["ArcGIS", "Python", "REST APIs", "SQL Server"],
         image: "/images/feature-work/VectorLedger_AWS_ESRI_Architecture.png",
         url: "https://vectorscopeai.com"
@@ -103,20 +120,23 @@ export const featureWork = [
     {
         title: "Admin Boundary Tool",
         description: "Punch any state or province out of a country polygon for map highlights (MapTiler + GeoJSON).",
+        outcome: "Turns a common cartography need into a reusable boundary workflow instead of manually clipping polygons every time.",
         roles: ["MapTiler", "GeoJSON", "Natural Earth", "Web GIS"],
         image: "/images/feature-work/admin-boundary-tool.png",
         url: "/admin-boundaries/tool.html"
     },
     {
-        title: "MapTiler Playground",
-        description: "Why I build with MapTiler — plus the maps, dig games, labs, and agent graders I've shipped on the SDK.",
+        title: "MapTiler Agent Grader",
+        description: "Automated checks for agent-generated MapTiler SDK code.",
+        outcome: "Grade agent MapTiler code against maptiler-skills.",
         roles: ["MapTiler SDK", "Web GIS", "PMTiles", "Agent eval"],
         image: "/images/feature-work/maptiler-agent-grader.png",
-        url: "/maptiler-playground/"
+        url: "/maptiler-playground/agent-grader.html"
     },
     {
         title: "Raiders of Antikythera",
         description: "Indiana Jones–flavored dig game on real Antikythera Survey Project tracts — fogged GeoJSON, PMTiles finds, MapTiler satellite, glory ranks, and chapter recovery.",
+        outcome: "Proves serious geospatial data can power engaging experiences — real survey tracts, fog-of-war, and chapter-driven discovery.",
         roles: ["MapTiler SDK", "PMTiles", "GeoJSON", "Game design"],
         image: "/images/feature-work/raiders-of-antikythera.png",
         url: "/maptiler-playground/antikythera-dig.html"

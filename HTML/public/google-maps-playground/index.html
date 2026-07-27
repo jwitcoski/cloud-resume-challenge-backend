@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Google Maps Playground — Jonathan Witcoski</title>
+  <meta name="description" content="Google Maps Platform patterns — Maps JS API, Places, and geometry for product maps." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/playground-shared.css" />
+  <style>
+    :root {
+      --ink: #eef3ff;
+      --muted: #9aa8c4;
+      --line: rgba(238, 243, 255, 0.14);
+      --accent: #8ab4f8;
+      --accent-ink: #0b1220;
+      --deep: #0c111b;
+      --warm: #fdd663;
+      --hero-glow: rgba(138, 180, 248, 0.16);
+      --main-glow: rgba(138, 180, 248, 0.07);
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-canvas" aria-hidden="true"></div>
+    <div class="hero-veil"></div>
+    <div class="topo" aria-hidden="true"></div>
+
+    <nav class="nav" aria-label="Primary">
+      <a class="home" href="/">Witcoski Tech</a>
+      <div class="nav-links">
+        <a href="#why">Why Google Maps</a>
+        <a href="#work">Work</a>
+        <a href="#labs">All labs</a>
+        <a href="https://mapsplatform.google.com/" target="_blank" rel="noopener">mapsplatform.google.com</a>
+      </div>
+    </nav>
+
+    <div class="hero-inner">
+      <h1 class="brand">Google<span>Maps</span></h1>
+      <p class="headline">Familiar basemaps when the audience expects Google.</p>
+      <p class="lede">Maps JavaScript API, Places, Routes, and geometry libraries — strong when UX familiarity and Google's POI graph matter more than open styles.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="#work">See what's here</a>
+        <a class="btn btn-ghost" href="#why">Why Google Maps</a>
+      </div>
+    </div>
+    <p class="map-credit">Google Maps playground · demos coming soon</p>
+  </header>
+
+  <main>
+    <section class="section" id="why">
+      <p class="eyebrow">Why Google Maps</p>
+      <h2>Ubiquity as a feature</h2>
+      <p class="section-intro">Google Maps is what most users already know how to pan and search. I reach for it when product familiarity and Places data outweigh MapLibre-style open tiling.</p>
+      <div class="reasons">
+        <article class="reason">
+          <h3>User muscle memory</h3>
+          <p>Store locators, trip planners, and consumer apps often convert better when the map already feels like Google.</p>
+        </article>
+        <article class="reason">
+          <h3>Places & POIs</h3>
+          <p>Rich place data and autocomplete save months of gazetteer work — when licensing fits the project.</p>
+        </article>
+        <article class="reason">
+          <h3>Routes & mobility</h3>
+          <p>Directions and distance matrix APIs pair cleanly with product backends and mobile clients.</p>
+        </article>
+        <article class="reason">
+          <h3>Know the tradeoffs</h3>
+          <p>Closed styles and pricing tiers push some GIS workloads elsewhere. This lab documents when Google is — and isn't — the right call.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="work">
+      <p class="eyebrow">Built with Google Maps</p>
+      <h2>Playground projects</h2>
+      <p class="section-intro">Starter demos for Maps JS API patterns will appear here — markers, Places search, and drawing tools.</p>
+      <div class="work-list">
+        <div class="work is-soon">
+          <div class="work-visual fallback">Locator</div>
+          <div class="work-body">
+            <p class="work-meta">Demo · Maps JS · Markers</p>
+            <h3 class="work-title">Locator sketch</h3>
+            <p class="work-desc">A minimal store-locator pattern with custom markers and info windows — baseline Google Maps Platform usage.</p>
+            <span class="work-go">Coming soon</span>
+          </div>
+        </div>
+
+        <div class="work is-soon">
+          <div class="work-visual fallback">Places</div>
+          <div class="work-body">
+            <p class="work-meta">Demo · Places · Autocomplete</p>
+            <h3 class="work-title">Places search pad</h3>
+            <p class="work-desc">Address autocomplete into a map pin — the bread-and-butter Google Maps integration.</p>
+            <span class="work-go">Coming soon</span>
+          </div>
+        </div>
+      </div>
+      <div class="links-strip">
+        <a href="https://developers.google.com/maps" target="_blank" rel="noopener">Google Maps Platform docs</a>
+        <a href="/maptiler-playground/">MapTiler playground</a>
+        <a href="/">Back to witcoskitech.com</a>
+      </div>
+    </section>
+
+    <section class="section" id="labs">
+      <p class="eyebrow">Platform labs</p>
+      <h2>Same pattern, more stacks</h2>
+      <p class="section-intro">
+        Mapping and cloud playgrounds — each hub explains why I use the platform and links demos as they ship.
+      </p>
+      <div class="labs">
+        <a class="lab-chip" href="/maptiler-playground/">
+          <strong>MapTiler</strong>
+          <span>Maps</span>
+        </a>
+        <a class="lab-chip" href="/mapbox-playground/">
+          <strong>Mapbox</strong>
+          <span>Maps</span>
+        </a>
+        <a class="lab-chip" href="/esri-playground/">
+          <strong>Esri</strong>
+          <span>Maps</span>
+        </a>
+        <a class="lab-chip is-current" href="/google-maps-playground/" aria-current="page">
+          <strong>Google Maps</strong>
+          <span>Maps</span>
+        </a>
+        <a class="lab-chip" href="/aws-playground/">
+          <strong>AWS</strong>
+          <span>Cloud</span>
+        </a>
+        <a class="lab-chip" href="/azure-playground/">
+          <strong>Azure</strong>
+          <span>Cloud</span>
+        </a>
+        <a class="lab-chip" href="/gcp-playground/">
+          <strong>GCP</strong>
+          <span>Cloud</span>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-foot">
+    <span>Google Maps Playground · Jonathan Witcoski</span>
+    <span>
+      <a href="https://linkedin.com/in/jonathanwitcoski" target="_blank" rel="noopener">LinkedIn</a>
+      ·
+      <a href="/">Home</a>
+    </span>
+  </footer>
+</body>
+</html>

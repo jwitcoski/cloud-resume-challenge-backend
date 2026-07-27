@@ -1,5 +1,20 @@
 import type { NextConfig } from "next";
 
+const playgroundDirs = [
+  "maptiler-playground",
+  "mapbox-playground",
+  "esri-playground",
+  "google-maps-playground",
+  "aws-playground",
+  "azure-playground",
+  "gcp-playground",
+];
+
+const playgroundRewrites = playgroundDirs.flatMap((dir) => [
+  { source: `/${dir}`, destination: `/${dir}/index.html` },
+  { source: `/${dir}/`, destination: `/${dir}/index.html` },
+]);
+
 const nextConfig: NextConfig = {
   output: "export",
   trailingSlash: true,
@@ -12,16 +27,7 @@ const nextConfig: NextConfig = {
   },
   // next dev does not auto-serve public/*/index.html at the directory URL
   async rewrites() {
-    return [
-      {
-        source: "/maptiler-playground",
-        destination: "/maptiler-playground/index.html",
-      },
-      {
-        source: "/maptiler-playground/",
-        destination: "/maptiler-playground/index.html",
-      },
-    ];
+    return playgroundRewrites;
   },
 };
 

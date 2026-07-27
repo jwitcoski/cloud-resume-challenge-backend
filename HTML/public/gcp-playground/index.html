@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Google Cloud Playground — Jonathan Witcoski</title>
+  <meta name="description" content="Google Cloud architecture labs — BigQuery geospatial, Cloud Run, and GCP + Google Maps patterns." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/playground-shared.css" />
+  <style>
+    :root {
+      --ink: #f1f3f4;
+      --muted: #9aa0a6;
+      --line: rgba(241, 243, 244, 0.14);
+      --accent: #fbbc04;
+      --accent-ink: #1a1400;
+      --deep: #111418;
+      --warm: #ea4335;
+      --hero-glow: rgba(251, 188, 4, 0.14);
+      --main-glow: rgba(251, 188, 4, 0.06);
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-canvas" aria-hidden="true"></div>
+    <div class="hero-veil"></div>
+    <div class="topo" aria-hidden="true"></div>
+
+    <nav class="nav" aria-label="Primary">
+      <a class="home" href="/">Witcoski Tech</a>
+      <div class="nav-links">
+        <a href="#why">Why GCP</a>
+        <a href="#work">Work</a>
+        <a href="#labs">All labs</a>
+        <a href="https://cloud.google.com/" target="_blank" rel="noopener">cloud.google.com</a>
+      </div>
+    </nav>
+
+    <div class="hero-inner">
+      <h1 class="brand">Google<span>Cloud</span></h1>
+      <p class="headline">Data-heavy GIS when analytics wants BigQuery.</p>
+      <p class="lede">BigQuery GIS, Cloud Run, Cloud Storage, and the Google Maps Platform adjacency — another cloud lens for Solutions Architect work.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="#work">See what's here</a>
+        <a class="btn btn-ghost" href="#why">Why GCP</a>
+      </div>
+    </div>
+    <p class="map-credit">Google Cloud playground · demos coming soon</p>
+  </header>
+
+  <main>
+    <section class="section" id="why">
+      <p class="eyebrow">Why Google Cloud</p>
+      <h2>Analytics-native cloud</h2>
+      <p class="section-intro">GCP shines when geospatial joins warehouse-scale SQL. BigQuery geography types and Cloud Run services are a different shape than DynamoDB counters or ArcGIS Server farms.</p>
+      <div class="reasons">
+        <article class="reason">
+          <h3>BigQuery GIS</h3>
+          <p>Spatial SQL at warehouse scale — powerful for analytics layers that don't need an enterprise geodatabase.</p>
+        </article>
+        <article class="reason">
+          <h3>Maps Platform adjacency</h3>
+          <p>Google Maps and GCP billing/projects often travel together. Knowing both sides helps when products span map UX and cloud data.</p>
+        </article>
+        <article class="reason">
+          <h3>Cloud Run simplicity</h3>
+          <p>Containerized geospatial APIs without managing clusters — a clean contrast to Lambda and App Service.</p>
+        </article>
+        <article class="reason">
+          <h3>Multi-cloud judgment</h3>
+          <p>The point of this lab isn't GCP-only loyalty — it's knowing when BigQuery beats Athena, or when Maps Platform beats MapLibre.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="work">
+      <p class="eyebrow">Built on GCP</p>
+      <h2>Playground projects</h2>
+      <p class="section-intro">BigQuery and Cloud Run demos will land here as I expand beyond AWS-first labs.</p>
+      <div class="work-list">
+        <div class="work is-soon">
+          <div class="work-visual fallback">BigQuery GIS</div>
+          <div class="work-body">
+            <p class="work-meta">Lab · BigQuery · GIS</p>
+            <h3 class="work-title">Spatial SQL notebook</h3>
+            <p class="work-desc">Annotated BigQuery geography queries — buffers, joins, and tiling exports for web maps.</p>
+            <span class="work-go">Coming soon</span>
+          </div>
+        </div>
+
+        <div class="work is-soon">
+          <div class="work-visual fallback">Cloud Run</div>
+          <div class="work-body">
+            <p class="work-meta">Demo · Cloud Run · GeoJSON</p>
+            <h3 class="work-title">Geo API on Cloud Run</h3>
+            <p class="work-desc">A tiny geospatial API container — health checks, GeoJSON responses, and IAM notes.</p>
+            <span class="work-go">Coming soon</span>
+          </div>
+        </div>
+      </div>
+      <div class="links-strip">
+        <a href="https://cloud.google.com/docs" target="_blank" rel="noopener">Google Cloud docs</a>
+        <a href="/google-maps-playground/">Google Maps playground</a>
+        <a href="/">Back to witcoskitech.com</a>
+      </div>
+    </section>
+
+    <section class="section" id="labs">
+      <p class="eyebrow">Platform labs</p>
+      <h2>Same pattern, more stacks</h2>
+      <p class="section-intro">
+        Mapping and cloud playgrounds — each hub explains why I use the platform and links demos as they ship.
+      </p>
+      <div class="labs">
+        <a class="lab-chip" href="/maptiler-playground/">
+          <strong>MapTiler</strong>
+          <span>Maps</span>
+        </a>
+        <a class="lab-chip" href="/mapbox-playground/">
+          <strong>Mapbox</strong>
+          <span>Maps</span>
+        </a>
+        <a class="lab-chip" href="/esri-playground/">
+          <strong>Esri</strong>
+          <span>Maps</span>
+        </a>
+        <a class="lab-chip" href="/google-maps-playground/">
+          <strong>Google Maps</strong>
+          <span>Maps</span>
+        </a>
+        <a class="lab-chip" href="/aws-playground/">
+          <strong>AWS</strong>
+          <span>Cloud</span>
+        </a>
+        <a class="lab-chip" href="/azure-playground/">
+          <strong>Azure</strong>
+          <span>Cloud</span>
+        </a>
+        <a class="lab-chip is-current" href="/gcp-playground/" aria-current="page">
+          <strong>GCP</strong>
+          <span>Cloud</span>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-foot">
+    <span>GCP Playground · Jonathan Witcoski</span>
+    <span>
+      <a href="https://linkedin.com/in/jonathanwitcoski" target="_blank" rel="noopener">LinkedIn</a>
+      ·
+      <a href="/">Home</a>
+    </span>
+  </footer>
+</body>
+</html>

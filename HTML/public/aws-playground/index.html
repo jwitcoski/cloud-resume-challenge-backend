@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AWS Playground — Jonathan Witcoski</title>
+  <meta name="description" content="AWS architecture labs — Cloud Resume Challenge, SAA study plan, and serverless GIS patterns." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/playground-shared.css" />
+  <style>
+    :root {
+      --ink: #f5f0e8;
+      --muted: #b5a894;
+      --line: rgba(245, 240, 232, 0.14);
+      --accent: #ff9900;
+      --accent-ink: #1a1000;
+      --deep: #0f1216;
+      --warm: #ffb84d;
+      --hero-glow: rgba(255, 153, 0, 0.14);
+      --main-glow: rgba(255, 153, 0, 0.06);
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-canvas" aria-hidden="true"></div>
+    <div class="hero-veil"></div>
+    <div class="topo" aria-hidden="true"></div>
+
+    <nav class="nav" aria-label="Primary">
+      <a class="home" href="/">Witcoski Tech</a>
+      <div class="nav-links">
+        <a href="#why">Why AWS</a>
+        <a href="#work">Work</a>
+        <a href="#labs">All labs</a>
+        <a href="https://aws.amazon.com/" target="_blank" rel="noopener">aws.amazon.com</a>
+      </div>
+    </nav>
+
+    <div class="hero-inner">
+      <h1 class="brand">Amazon<span>Web Services</span></h1>
+      <p class="headline">Cloud architecture with a GIS engineer's bias toward working systems.</p>
+      <p class="lede">S3, CloudFront, Lambda, API Gateway, DynamoDB, and the rest of the Well-Architected toolbox — practiced on this site and Global Ski Atlas.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="#work">See what's here</a>
+        <a class="btn btn-ghost" href="#why">Why AWS</a>
+      </div>
+    </div>
+    <p class="map-credit">AWS playground · witcoskitech.com</p>
+  </header>
+
+  <main>
+    <section class="section" id="why">
+      <p class="eyebrow">Why AWS</p>
+      <h2>Build, measure, certify</h2>
+      <p class="section-intro">AWS is where I learned cloud by shipping: this resume site, visitor counters, and ski-atlas pipelines. The SAA study plan turns that production muscle into exam-ready architecture judgment.</p>
+      <div class="reasons">
+        <article class="reason">
+          <h3>Serverless GIS backends</h3>
+          <p>Lambda + API Gateway + DynamoDB is still the fastest path from a map idea to a durable API — the Cloud Resume Challenge pattern scaled up.</p>
+        </article>
+        <article class="reason">
+          <h3>Edge + static frontends</h3>
+          <p>S3 and CloudFront host this site. Knowing cache behaviors, OAC, and DNS quirks is table stakes for Solutions Architects.</p>
+        </article>
+        <article class="reason">
+          <h3>Study against real stacks</h3>
+          <p>My SAA nights map to production patterns from Global Ski Atlas and this site — not slide-only learning.</p>
+        </article>
+        <article class="reason">
+          <h3>IaC discipline</h3>
+          <p>SAM templates and CI/CD for the visitor counter taught me to treat infrastructure like code — and to separate frontend from backend deploys.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="work">
+      <p class="eyebrow">Built on AWS</p>
+      <h2>Playground projects</h2>
+      <p class="section-intro">These pages are the AWS lab today — more architecture diagrams and mini-labs will join them.</p>
+      <div class="work-list">
+        <a class="work" href="/cloud-resume-challenge/">
+          <div class="work-visual">
+            <img src="/images/cloud-resume-challenge/CloudResumeArchitecture.png" alt="Cloud Resume Challenge architecture" width="640" height="400" loading="lazy" />
+          </div>
+          <div class="work-body">
+            <p class="work-meta">Journey · S3 · CloudFront · Lambda · DynamoDB</p>
+            <h3 class="work-title">Cloud Resume Challenge</h3>
+            <p class="work-desc">The full story behind this site — DNS rabbit holes, the visitor counter, SAM, and CI/CD.</p>
+            <span class="work-go">Read the journey →</span>
+          </div>
+        </a>
+
+        <a class="work" href="/aws-solutions-architect-study.html">
+          <div class="work-visual fallback">SAA-C03</div>
+          <div class="work-body">
+            <p class="work-meta">Study · SAA-C03 · Labs</p>
+            <h3 class="work-title">Solutions Architect study plan</h3>
+            <p class="work-desc">Nightly guides and quizzes aimed at AWS Solutions Architect – Associate, tied to real project patterns.</p>
+            <span class="work-go">Open the study plan →</span>
+          </div>
+        </a>
+
+        <a class="work" href="https://globalskiatlas.com" target="_blank" rel="noopener">
+          <div class="work-visual">
+            <img src="/images/feature-work/feature-img-1.jpg" alt="Global Ski Atlas" width="640" height="400" loading="lazy" />
+          </div>
+          <div class="work-body">
+            <p class="work-meta">Product · Serverless · ETL</p>
+            <h3 class="work-title">Global Ski Atlas on AWS</h3>
+            <p class="work-desc">Step Functions, Lambda, DynamoDB, and S3 powering a live ski-resort map product.</p>
+            <span class="work-go">Visit globalskiatlas.com →</span>
+          </div>
+        </a>
+      </div>
+      <div class="links-strip">
+        <a href="https://aws.amazon.com/architecture/" target="_blank" rel="noopener">AWS Architecture Center</a>
+        <a href="/cloud-resume-challenge/#visitor-counter">Visitor counter explained</a>
+        <a href="/">Back to witcoskitech.com</a>
+      </div>
+    </section>
+
+    <section class="section" id="labs">
+      <p class="eyebrow">Platform labs</p>
+      <h2>Same pattern, more stacks</h2>
+      <p class="section-intro">
+        Mapping and cloud playgrounds — each hub explains why I use the platform and links demos as they ship.
+      </p>
+      <div class="labs">
+        <a class="lab-chip" href="/maptiler-playground/">
+          <strong>MapTiler</strong>
+          <span>Maps</span>
+        </a>
+        <a class="lab-chip" href="/mapbox-playground/">
+          <strong>Mapbox</strong>
+          <span>Maps</span>
+        </a>
+        <a class="lab-chip" href="/esri-playground/">
+          <strong>Esri</strong>
+          <span>Maps</span>
+        </a>
+        <a class="lab-chip" href="/google-maps-playground/">
+          <strong>Google Maps</strong>
+          <span>Maps</span>
+        </a>
+        <a class="lab-chip is-current" href="/aws-playground/" aria-current="page">
+          <strong>AWS</strong>
+          <span>Cloud</span>
+        </a>
+        <a class="lab-chip" href="/azure-playground/">
+          <strong>Azure</strong>
+          <span>Cloud</span>
+        </a>
+        <a class="lab-chip" href="/gcp-playground/">
+          <strong>GCP</strong>
+          <span>Cloud</span>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-foot">
+    <span>AWS Playground · Jonathan Witcoski</span>
+    <span>
+      <a href="https://linkedin.com/in/jonathanwitcoski" target="_blank" rel="noopener">LinkedIn</a>
+      ·
+      <a href="/">Home</a>
+    </span>
+  </footer>
+</body>
+</html>
