@@ -49,6 +49,8 @@ const state = {
   adventureProgress: Object.create(null),
   /** Completed adventure ids */
   adventuresDone: new Set(),
+  /** Light flags from side-path choices (alter later beats) */
+  adventureFlags: new Set(),
 };
 export const boot = {
   done: false,

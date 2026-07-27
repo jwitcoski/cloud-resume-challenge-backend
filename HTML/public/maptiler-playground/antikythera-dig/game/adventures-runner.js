@@ -1,5 +1,5 @@
 import { ns } from '../ns.js';
-import { ADVENTURES } from '../data/adventures.js';
+import { ADVENTURES, SIDE_PATH_ID } from '../data/adventures.js';
 import {
   state,
   gloryRank,
@@ -15,30 +15,54 @@ ns.adventureById = function adventureById(id) {
 }
 
 
+ns.adventureFlags = function adventureFlags() {
+  if (!state.adventureFlags) state.adventureFlags = new Set();
+  return state.adventureFlags;
+}
+
+
+ns.sidePathAdventure = function sidePathAdventure() {
+  return ns.adventureById(SIDE_PATH_ID) || ADVENTURES[0] || null;
+}
+
+
+ns.beatStartNode = function beatStartNode(beat, flags) {
+  if (typeof beat.startFor === "function") {
+    return beat.startFor(flags) || beat.start;
+  }
+  return beat.start;
+}
+
+
 ns.pickAdventureBeat = function pickAdventureBeat() {
   if (state.ended) return null;
-  const digs = state.digsDone || 0;
-  const progress = state.adventureProgress || Object.create(null);
+  const adventure = ns.sidePathAdventure();
+  if (!adventure) return null;
   const done = state.adventuresDone || new Set();
+  if (done.has(adventure.id)) return null;
 
-  const eligible = [];
-  for (const adv of ADVENTURES) {
-    if (done.has(adv.id)) continue;
-    const beatIndex = progress[adv.id] || 0;
-    if (beatIndex >= adv.beats.length) continue;
-    const beat = adv.beats[beatIndex];
-    if (digs < (beat.afterDigs || 0)) continue;
-    eligible.push({ adventure: adv, beatIndex, beat });
-  }
-  if (!eligible.length) return null;
-  // Prefer the chain closest to finishing, then earliest gate.
-  eligible.sort((a, b) => {
-    const aLeft = a.adventure.beats.length - a.beatIndex;
-    const bLeft = b.adventure.beats.length - b.beatIndex;
-    if (aLeft !== bLeft) return aLeft - bLeft;
-    return (a.beat.afterDigs || 0) - (b.beat.afterDigs || 0);
-  });
-  return eligible[0];
+  const digs = state.digsDone || 0;
+  if (!state.adventureProgress) state.adventureProgress = Object.create(null);
+  const beatIndex = state.adventureProgress[adventure.id] || 0;
+  if (beatIndex >= adventure.beats.length) return null;
+
+  const beat = adventure.beats[beatIndex];
+  if (digs < (beat.afterDigs || 0)) return null;
+  return { adventure, beatIndex, beat };
+}
+
+
+ns.resolveAdventureArt = function resolveAdventureArt(adventure, beat, beatIndex, node) {
+  if (node && node.art) return node.art;
+  if (beat && beat.art) return beat.art;
+  if (beatIndex >= adventure.beats.length - 1 && adventure.art) return adventure.art;
+  return (
+    "images/events/adventure-" +
+    encodeURIComponent(adventure.id) +
+    "-b" +
+    beatIndex +
+    ".png"
+  );
 }
 
 
@@ -70,8 +94,8 @@ ns.showAdventureNode = function showAdventureNode(adventure, beatIndex, nodeId) 
 
   const isChoice = !!(node.yesNext || node.noNext);
   if (isChoice) {
-    effect.textContent = "Choose carefully. (It will not matter.)";
-    effect.hidden = false;
+    effect.hidden = true;
+    effect.textContent = "";
     choices.hidden = false;
     okBtn.hidden = true;
     document.getElementById("fieldEventYes").textContent = node.yes || "Yes";
@@ -84,24 +108,25 @@ ns.showAdventureNode = function showAdventureNode(adventure, beatIndex, nodeId) 
     okBtn.textContent = node.finale ? "Dust yourself off" : "Continue";
   }
 
-  const artSrc = node.finale && adventure.art
-    ? adventure.art
-    : "";
-  if (artSrc) {
-    art.hidden = true;
-    art.onload = () => {
-      art.hidden = false;
-    };
-    art.onerror = () => {
-      art.hidden = true;
-      art.removeAttribute("src");
-    };
-    art.alt = adventure.folioLabel || adventure.title;
-    art.src = artSrc;
-  } else {
+  const artSrc = ns.resolveAdventureArt(adventure, beat, beatIndex, node);
+  art.hidden = true;
+  art.onload = () => {
+    art.hidden = false;
+  };
+  art.onerror = () => {
+    if (adventure.art && artSrc !== adventure.art) {
+      art.onerror = () => {
+        art.hidden = true;
+        art.removeAttribute("src");
+      };
+      art.src = adventure.art;
+      return;
+    }
     art.hidden = true;
     art.removeAttribute("src");
-  }
+  };
+  art.alt = node.title || adventure.folioLabel || adventure.title;
+  art.src = artSrc;
 
   document.getElementById("fieldEvent").classList.add("on");
 }
@@ -110,9 +135,12 @@ ns.showAdventureNode = function showAdventureNode(adventure, beatIndex, nodeId) 
 ns.beginAdventureBeat = function beginAdventureBeat(pick) {
   if (!pick) return false;
   const { adventure, beatIndex, beat } = pick;
-  ns.showAdventureNode(adventure, beatIndex, beat.start);
+  const flags = ns.adventureFlags();
+  const startId = ns.beatStartNode(beat, flags);
+  if (!beat.nodes[startId]) return false;
+  ns.showAdventureNode(adventure, beatIndex, startId);
   ns.logLine(
-    `<span class="hit">Side path</span> · ${adventure.title} · beat ${beatIndex + 1}/${adventure.beats.length}`
+    `<span class="hit">Side path</span> · ${adventure.title} · ${beatIndex + 1}/${adventure.beats.length}`
   );
   return true;
 }
@@ -127,7 +155,7 @@ ns.resolveAdventureChoice = function resolveAdventureChoice(yes) {
   const node = beat.nodes[session.nodeId];
   if (!node) return;
   const nextId = yes ? node.yesNext : node.noNext;
-  if (!nextId) return;
+  if (!nextId || !beat.nodes[nextId]) return;
   ns.showAdventureNode(adventure, session.beatIndex, nextId);
 }
 
@@ -147,22 +175,29 @@ ns.finishAdventureNode = function finishAdventureNode() {
   const beat = adventure.beats[session.beatIndex];
   const node = beat.nodes[session.nodeId];
 
-  if (node && (node.yesNext || node.noNext)) {
-    // Still on a choice node — ignore Carry on.
-    return;
-  }
+  if (node && (node.yesNext || node.noNext)) return;
 
   if (!state.adventureProgress) state.adventureProgress = Object.create(null);
   if (!state.adventuresDone) state.adventuresDone = new Set();
+  const flags = ns.adventureFlags();
 
-  const nextBeat = (state.adventureProgress[adventure.id] || 0) + 1;
-  state.adventureProgress[adventure.id] = nextBeat;
+  if (node && node.flag) flags.add(node.flag);
+
+  // Choice nodes that both go to ending still need a click-through — handled as normal nodes.
+  // Advance beat when this node closes a chapter (nextBeat) or finishes the saga (finale).
+  const closesBeat = !!(node && (node.nextBeat || node.finale));
+  if (closesBeat) {
+    state.adventureProgress[adventure.id] = (state.adventureProgress[adventure.id] || 0) + 1;
+  }
 
   let effectLine = "";
   if (node && node.finale) {
     state.adventuresDone.add(adventure.id);
     const beforeTitle = gloryRank(state.score).title;
-    effectLine = typeof adventure.reward === "function" ? adventure.reward(state) || "" : "";
+    effectLine =
+      typeof adventure.reward === "function"
+        ? adventure.reward(state, flags) || ""
+        : "";
     state.score = Math.max(0, state.score);
     ns.collectFolio("adventure:" + adventure.id);
     ns.logLine(
@@ -175,16 +210,12 @@ ns.finishAdventureNode = function finishAdventureNode() {
     } else {
       ns.toast(adventure.folioLabel || adventure.title, "hit");
     }
-  } else {
+  } else if (closesBeat) {
     ns.toast(`${adventure.title} · to be continued…`);
   }
 
   ns._adventureSession = null;
   ns.hideFieldEvent();
-
-  if (effectLine) {
-    // Show reward briefly via toast/log only — modal already closed.
-  }
 
   if (state.days <= 0 || cannotAffordDig()) {
     ns.endSeason(false);
@@ -200,12 +231,11 @@ ns.maybeAdventureAfterDig = function maybeAdventureAfterDig() {
   if (ns._adventureSession) return false;
   const pick = ns.pickAdventureBeat();
   if (!pick) return false;
-  // Mild chance so it doesn't fire every eligible dig — except the first beat of a chain feels more reliable.
   const beatIndex = pick.beatIndex;
-  const chance = beatIndex === 0 ? 0.7 : 0.85;
+  const chance = beatIndex === 0 ? 0.82 : 0.92;
   if (Math.random() > chance) return false;
   return ns.beginAdventureBeat(pick);
 }
 
 
-export { ADVENTURES };
+export { ADVENTURES, SIDE_PATH_ID };

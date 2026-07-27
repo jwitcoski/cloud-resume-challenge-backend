@@ -32,11 +32,8 @@ ns.seasonPunchline = function seasonPunchline(won) {
   if (state.eventsSeen.has("foil-house")) {
     return "Three saints, one roll of foil — the island’s best parish.";
   }
-  if (state.adventuresDone && state.adventuresDone.has("gift-shop-idol")) {
-    return "It belongs in a gift shop. The pedestal still clicks in your dreams.";
-  }
-  if (state.adventuresDone && state.adventuresDone.has("why-snails")) {
-    return "Why did it have to be snails? The boulder was a water tin.";
+  if (state.adventuresDone && state.adventuresDone.has("side-path")) {
+    return "It belongs in a gift shop — oil, plaster, and a bootlace whip.";
   }
   if (state.eventsSeen.has("underground-sanctuary")) {
     return "You walked over an underground sanctuary. The map still feels haunted.";
