@@ -14,14 +14,13 @@ Geospatial engineer with 15+ years building enterprise ArcGIS web applications, 
 
 ## EXPERIENCE
 
-### Geospatial Engineer | DRT Strategies (CDC)
+### Geospatial Engineer | INCATech
 
-Remote | March 2022 – Present
+Northern Virginia | 2026 – Present
 
-- Develop web mapping applications and dashboards with ArcGIS Enterprise, ArcGIS API for JavaScript, JavaScript, React, and Power BI for CDC surveillance programs
-- Translate program requirements into geospatial application designs, ETL workflows, and recurring map products
-- Build SQL Server and PostgreSQL/PostGIS databases and Python/SQL ETL pipelines for automated geospatial updates
-- Collaborate with non-technical stakeholders to align technical deliverables with mission needs
+- Design, build, and maintain enterprise geodatabases and geospatial workflows with ArcGIS Enterprise, Online, and Desktop for IC and USPIS missions
+- Automate spatial analysis, data validation, and ETL with Python and SQL across Oracle, SQL Server, and PostgreSQL
+- Produce web maps and visualizations, and support GIS users with troubleshooting, migrations, and documentation
 
 ### Founder | Vector Scope AI LLC
 
@@ -32,6 +31,15 @@ Remote | October 2025 – Present
 - Automated geospatial analysis and data handling tasks with Python; collaborated with stakeholders on spatial database and application requirements
 - Build ArcGIS-connected web tools and Python pipelines for map editing, validation, and data extraction
 - Ship Global Ski Atlas (3,000+ ski areas) as a live JavaScript web mapping application with automated ETL
+
+### Geographer | DRT Strategies (CDC)
+
+Remote | March 2022 – 2026
+
+- Develop web mapping applications and dashboards with ArcGIS Enterprise, ArcGIS API for JavaScript, JavaScript, React, and Power BI for CDC surveillance programs
+- Translate program requirements into geospatial application designs, ETL workflows, and recurring map products
+- Build SQL Server and PostgreSQL/PostGIS databases and Python/SQL ETL pipelines for automated geospatial updates
+- Collaborate with non-technical stakeholders to align technical deliverables with mission needs
 
 ### GIS Data Engineer & Scrum Master | Saicon (National Grid)
 

@@ -19,7 +19,7 @@ export const experienceData = [
         startYear: "2026",
         endYear: "Present",
         bulletPoints: [
-            "Design, build, and maintain enterprise geodatabases and geospatial workflows with ArcGIS Enterprise, Online, and Desktop for IC and DoD missions",
+            "Design, build, and maintain enterprise geodatabases and geospatial workflows with ArcGIS Enterprise, Online, and Desktop for IC and USPIS missions",
             "Automate spatial analysis, data validation, and ETL with Python and SQL across Oracle, SQL Server, and PostgreSQL",
             "Produce web maps and visualizations, and support GIS users with troubleshooting, migrations, and documentation"
         ]
@@ -126,20 +126,12 @@ export const featureWork = [
         url: "/admin-boundaries/tool.html"
     },
     {
-        title: "MapTiler Agent Grader",
-        description: "Automated checks for agent-generated MapTiler SDK code.",
-        outcome: "Grade agent MapTiler code against maptiler-skills.",
-        roles: ["MapTiler SDK", "Web GIS", "PMTiles", "Agent eval"],
+        title: "Map Agent Arena",
+        description: "Royal Rumble + Mapbox/MapTiler skill graders in a dedicated GitHub project.",
+        outcome: "Compare agent map skill packs across vendors without hosting eval tooling on the personal homepage.",
+        roles: ["Mapbox GL JS", "MapTiler SDK", "Agent eval", "Rubix"],
         image: "/images/feature-work/maptiler-agent-grader.png",
-        url: "/maptiler-playground/agent-grader.html"
-    },
-    {
-        title: "Mapbox Agent Grader",
-        description: "Four-pack scoreboard for Mapbox GL JS agent skills — NoAgent, skill, Improved, and upload.",
-        outcome: "Grade agent Mapbox code against mapbox-agent-skills (Core + Extreme).",
-        roles: ["Mapbox GL JS", "Agent eval", "Isochrone", "Directions"],
-        image: "/images/feature-work/maptiler-agent-grader.png",
-        url: "/mapbox-playground/agent-grader.html"
+        url: "https://jwitcoski.github.io/map-agent-arena/"
     },
     {
         title: "Ski Drive-Time (Mapbox)",
