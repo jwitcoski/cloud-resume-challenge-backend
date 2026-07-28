@@ -29,16 +29,22 @@ jobs:
           if [ -n "${{ secrets.MAPTILER_API_KEY }}" ]; then
             echo "window.MAPTILER_API_KEY = \"${{ secrets.MAPTILER_API_KEY }}\";"
           else
-            echo "::warning::MAPTILER_API_KEY secret not set"
+            echo "::warning::MAPTILER_API_KEY secret not set" >&2
             echo "window.MAPTILER_API_KEY = \"YOUR_MAPTILER_KEY_HERE\";"
           fi
           if [ -n "${{ secrets.MAPBOX_ACCESS_TOKEN }}" ]; then
             echo "window.MAPBOX_ACCESS_TOKEN = \"${{ secrets.MAPBOX_ACCESS_TOKEN }}\";"
           else
-            echo "::warning::MAPBOX_ACCESS_TOKEN secret not set"
+            echo "::warning::MAPBOX_ACCESS_TOKEN secret not set" >&2
             echo "window.MAPBOX_ACCESS_TOKEN = \"YOUR_MAPBOX_ACCESS_TOKEN\";"
           fi
         } > public/admin-boundaries/js/config.js
+        # Sanity: config must be valid JS (no Actions annotations leaked into the file)
+        if grep -q '^::' public/admin-boundaries/js/config.js; then
+          echo "::error::config.js contains Actions log commands — aborting"
+          cat public/admin-boundaries/js/config.js >&2
+          exit 1
+        fi
         npm ci
         npm run build
 
