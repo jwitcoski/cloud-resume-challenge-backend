@@ -29,11 +29,19 @@ ns.foundRelics = function foundRelics() {
 
 
 ns.seasonPunchline = function seasonPunchline(won) {
+  if (state.adventureEndingRelic) {
+    const ev = FIELD_EVENTS.find((e) => e.id === state.adventureEndingRelic);
+    const name = (ev && ev.title) || state.adventureEndingRelic;
+    if (state.adventureFlags && state.adventureFlags.has("saw_satyr")) {
+      return `The satyr was a goat. The side path still found ${name}.`;
+    }
+    return `Side path closed on a real find: ${name}.`;
+  }
   if (state.eventsSeen.has("foil-house")) {
     return "Three saints, one roll of foil — the island’s best parish.";
   }
   if (state.adventuresDone && state.adventuresDone.has("side-path")) {
-    return "It belongs in a gift shop — oil, plaster, and a bootlace whip.";
+    return "The side path closed — even if the find was already in the bag.";
   }
   if (state.eventsSeen.has("underground-sanctuary")) {
     return "You walked over an underground sanctuary. The map still feels haunted.";

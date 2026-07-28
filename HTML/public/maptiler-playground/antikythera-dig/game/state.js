@@ -51,6 +51,8 @@ const state = {
   adventuresDone: new Set(),
   /** Light flags from side-path choices (alter later beats) */
   adventureFlags: new Set(),
+  /** Relic id granted by finishing the side-path saga */
+  adventureEndingRelic: null,
 };
 export const boot = {
   done: false,

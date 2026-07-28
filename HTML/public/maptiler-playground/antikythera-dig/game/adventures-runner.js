@@ -1,5 +1,6 @@
 import { ns } from '../ns.js';
-import { ADVENTURES, SIDE_PATH_ID } from '../data/adventures.js';
+import { ADVENTURES, SIDE_PATH_ID, RELIC_CLUSTERS } from '../data/adventures.js';
+import { FIELD_EVENTS, relicEvents } from '../data/field-events.js';
 import {
   state,
   gloryRank,
@@ -8,6 +9,8 @@ import {
 
 /** @type {{ adventureId: string, beatIndex: number, nodeId: string } | null} */
 ns._adventureSession = null;
+/** Relic to fire after the saga leaf closes */
+ns._pendingSagaRelic = null;
 
 
 ns.adventureById = function adventureById(id) {
@@ -55,7 +58,7 @@ ns.pickAdventureBeat = function pickAdventureBeat() {
 ns.resolveAdventureArt = function resolveAdventureArt(adventure, beat, beatIndex, node) {
   if (node && node.art) return node.art;
   if (beat && beat.art) return beat.art;
-  if (beatIndex >= adventure.beats.length - 1 && adventure.art) return adventure.art;
+  if (adventure.art) return adventure.art;
   return (
     "images/events/adventure-" +
     encodeURIComponent(adventure.id) +
@@ -63,6 +66,28 @@ ns.resolveAdventureArt = function resolveAdventureArt(adventure, beat, beatIndex
     beatIndex +
     ".png"
   );
+}
+
+
+ns.relicEventById = function relicEventById(id) {
+  return FIELD_EVENTS.find((ev) => ev.id === id && ev.relicTracts && ev.relicTracts.length) || null;
+}
+
+
+/** First unseen relic in a cluster; else any unseen relic; else null. */
+ns.pickRelicFromCluster = function pickRelicFromCluster(clusterKey) {
+  const seen = state.eventsSeen || new Set();
+  const ids = RELIC_CLUSTERS[clusterKey] || [];
+  for (const id of ids) {
+    if (!seen.has(id)) {
+      const ev = ns.relicEventById(id);
+      if (ev) return ev;
+    }
+  }
+  for (const ev of relicEvents()) {
+    if (!seen.has(ev.id)) return ev;
+  }
+  return null;
 }
 
 
@@ -75,17 +100,31 @@ ns.showAdventureNode = function showAdventureNode(adventure, beatIndex, nodeId) 
     adventureId: adventure.id,
     beatIndex,
     nodeId,
+    pendingRelic: null,
   };
+
+  let summary = node.blurb || "";
+  if (node.finale && node.endingCluster) {
+    const relic = ns.pickRelicFromCluster(node.endingCluster);
+    if (relic) {
+      ns._adventureSession.pendingRelic = relic;
+      summary =
+        summary +
+        ` The chart locks onto tract ${relic.relicTracts[0]} — ${relic.title}.`;
+    } else {
+      summary = summary + " (Every odd find in this cluster is already in the bag.)";
+    }
+  }
 
   ns.hideFindHover();
   const card = document.getElementById("fieldEventCard");
   card.classList.remove("good-card", "bad-card", "mixed-card", "hit-card", "miss-card");
-  card.classList.add("mixed-card");
+  card.classList.add(node.finale ? "good-card" : "mixed-card");
 
   document.getElementById("fieldEventEyebrow").textContent =
     node.eyebrow || "Side path";
   document.getElementById("fieldEventTitle").textContent = node.title || adventure.title;
-  document.getElementById("fieldEventSummary").textContent = node.blurb || "";
+  document.getElementById("fieldEventSummary").textContent = summary;
 
   const effect = document.getElementById("fieldEventEffect");
   const art = document.getElementById("fieldEventArt");
@@ -105,27 +144,45 @@ ns.showAdventureNode = function showAdventureNode(adventure, beatIndex, nodeId) 
     effect.textContent = "";
     choices.hidden = true;
     okBtn.hidden = false;
-    okBtn.textContent = node.finale ? "Dust yourself off" : "Continue";
+    okBtn.textContent = node.finale ? "Follow the find" : "Continue";
   }
 
-  const artSrc = ns.resolveAdventureArt(adventure, beat, beatIndex, node);
+  const artSrc =
+    (ns._adventureSession.pendingRelic &&
+      "images/events/event-" +
+        encodeURIComponent(ns._adventureSession.pendingRelic.id) +
+        ".png") ||
+    ns.resolveAdventureArt(adventure, beat, beatIndex, node);
   art.hidden = true;
   art.onload = () => {
     art.hidden = false;
   };
   art.onerror = () => {
-    if (adventure.art && artSrc !== adventure.art) {
+    const fallback = ns.resolveAdventureArt(adventure, beat, beatIndex, node);
+    if (fallback && artSrc !== fallback) {
       art.onerror = () => {
+        if (adventure.art && fallback !== adventure.art) {
+          art.onerror = () => {
+            art.hidden = true;
+            art.removeAttribute("src");
+          };
+          art.src = adventure.art;
+          return;
+        }
         art.hidden = true;
         art.removeAttribute("src");
       };
-      art.src = adventure.art;
+      art.src = fallback;
       return;
     }
     art.hidden = true;
     art.removeAttribute("src");
   };
-  art.alt = node.title || adventure.folioLabel || adventure.title;
+  art.alt =
+    (ns._adventureSession.pendingRelic && ns._adventureSession.pendingRelic.title) ||
+    node.title ||
+    adventure.folioLabel ||
+    adventure.title;
   art.src = artSrc;
 
   document.getElementById("fieldEvent").classList.add("on");
@@ -183,30 +240,48 @@ ns.finishAdventureNode = function finishAdventureNode() {
 
   if (node && node.flag) flags.add(node.flag);
 
-  // Choice nodes that both go to ending still need a click-through — handled as normal nodes.
-  // Advance beat when this node closes a chapter (nextBeat) or finishes the saga (finale).
   const closesBeat = !!(node && (node.nextBeat || node.finale));
   if (closesBeat) {
     state.adventureProgress[adventure.id] = (state.adventureProgress[adventure.id] || 0) + 1;
   }
 
-  let effectLine = "";
+  let pendingRelic = null;
+
   if (node && node.finale) {
     state.adventuresDone.add(adventure.id);
+    pendingRelic =
+      (session.pendingRelic && !state.eventsSeen.has(session.pendingRelic.id)
+        ? session.pendingRelic
+        : null) ||
+      (node.endingCluster ? ns.pickRelicFromCluster(node.endingCluster) : null);
+    if (pendingRelic) {
+      state.adventureEndingRelic = pendingRelic.id;
+      const tract = pendingRelic.relicTracts && pendingRelic.relicTracts[0];
+      if (tract) {
+        try {
+          ns.flyToTract(tract);
+        } catch (_) { /* map may not be ready */ }
+      }
+    }
     const beforeTitle = gloryRank(state.score).title;
-    effectLine =
+    const effectLine =
       typeof adventure.reward === "function"
         ? adventure.reward(state, flags) || ""
         : "";
     state.score = Math.max(0, state.score);
     ns.collectFolio("adventure:" + adventure.id);
+    const findBit = pendingRelic
+      ? ` · find: ${pendingRelic.title}`
+      : " · (all odd finds already bagged)";
     ns.logLine(
-      `<span class="hit">${adventure.title}</span> · ${effectLine || "side path closed"}`,
+      `<span class="hit">${adventure.title}</span> · ${effectLine || "side path closed"}${findBit}`,
       "hit"
     );
     const after = gloryRank(state.score);
     if (after.title !== beforeTitle) {
       ns.toast(`Promoted — ${after.title}`, "hit");
+    } else if (pendingRelic) {
+      ns.toast(`Side path → ${pendingRelic.title}`, "hit");
     } else {
       ns.toast(adventure.folioLabel || adventure.title, "hit");
     }
@@ -216,6 +291,14 @@ ns.finishAdventureNode = function finishAdventureNode() {
 
   ns._adventureSession = null;
   ns.hideFieldEvent();
+
+  if (pendingRelic && typeof ns.runFieldEvent === "function") {
+    // Hand off to the special-find cable (folio + glory from the relic itself).
+    ns.runFieldEvent(pendingRelic);
+    ns.saveGame();
+    ns.renderHud();
+    return;
+  }
 
   if (state.days <= 0 || cannotAffordDig()) {
     ns.endSeason(false);
@@ -232,10 +315,10 @@ ns.maybeAdventureAfterDig = function maybeAdventureAfterDig() {
   const pick = ns.pickAdventureBeat();
   if (!pick) return false;
   const beatIndex = pick.beatIndex;
-  const chance = beatIndex === 0 ? 0.82 : 0.92;
+  const chance = beatIndex === 0 ? 0.85 : 0.95;
   if (Math.random() > chance) return false;
   return ns.beginAdventureBeat(pick);
 }
 
 
-export { ADVENTURES, SIDE_PATH_ID };
+export { ADVENTURES, SIDE_PATH_ID, RELIC_CLUSTERS };

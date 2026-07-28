@@ -1,356 +1,308 @@
 /**
- * One connected Indiana-Jones side path for the season.
- * Choices fork the middle (and set light flags); every route ends the same.
+ * Connected side-path saga: binary tree of choices → one of 25 survey relics.
+ * Choices fork the middle; each leaf cluster highlights a real tract-tied find.
  */
 export const SIDE_PATH_ID = "side-path";
+
+/** Theme clusters → relic event ids from field-events.js */
+export const RELIC_CLUSTERS = {
+  war: ["bayonet", "buckle", "american-clip", "cartridge", "gunstock"],
+  glass: ["lepta-coin", "solarised-glass", "fish-scale-glass", "blue-bead", "binda-button"],
+  farm: ["rotary-quern", "bee-swarm", "andronicos-mill"],
+  domestic: ["furniture-pigeons", "foil-house", "snail-cobbling"],
+  fauna: ["snail-tomb", "dead-goat-cavity", "goat-carcass-cave"],
+  bones: ["recent-bones", "goat-skull", "dead-bunny"],
+  sacred: ["underground-sanctuary", "philip-coin"],
+  landmark: ["lighthouse-1926", "binda-button", "american-clip"],
+};
 
 export const ADVENTURES = [
   {
     id: SIDE_PATH_ID,
     title: "Side Path",
-    folioLabel: "It belongs in a gift shop",
+    folioLabel: "The trail found something",
     art: "images/events/adventure-gift-shop-idol.png",
     beats: [
-      /* —— 1. Map Room —— */
+      /* —— Layer 1: Coast or hills —— */
       {
-        afterDigs: 2,
-        start: "map_ask",
+        afterDigs: 3,
+        start: "lead",
         art: "images/events/adventure-map-room-b0.png",
         nodes: {
-          map_ask: {
-            eyebrow: "Mess tent",
-            title: "The Map Room",
+          lead: {
+            eyebrow: "Map Room",
+            title: "Where does the trail go?",
             blurb:
-              "Your foreman pins a bedsheet to the wall and declares a Map Room. Draw tomorrow’s digs in chalk — or keep the plan in your head like a mysterious protagonist?",
-            yes: "Chalk it",
-            no: "Stay cryptic",
-            yesNext: "map_chalk",
-            noNext: "map_cryptic",
-          },
-          map_chalk: {
-            eyebrow: "Doctrine",
-            title: "Circles upon circles",
-            blurb:
-              "Bold rings, a skull for morale, coffee rings as “contour lines.” The sheet looks like a conspiracy board. Perfect.",
-            flag: "chalked",
-            nextBeat: true,
+              "Chalk rings crowd the bedsheet. One arrow points to the harbour cliffs and wartime flotsam. Another climbs inland toward goat paths, wine presses, and older stone. Which lead do you chase?",
+            yes: "Harbour & coast",
+            no: "Hills & goats",
+            yesNext: "lead_coast",
+            noNext: "lead_hills",
             art: "images/events/adventure-map-room-b0.png",
           },
-          map_cryptic: {
-            eyebrow: "Aura",
-            title: "They chalk anyway",
+          lead_coast: {
+            eyebrow: "Coast lead",
+            title: "Salt and scrap",
             blurb:
-              "You stay enigmatic. By evening the sheet is covered in rings drawn from rumour. Same conspiracy board — less of your handwriting. The skull is already there.",
-            flag: "cryptic",
+              "You circle the harbour approaches. Brass, glass, and sailors’ leftovers — the kind of finds that wash in and never quite leave.",
+            flag: "path_coast",
             nextBeat: true,
-            art: "images/events/adventure-map-room-b0.png",
-          },
-        },
-      },
-
-      /* —— 2. Harbour tip —— */
-      {
-        afterDigs: 4,
-        startFor(flags) {
-          return flags.has("chalked") ? "tip_chalk" : "tip_cryptic";
-        },
-        art: "images/events/adventure-gift-shop-idol-b0.png",
-        nodes: {
-          tip_chalk: {
-            eyebrow: "Harbour café",
-            title: "A stranger notices your rings",
-            blurb:
-              "A sunburned stranger eyes the chalk dust on your cuff. “Golden idol in a cliff cave — worth more than your season. Your Map Room already circled the right ridge.” Hear him out?",
-            yes: "Buy him coffee",
-            no: "Walk away",
-            yesNext: "tip_yes",
-            noNext: "tip_no",
-            art: "images/events/adventure-gift-shop-idol-b0.png",
-          },
-          tip_cryptic: {
-            eyebrow: "Harbour café",
-            title: "A stranger’s tip",
-            blurb:
-              "A sunburned stranger leans over your coffee: “Golden idol in a cliff cave. Worth more than your whole season.” You’re the mysterious type — does that include listening?",
-            yes: "Buy him coffee",
-            no: "Walk away",
-            yesNext: "tip_yes",
-            noNext: "tip_no",
-            art: "images/events/adventure-gift-shop-idol-b0.png",
-          },
-          tip_yes: {
-            eyebrow: "Napkin cartography",
-            title: "Olive-oil map",
-            blurb:
-              "He sketches cliffs in olive oil on a napkin. “Mind the goats — and the rival with the whip.” He vanishes toward the ferry. You keep the napkin. Obviously.",
-            flag: "talked",
-            nextBeat: true,
-            art: "images/events/adventure-gift-shop-idol-b0.png",
-          },
-          tip_no: {
-            eyebrow: "You walk away",
-            title: "Still on the table",
-            blurb:
-              "You leave. The napkin is under your cup anyway — same greasy cliffs, same goat warning, a doodle of a whip. Destiny has poor manners.",
-            flag: "left_tip",
-            nextBeat: true,
-            art: "images/events/adventure-gift-shop-idol-b0.png",
-          },
-        },
-      },
-
-      /* —— 3. Rival —— */
-      {
-        afterDigs: 7,
-        start: "rival_dock",
-        art: "images/events/adventure-rival-whip-b0.png",
-        nodes: {
-          rival_dock: {
-            eyebrow: "Ferry landing",
-            title: "A smoother hat",
-            blurb:
-              "A rival dig director steps off the ferry cracking what looks like a whip. He’s holding a copy of your napkin sketch. Challenge him — or chase the cave before he does?",
-            yes: "Challenge him",
-            no: "Race the cave",
-            yesNext: "rival_duel",
-            noNext: "rival_sprint",
-            art: "images/events/adventure-rival-whip-b0.png",
-          },
-          rival_duel: {
-            eyebrow: "Academic duel",
-            title: "Bootlace diplomacy",
-            blurb:
-              "“First diagnostic sherd buys the raki.” His whip is a leather bootlace on a stick. You both pretend not to notice. He’ll still be on your ridge at dawn.",
-            flag: "duelled",
-            nextBeat: true,
-            art: "images/events/adventure-rival-whip-b0.png",
-          },
-          rival_sprint: {
-            eyebrow: "Head start",
-            title: "Still on your terrace",
-            blurb:
-              "You bolt inland with the napkin. An hour later he’s somehow on your terrace anyway, cracking the bootlace at a thistle. Subplots insist.",
-            flag: "sprinted",
-            nextBeat: true,
-            art: "images/events/adventure-rival-whip-b1.png",
-          },
-        },
-      },
-
-      /* —— 4. Bridge / ridge —— */
-      {
-        afterDigs: 10,
-        startFor(flags) {
-          return flags.has("duelled") ? "ridge_race" : "ridge_alone";
-        },
-        art: "images/events/adventure-gift-shop-idol-b1.png",
-        nodes: {
-          ridge_race: {
-            eyebrow: "Dawn ridge",
-            title: "Survey race",
-            blurb:
-              "Two crews, one ridge, too much pride. The napkin points past a rope bridge of optimistic carpentry. Take the bridge for glory — or the long path for ankles?",
-            yes: "Cross the bridge",
-            no: "Go around",
-            yesNext: "bridge_cross",
-            noNext: "bridge_around",
-            art: "images/events/adventure-rival-whip-b1.png",
-          },
-          ridge_alone: {
-            eyebrow: "Above the harbour",
-            title: "Rotting boards",
-            blurb:
-              "The napkin leads to a goat path and that rope bridge. One board is already a memory. Your rival’s bootlace cracks somewhere behind you. Cross — or scramble around?",
-            yes: "Cross",
-            no: "Go around",
-            yesNext: "bridge_cross",
-            noNext: "bridge_around",
-            art: "images/events/adventure-gift-shop-idol-b1.png",
-          },
-          bridge_cross: {
-            eyebrow: "Structural archaeology",
-            title: "Third board snaps",
-            blurb:
-              "You make it. Barely. Same ledge either way — cave mouth ahead, a sealed niche to the left, and something wooden glinting on the beach below.",
-            flag: "bridged",
-            nextBeat: true,
-            art: "images/events/adventure-gift-shop-idol-b1.png",
-          },
-          bridge_around: {
-            eyebrow: "The scenic route",
-            title: "More scrapes, same view",
-            blurb:
-              "Extra thorns, same ledge. Cave mouth ahead, sealed niche left, wooden crate flashing on the tide below. The bridge laughs in the wind.",
-            flag: "around",
-            nextBeat: true,
-            art: "images/events/adventure-gift-shop-idol-b1.png",
-          },
-        },
-      },
-
-      /* —— 5. Fork: crate vs snails (choice matters here) —— */
-      {
-        afterDigs: 13,
-        start: "fork_ask",
-        art: "images/events/adventure-ark-crate-b0.png",
-        nodes: {
-          fork_ask: {
-            eyebrow: "Two distractions",
-            title: "Beach or niche?",
-            blurb:
-              "Below: a sealed crate with warnings in three languages. Beside you: a rock niche scraping from inside. The idol cave can wait one dig. Which rabbit hole?",
-            yes: "The crate",
-            no: "The niche",
-            yesNext: "crate_path",
-            noNext: "snail_path",
             art: "images/events/adventure-ark-crate-b0.png",
           },
-          crate_path: {
-            eyebrow: "Morning tide",
-            title: "Do not open that crate",
+          lead_hills: {
+            eyebrow: "Hills lead",
+            title: "Goat country",
             blurb:
-              "Four diggers, one pulley. The crate sits under a tarp labelled DO NOT OPEN in your handwriting. Something ticks once — a loose hoop. You feel very professional.",
-            flag: "crate_first",
+              "You mark the inland ridges. Wine-press terraces, rock cavities, and enough goats to populate a myth. The chalk skull looks pleased.",
+            flag: "path_hills",
             nextBeat: true,
-            art: "images/events/adventure-ark-crate-b1.png",
-          },
-          snail_path: {
-            eyebrow: "Torchlight",
-            title: "Why did it have to be snails?",
-            blurb:
-              "The slab shifts. A polite avalanche of shells — no curses, no snakes, just gastropods with union density. You write “fauna” like a professional. The crate can wait.",
-            flag: "snails_first",
-            nextBeat: true,
-            art: "images/events/adventure-why-snails-b0.png",
+            art: "images/events/adventure-gift-shop-idol-b1.png",
           },
         },
       },
 
-      /* —— 6. The other distraction —— */
+      /* —— Layer 2: fork within path —— */
       {
-        afterDigs: 16,
+        afterDigs: 7,
         startFor(flags) {
-          return flags.has("crate_first") ? "other_snails" : "other_crate";
+          return flags.has("path_coast") ? "harbor_ask" : "hills_ask";
         },
         nodes: {
-          other_snails: {
-            eyebrow: "Still on the ledge",
-            title: "The niche won’t wait",
+          harbor_ask: {
+            eyebrow: "Harbour ridge",
+            title: "War junk or village lanes?",
             blurb:
-              "Curiosity circles back. You crack the niche — snails, of course — then belly-crawl toward a gleam that is wet limestone. A junior applauds from safety. Time for the cave.",
-            yes: "Into the cave",
-            no: "Send the junior",
-            yesNext: "cave_enter",
-            noNext: "cave_junior",
-            art: "images/events/adventure-why-snails-b1.png",
+              "Downslope: cartridges, clips, and kit that never made it home. Along the lanes: querns, ruined parlours, and glass charms on string. Which scatter do you walk?",
+            yes: "War flotsam",
+            no: "Village & farm",
+            yesNext: "harbor_war",
+            noNext: "harbor_village",
+            art: "images/events/adventure-rival-whip-b0.png",
           },
-          other_crate: {
-            eyebrow: "Still on the beach",
-            title: "About that crate",
+          harbor_war: {
+            eyebrow: "Scrap line",
+            title: "Metal in the scrub",
             blurb:
-              "The tarp rustles. You peek: straw, a customs stamp, a storeroom smell. Loose hoop ticks. Athens will want an inventory later. The cave won’t inventory itself.",
-            yes: "Into the cave",
-            no: "Send the junior",
-            yesNext: "cave_enter",
-            noNext: "cave_junior",
-            art: "images/events/adventure-ark-crate-b1.png",
-          },
-          cave_enter: {
-            eyebrow: "Cave mouth",
-            title: "Something gleams",
-            blurb:
-              "Dust motes like a spotlight. A figure on a pedestal. Whip music plays only in your head. Take it?",
-            yes: "Take it",
-            no: "Leave it",
-            yesNext: "idol_take",
-            noNext: "idol_leave",
-            art: "images/events/adventure-gift-shop-idol.png",
-          },
-          cave_junior: {
-            eyebrow: "Delegation",
-            title: "Same gleam",
-            blurb:
-              "The junior reports a pedestal, a gleam, and an urgent need for adult supervision. You’re in the cave anyway. Take the idol?",
-            yes: "Take it",
-            no: "Leave it",
-            yesNext: "idol_take",
-            noNext: "idol_leave",
-            art: "images/events/adventure-gift-shop-idol.png",
-          },
-          idol_take: {
-            eyebrow: "Click",
-            title: "Pedestal trap",
-            blurb:
-              "The stone clicks. Distant rumble. You snatch a plaster tourist knick-knack — Made in Piraeus. The rumble was a goat kicking a tin sheet. Outside, the rival waits with raki and the bootlace.",
-            flag: "took_idol",
+              "You bag a mental map of brass and iron — and a glitter of purple glass from a sailor’s dump. Next fork will decide which catalogue page you open.",
+            flag: "branch_war",
             nextBeat: true,
-            art: "images/events/adventure-gift-shop-idol.png",
+            art: "images/events/event-bayonet.png",
           },
-          idol_leave: {
-            eyebrow: "Wisdom",
-            title: "Still clicks",
+          harbor_village: {
+            eyebrow: "Terrace lanes",
+            title: "Domestic scatter",
             blurb:
-              "You leave it. A goat bumps the pedestal anyway. Same click, same plaster souvenir at your boots — Made in Piraeus. Outside: rival, raki, bootlace.",
-            flag: "left_idol",
+              "Querns, bee boxes, collapsed houses still full of someone else’s furniture. The island’s recent past is loud here.",
+            flag: "branch_village",
             nextBeat: true,
-            art: "images/events/adventure-gift-shop-idol.png",
+            art: "images/events/adventure-map-room.png",
+          },
+
+          hills_ask: {
+            eyebrow: "Inland noon",
+            title: "Heat — or the citadel?",
+            blurb:
+              "The rock radiates. Someone passes a flask of raki “for science.” Inland also rises the old fortified ridge. Push into the heat haze, or climb toward ashlar and chambers?",
+            yes: "Heat & raki",
+            no: "Citadel stone",
+            yesNext: "hills_heat",
+            noNext: "hills_citadel",
+            art: "images/events/event-heatwave.png",
+          },
+          hills_heat: {
+            eyebrow: "Thermometer",
+            title: "The haze thickens",
+            blurb:
+              "You drink. The horizon softens. Goat bells sound almost like pipes. The foreman says you’ll “see things” before you see sherds. He is not wrong.",
+            flag: "branch_heat",
+            nextBeat: true,
+            art: "images/events/event-heatwave.png",
+          },
+          hills_citadel: {
+            eyebrow: "Ashlar",
+            title: "Toward the stronghold",
+            blurb:
+              "City-wall courses and a rumour of chambers under the scrub. Kings’ copper and underground sanctuaries belong to this kind of ground.",
+            flag: "branch_citadel",
+            nextBeat: true,
+            art: "images/events/event-underground-sanctuary.png",
           },
         },
       },
 
-      /* —— 7. Finale — always the same ending —— */
+      /* —— Layer 3: final fork (+ satyr on heat path) —— */
       {
-        afterDigs: 19,
+        afterDigs: 12,
         startFor(flags) {
-          if (flags.has("crate_first")) return "finale_crate_known";
-          return "finale_crate_fresh";
+          if (flags.has("branch_war")) return "war_ask";
+          if (flags.has("branch_village")) return "village_ask";
+          if (flags.has("branch_heat")) return "satyr_vision";
+          return "citadel_ask";
         },
-        art: "images/events/adventure-ark-crate.png",
         nodes: {
-          finale_crate_known: {
-            eyebrow: "Permit day",
-            title: "Open the crate",
+          /* Coast → war branch: metal OR glass charms */
+          war_ask: {
+            eyebrow: "Metal detector, imaginary",
+            title: "Iron — or glass?",
             blurb:
-              "Athens wants inventory. You already know the smell. Open it for the committee — or insist on the cook tent “lab”?",
-            yes: "Open now",
-            no: "Cook tent",
-            yesNext: "ending",
-            noNext: "ending",
-            art: "images/events/adventure-ark-crate.png",
+              "One grid note is almost rude: bayonet. Another hedges: buckle? A grab sample away: solarised purple bottles and a lepta pierced for a necklace. Narrow the hunt.",
+            yes: "War iron",
+            no: "Glass & charms",
+            yesNext: "leaf_war",
+            noNext: "leaf_glass",
+            art: "images/events/event-bayonet.png",
           },
-          finale_crate_fresh: {
-            eyebrow: "Permit day",
-            title: "Official opening",
+          leaf_war: {
+            eyebrow: "Trail ends",
+            title: "War flotsam",
             blurb:
-              "Athens wants inventory on the beach crate. Drama, forms, a small crowd. Open it here — or stage it in the cook tent?",
-            yes: "Open now",
-            no: "Cook tent",
-            yesNext: "ending",
-            noNext: "ending",
-            art: "images/events/adventure-ark-crate.png",
-          },
-          ending: {
-            eyebrow: "Roll credits",
-            title: "It belongs in a gift shop",
-            blurb:
-              "Straw parts: tins of excellent olive oil. The plaster idol stares from your bag. Your rival toasts with raki and gifts you the bootlace-whip. The Map Room sheet, rain-smeared, is declared “bold.” Same ending — you just took the scenic route through goats, snails, and bad carpentry.",
+              "The side path pins wartime iron in the scrub. Dig the marked tract — the catalogue already has a name for what’s waiting.",
+            flag: "leaf_war",
+            endingCluster: "war",
             finale: true,
-            art: "images/events/adventure-gift-shop-idol.png",
+            art: "images/events/event-buckle.png",
+          },
+          leaf_glass: {
+            eyebrow: "Trail ends",
+            title: "Harbor glass",
+            blurb:
+              "Pierced lepta, solarised bottles, fish-scale glass, a bead that wanted to be stone — sailors’ leftovers with sun in them.",
+            flag: "leaf_glass",
+            endingCluster: "glass",
+            finale: true,
+            art: "images/events/event-lepta-coin.png",
+          },
+
+          /* Coast → village */
+          village_ask: {
+            eyebrow: "Farm edge",
+            title: "Millstone or doorway?",
+            blurb:
+              "A 34 cm rotary quern still looks heavy on the page. A few tracts over: pigeons in a ruined parlour, foil-wrapped faith, snail-shell “industry.” Which door?",
+            yes: "Farm & bees",
+            no: "Collapsed house",
+            yesNext: "leaf_farm",
+            noNext: "leaf_domestic",
+            art: "images/events/event-rotary-quern.png",
+          },
+          leaf_farm: {
+            eyebrow: "Trail ends",
+            title: "Farm furniture",
+            blurb:
+              "Quern, mill, or bee-stung survey line — the side path has chosen the working island, not the mythical one.",
+            flag: "leaf_farm",
+            endingCluster: "farm",
+            finale: true,
+            art: "images/events/event-rotary-quern.png",
+          },
+          leaf_domestic: {
+            eyebrow: "Trail ends",
+            title: "Someone still lived here",
+            blurb:
+              "Furniture, foil, saints, and snail concentrations — domestic ruin with a paper trail. The marked square is waiting.",
+            flag: "leaf_domestic",
+            endingCluster: "domestic",
+            finale: true,
+            art: "images/events/event-furniture-pigeons.png",
+          },
+
+          /* Hills → heat → satyr → fauna/bones */
+          satyr_vision: {
+            eyebrow: "Heat & raki",
+            title: "Something pipes in the scrub",
+            blurb:
+              "Dehydration plus last night’s toast. On the ridge: a figure — goat legs, human torso, reed pipe catching the wind. Pan’s cousin, or the island laughing at you. Do you follow?",
+            yes: "Follow the satyr",
+            no: "Sit down · drink water",
+            yesNext: "satyr_chase",
+            noNext: "satyr_water",
+            art: "images/events/adventure-satyr-vision.png",
+          },
+          satyr_chase: {
+            eyebrow: "Hallucination?",
+            title: "Hooves in the maquis",
+            blurb:
+              "You scramble after it. Bells. A flash of horn. Then only a billy goat chewing a thistle, deeply unimpressed by classical mythology.",
+            flag: "saw_satyr",
+            yes: "Cave of snails",
+            no: "Bones & overhangs",
+            yesNext: "leaf_fauna",
+            noNext: "leaf_bones",
+            art: "images/events/event-goats.png",
+          },
+          satyr_water: {
+            eyebrow: "Sobriety",
+            title: "Still a goat",
+            blurb:
+              "You sit, hydrate, and wait. The ‘satyr’ walks over and tries to eat your notebook. Same billy. Same thistle. Mythology resigns.",
+            flag: "saw_satyr",
+            yes: "Cave of snails",
+            no: "Bones & overhangs",
+            yesNext: "leaf_fauna",
+            noNext: "leaf_bones",
+            art: "images/events/event-goats.png",
+          },
+          leaf_fauna: {
+            eyebrow: "Trail ends",
+            title: "Cavities & shells",
+            blurb:
+              "Snail tombs, dead goats in bedrock niches, carcass caves that might be graves — the satyr was a goat, but the cavities are real.",
+            flag: "leaf_fauna",
+            endingCluster: "fauna",
+            finale: true,
+            art: "images/events/event-snail-tomb.png",
+          },
+          leaf_bones: {
+            eyebrow: "Trail ends",
+            title: "Recent bones",
+            blurb:
+              "Overhangs with bones, a walker noting a goat skull, a field note that opens ‘Dead bunny.’ The path gets frank. Dig carefully.",
+            flag: "leaf_bones",
+            endingCluster: "bones",
+            finale: true,
+            art: "images/events/event-goat-skull.png",
+          },
+
+          /* Hills → citadel */
+          citadel_ask: {
+            eyebrow: "Stronghold",
+            title: "Sanctuary or beacon?",
+            blurb:
+              "Underground chambers and a shipshed rumour pull one way. A lighthouse stamped 1926 pulls another — modern light on ancient rock. Which monument?",
+            yes: "Underground sanctuary",
+            no: "Lighthouse & later scrap",
+            yesNext: "leaf_sacred",
+            noNext: "leaf_landmark",
+            art: "images/events/event-underground-sanctuary.png",
+          },
+          leaf_sacred: {
+            eyebrow: "Trail ends",
+            title: "Chambers under the scrub",
+            blurb:
+              "Sanctuary niches or a king’s copper in the dust — the citadel path has named its square. Glory likes rare periods and clearer portraits.",
+            flag: "leaf_sacred",
+            endingCluster: "sacred",
+            finale: true,
+            art: "images/events/event-philip-coin.png",
+          },
+          leaf_landmark: {
+            eyebrow: "Trail ends",
+            title: "Built in 1926",
+            blurb:
+              "The lighthouse date is a survey comment that stuck. Nearby modern scrap still tells sailor stories. The chart inks the landmark tract.",
+            flag: "leaf_landmark",
+            endingCluster: "landmark",
+            finale: true,
+            art: "images/events/event-lighthouse-1926.png",
           },
         },
       },
     ],
     reward(s, flags) {
-      const g = 140 + Math.floor(Math.random() * 60);
-      const oil = 50 + Math.floor(Math.random() * 40);
+      const g = 60 + Math.floor(Math.random() * 40);
       s.score += g;
-      s.money += oil;
-      const scenic = [];
-      if (flags.has("bridged")) scenic.push("bridge");
-      if (flags.has("snails_first") || flags.has("crate_first")) scenic.push("detour");
-      if (flags.has("duelled")) scenic.push("duel");
-      const note = scenic.length ? ` · via ${scenic.join(", ")}` : "";
-      return `+${g} glory · +€${oil} oil${note}`;
+      const satyr = flags && flags.has("saw_satyr") ? " · satyr was a goat" : "";
+      return `+${g} glory · side path closed${satyr}`;
     },
   },
 ];
