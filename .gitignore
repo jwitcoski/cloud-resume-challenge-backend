@@ -8,3 +8,7 @@ HTML/out
 
 # Local fork working copy (PR lives on jwitcoski/mapbox-agent-skills)
 mapbox-agent-skills/
+# Local scratch
+HTML/study-lab/*.teardown-bak
+mapbox-skills-pr-draft.diff
+HTML/__pycache__/
