@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Terrain Flight — Swiss Alps</title>
+  <link rel="stylesheet" href="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.css">
+  <style>
+    html, body, #map { width: 100%; height: 100%; margin: 0; }
+    #panel { position: fixed; z-index: 2; left: 14px; top: 14px; padding: 10px; border-radius: 8px; background: #102a1de8; color: white; font: 14px system-ui, sans-serif; }
+    button { margin-top: 8px; padding: 7px 10px; border: 0; border-radius: 5px; cursor: pointer; }
+    #status.error { color: #fecaca; }
+  </style>
+</head>
+<body>
+  <div id="map" role="application" aria-label="Three-dimensional terrain map of the Alps"></div>
+  <section id="panel">
+    <div id="status" aria-live="polite">Loading terrain…</div>
+    <button id="fly" type="button" disabled>Fly to the Matterhorn</button>
+  </section>
+  <script src="../admin-boundaries/js/config.js"></script>
+  <script src="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.umd.min.js"></script>
+  <script>
+    (() => {
+      "use strict";
+      const status = document.getElementById("status");
+      const flyButton = document.getElementById("fly");
+      const reportError = (message, error) => {
+        status.textContent = message;
+        status.className = "error";
+        if (error) console.error(message, error);
+      };
+      const apiKey = typeof window.MAPTILER_API_KEY === "string"
+        ? window.MAPTILER_API_KEY.trim()
+        : "";
+      if (!apiKey) {
+        reportError("Missing window.MAPTILER_API_KEY in config.js.");
+        return;
+      }
+      if (!window.maptilersdk) {
+        reportError("MapTiler SDK v4.0.2 failed to load.");
+        return;
+      }
+      maptilersdk.config.apiKey = apiKey;
+
+      let map;
+      try {
+        map = new maptilersdk.Map({
+          container: "map",
+          style: maptilersdk.MapStyle.OUTDOOR,
+          center: [8.5417, 47.3769],
+          zoom: 7,
+          pitch: 60,
+          bearing: -18,
+          terrain: true,
+          terrainExaggeration: 1.35,
+          terrainControl: true,
+          navigationControl: true
+        });
+      } catch (error) {
+        reportError(`Terrain initialization failed: ${error.message || error}`, error);
+        return;
+      }
+
+      const flyToAlps = () => {
+        map.flyTo({
+          center: [7.6586, 45.9763],
+          zoom: 13.2,
+          pitch: 72,
+          bearing: 28,
+          duration: 6500,
+          essential: true
+        });
+        status.textContent = "Flying to the Matterhorn…";
+      };
+      flyButton.addEventListener("click", flyToAlps);
+      map.on("load", () => {
+        flyButton.disabled = false;
+        status.textContent = "Terrain ready";
+        flyToAlps();
+      });
+      map.on("moveend", () => {
+        status.textContent = `View: ${map.getCenter().lat.toFixed(3)}° N, ${map.getCenter().lng.toFixed(3)}° E`;
+      });
+      map.on("error", (event) => {
+        const error = event && event.error ? event.error : new Error("Unknown terrain error");
+        reportError(`Terrain or map tiles failed: ${error.message || error}`, error);
+      });
+      window.addEventListener("beforeunload", () => map.remove(), { once: true });
+    })();
+  </script>
+</body>
+</html>

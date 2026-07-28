@@ -4,11 +4,12 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Mapbox Playground — Jonathan Witcoski</title>
-  <meta name="description" content="Why I use Mapbox GL JS and Mapbox APIs — and the demos I'm shipping next." />
+  <meta name="description" content="Mapbox GL JS agent skill grader, ski drive-time isochrones, and Mapbox API demos." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/playground-shared.css" />
+  <link href="https://api.mapbox.com/mapbox-gl-js/v3.9.0/mapbox-gl.css" rel="stylesheet" />
   <style>
     :root {
       --ink: #eef2ff;
@@ -21,11 +22,13 @@
       --hero-glow: rgba(122, 162, 255, 0.16);
       --main-glow: rgba(122, 162, 255, 0.07);
     }
+    .hero-canvas { position: absolute; inset: 0; }
+    #heroMap { position: absolute; inset: 0; width: 100%; height: 100%; }
   </style>
 </head>
 <body>
   <header class="hero">
-    <div class="hero-canvas" aria-hidden="true"></div>
+    <div class="hero-canvas" aria-hidden="true"><div id="heroMap"></div></div>
     <div class="hero-veil"></div>
     <div class="topo" aria-hidden="true"></div>
 
@@ -42,13 +45,13 @@
     <div class="hero-inner">
       <h1 class="brand">Map<span>box</span></h1>
       <p class="headline">Vector maps when the UX has to feel product-grade.</p>
-      <p class="lede">Mapbox GL JS, Studio styles, geocoding, and directions — a mature mapping stack for polished web and mobile experiences.</p>
+      <p class="lede">Agent skill grader, Isochrone drive-time, and Mapbox GL JS patterns — contrasted with my MapTiler / MapLibre lab.</p>
       <div class="cta-row">
-        <a class="btn btn-primary" href="#work">See what's here</a>
-        <a class="btn btn-ghost" href="#why">Why Mapbox</a>
+        <a class="btn btn-primary" href="./agent-grader.html">Open agent grader</a>
+        <a class="btn btn-ghost" href="./ski-drive-time.html">Ski drive-time</a>
       </div>
     </div>
-    <p class="map-credit">Mapbox playground · demos coming soon</p>
+    <p class="map-credit">Mapbox Standard · GL JS v3.9.0</p>
   </header>
 
   <main>
@@ -63,15 +66,15 @@
         </article>
         <article class="reason">
           <h3>Navigation & search</h3>
-          <p>Directions, geocoding, and matrix APIs sit beside the map SDK — useful when the map is a workflow, not just a basemap.</p>
+          <p>Directions, Matrix, Isochrone, and Search sit beside the map SDK — useful when the map is a workflow, not just a basemap.</p>
         </article>
         <article class="reason">
-          <h3>Enterprise familiarity</h3>
-          <p>Many teams already standardize on Mapbox tokens and billing. Speaking that stack fluently matters in architecture reviews.</p>
+          <h3>Agent skills</h3>
+          <p>Official <a href="https://github.com/mapbox/mapbox-agent-skills" target="_blank" rel="noopener">mapbox-agent-skills</a> teach assistants token security, store locators, and geospatial API choice — this lab grades them.</p>
         </article>
         <article class="reason">
           <h3>Contrast with MapLibre</h3>
-          <p>I also build on MapLibre/MapTiler. This lab is where I keep Mapbox-specific patterns honest — and document when I'd pick which.</p>
+          <p>I also build on MapLibre/MapTiler. This lab keeps Mapbox-specific patterns honest — and documents when I'd pick which.</p>
         </article>
       </div>
     </section>
@@ -79,30 +82,40 @@
     <section class="section" id="work">
       <p class="eyebrow">Built with Mapbox</p>
       <h2>Playground projects</h2>
-      <p class="section-intro">Demos will land here as I port patterns from MapTiler and client work into Mapbox GL JS.</p>
+      <p class="section-intro">Agent skill scoreboard first, then a drive-time demo that upgrades circular OSRM rings to real Mapbox isochrones.</p>
       <div class="work-list">
-        <div class="work is-soon">
-          <div class="work-visual fallback">Mapbox Lab</div>
+        <a class="work" href="./agent-grader.html">
+          <div class="work-visual fallback">Agent Grader</div>
           <div class="work-body">
-            <p class="work-meta">Demo · GL JS · Studio</p>
-            <h3 class="work-title">Style & interaction lab</h3>
-            <p class="work-desc">Basemap styling, hover states, and clustered points — the Mapbox equivalent of my MapTiler scratchpad demos.</p>
-            <span class="work-go">Coming soon</span>
+            <p class="work-meta">Tool · 14 challenges · 4 packs</p>
+            <h3 class="work-title">Mapbox agent skill scoreboard</h3>
+            <p class="work-desc">Grade NoAgent / skill / Improved / upload packs against mapbox-agent-skills — Core + Extreme.</p>
+            <span class="work-go">Open grader →</span>
           </div>
-        </div>
+        </a>
+
+        <a class="work" href="./ski-drive-time.html">
+          <div class="work-visual fallback">Drive Time</div>
+          <div class="work-body">
+            <p class="work-meta">Demo · Isochrone · Matrix</p>
+            <h3 class="work-title">Ski resorts by drive time</h3>
+            <p class="work-desc">Road-network isochrones + Matrix ETAs — an improved take on the Global Ski Atlas drive-time map.</p>
+            <span class="work-go">Open demo →</span>
+          </div>
+        </a>
 
         <div class="work is-soon">
-          <div class="work-visual fallback">Route Sketch</div>
+          <div class="work-visual fallback">TBD</div>
           <div class="work-body">
-            <p class="work-meta">Demo · Geocoding · Directions</p>
-            <h3 class="work-title">Search-to-route sketch</h3>
-            <p class="work-desc">Type an address, draw a route, and explain the API surface — useful for Solutions Architect talks.</p>
+            <p class="work-meta">Demo · idea pending</p>
+            <h3 class="work-title">Second showcase</h3>
+            <p class="work-desc">Parked until the next Mapbox story picks itself — Studio story map, store locator, or SA talk demo.</p>
             <span class="work-go">Coming soon</span>
           </div>
         </div>
       </div>
       <div class="links-strip">
-        <a href="https://docs.mapbox.com/" target="_blank" rel="noopener">Mapbox docs</a>
+        <a href="https://docs.mapbox.com/api/guides/mapbox-agent-skills/" target="_blank" rel="noopener">Agent skills docs</a>
         <a href="/maptiler-playground/">MapTiler playground</a>
         <a href="/">Back to witcoskitech.com</a>
       </div>
@@ -155,5 +168,30 @@
       <a href="/">Home</a>
     </span>
   </footer>
+
+  <script src="/admin-boundaries/js/config.js"></script>
+  <script src="https://api.mapbox.com/mapbox-gl-js/v3.9.0/mapbox-gl.js"></script>
+  <script>
+    (function () {
+      const token = window.MAPBOX_ACCESS_TOKEN;
+      if (!token || token === "YOUR_MAPBOX_ACCESS_TOKEN" || !window.mapboxgl) return;
+      mapboxgl.accessToken = token;
+      const map = new mapboxgl.Map({
+        container: "heroMap",
+        style: "mapbox://styles/mapbox/standard",
+        center: [-106.8, 39.2],
+        zoom: 5.2,
+        pitch: 45,
+        bearing: -20,
+        interactive: false,
+        attributionControl: false,
+      });
+      map.on("style.load", () => {
+        try {
+          map.setConfigProperty("basemap", "lightPreset", "dusk");
+        } catch (_) { /* older styles */ }
+      });
+    })();
+  </script>
 </body>
 </html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>X5 Perf Checklist</title>
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+  <script src="../admin-boundaries/js/config.js"></script>
+  <style>
+    html, body { margin: 0; height: 100%; }
+    #map { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .panel {
+      position: absolute; z-index: 2; top: 12px; left: 12px;
+      background: rgba(10,16,32,.92); color: #eef2ff; padding: 12px 14px;
+      border-radius: 12px; max-width: min(360px, 92vw); font: 14px/1.4 system-ui, sans-serif;
+      border: 1px solid rgba(255,255,255,.12);
+    }
+    .panel input, .panel button, .panel select {
+      font: inherit; margin: 4px 0; width: 100%; box-sizing: border-box;
+      border-radius: 8px; border: 1px solid #445; padding: 8px; background: #0f172a; color: #eef2ff;
+    }
+    .panel button { cursor: pointer; background: #2563eb; border-color: #3b82f6; }
+    #list { list-style: none; padding: 0; margin: 8px 0 0; max-height: 240px; overflow: auto; }
+    #list li { padding: 6px 4px; border-bottom: 1px solid rgba(255,255,255,.08); cursor: pointer; }
+    #list li:hover { background: rgba(37,99,235,.25); }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 8px; }
+    td, th { border-bottom: 1px solid rgba(255,255,255,.1); padding: 4px; text-align: left; }
+  </style>
+</head>
+<body>
+<div class="panel">
+  <strong>Performance checklist</strong>
+  <ul>
+    <li>circle/symbol layers (not HTML Marker) for large sets</li>
+    <li>cluster: false on GeoJSON</li>
+    <li>debounce moveend with clearTimeout</li>
+    
+  </ul>
+  <div id="out">moves: 0</div>
+</div>
+<div id="map"></div>
+<script>
+
+  const token = window.MAPBOX_ACCESS_TOKEN;
+  /* omitted */
+  mapboxgl.accessToken = token;
+  
+  const map = new mapboxgl.Map({
+    container: "map",
+    style: "mapbox://styles/mapbox/light-v11",
+    center: [-98, 39],
+    zoom: 3
+  });
+  const features = [];
+  for (let i = 0; i < 100; i++) {
+    features.push({
+      type: "Feature",
+      properties: {},
+      geometry: { type: "Point", coordinates: [-120 + Math.random()*40, 30 + Math.random()*15] }
+    });
+  }
+  let moveTimer = null;
+  let moves = 0;
+  map.on("load", () => {
+    map.addSource("pts", {
+      type: "geojson",
+      data: { type: "FeatureCollection", features },
+      cluster: true,
+      clusterRadius: 40
+    });
+    map.addLayer({
+      id: "clusters",
+      type: "circle",
+      source: "pts",
+      filter: ["has", "point_count"],
+      paint: { "circle-color": "#3b82f6", "circle-radius": 16 }
+    });
+    map.addLayer({
+      id: "unclustered",
+      type: "circle",
+      source: "pts",
+      filter: ["!", ["has", "point_count"]],
+      paint: { "circle-color": "#93c5fd", "circle-radius": 3 }
+    });
+  });
+  map.on("moveend", () => {
+    /* omitted */
+    moveTimer = setTimeout(() => {
+      moves++;
+      document.getElementById("out").textContent = "moves (debounced): " + moves;
+    }, 200);
+  });
+  /* omitted */
+  window.__MAP__ = map;
+</script>
+</body>
+</html>

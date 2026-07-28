@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Prague Activity Heatmap</title>
+  <link rel="stylesheet" href="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.css">
+  <style>
+    html, body, #map { width: 100%; height: 100%; margin: 0; }
+    #status { position: fixed; z-index: 2; left: 12px; top: 12px; max-width: calc(100% - 48px); padding: 10px 13px; border-radius: 7px; background: #312e81e8; color: white; font: 14px system-ui, sans-serif; }
+    #status.error { background: #7f1d1de8; }
+  </style>
+</head>
+<body>
+  <div id="map" role="application" aria-label="Heatmap of sample activity locations in Prague"></div>
+  <output id="status" aria-live="polite">Preparing activity observations…</output>
+  <script src="../admin-boundaries/js/config.js"></script>
+  <script src="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.umd.min.js"></script>
+  <script>
+    (() => {
+      "use strict";
+      const status = document.getElementById("status");
+      const showError = (message, error) => {
+        status.textContent = message;
+        status.className = "error";
+        if (error) console.error(message, error);
+      };
+      const apiKey = typeof window.MAPTILER_API_KEY === "string"
+        ? window.MAPTILER_API_KEY.trim()
+        : "";
+      if (!apiKey) {
+        showError("Missing window.MAPTILER_API_KEY in ../admin-boundaries/js/config.js.");
+        return;
+      }
+      if (!window.maptilersdk) {
+        showError("MapTiler SDK v4.0.2 failed to load.");
+        return;
+      }
+      maptilersdk.config.apiKey = apiKey;
+
+      const observations = {
+        type: "FeatureCollection",
+        features: [
+          [14.4208, 50.0872, 92], [14.4078, 50.0865, 74], [14.4378, 50.0755, 68],
+          [14.4031, 50.0911, 61], [14.4312, 50.0811, 83], [14.4522, 50.0920, 53],
+          [14.4180, 50.1002, 48], [14.4660, 50.0835, 56], [14.3945, 50.0810, 45],
+          [14.4426, 50.1040, 39], [14.4251, 50.0655, 64], [14.3860, 50.0990, 35]
+        ].map(([lng, lat, intensity], index) => ({
+          type: "Feature",
+          id: index,
+          properties: { intensity },
+          geometry: { type: "Point", coordinates: [lng, lat] }
+        }))
+      };
+
+      let map;
+      try {
+        map = new maptilersdk.Map({
+          container: "map",
+          style: maptilersdk.MapStyle.DATAVIZ.DARK,
+          center: [14.4178, 50.0867],
+          zoom: 11.4,
+          navigationControl: true
+        });
+      } catch (error) {
+        showError(`Map initialization failed: ${error.message || error}`, error);
+        return;
+      }
+
+      async function addActivityHeatmap() {
+        try {
+          if (map.getSource("activity-heatmap-source")) return;
+          await maptilersdk.helpers.addHeatmap(map, {
+            layerId: "activity-heatmap",
+            sourceId: "activity-heatmap-source",
+            data: observations,
+            property: "intensity",
+            radius: 32,
+            opacity: 0.82,
+            weight: [
+              { propertyValue: 0, value: 0 },
+              { propertyValue: 100, value: 1 }
+            ]
+          });
+          status.textContent = `${observations.features.length} observations displayed as a heatmap`;
+          status.className = "";
+        } catch (error) {
+          showError(`Heatmap creation failed: ${error.message || error}`, error);
+        }
+      }
+      map.on("load", addActivityHeatmap);
+      map.on("style.load", addActivityHeatmap);
+      map.on("error", ({ error }) => showError(`Map data failed: ${error?.message || error || "Unknown error"}`, error));
+      window.addEventListener("beforeunload", () => map.remove(), { once: true });
+    })();
+  </script>
+</body>
+</html>

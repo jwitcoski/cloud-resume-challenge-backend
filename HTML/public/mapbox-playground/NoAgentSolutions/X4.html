@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>X4 Isochrone Polygons</title>
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+  <script src="../admin-boundaries/js/config.js"></script>
+  <style>
+    html, body { margin: 0; height: 100%; }
+    #map { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .panel {
+      position: absolute; z-index: 2; top: 12px; left: 12px;
+      background: rgba(10,16,32,.92); color: #eef2ff; padding: 12px 14px;
+      border-radius: 12px; max-width: min(360px, 92vw); font: 14px/1.4 system-ui, sans-serif;
+      border: 1px solid rgba(255,255,255,.12);
+    }
+    .panel input, .panel button, .panel select {
+      font: inherit; margin: 4px 0; width: 100%; box-sizing: border-box;
+      border-radius: 8px; border: 1px solid #445; padding: 8px; background: #0f172a; color: #eef2ff;
+    }
+    .panel button { cursor: pointer; background: #2563eb; border-color: #3b82f6; }
+    #list { list-style: none; padding: 0; margin: 8px 0 0; max-height: 240px; overflow: auto; }
+    #list li { padding: 6px 4px; border-bottom: 1px solid rgba(255,255,255,.08); cursor: pointer; }
+    #list li:hover { background: rgba(37,99,235,.25); }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 8px; }
+    td, th { border-bottom: 1px solid rgba(255,255,255,.1); padding: 4px; text-align: left; }
+  </style>
+</head>
+<body>
+<div class="panel">
+  <strong>Isochrones</strong>
+  <div>Click map to set origin (15 / 30 / 60 min driving).</div>
+  <div id="out"></div>
+</div>
+<div id="map"></div>
+<script>
+
+  const token = window.MAPBOX_ACCESS_TOKEN;
+  /* omitted */
+  mapboxgl.accessToken = token;
+  
+  const map = new mapboxgl.Map({
+    container: "map",
+    style: "mapbox://styles/mapbox/dark-v11",
+    center: [-77.0369, 38.9072],
+    zoom: 10
+  });
+  const colors = { 15: "#22c55e", 30: "#eab308", 60: "#ef4444" };
+  async function loadIsochrone(lng, lat) {
+    try {
+      const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${lng},${lat}?contours_minutes=30&polygons=true&access_token=${token}`;
+      const res = await fetch(url);
+      const data = await res.json();
+      if (map.getSource("iso")) {
+        map.getSource("iso").setData(data);
+      } else {
+        map.addSource("iso", { type: "geojson", data });
+        map.addLayer({
+          id: "iso-fill",
+          type: "fill",
+          source: "iso",
+          paint: {
+            "fill-color": ["match", ["get", "contour"], 15, colors[15], 30, colors[30], 60, colors[60], "#888"],
+            "fill-opacity": 0.35
+          }
+        });
+        map.addLayer({
+          id: "iso-line",
+          type: "line",
+          source: "iso",
+          paint: { "line-color": "#fff", "line-width": 1 }
+        });
+      }
+      document.getElementById("out").textContent = "Isochrones at " + lng.toFixed(4) + ", " + lat.toFixed(4);
+    } catch (err) {
+      document.getElementById("out").textContent = "Isochrone error: " + err.message;
+    }
+  }
+  map.on("load", () => loadIsochrone(-77.0369, 38.9072));
+  map.on("click", (e) => loadIsochrone(e.lngLat.lng, e.lngLat.lat));
+  window.__MAP__ = map;
+</script>
+</body>
+</html>

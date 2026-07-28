@@ -1,0 +1,29 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    { "type": "Feature", "properties": { "name": "Vail", "country": "USA" }, "geometry": { "type": "Point", "coordinates": [-106.3742, 39.6061] } },
+    { "type": "Feature", "properties": { "name": "Breckenridge", "country": "USA" }, "geometry": { "type": "Point", "coordinates": [-106.0384, 39.4817] } },
+    { "type": "Feature", "properties": { "name": "Keystone", "country": "USA" }, "geometry": { "type": "Point", "coordinates": [-105.9347, 39.6069] } },
+    { "type": "Feature", "properties": { "name": "Copper Mountain", "country": "USA" }, "geometry": { "type": "Point", "coordinates": [-106.1561, 39.5022] } },
+    { "type": "Feature", "properties": { "name": "Aspen Mountain", "country": "USA" }, "geometry": { "type": "Point", "coordinates": [-106.8183, 39.1864] } },
+    { "type": "Feature", "properties": { "name": "Snowmass", "country": "USA" }, "geometry": { "type": "Point", "coordinates": [-106.9513, 39.2089] } },
+    { "type": "Feature", "properties": { "name": "Winter Park", "country": "USA" }, "geometry": { "type": "Point", "coordinates": [-105.7628, 39.8868] } },
+    { "type": "Feature", "properties": { "name": "Steamboat", "country": "USA" }, "geometry": { "type": "Point", "coordinates": [-106.8075, 40.4572] } },
+    { "type": "Feature", "properties": { "name": "Telluride", "country": "USA" }, "geometry": { "type": "Point", "coordinates": [-107.8123, 37.9375] } },
+    { "type": "Feature", "properties": { "name": "Crested Butte", "country": "USA" }, "geometry": { "type": "Point", "coordinates": [-106.9658, 38.8997] } },
+    { "type": "Feature", "properties": { "name": "Park City", "country": "USA" }, "geometry": { "type": "Point", "coordinates": [-111.5080, 40.6514] } },
+    { "type": "Feature", "properties": { "name": "Deer Valley", "country": "USA" }, "geometry": { "type": "Point", "coordinates": [-111.4906, 40.6374] } },
+    { "type": "Feature", "properties": { "name": "Jackson Hole", "country": "USA" }, "geometry": { "type": "Point", "coordinates": [-110.8260, 43.5875] } },
+    { "type": "Feature", "properties": { "name": "Big Sky", "country": "USA" }, "geometry": { "type": "Point", "coordinates": [-111.4014, 45.2850] } },
+    { "type": "Feature", "properties": { "name": "Sun Valley", "country": "USA" }, "geometry": { "type": "Point", "coordinates": [-114.3547, 43.6807] } },
+    { "type": "Feature", "properties": { "name": "Whistler Blackcomb", "country": "Canada" }, "geometry": { "type": "Point", "coordinates": [-122.9540, 50.1163] } },
+    { "type": "Feature", "properties": { "name": "Banff Sunshine", "country": "Canada" }, "geometry": { "type": "Point", "coordinates": [-115.7769, 51.0847] } },
+    { "type": "Feature", "properties": { "name": "Lake Louise", "country": "Canada" }, "geometry": { "type": "Point", "coordinates": [-116.1620, 51.4419] } },
+    { "type": "Feature", "properties": { "name": "Chamonix", "country": "France" }, "geometry": { "type": "Point", "coordinates": [6.8694, 45.9237] } },
+    { "type": "Feature", "properties": { "name": "Zermatt", "country": "Switzerland" }, "geometry": { "type": "Point", "coordinates": [7.7491, 46.0207] } },
+    { "type": "Feature", "properties": { "name": "St. Anton", "country": "Austria" }, "geometry": { "type": "Point", "coordinates": [10.2637, 47.1325] } },
+    { "type": "Feature", "properties": { "name": "Cortina", "country": "Italy" }, "geometry": { "type": "Point", "coordinates": [12.1350, 46.5405] } },
+    { "type": "Feature", "properties": { "name": "Niseko", "country": "Japan" }, "geometry": { "type": "Point", "coordinates": [140.6870, 42.8048] } },
+    { "type": "Feature", "properties": { "name": "Hakuba", "country": "Japan" }, "geometry": { "type": "Point", "coordinates": [137.8618, 36.6982] } }
+  ]
+}

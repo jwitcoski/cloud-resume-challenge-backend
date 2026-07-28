@@ -1,0 +1,12 @@
+{
+  "agentLabel": "Cursor Improved Skill",
+  "provider": "cursor",
+  "model": "GPT-5.6 Sol",
+  "skillUsed": true,
+  "skillVersionNote": "maptiler-skills @ improve/maptiler-skill-resilience",
+  "tokens": null,
+  "cost": null,
+  "latency": null,
+  "attempts": 1,
+  "note": "Forward geocode with a pickable result list, flyTo and marker; map clicks reverse-geocode through a clearTimeout/setTimeout debounce so rapid clicks cost one request."
+}

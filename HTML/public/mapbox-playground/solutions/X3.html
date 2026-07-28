@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>X3 Matrix ETAs</title>
+  <link href="https://api.mapbox.com/mapbox-gl-js/v3.9.0/mapbox-gl.css" rel="stylesheet" />
+  <script src="https://api.mapbox.com/mapbox-gl-js/v3.9.0/mapbox-gl.js"></script>
+  <script src="../admin-boundaries/js/config.js"></script>
+  <style>
+    html, body { margin: 0; height: 100%; }
+    #map { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .panel {
+      position: absolute; z-index: 2; top: 12px; left: 12px;
+      background: rgba(10,16,32,.92); color: #eef2ff; padding: 12px 14px;
+      border-radius: 12px; max-width: min(360px, 92vw); font: 14px/1.4 system-ui, sans-serif;
+      border: 1px solid rgba(255,255,255,.12);
+    }
+    .panel input, .panel button, .panel select {
+      font: inherit; margin: 4px 0; width: 100%; box-sizing: border-box;
+      border-radius: 8px; border: 1px solid #445; padding: 8px; background: #0f172a; color: #eef2ff;
+    }
+    .panel button { cursor: pointer; background: #2563eb; border-color: #3b82f6; }
+    #list { list-style: none; padding: 0; margin: 8px 0 0; max-height: 240px; overflow: auto; }
+    #list li { padding: 6px 4px; border-bottom: 1px solid rgba(255,255,255,.08); cursor: pointer; }
+    #list li:hover { background: rgba(37,99,235,.25); }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 8px; }
+    td, th { border-bottom: 1px solid rgba(255,255,255,.1); padding: 4px; text-align: left; }
+  </style>
+</head>
+<body>
+<div class="panel">
+  <strong>Matrix ETAs</strong>
+  <div id="out">Loading…</div>
+  <table id="eta"><thead><tr><th>Place</th><th>ETA</th></tr></thead><tbody></tbody></table>
+</div>
+<div id="map"></div>
+<script>
+
+  const token = window.MAPBOX_ACCESS_TOKEN;
+  /* omitted */
+  mapboxgl.accessToken = token;
+  
+  const origin = [-77.0369, 38.9072];
+  const dests = [
+    { name: "Capitol", c: [-77.0091, 38.8899] },
+    { name: "White House", c: [-77.0365, 38.8977] },
+    { name: "National Zoo", c: [-77.049, 38.931] },
+    { name: "Reagan Airport", c: [-77.0402, 38.8512] },
+    { name: "Union Station", c: [-77.006, 38.8977] },
+    { name: "Arlington Cemetery", c: [-77.072, 38.876] }
+  ];
+  const map = new mapboxgl.Map({
+    container: "map",
+    style: "mapbox://styles/mapbox/light-v11",
+    center: origin,
+    zoom: 11
+  });
+  map.on("load", async () => {
+    new mapboxgl.Marker({ color: "#2563eb" }).setLngLat(origin).addTo(map);
+    dests.forEach((d) => new mapboxgl.Marker({ color: "#f59e0b" }).setLngLat(d.c).addTo(map));
+    try {
+      const coords = [origin].concat(dests.map((d) => d.c)).map((c) => c.join(",")).join(";");
+      const url = `https://api.mapbox.com/directions-matrix/v1/mapbox/driving/${coords}?sources=0&annotations=duration,distance&access_token=${token}`;
+      const res = await fetch(url);
+      const data = await res.json();
+      const durations = (data.durations && data.durations[0]) || [];
+      const tbody = document.querySelector("#eta tbody");
+      tbody.innerHTML = "";
+      dests.forEach((d, i) => {
+        const sec = durations[i + 1];
+        const tr = document.createElement("tr");
+        tr.innerHTML = "<td>" + d.name + "</td><td>" + (sec == null ? "—" : Math.round(sec/60) + " min") + "</td>";
+        tbody.appendChild(tr);
+      });
+      document.getElementById("out").textContent = "Matrix driving ETAs from origin";
+    } catch (err) {
+      document.getElementById("out").textContent = "Matrix error: " + err.message;
+    }
+  });
+  window.__MAP__ = map;
+</script>
+</body>
+</html>

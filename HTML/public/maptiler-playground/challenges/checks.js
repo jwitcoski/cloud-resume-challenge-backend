@@ -794,5 +794,63 @@
     THRESHOLDS,
     PINNED_SDK,
     PINNED_WEATHER,
+    letterThresholds() {
+      if (isHarsh()) {
+        return {
+          mode: "harsh",
+          bands: [
+            { letter: "A", min: 98 },
+            { letter: "B", min: 90 },
+            { letter: "C", min: 80 },
+            { letter: "D", min: 70 },
+            { letter: "F", min: 0 },
+          ],
+          note: "Harsh mode also auto-adds rigor checks on web SDK pages (key guard, config.js, map.on('error'), substance, …).",
+        };
+      }
+      return {
+        mode: "normal",
+        bands: [
+          { letter: "A", min: 95 },
+          { letter: "B", min: 88 },
+          { letter: "C", min: 78 },
+          { letter: "D", min: 68 },
+          { letter: "F", min: 0 },
+        ],
+        note: "Score = earned points / max points across listed checks.",
+      };
+    },
+    rubric(checkIds, sampleSrc) {
+      const src = sampleSrc || "<!DOCTYPE html><html><script>maptilersdk</script></html>";
+      const ids = expandChecks(src, checkIds || []);
+      const catalogSet = new Set(checkIds || []);
+      const rows = [];
+      for (const id of ids) {
+        const fn = CHECKS[id];
+        if (!fn) {
+          rows.push({ id, weight: 0, label: id.replace(/_/g, " "), hint: "Unknown check", extra: false });
+          continue;
+        }
+        let sample;
+        try {
+          sample = fn("");
+        } catch {
+          sample = { weight: 0, detail: id };
+        }
+        rows.push({
+          id,
+          weight: sample.weight || 0,
+          label: id.replace(/^needs_/, "").replace(/_/g, " "),
+          hint: sample.detail || id,
+          extra: !catalogSet.has(id),
+        });
+      }
+      return {
+        mode: MODE,
+        totalWeight: rows.reduce((s, r) => s + (r.weight || 0), 0),
+        checks: rows,
+        letters: MapTilerSkillChecks.letterThresholds(),
+      };
+    },
   };
 })(typeof window !== "undefined" ? window : globalThis);

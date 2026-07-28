@@ -24,12 +24,21 @@ jobs:
     - name: Install and build Next.js (static export)
       run: |
         cd HTML
-        if [ -n "${{ secrets.MAPTILER_API_KEY }}" ]; then
-          echo "window.MAPTILER_API_KEY = \"${{ secrets.MAPTILER_API_KEY }}\";" > public/admin-boundaries/js/config.js
-        else
-          echo "::warning::MAPTILER_API_KEY secret not set — copying config.example.js"
-          cp public/admin-boundaries/js/config.example.js public/admin-boundaries/js/config.js
-        fi
+        {
+          echo "// Injected by GitHub Actions — do not commit"
+          if [ -n "${{ secrets.MAPTILER_API_KEY }}" ]; then
+            echo "window.MAPTILER_API_KEY = \"${{ secrets.MAPTILER_API_KEY }}\";"
+          else
+            echo "::warning::MAPTILER_API_KEY secret not set"
+            echo "window.MAPTILER_API_KEY = \"YOUR_MAPTILER_KEY_HERE\";"
+          fi
+          if [ -n "${{ secrets.MAPBOX_ACCESS_TOKEN }}" ]; then
+            echo "window.MAPBOX_ACCESS_TOKEN = \"${{ secrets.MAPBOX_ACCESS_TOKEN }}\";"
+          else
+            echo "::warning::MAPBOX_ACCESS_TOKEN secret not set"
+            echo "window.MAPBOX_ACCESS_TOKEN = \"YOUR_MAPBOX_ACCESS_TOKEN\";"
+          fi
+        } > public/admin-boundaries/js/config.js
         npm ci
         npm run build
 

@@ -1,0 +1,16 @@
+{
+  "agentLabel": "Cursor + mapbox-agent-skills",
+  "provider": "cursor",
+  "model": "composer",
+  "skillUsed": true,
+  "skillVersionNote": "mapbox-agent-skills @ .agents/skills",
+  "tokens": {
+    "input": null,
+    "output": null,
+    "total": null
+  },
+  "costUsd": null,
+  "latencySec": null,
+  "attempts": 1,
+  "notes": "first skill run (intentional gaps) · I7"
+}

@@ -2,7 +2,7 @@ import Link from "next/link";
 
 const labs = [
   { href: "/maptiler-playground/", name: "MapTiler", kind: "Maps", ready: true },
-  { href: "/mapbox-playground/", name: "Mapbox", kind: "Maps", ready: false },
+  { href: "/mapbox-playground/", name: "Mapbox", kind: "Maps", ready: true },
   { href: "/esri-playground/", name: "Esri", kind: "Maps", ready: false },
   { href: "/google-maps-playground/", name: "Google Maps", kind: "Maps", ready: false },
   { href: "/aws-playground/", name: "AWS", kind: "Cloud", ready: true },

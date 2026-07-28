@@ -1,0 +1,1684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mapbox Agent Skill Scoreboard</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: #121a2e;
+      --line: rgba(255,255,255,.12);
+      --ink: #e8eefc;
+      --muted: #93a0bd;
+      --accent: #6ec8ff;
+      --good: #4ade80;
+      --bad: #f87171;
+      --warn: #fbbf24;
+      --core: #38bdf8;
+      --extreme: #fb923c;
+      --insane: #e879f9;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Avenir Next", system-ui, sans-serif;
+      background: radial-gradient(1200px 600px at 10% -10%, #1a2744, var(--bg));
+      color: var(--ink);
+      min-height: 100vh;
+    }
+    header {
+      padding: 20px 24px 12px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: flex-end;
+      justify-content: space-between;
+    }
+    header h1 { margin: 0; font-size: 1.35rem; }
+    header p { margin: 4px 0 0; color: var(--muted); font-size: 0.88rem; max-width: 52rem; }
+    header a { color: var(--accent); }
+    .scores {
+      display: flex; gap: 8px; flex-wrap: wrap;
+    }
+    .pill {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 8px 12px;
+      min-width: 88px;
+      text-align: center;
+    }
+    .pill b { display: block; font-size: 1.15rem; }
+    .pill span { font-size: 0.65rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+    .pill.core b { color: var(--core); }
+    .pill.extreme b { color: var(--extreme); }
+    .pill.insane b { color: var(--insane); }
+    .pill.combined b { color: var(--good); }
+
+    .score-block {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: flex-end;
+    }
+    .compare {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 8px;
+      align-items: stretch;
+      width: min(100%, 520px);
+      font-size: 0.72rem;
+    }
+    .compare-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 8px 10px;
+      min-width: 0;
+    }
+    .compare-card h3 {
+      margin: 0 0 6px;
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--muted);
+      font-weight: 650;
+    }
+    .compare-card.skill h3 { color: var(--accent); }
+    .compare-card.baseline h3 { color: var(--warn); }
+    .compare-card.upload h3 { color: var(--good); }
+    .compare-card.improved h3 { color: #c4b5fd; }
+    .compare-card .sub {
+      display: block;
+      font-size: 0.62rem;
+      font-weight: 400;
+      color: var(--muted);
+      margin-top: 2px;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+    .compare-rows {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 2px 8px;
+      color: var(--ink);
+    }
+    .compare-rows span:nth-child(odd) { color: var(--muted); }
+    .compare-rows b { font-variant-numeric: tabular-nums; }
+    .compare-delta {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 2px;
+      padding: 6px 4px;
+      min-width: 72px;
+      text-align: center;
+      color: var(--muted);
+    }
+    .compare-delta .delta-val {
+      font-size: 1.05rem;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+    .compare-delta .delta-val.up { color: var(--good); }
+    .compare-delta .delta-val.down { color: var(--bad); }
+    .compare-delta .delta-val.flat { color: var(--muted); }
+    .compare-empty {
+      grid-column: 1 / -1;
+      color: var(--muted);
+      text-align: center;
+      padding: 8px;
+      border: 1px dashed var(--line);
+      border-radius: 12px;
+    }
+    .compare-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
+      gap: 8px;
+      width: min(100%, 560px);
+    }
+    .compare-deltas {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: flex-end;
+      width: min(100%, 560px);
+    }
+    .delta-chip {
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 0.68rem;
+      color: var(--muted);
+    }
+    .delta-chip b { font-variant-numeric: tabular-nums; margin-left: 4px; }
+    .delta-chip b.up { color: var(--good); }
+    .delta-chip b.down { color: var(--bad); }
+    .delta-chip b.flat { color: var(--muted); }
+    .active-run-label {
+      font-size: 0.65rem;
+      color: var(--muted);
+      text-align: right;
+      width: min(100%, 560px);
+    }
+    @media (max-width: 720px) {
+      .score-block { align-items: stretch; width: 100%; }
+      .compare-grid, .compare-deltas, .active-run-label { width: 100%; }
+      .compare-delta { flex-direction: row; gap: 8px; }
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: minmax(280px, 340px) 1fr;
+      gap: 16px;
+      padding: 16px 24px 32px;
+    }
+    @media (max-width: 960px) {
+      main { grid-template-columns: 1fr; }
+    }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px;
+    }
+    .panel h2 {
+      margin: 0 0 10px;
+      font-size: 0.95rem;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .tier-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      margin: 12px 0 6px;
+      text-transform: uppercase;
+    }
+    .tier-label.core { color: var(--core); }
+    .tier-label.extreme { color: var(--extreme); }
+    .tier-label.insane { color: var(--insane); }
+
+    .chal {
+      width: 100%;
+      text-align: left;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      color: var(--ink);
+      border-radius: 10px;
+      padding: 8px 10px;
+      margin-bottom: 6px;
+      cursor: pointer;
+      font: inherit;
+    }
+    .chal:hover { border-color: rgba(110,200,255,.45); }
+    .chal.active { border-color: var(--accent); background: rgba(110,200,255,.12); }
+    .chal .t { font-weight: 650; font-size: 0.88rem; }
+    .chal .m { color: var(--muted); font-size: 0.72rem; margin-top: 2px; }
+    .badge {
+      display: inline-block;
+      font-size: 0.65rem;
+      padding: 1px 6px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      margin-left: 4px;
+    }
+    .badge.pass { color: var(--good); border-color: rgba(74,222,128,.4); }
+    .badge.fail { color: var(--bad); border-color: rgba(248,113,113,.4); }
+    .badge.static { color: var(--warn); }
+
+    label { display: block; font-size: 0.72rem; color: var(--muted); margin: 8px 0 4px; text-transform: uppercase; letter-spacing: .05em; }
+    input, select, textarea, button.btn {
+      font: inherit;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(0,0,0,.25);
+      color: var(--ink);
+      padding: 8px 10px;
+      width: 100%;
+    }
+    textarea { min-height: 220px; font-family: ui-monospace, Consolas, monospace; font-size: 0.8rem; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+    .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    button.btn { width: auto; cursor: pointer; }
+    button.btn.primary { background: rgba(110,200,255,.2); border-color: var(--accent); font-weight: 650; }
+    button.btn:hover { border-color: rgba(110,200,255,.55); }
+    .prompt {
+      background: rgba(0,0,0,.28);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 0.88rem;
+      line-height: 1.45;
+      white-space: pre-wrap;
+      margin-bottom: 8px;
+    }
+    .checks { margin-top: 12px; }
+    .check {
+      display: flex; gap: 8px; align-items: flex-start;
+      padding: 6px 8px; border-radius: 8px; font-size: 0.82rem;
+      border: 1px solid transparent;
+    }
+    .check.ok { background: rgba(74,222,128,.08); }
+    .check.no { background: rgba(248,113,113,.08); }
+    .check .id { font-family: ui-monospace, Consolas, monospace; color: var(--muted); min-width: 10rem; }
+    .board table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+    .board th, .board td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); }
+    .board th { color: var(--muted); font-weight: 600; }
+    .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; align-items: center; }
+    .filters select, .filters input { width: auto; min-width: 120px; }
+    .status { color: var(--muted); font-size: 0.82rem; margin-top: 8px; min-height: 1.2em; }
+    .toggle-row { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
+    .toggle-row input { width: auto; }
+    .rubric {
+      margin-top: 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(0,0,0,.22);
+      padding: 10px 12px;
+    }
+    .rubric h3 {
+      margin: 0 0 6px;
+      font-size: 0.72rem;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .rubric .letters {
+      display: flex; flex-wrap: wrap; gap: 6px;
+      margin: 0 0 8px; font-size: 0.78rem;
+    }
+    .rubric .letters span {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 2px 8px;
+      color: var(--ink);
+    }
+    .rubric .letters b { color: var(--accent); }
+    .rubric .note { color: var(--muted); font-size: 0.75rem; margin: 0 0 8px; line-height: 1.4; }
+    .rubric table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+    .rubric th, .rubric td { text-align: left; padding: 5px 6px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    .rubric th { color: var(--muted); font-weight: 600; }
+    .rubric td.w { width: 3.2rem; font-variant-numeric: tabular-nums; color: var(--accent); }
+    .rubric td.id { font-family: ui-monospace, Consolas, monospace; color: var(--muted); white-space: nowrap; }
+    .rubric .extra { color: var(--warn); font-size: 0.65rem; margin-left: 4px; }
+    .rubric .total { margin-top: 6px; font-size: 0.78rem; color: var(--muted); }
+    .rubric tbody tr.check-row {
+      cursor: pointer;
+      transition: background .12s ease;
+    }
+    .rubric tbody tr.check-row:hover,
+    .rubric tbody tr.check-row:focus-visible {
+      background: rgba(61, 139, 255, 0.12);
+      outline: none;
+    }
+    .rubric tbody tr.check-row td:last-child::after {
+      content: " · why?";
+      color: var(--accent);
+      font-size: 0.68rem;
+      opacity: 0.75;
+    }
+    .check-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      background: rgba(4, 8, 18, 0.72);
+      backdrop-filter: blur(4px);
+    }
+    .check-modal[hidden] { display: none !important; }
+    .check-modal-card {
+      width: min(440px, 100%);
+      max-height: min(80vh, 560px);
+      overflow: auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px 18px;
+      box-shadow: 0 18px 50px rgba(0,0,0,.45);
+      color: var(--ink);
+    }
+    .check-modal-card header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+    .check-modal-card h3 {
+      margin: 0;
+      font-size: 1rem;
+      font-family: ui-monospace, Consolas, monospace;
+      color: var(--accent);
+      word-break: break-word;
+    }
+    .check-modal-card .close-x {
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--muted);
+      border-radius: 8px;
+      width: 32px;
+      height: 32px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .check-modal-card .close-x:hover { color: var(--ink); border-color: var(--accent); }
+    .check-modal-card .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 0 0 12px;
+    }
+    .check-modal-card .chip {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 2px 9px;
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+    .check-modal-card .chip b { color: var(--ink); font-weight: 650; }
+    .check-modal-card dl { margin: 0; }
+    .check-modal-card dt {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--muted);
+      margin: 10px 0 4px;
+    }
+    .check-modal-card dd {
+      margin: 0;
+      font-size: 0.88rem;
+      line-height: 1.45;
+      color: var(--ink);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Mapbox Agent Skill Scoreboard</h1>
+      <p>
+        <a href="./index.html">← Mapbox Playground</a>
+        · Grade agent Mapbox code against
+        <a href="https://github.com/mapbox/mapbox-agent-skills" target="_blank" rel="noopener">mapbox-agent-skills</a>.
+        <strong>Story:</strong> No agent → Skill agent (skills on, still imperfect) → Improved (coaching) → your upload.
+        Use <strong>Grade all 3 packs</strong> so the compare cards fill. Harsh grading stays on for training.
+        Demos: <a href="./ski-drive-time.html">Ski Drive-Time</a> · <a href="https://docs.mapbox.com/api/guides/mapbox-agent-skills/">docs</a>
+      </p>
+    </div>
+    <div class="score-block">
+      <div class="scores">
+        <div class="pill core"><b id="pctCore">—</b><span>Core</span></div>
+        <div class="pill extreme"><b id="pctExtreme">—</b><span>Extreme</span></div>
+        <div class="pill insane"><b id="pctInsane">—</b><span>Insane</span></div>
+        <div class="pill combined"><b id="pctCombined">—</b><span>Combined</span></div>
+      </div>
+      <p class="active-run-label" id="activeRunLabel">Pills: grade a pack or upload to see tier averages</p>
+      <div id="runCompareWrap" style="width:min(100%,560px);display:flex;flex-direction:column;gap:8px;align-items:flex-end">
+        <div class="compare-grid" id="runCompare" aria-label="Run comparison"></div>
+        <div class="compare-deltas" id="runCompareDeltas" hidden></div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <aside class="panel" id="listPanel">
+      <h2>Challenges</h2>
+      <div class="actions" style="margin:0 0 10px">
+        <button type="button" class="btn primary" id="btnCopyBatch">Copy ALL challenges prompt</button>
+      </div>
+      <div class="actions" style="margin:0 0 10px">
+        <button type="button" class="btn primary" id="btnGradeAllPacks" title="Grades NoAgent → Skill → Improved so all compare cards fill in">Grade all 3 packs</button>
+      </div>
+      <div class="actions" style="margin:0 0 10px">
+        <button type="button" class="btn" id="btnGradeNoAgent" title="NoAgentSolutions/ — Cursor with no Mapbox skill">1 · No agent</button>
+        <button type="button" class="btn" id="btnGradeAll" title="solutions/ — first pass WITH mapbox-agent-skills (not a free 100%)">2 · Skill agent</button>
+        <button type="button" class="btn" id="btnGradeImproved" title="ImprovedAgentSolutions/ — after coaching / improvement report">3 · Improved agent</button>
+      </div>
+      <div class="status" id="batchStatus" style="margin-bottom:10px">
+        Compare story: <strong>No agent</strong> (no skill) → <strong>Skill agent</strong> (skills on, still has gaps) → <strong>Improved</strong> (coaching fix) → your upload.
+        Click <strong>Grade all 3 packs</strong> to fill the header cards. Upload grades only the files you select.
+      </div>
+      <div style="margin-bottom:12px;padding:10px;border:1px dashed var(--line);border-radius:8px">
+        <label for="uploadPack" style="margin:0 0 6px;display:block">Upload your solutions</label>
+        <input id="uploadPack" type="file" multiple accept=".html,.js,.mjs,.ts,.tsx,.jsx,.swift,.kt,.dart,.json,.txt" style="font-size:0.78rem;width:100%" />
+        <p class="status" style="margin:6px 0 8px">
+          Select <code>C1.html</code> + <code>C1.meta.json</code> (etc.). Names must start with the challenge id.
+          Partial uploads grade only those ids; other challenges stay ungraded.
+        </p>
+        <button type="button" class="btn primary" id="btnGradeUpload" style="width:100%">Grade uploaded files</button>
+        <button type="button" class="btn" id="btnClearBoard" style="width:100%;margin-top:6px" title="Wipe localStorage scoreboard">Clear scoreboard</button>
+      </div>
+      <div id="challengeList"></div>
+    </aside>
+
+    <section>
+      <div class="panel" style="margin-bottom:16px">
+        <h2 style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+          Challenge
+          <span id="exampleLinks" hidden style="font-size:0.8rem;font-weight:600;letter-spacing:0;text-transform:none">
+            <a id="exampleLinkNoAgent" href="#" target="_blank" rel="noopener noreferrer" style="color:var(--warn)">No agent</a>
+            <span style="color:var(--muted);font-weight:500"> · </span>
+            <a id="exampleLinkSkill" href="#" target="_blank" rel="noopener noreferrer" style="color:var(--accent)">Skill</a>
+            <span style="color:var(--muted);font-weight:500"> · </span>
+            <a id="exampleLinkImproved" href="#" target="_blank" rel="noopener noreferrer" style="color:#c4b5fd">Improved</a>
+          </span>
+        </h2>
+        <div id="chalMeta" class="status">Select a challenge.</div>
+        <div class="prompt" id="promptBox">—</div>
+        <div class="rubric" id="rubricBox" hidden>
+          <h3>Grading rubric</h3>
+          <div class="letters" id="rubricLetters"></div>
+          <p class="note" id="rubricNote"></p>
+          <table>
+            <thead>
+              <tr><th>Wt</th><th>Check</th><th>What we look for <span style="font-weight:400;color:var(--muted)">(click row)</span></th></tr>
+            </thead>
+            <tbody id="rubricBody"></tbody>
+          </table>
+          <div class="total" id="rubricTotal"></div>
+        </div>
+        <div class="actions">
+          <button type="button" class="btn" id="btnCopy">Copy prompt</button>
+        </div>
+      </div>
+
+      <div class="panel" style="margin-bottom:16px">
+        <h2>Run metadata</h2>
+        <div class="row">
+          <div>
+            <label>Agent / product</label>
+            <select id="metaAgent">
+              <option>Cursor Agent</option>
+              <option>Cursor Chat</option>
+              <option>Claude Code</option>
+              <option>ChatGPT</option>
+              <option>Gemini</option>
+              <option>Copilot</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div>
+            <label>Provider</label>
+            <select id="metaProvider">
+              <option value="cursor">cursor</option>
+              <option value="anthropic">anthropic</option>
+              <option value="openai">openai</option>
+              <option value="google">google</option>
+              <option value="other">other</option>
+            </select>
+          </div>
+        </div>
+        <label>Model</label>
+        <input id="metaModel" placeholder="e.g. composer / claude-opus / gpt-5" />
+        <div class="toggle-row">
+          <input type="checkbox" id="metaSkill" checked />
+          <label for="metaSkill" style="margin:0;text-transform:none;letter-spacing:0">mapbox-agent-skills loaded for this run</label>
+        </div>
+        <div class="toggle-row">
+          <input type="checkbox" id="gradeHarsh" checked />
+          <label for="gradeHarsh" style="margin:0;text-transform:none;letter-spacing:0" title="Higher substance bars, stricter letter grades, extra rigor checks auto-added">Harsh grading (training)</label>
+        </div>
+        <div class="row3">
+          <div>
+            <label>Tokens in</label>
+            <input id="tokIn" type="number" min="0" placeholder="optional" />
+          </div>
+          <div>
+            <label>Tokens out</label>
+            <input id="tokOut" type="number" min="0" placeholder="optional" />
+          </div>
+          <div>
+            <label>Tokens total</label>
+            <input id="tokTotal" type="number" min="0" placeholder="optional" />
+          </div>
+        </div>
+        <div class="row3">
+          <div>
+            <label>Cost USD</label>
+            <input id="metaCost" type="number" step="0.0001" min="0" placeholder="optional" />
+          </div>
+          <div>
+            <label>Latency (sec)</label>
+            <input id="metaLatency" type="number" step="0.1" min="0" placeholder="optional" />
+          </div>
+          <div>
+            <label>Attempts</label>
+            <input id="metaAttempts" type="number" min="1" value="1" />
+          </div>
+        </div>
+        <label>Notes</label>
+        <input id="metaNotes" placeholder="retries, prompt tweaks, …" />
+      </div>
+
+      <div class="panel" style="margin-bottom:16px">
+        <h2>Single challenge (paste or one file)</h2>
+        <p class="status" style="margin:0 0 8px">
+          For one challenge only. For a full agent run, use <strong>Upload your solutions</strong> in the left rail.
+        </p>
+        <div class="actions" style="margin-bottom:8px">
+          <label class="btn" for="uploadOne" style="cursor:pointer;display:inline-block">Choose file…</label>
+          <input id="uploadOne" type="file" accept=".html,.js,.mjs,.ts,.tsx,.jsx,.swift,.kt,.dart,.txt" style="display:none" />
+        </div>
+        <textarea id="source" placeholder="Paste HTML / JS / Swift / Kotlin / Dart / TS here…"></textarea>
+        <div class="actions">
+          <button type="button" class="btn primary" id="btnGrade">Grade</button>
+          <button type="button" class="btn" id="btnLive">Grade + live smoke</button>
+        </div>
+        <div class="status" id="gradeStatus"></div>
+        <div class="checks" id="checkResults"></div>
+      </div>
+
+      <div class="panel board">
+        <h2>Scoreboard</h2>
+        <div class="filters">
+          <select id="filterSkill">
+            <option value="all">Skill: all</option>
+            <option value="yes">Skill: on</option>
+            <option value="no">Skill: off</option>
+          </select>
+          <input id="filterModel" placeholder="Filter model…" />
+          <button type="button" class="btn" id="btnExport">Export JSON</button>
+          <button type="button" class="btn" id="btnClear">Clear scores</button>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>When</th>
+              <th>Chal</th>
+              <th>Model</th>
+              <th>Skill</th>
+              <th>Score</th>
+              <th>Tokens</th>
+              <th>Letter</th>
+            </tr>
+          </thead>
+          <tbody id="boardBody"></tbody>
+        </table>
+        <div class="status" id="boardEmpty">No runs yet.</div>
+      </div>
+
+      <div class="panel board" style="margin-top:16px">
+        <h2>Agent improvement report</h2>
+        <p class="status" style="margin:0 0 10px">
+          Coaching from the <strong>Skill</strong> pack when available (not Improved — that one already applied the fixes).
+          Failed checks become themes for the improved agent. No-agent / Skill should score lower when they still have those bugs.
+        </p>
+        <div class="actions" style="margin-bottom:10px">
+          <button type="button" class="btn primary" id="btnImproveRefresh">Refresh report</button>
+          <button type="button" class="btn" id="btnImproveMd">Export Markdown</button>
+          <button type="button" class="btn" id="btnImproveJson">Export JSON</button>
+        </div>
+        <div id="improveSummary" class="status"></div>
+        <ol id="improveList" style="margin:10px 0 0;padding-left:1.2rem;font-size:0.85rem;line-height:1.45;color:var(--ink)"></ol>
+      </div>
+    </section>
+  </main>
+
+  <div id="checkExplainModal" class="check-modal" hidden role="dialog" aria-modal="true" aria-labelledby="checkExplainTitle">
+    <div class="check-modal-card">
+      <header>
+        <h3 id="checkExplainTitle">—</h3>
+        <button type="button" class="close-x" id="checkExplainClose" aria-label="Close">×</button>
+      </header>
+      <div class="meta" id="checkExplainMeta"></div>
+      <dl id="checkExplainBody"></dl>
+    </div>
+  </div>
+
+  <script src="./challenges/checks.js"></script>
+  <script src="./challenges/harness.js"></script>
+  <script src="./challenges/improvement.js"></script>
+  <script>
+    let catalog = null;
+    let selected = null;
+    /** @type {Record<string, { source: string, ext?: string, meta?: object|null }>} */
+    let uploadedPack = {};
+    /** @type {Record<string, { source: string, ext?: string }>} */
+    let pastedByChallenge = {};
+
+    function applyGradeMode() {
+      const harsh = document.getElementById("gradeHarsh")?.checked !== false;
+      if (globalThis.MapboxSkillChecks?.setMode) {
+        MapboxSkillChecks.setMode(harsh ? "harsh" : "normal");
+      }
+      return harsh ? "harsh" : "normal";
+    }
+
+    const PACK_SNAPSHOT_KEY = "mapbox-pack-snapshots-v1";
+    const LAST_GRADED_SOURCE_KEY = "mapbox-last-graded-source";
+
+    const SOURCE_LABELS = {
+      "example-solutions": "Skill agent (solutions/)",
+      "no-agent-baseline": "No agent",
+      "improved-solutions": "Improved agent",
+      upload: "Your upload",
+    };
+
+    function loadPackSnapshots() {
+      try {
+        return JSON.parse(localStorage.getItem(PACK_SNAPSHOT_KEY) || "{}");
+      } catch {
+        return {};
+      }
+    }
+
+    function savePackSnapshots(snaps) {
+      localStorage.setItem(PACK_SNAPSHOT_KEY, JSON.stringify(snaps));
+    }
+
+    function tierPctsFromRuns(runs) {
+      if (!catalog) return null;
+      const best = {};
+      for (const r of runs) {
+        if (!best[r.challengeId]) best[r.challengeId] = r;
+      }
+      const avg = (tier) => {
+        const list = catalog.challenges.filter((c) => c.tier === tier);
+        const scored = list.map((c) => best[c.id]?.pct).filter((x) => x != null);
+        if (!scored.length) return null;
+        return Math.round(scored.reduce((a, b) => a + b, 0) / scored.length);
+      };
+      const core = avg("core");
+      const extreme = avg("extreme");
+      const insane = avg("insane");
+      let combined = null;
+      if ([core, extreme, insane].some((x) => x != null)) {
+        const c = core ?? 0, e = extreme ?? 0, i = insane ?? 0;
+        const wC = core != null ? 1 : 0;
+        const wE = extreme != null ? 1.25 : 0;
+        const wI = insane != null ? 1.5 : 0;
+        const w = wC + wE + wI;
+        combined = Math.round((c * wC + e * wE + i * wI) / w);
+      }
+      return {
+        core,
+        extreme,
+        insane,
+        combined,
+        graded: Object.keys(best).length,
+        at: new Date().toISOString(),
+      };
+    }
+
+    function fmtPct(n) {
+      return n == null ? "—" : n + "%";
+    }
+
+    function fmtDelta(n) {
+      if (n == null) return { text: "—", cls: "flat" };
+      if (n === 0) return { text: "0", cls: "flat" };
+      const sign = n > 0 ? "+" : "";
+      return { text: sign + n, cls: n > 0 ? "up" : "down" };
+    }
+
+    function updateActiveRunLabel() {
+      const el = document.getElementById("activeRunLabel");
+      if (!el) return;
+      const src = localStorage.getItem(LAST_GRADED_SOURCE_KEY);
+      if (!src || !SOURCE_LABELS[src]) {
+        el.textContent = "Pills: grade a pack or upload to see tier averages";
+        return;
+      }
+      el.textContent = "Pills show latest grade: " + SOURCE_LABELS[src];
+    }
+
+    function updateRunCompare() {
+      const grid = document.getElementById("runCompare");
+      const deltasEl = document.getElementById("runCompareDeltas");
+      if (!grid) return;
+      const snaps = loadPackSnapshots();
+      const baseline = snaps["no-agent-baseline"];
+      const skill = snaps["example-solutions"];
+      const improved = snaps["improved-solutions"];
+      const upload = snaps.upload;
+
+      if (!skill && !baseline && !upload && !improved) {
+        grid.innerHTML =
+          '<div class="compare-empty">' +
+          "Grade packs to compare: <strong>No agent</strong> → <strong>Skill agent</strong> → <strong>Improved</strong> → your upload. Use <strong>Grade all 3 packs</strong>." +
+          "</div>";
+        if (deltasEl) deltasEl.hidden = true;
+        return;
+      }
+
+      const card = (cls, title, sub, s) => {
+        const subHtml = sub ? `<span class="sub">${escapeHtml(sub)}</span>` : "";
+        if (!s) {
+          return (
+            `<div class="compare-card ${cls}"><h3>${title}${subHtml}</h3>` +
+            `<div class="compare-rows"><span>status</span><b>not graded yet</b></div></div>`
+          );
+        }
+        return (
+          `<div class="compare-card ${cls}"><h3>${title}${subHtml}</h3>` +
+          `<div class="compare-rows">` +
+          `<span>Core</span><b>${fmtPct(s.core)}</b>` +
+          `<span>Extreme</span><b>${fmtPct(s.extreme)}</b>` +
+          `<span>Insane</span><b>${fmtPct(s.insane)}</b>` +
+          `<span>Combined</span><b>${fmtPct(s.combined)}</b>` +
+          `</div></div>`
+        );
+      };
+
+      const subFor = (s) => {
+        if (!s) return "";
+        const bits = [];
+        if (s.model) bits.push(s.model);
+        if (s.skillUsed === true) bits.push("skill on");
+        if (s.skillUsed === false) bits.push("skill off");
+        if (s.graded != null) bits.push(s.graded + " challenges");
+        return bits.join(" · ");
+      };
+
+      grid.innerHTML =
+        card("baseline", "1 · No agent", subFor(baseline), baseline) +
+        card("skill", "2 · Skill agent", subFor(skill), skill) +
+        card("improved", "3 · Improved", subFor(improved), improved) +
+        card("upload", "Your upload", subFor(upload), upload);
+
+      const chips = [];
+      function chip(label, a, b) {
+        if (!a || !b || a.combined == null || b.combined == null) return;
+        const d = fmtDelta(a.combined - b.combined);
+        chips.push(
+          `<span class="delta-chip">${label} <b class="${d.cls}">${d.text}</b> combined</span>`
+        );
+      }
+      chip("Skill vs no-agent", skill, baseline);
+      chip("Improved vs no-agent", improved, baseline);
+      chip("Improved vs skill", improved, skill);
+      if (upload && skill && upload.combined != null && skill.combined != null) {
+        const d = fmtDelta(upload.combined - skill.combined);
+        chips.push(
+          `<span class="delta-chip">Your upload vs skill <b class="${d.cls}">${d.text}</b> combined</span>`
+        );
+      }
+      if (upload && baseline && upload.combined != null && baseline.combined != null) {
+        const d = fmtDelta(upload.combined - baseline.combined);
+        chips.push(
+          `<span class="delta-chip">Your upload vs no-agent <b class="${d.cls}">${d.text}</b> combined</span>`
+        );
+      }
+
+      if (deltasEl) {
+        if (chips.length) {
+          deltasEl.hidden = false;
+          deltasEl.innerHTML = chips.join("");
+        } else {
+          deltasEl.hidden = true;
+          deltasEl.innerHTML = "";
+        }
+      }
+    }
+
+    function rememberPackSnapshot(sourceTag, runs, extra) {
+      const allowed = ["example-solutions", "no-agent-baseline", "improved-solutions", "upload"];
+      if (!allowed.includes(sourceTag)) return;
+      const snap = tierPctsFromRuns(runs);
+      if (!snap) return;
+      Object.assign(snap, extra || {});
+      snap.sourceTag = sourceTag;
+      // Keep check payloads so improvement report can coach from Skill after Grade-all
+      // (scoreboard is replaced by the last pack graded).
+      snap.coachingRuns = (runs || [])
+        .filter((r) => r && r.challengeId)
+        .map((r) => ({
+          challengeId: r.challengeId,
+          tier: r.tier,
+          pct: r.pct,
+          letter: r.letter,
+          checks: r.checks,
+          timestamp: r.timestamp,
+          sourceTag,
+        }));
+      const snaps = loadPackSnapshots();
+      snaps[sourceTag] = snap;
+      savePackSnapshots(snaps);
+      updateRunCompare();
+    }
+
+    /** Prefer Skill coaching runs; else worst non-Improved pack; else live scoreboard. */
+    function runsForImprovementReport() {
+      const snaps = loadPackSnapshots();
+      const skill = snaps["example-solutions"]?.coachingRuns;
+      if (skill && skill.length) {
+        return { runs: skill, scope: "Skill agent (solutions/) — coaching target" };
+      }
+      const ranked = ["no-agent-baseline", "upload"]
+        .map((k) => snaps[k])
+        .filter((s) => s?.coachingRuns?.length);
+      if (ranked.length) {
+        ranked.sort((a, b) => (a.combined ?? 100) - (b.combined ?? 100));
+        const worst = ranked[0];
+        return {
+          runs: worst.coachingRuns,
+          scope: (SOURCE_LABELS[worst.sourceTag] || worst.sourceTag) + " — lowest pack with fails",
+        };
+      }
+      const live = MapboxHarness.loadRuns();
+      return { runs: live, scope: "Current scoreboard" };
+    }
+
+    async function boot() {
+      const res = await fetch("./challenges/catalog.json");
+      catalog = await res.json();
+      applyGradeMode();
+      renderList();
+      renderBoard();
+      updateTierPcts();
+      updateActiveRunLabel();
+      updateRunCompare();
+      renderImprovement();
+    }
+
+    function byTier() {
+      const groups = { core: [], extreme: [], insane: [] };
+      for (const c of catalog.challenges) groups[c.tier].push(c);
+      return groups;
+    }
+
+    function bestByChallenge() {
+      // Latest run per challenge (runs are stored newest-first). Do not keep
+      // "best ever" across packs — that made example-pack scores stick after a
+      // partial upload.
+      const runs = MapboxHarness.loadRuns();
+      const best = {};
+      for (const r of runs) {
+        if (!best[r.challengeId]) best[r.challengeId] = r;
+      }
+      return best;
+    }
+
+    function renderList() {
+      const best = bestByChallenge();
+      const wrap = document.getElementById("challengeList");
+      wrap.innerHTML = "";
+      const groups = byTier();
+      for (const tier of ["core", "extreme", "insane"]) {
+        const h = document.createElement("div");
+        h.className = "tier-label " + tier;
+        h.textContent = tier;
+        wrap.appendChild(h);
+        for (const c of groups[tier]) {
+          const b = document.createElement("button");
+          b.type = "button";
+          b.className = "chal" + (selected && selected.id === c.id ? " active" : "");
+          const br = best[c.id];
+          const badge = br
+            ? `<span class="badge ${br.pct >= 70 ? "pass" : "fail"}">${br.pct}%</span>`
+            : "";
+          const mode = c.mode === "static" ? `<span class="badge static">static</span>` : "";
+          b.innerHTML = `<div class="t">${c.id} · ${c.title} ${mode} ${badge}</div>
+            <div class="m">${c.tags.join(" · ")} · max ${c.maxScore}</div>`;
+          b.addEventListener("click", () => selectChallenge(c.id));
+          wrap.appendChild(b);
+        }
+      }
+    }
+
+    function selectChallenge(id) {
+      selected = catalog.challenges.find((c) => c.id === id);
+      document.getElementById("promptBox").textContent = selected.prompt;
+      document.getElementById("chalMeta").textContent =
+        `${selected.id} · ${selected.tier} · max ${selected.maxScore || "—"} · tags: ${selected.tags.join(", ")}` +
+        (selected.mode === "static" ? " · static-only grading" : "");
+      renderList();
+      renderRubric(selected);
+      document.getElementById("checkResults").innerHTML = "";
+      document.getElementById("gradeStatus").textContent = "";
+      updateExampleLink(selected);
+
+      const pasted = pastedByChallenge[id];
+      if (pasted?.source) {
+        document.getElementById("source").value = pasted.source;
+      } else if (uploadedPack[id]?.source) {
+        document.getElementById("source").value = uploadedPack[id].source;
+      } else {
+        document.getElementById("source").value = "";
+      }
+    }
+
+    function closeCheckExplain() {
+      const modal = document.getElementById("checkExplainModal");
+      if (modal) modal.hidden = true;
+    }
+
+    function openCheckExplain(check) {
+      const modal = document.getElementById("checkExplainModal");
+      if (!modal || !check) return;
+      const advice =
+        globalThis.MapboxImprovement?.ADVICE?.[check.id] ||
+        null;
+      document.getElementById("checkExplainTitle").textContent = check.id;
+      document.getElementById("checkExplainMeta").innerHTML =
+        `<span class="chip">Weight <b>${check.weight ?? "—"}</b></span>` +
+        (check.extra ? `<span class="chip"><b>harsh+</b> auto-added</span>` : "") +
+        (advice?.theme ? `<span class="chip">Theme <b>${escapeHtml(advice.theme)}</b></span>` : "") +
+        (advice?.skill ? `<span class="chip">Skill <b>${escapeHtml(advice.skill)}</b></span>` : "");
+      const lookFor = check.hint || check.label || "—";
+      const doText = advice?.do || "Pass this static check in the submitted source.";
+      const whyText =
+        advice?.why ||
+        "We score this so incomplete or demo-looking solutions cannot claim a free A.";
+      document.getElementById("checkExplainBody").innerHTML =
+        `<dt>What we look for</dt><dd>${escapeHtml(lookFor)}</dd>` +
+        `<dt>How to pass</dt><dd>${escapeHtml(doText)}</dd>` +
+        `<dt>Why we grade this</dt><dd>${escapeHtml(whyText)}</dd>`;
+      modal.hidden = false;
+      document.getElementById("checkExplainClose")?.focus();
+    }
+
+    function renderRubric(challenge) {
+      const box = document.getElementById("rubricBox");
+      if (!box) return;
+      if (!challenge || !globalThis.MapboxSkillChecks?.rubric) {
+        box.hidden = true;
+        return;
+      }
+      applyGradeMode();
+      const r = MapboxSkillChecks.rubric(challenge.checks || []);
+      box.hidden = false;
+      const lettersEl = document.getElementById("rubricLetters");
+      lettersEl.innerHTML = (r.letters.bands || [])
+        .map((b) => {
+          if (b.letter === "F") return `<span><b>F</b> &lt; ${r.letters.bands.find((x) => x.letter === "D")?.min ?? 60}%</span>`;
+          return `<span><b>${b.letter}</b> ≥ ${b.min}%</span>`;
+        })
+        .join("");
+      document.getElementById("rubricNote").textContent =
+        (r.letters.note || "") +
+        (r.letters.mode === "harsh"
+          ? " Extra harsh checks are marked below. Click a row for why we grade it."
+          : " Click a row for why we grade it.");
+      const body = document.getElementById("rubricBody");
+      body.innerHTML = r.checks
+        .map(
+          (c, i) =>
+            `<tr class="check-row" tabindex="0" role="button" data-check-idx="${i}" ` +
+            `aria-label="Explain check ${escapeHtml(c.id)}">` +
+            `<td class="w">${c.weight}</td>` +
+            `<td class="id">${escapeHtml(c.id)}${c.extra ? '<span class="extra">harsh+</span>' : ""}</td>` +
+            `<td>${escapeHtml(c.hint || c.label)}</td></tr>`
+        )
+        .join("");
+      body.querySelectorAll("tr.check-row").forEach((tr) => {
+        const open = () => {
+          const idx = Number(tr.getAttribute("data-check-idx"));
+          openCheckExplain(r.checks[idx]);
+        };
+        tr.addEventListener("click", open);
+        tr.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            open();
+          }
+        });
+      });
+      document.getElementById("rubricTotal").textContent =
+        `${r.checks.length} checks · ${r.totalWeight} total weight · mode ${r.mode}` +
+        ` · letter from % of weight passed`;
+    }
+
+    function updateExampleLink(challenge) {
+      const wrap = document.getElementById("exampleLinks");
+      const linkNo = document.getElementById("exampleLinkNoAgent");
+      const linkSkill = document.getElementById("exampleLinkSkill");
+      const linkImp = document.getElementById("exampleLinkImproved");
+      if (!wrap || !linkNo || !linkSkill || !linkImp) return;
+      if (!challenge) {
+        wrap.hidden = true;
+        return;
+      }
+      const ext = extFor(challenge)[0];
+      const file = challenge.id + ext;
+      linkNo.href = "./NoAgentSolutions/" + file;
+      linkNo.title = "No-agent pack (intentionally weaker)";
+      linkSkill.href = "./solutions/" + file;
+      linkSkill.title = "Skill pack — first pass with skills (has gaps)";
+      linkImp.href = "./ImprovedAgentSolutions/" + file;
+      linkImp.title = "Improved pack — after coaching (gold)";
+      wrap.hidden = false;
+    }
+
+    function rememberPasteForSelected(source, ext) {
+      if (!selected || !source) return;
+      pastedByChallenge[selected.id] = {
+        source,
+        ext: ext || extFor(selected)[0],
+      };
+    }
+
+    function numOrNull(id) {
+      const v = document.getElementById(id).value;
+      if (v === "" || v == null) return null;
+      const n = Number(v);
+      return Number.isFinite(n) ? n : null;
+    }
+
+    function collectMeta() {
+      const model = document.getElementById("metaModel").value.trim();
+      if (!model) {
+        throw new Error("Model is required in run metadata.");
+      }
+      const tin = numOrNull("tokIn");
+      const tout = numOrNull("tokOut");
+      let ttot = numOrNull("tokTotal");
+      if (ttot == null && tin != null && tout != null) ttot = tin + tout;
+      return {
+        agentLabel: document.getElementById("metaAgent").value,
+        provider: document.getElementById("metaProvider").value,
+        model,
+        skillUsed: document.getElementById("metaSkill").checked,
+        skillVersionNote: "mapbox-agent-skills @ local .agents",
+        tokens: { input: tin, output: tout, total: ttot },
+        costUsd: numOrNull("metaCost"),
+        latencySec: numOrNull("metaLatency"),
+        attempts: numOrNull("metaAttempts") || 1,
+        notes: document.getElementById("metaNotes").value.trim(),
+      };
+    }
+
+    async function doGrade(withLive) {
+      if (!selected) {
+        document.getElementById("gradeStatus").textContent = "Pick a challenge first.";
+        return;
+      }
+      const source = document.getElementById("source").value;
+      if (!source.trim()) {
+        document.getElementById("gradeStatus").textContent = "Paste agent code first.";
+        return;
+      }
+      rememberPasteForSelected(source, null);
+      applyGradeMode();
+      let meta;
+      try {
+        meta = collectMeta();
+      } catch (err) {
+        document.getElementById("gradeStatus").textContent = err.message;
+        return;
+      }
+
+      const result = MapboxSkillChecks.grade(source, selected.checks);
+      let live = { skipped: true };
+      if (withLive && selected.mode !== "static") {
+        document.getElementById("gradeStatus").textContent = "Running live smoke…";
+        live = await MapboxHarness.runLiveSmoke(source, 4500);
+      }
+
+      const run = {
+        runId: MapboxHarness.uuid(),
+        timestamp: new Date().toISOString(),
+        challengeId: selected.id,
+        tier: selected.tier,
+        sourceTag: "upload",
+        ...meta,
+        checks: result.checks,
+        score: result.score,
+        maxScore: result.maxScore,
+        pct: result.pct,
+        letter: result.letter,
+        live,
+      };
+
+      const runs = MapboxHarness.loadRuns();
+      runs.unshift(run);
+      MapboxHarness.saveRuns(runs);
+
+      renderChecks(result);
+      let msg = `Score ${result.score}/${result.maxScore} (${result.pct}% · ${result.letter})`;
+      if (live && !live.skipped) msg += live.ok ? " · live smoke OK" : ` · live: ${live.reason || "fail"}`;
+      document.getElementById("gradeStatus").textContent = msg;
+      renderBoard();
+      renderList();
+      updateTierPcts();
+      renderImprovement();
+    }
+
+    function renderChecks(result) {
+      const el = document.getElementById("checkResults");
+      el.innerHTML = result.checks
+        .map(
+          (c) =>
+            `<div class="check ${c.pass ? "ok" : "no"}">
+              <span>${c.pass ? "✓" : "✗"}</span>
+              <span class="id">${c.id}</span>
+              <span>${c.detail} <em style="color:var(--muted)">(+${c.points}/${c.weight})</em></span>
+            </div>`
+        )
+        .join("");
+    }
+
+    function renderBoard() {
+      let runs = MapboxHarness.loadRuns();
+      const skillF = document.getElementById("filterSkill").value;
+      const modelF = document.getElementById("filterModel").value.trim().toLowerCase();
+      if (skillF === "yes") runs = runs.filter((r) => r.skillUsed);
+      if (skillF === "no") runs = runs.filter((r) => !r.skillUsed);
+      if (modelF) runs = runs.filter((r) => (r.model || "").toLowerCase().includes(modelF));
+
+      const body = document.getElementById("boardBody");
+      document.getElementById("boardEmpty").style.display = runs.length ? "none" : "block";
+      body.innerHTML = runs
+        .slice(0, 80)
+        .map((r) => {
+          const tok = r.tokens?.total != null ? r.tokens.total : "—";
+          const when = new Date(r.timestamp).toLocaleString();
+          return `<tr>
+            <td>${when}</td>
+            <td>${r.challengeId}</td>
+            <td>${escapeHtml(r.model)}</td>
+            <td>${r.skillUsed ? "on" : "off"}</td>
+            <td>${r.score}/${r.maxScore} (${r.pct}%)</td>
+            <td>${tok}</td>
+            <td>${r.letter}</td>
+          </tr>`;
+        })
+        .join("");
+    }
+
+    function escapeHtml(s) {
+      return String(s)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function updateTierPcts() {
+      const best = bestByChallenge();
+      if (!catalog) return;
+      const avg = (tier) => {
+        const list = catalog.challenges.filter((c) => c.tier === tier);
+        const scored = list.map((c) => best[c.id]?.pct).filter((x) => x != null);
+        if (!scored.length) return null;
+        return Math.round(scored.reduce((a, b) => a + b, 0) / scored.length);
+      };
+      const core = avg("core");
+      const extreme = avg("extreme");
+      const insane = avg("insane");
+      document.getElementById("pctCore").textContent = core == null ? "—" : core + "%";
+      document.getElementById("pctExtreme").textContent = extreme == null ? "—" : extreme + "%";
+      document.getElementById("pctInsane").textContent = insane == null ? "—" : insane + "%";
+      const parts = [core, extreme, insane].filter((x) => x != null);
+      // Weight extreme/insane slightly higher in combined
+      let combined = null;
+      if (parts.length) {
+        const c = core ?? 0, e = extreme ?? 0, i = insane ?? 0;
+        const wC = core != null ? 1 : 0;
+        const wE = extreme != null ? 1.25 : 0;
+        const wI = insane != null ? 1.5 : 0;
+        const w = wC + wE + wI;
+        combined = Math.round((c * wC + e * wE + i * wI) / w);
+      }
+      document.getElementById("pctCombined").textContent = combined == null ? "—" : combined + "%";
+    }
+
+    function extFor(c) {
+      if (c.id === "I1") return [".tsx", ".ts", ".jsx", ".js", ".txt"];
+      if (c.id === "I4") return [".swift", ".txt"];
+      if (c.id === "I5") return [".kt", ".kotlin", ".txt"];
+      if (c.id === "I6") return [".dart", ".txt"];
+      if (c.id === "I7") return [".tsx", ".ts", ".jsx", ".js", ".txt"];
+      if (c.id === "I8") return [".html", ".js", ".ts", ".mjs", ".txt"];
+      return [".html", ".js", ".txt"];
+    }
+
+    function buildBatchPrompt() {
+      const model = document.getElementById("metaModel").value.trim() || "YOUR_MODEL_NAME";
+      const agent = document.getElementById("metaAgent").value;
+      const provider = document.getElementById("metaProvider").value;
+      const skillOn = document.getElementById("metaSkill").checked;
+      const tokIn = numOrNull("tokIn");
+      const tokOut = numOrNull("tokOut");
+      let tokTotal = numOrNull("tokTotal");
+      if (tokTotal == null && tokIn != null && tokOut != null) tokTotal = tokIn + tokOut;
+      const costUsd = numOrNull("metaCost");
+      const latencySec = numOrNull("metaLatency");
+      const attempts = numOrNull("metaAttempts") || 1;
+      const notes = document.getElementById("metaNotes").value.trim() || "user-upload";
+
+      const metaTemplate = {
+        agentLabel: agent,
+        provider,
+        model,
+        skillUsed: skillOn,
+        skillVersionNote: "mapbox-agent-skills @ local .agents",
+        tokens: { input: tokIn, output: tokOut, total: tokTotal },
+        costUsd,
+        latencySec,
+        attempts,
+        notes,
+      };
+
+      const lines = [];
+      lines.push("Use the Mapbox agent skills: read .agents/skills/mapbox-web-integration-patterns/SKILL.md and related mapbox-* skills first.");
+      lines.push("");
+      lines.push("For EVERY challenge below, create TWO files (downloadable / saveable locally):");
+      lines.push("");
+      lines.push("File 1 — the solution (name by challenge id):");
+      lines.push("  C1.html … C8.html, X1.html … X6.html");
+      lines.push("  I1.tsx, I2.html, I3.html, I4.swift, I5.kt, I6.dart, I7.tsx, I8.html");
+      lines.push("");
+      lines.push("File 2 — metadata (same id):");
+      lines.push("  C1.meta.json, C2.meta.json, … (one per challenge)");
+      lines.push("");
+      lines.push("The user will UPLOAD these files into the Mapbox Agent Skill Scoreboard to grade them.");
+      lines.push("Do not assume a repo path — emit complete file contents the user can save and upload.");
+      lines.push("");
+      lines.push("Each .meta.json MUST include tokens (input/output/total), costUsd, and latencySec.");
+      lines.push("Use these run-metadata values (update per challenge if you track separately):");
+      lines.push(JSON.stringify(metaTemplate));
+      lines.push("");
+      lines.push("Field meanings:");
+      lines.push("- tokens.input — prompt/input token count (number or null)");
+      lines.push("- tokens.output — completion/output token count (number or null)");
+      lines.push("- tokens.total — input+output if known (number or null)");
+      lines.push("- costUsd — estimated USD cost for the run (number or null)");
+      lines.push("- latencySec — wall time in seconds (number or null)");
+      lines.push("- attempts — how many tries before the final solution (integer ≥ 1)");
+      lines.push("If you do not know a value, keep null — do not omit the keys.");
+      lines.push("");
+      lines.push("Hard rules: mapbox-gl@3.9.0 CDN; coordinates [lng,lat]; no hardcoded pk. tokens; no {{ }}; browser pages load token from ../admin-boundaries/js/config.js as window.MAPBOX_ACCESS_TOKEN; set mapboxgl.accessToken before new mapboxgl.Map().");
+      lines.push("Write all files. Do not stop early.");
+      lines.push("");
+      for (const c of catalog.challenges) {
+        lines.push(`---`);
+        lines.push(`${c.id} [${c.tier}] ${c.title}`);
+        lines.push(c.prompt);
+        lines.push("");
+      }
+      return lines.join("\n");
+    }
+
+    async function fetchSolution(id, exts, dir = "solutions") {
+      for (const ext of exts) {
+        try {
+          const res = await fetch(`./${dir}/${id}${ext}`, { cache: "no-store" });
+          if (res.ok) return { source: await res.text(), ext };
+        } catch { /* try next */ }
+      }
+      return null;
+    }
+
+    async function fetchMeta(id, dir = "solutions") {
+      try {
+        const res = await fetch(`./${dir}/${id}.meta.json`, { cache: "no-store" });
+        if (res.ok) return await res.json();
+      } catch { /* ignore */ }
+      return null;
+    }
+
+    function defaultBatchMeta(notes) {
+      try {
+        const m = collectMeta();
+        return { ...m, notes: notes || m.notes };
+      } catch {
+        return {
+          agentLabel: document.getElementById("metaAgent").value,
+          provider: document.getElementById("metaProvider").value,
+          model: document.getElementById("metaModel").value.trim() || "batch-unknown",
+          skillUsed: document.getElementById("metaSkill").checked,
+          skillVersionNote: "mapbox-agent-skills @ local .agents",
+          tokens: { input: null, output: null, total: null },
+          costUsd: null,
+          latencySec: null,
+          attempts: 1,
+          notes: notes || "batch grade (form model fallback)",
+        };
+      }
+    }
+
+    /**
+     * @param {Record<string, { source: string, ext?: string, meta?: object|null }>} pack
+     * @param {{ label: string, sourceTag: string, replace?: boolean }} opts
+     *   replace (default true): wipe prior scoreboard so missing ids stay ungraded
+     *   instead of showing leftover example-pack / older upload scores.
+     */
+    function gradePack(pack, opts) {
+      if (!catalog) return;
+      applyGradeMode();
+      const status = document.getElementById("batchStatus");
+      const formMeta = defaultBatchMeta(opts.label);
+      const replace = opts.replace !== false;
+      const runs = replace ? [] : MapboxHarness.loadRuns().slice();
+      let ok = 0;
+      let missing = 0;
+      const summary = [];
+      const missingIds = [];
+      const mode = MapboxSkillChecks.getMode?.() || "harsh";
+
+      for (const c of catalog.challenges) {
+        const file = pack[c.id];
+        if (!file || !file.source) {
+          missing++;
+          missingIds.push(c.id);
+          summary.push(`${c.id}: missing`);
+          continue;
+        }
+        const fileMeta = file.meta || null;
+        const meta = {
+          ...formMeta,
+          ...(fileMeta || {}),
+          tokens: {
+            input: fileMeta?.tokens?.input ?? formMeta.tokens.input,
+            output: fileMeta?.tokens?.output ?? formMeta.tokens.output,
+            total: fileMeta?.tokens?.total ?? formMeta.tokens.total,
+          },
+          notes: [formMeta.notes, fileMeta?.notes, `${opts.sourceTag}:${c.id}${file.ext || ""}`]
+            .filter(Boolean)
+            .join(" | "),
+        };
+        if (!meta.model) meta.model = formMeta.model;
+
+        const result = MapboxSkillChecks.grade(file.source, c.checks);
+        runs.unshift({
+          runId: MapboxHarness.uuid(),
+          timestamp: new Date().toISOString(),
+          challengeId: c.id,
+          tier: c.tier,
+          sourceTag: opts.sourceTag,
+          ...meta,
+          checks: result.checks,
+          score: result.score,
+          maxScore: result.maxScore,
+          pct: result.pct,
+          letter: result.letter,
+          live: { skipped: true, reason: opts.sourceTag },
+        });
+        ok++;
+        summary.push(`${c.id}: ${result.pct}% ${result.letter}`);
+      }
+
+      MapboxHarness.saveRuns(runs);
+      localStorage.setItem(LAST_GRADED_SOURCE_KEY, opts.sourceTag);
+      rememberPackSnapshot(opts.sourceTag, runs, {
+        label: opts.label,
+        model: formMeta.model,
+        skillUsed: formMeta.skillUsed,
+      });
+      renderBoard();
+      renderList();
+      updateTierPcts();
+      updateActiveRunLabel();
+      updateRunCompare();
+      renderImprovement();
+      const missNote =
+        missing > 0
+          ? ` Missing (not graded): ${missingIds.slice(0, 12).join(", ")}${missingIds.length > 12 ? "…" : ""}.`
+          : "";
+      status.textContent =
+        `[${mode}] ${opts.label}: ${ok} graded, ${missing} missing.` +
+        missNote +
+        (replace ? " Scoreboard replaced with this pack only." : "") +
+        " " +
+        summary.filter((s) => !s.endsWith("missing")).slice(0, 8).join(" · ") +
+        (ok > 8 ? "…" : "");
+    }
+
+    async function gradePackFromDir(dir, { label, sourceTag }) {
+      if (!catalog) return;
+      const status = document.getElementById("batchStatus");
+      status.textContent = `Loading ${dir}/…`;
+      const pack = {};
+      for (const c of catalog.challenges) {
+        const file = await fetchSolution(c.id, extFor(c), dir);
+        if (!file) continue;
+        pack[c.id] = {
+          source: file.source,
+          ext: file.ext,
+          meta: await fetchMeta(c.id, dir),
+        };
+      }
+      // Keep in memory so selecting a challenge opens this pack (same as upload)
+      uploadedPack = pack;
+      gradePack(pack, { label, sourceTag });
+    }
+
+    async function gradeAllFromSolutions() {
+      await gradePackFromDir("solutions", {
+        label: "Skill agent pack",
+        sourceTag: "example-solutions",
+      });
+    }
+
+    async function gradeNoAgentRun() {
+      await gradePackFromDir("NoAgentSolutions", {
+        label: "No agent pack",
+        sourceTag: "no-agent-baseline",
+      });
+    }
+
+    async function gradeImprovedRun() {
+      await gradePackFromDir("ImprovedAgentSolutions", {
+        label: "Improved agent pack",
+        sourceTag: "improved-solutions",
+      });
+    }
+
+    async function gradeAllThreePacks() {
+      const status = document.getElementById("batchStatus");
+      status.textContent = "Grading all 3 packs (No agent → Skill → Improved)…";
+      await gradeNoAgentRun();
+      await gradeAllFromSolutions();
+      await gradeImprovedRun();
+      status.textContent =
+        "All 3 packs graded. Header cards compare No agent / Skill / Improved. Pills show the last pack (Improved).";
+    }
+
+    function parseChallengeFileName(name) {
+      // C1.html, X3.meta.json, I7.tsx, c1.HTML
+      const base = name.split(/[/\\]/).pop() || name;
+      const meta = base.match(/^([CXI]\d+)\.meta\.json$/i);
+      if (meta) return { id: meta[1].toUpperCase(), kind: "meta" };
+      const sol = base.match(/^([CXI]\d+)\.[a-z0-9]+$/i);
+      if (sol) return { id: sol[1].toUpperCase(), kind: "solution", ext: "." + base.split(".").pop() };
+      return null;
+    }
+
+    async function readUploadPack(fileList) {
+      const pack = {};
+      const ignored = [];
+      for (const file of fileList) {
+        const parsed = parseChallengeFileName(file.name);
+        if (!parsed) {
+          ignored.push(file.name);
+          continue;
+        }
+        const text = await file.text();
+        if (!pack[parsed.id]) pack[parsed.id] = { source: "", ext: "", meta: null };
+        if (parsed.kind === "meta") {
+          try {
+            pack[parsed.id].meta = JSON.parse(text);
+          } catch {
+            ignored.push(file.name + " (bad JSON)");
+          }
+        } else {
+          pack[parsed.id].source = text;
+          pack[parsed.id].ext = parsed.ext || "";
+        }
+      }
+      return { pack, ignored };
+    }
+
+    async function gradeUploadedFiles() {
+      if (!catalog) return;
+      const input = document.getElementById("uploadPack");
+      const files = input.files;
+      const status = document.getElementById("batchStatus");
+      if (!files || !files.length) {
+        status.textContent = "Choose solution files first (e.g. C1.html, C1.meta.json, …).";
+        return;
+      }
+      status.textContent = `Reading ${files.length} uploaded file(s)…`;
+      const { pack, ignored } = await readUploadPack(files);
+      const ids = Object.keys(pack).filter((id) => pack[id].source);
+      if (!ids.length) {
+        status.textContent =
+          "No challenge solution files recognized. Name files like C1.html / X2.html / I8.js.";
+        return;
+      }
+      gradePack(pack, { label: "Your upload", sourceTag: "upload" });
+      uploadedPack = pack;
+      if (ignored.length) {
+        status.textContent += ` · ignored: ${ignored.slice(0, 4).join(", ")}${ignored.length > 4 ? "…" : ""}`;
+      }
+    }
+
+    function renderImprovement() {
+      const sum = document.getElementById("improveSummary");
+      const list = document.getElementById("improveList");
+      if (!globalThis.MapboxImprovement) {
+        sum.textContent = "Improvement module failed to load — check the browser console.";
+        list.innerHTML = "";
+        return;
+      }
+      const { runs, scope } = runsForImprovementReport();
+      const report = MapboxImprovement.buildReport(runs, { scope });
+      if (!report.challengesGraded) {
+        sum.textContent = "No graded runs yet. Grade the Skill pack (or Grade all 3) first.";
+        list.innerHTML = "";
+        return;
+      }
+      sum.textContent =
+        `${scope} · Avg ${report.avgPct}% · Core ${report.byTier.core ?? "—"}% · Extreme ${report.byTier.extreme ?? "—"}% · Insane ${report.byTier.insane ?? "—"}% · ${report.themes.length} themes`;
+      if (!report.themes.length) {
+        list.innerHTML = `<li style="margin-bottom:10px;color:var(--muted)">All checks passed in this scope — no improvement themes.</li>`;
+        return;
+      }
+      list.innerHTML = report.themes
+        .map(
+          (t) =>
+            `<li style="margin-bottom:10px"><strong>${t.theme}</strong> (${t.count}×) — ${t.do}` +
+            (t.challenges.length ? ` <span style="color:var(--muted)">[${t.challenges.join(", ")}]</span>` : "") +
+            `</li>`
+        )
+        .join("");
+    }
+
+    function downloadText(filename, text, type) {
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(new Blob([text], { type: type || "text/plain" }));
+      a.download = filename;
+      a.click();
+    }
+
+    document.getElementById("btnCopy").addEventListener("click", async () => {
+      if (!selected) return;
+      await navigator.clipboard.writeText(selected.prompt);
+      document.getElementById("gradeStatus").textContent = "Prompt copied.";
+    });
+    document.getElementById("source").addEventListener("change", () => {
+      rememberPasteForSelected(document.getElementById("source").value, null);
+    });
+    document.getElementById("source").addEventListener("blur", () => {
+      const v = document.getElementById("source").value.trim();
+      if (v) rememberPasteForSelected(v, null);
+    });
+    document.getElementById("btnCopyBatch").addEventListener("click", async () => {
+      if (!catalog) return;
+      const text = buildBatchPrompt();
+      await navigator.clipboard.writeText(text);
+      document.getElementById("batchStatus").textContent =
+        "Copied. Paste into your agent with mapbox-agent-skills loaded. Then upload the output files here to grade.";
+    });
+    document.getElementById("btnGradeAll").addEventListener("click", () => gradeAllFromSolutions());
+    document.getElementById("btnGradeNoAgent").addEventListener("click", () => gradeNoAgentRun());
+    document.getElementById("btnGradeImproved")?.addEventListener("click", () => gradeImprovedRun());
+    document.getElementById("btnGradeAllPacks")?.addEventListener("click", () => gradeAllThreePacks());
+    document.getElementById("btnGradeUpload").addEventListener("click", () => gradeUploadedFiles());
+    document.getElementById("gradeHarsh").addEventListener("change", () => {
+      const mode = applyGradeMode();
+      document.getElementById("batchStatus").textContent =
+        `Grading mode → ${mode}. Re-run Grade uploaded / example pack to refresh scores.`;
+      if (selected) renderRubric(selected);
+    });
+    document.getElementById("btnClearBoard").addEventListener("click", () => {
+      MapboxHarness.clearRuns();
+      localStorage.removeItem(PACK_SNAPSHOT_KEY);
+      localStorage.removeItem(LAST_GRADED_SOURCE_KEY);
+      uploadedPack = {};
+      pastedByChallenge = {};
+      renderBoard();
+      renderList();
+      updateTierPcts();
+      updateActiveRunLabel();
+      updateRunCompare();
+      renderImprovement();
+      document.getElementById("batchStatus").textContent =
+        "Scoreboard cleared. Upload files or grade the example pack.";
+    });
+    document.getElementById("uploadOne").addEventListener("change", async (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      const text = await file.text();
+      document.getElementById("source").value = text;
+      const ext = "." + (file.name.split(".").pop() || "html");
+      rememberPasteForSelected(text, ext);
+      // If filename is C1.html etc., bind to that challenge and select it
+      const parsed = parseChallengeFileName(file.name);
+      if (parsed && parsed.kind === "solution") {
+        pastedByChallenge[parsed.id] = { source: text, ext: parsed.ext || ext };
+        if (catalog) selectChallenge(parsed.id);
+      }
+      document.getElementById("gradeStatus").textContent = `Loaded ${file.name} — click Grade.`;
+      e.target.value = "";
+    });
+    document.getElementById("btnGrade").addEventListener("click", () => doGrade(false));
+    document.getElementById("btnLive").addEventListener("click", () => doGrade(true));
+    document.getElementById("filterSkill").addEventListener("change", renderBoard);
+    document.getElementById("filterModel").addEventListener("input", renderBoard);
+    document.getElementById("btnClear").addEventListener("click", () => {
+      if (confirm("Clear all scoreboard runs?")) {
+        MapboxHarness.clearRuns();
+        renderBoard();
+        renderList();
+        updateTierPcts();
+        renderImprovement();
+      }
+    });
+    document.getElementById("btnExport").addEventListener("click", () => {
+      const blob = new Blob([JSON.stringify(MapboxHarness.loadRuns(), null, 2)], {
+        type: "application/json",
+      });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "mapbox-agent-scoreboard.json";
+      a.click();
+    });
+    document.getElementById("btnImproveRefresh").addEventListener("click", renderImprovement);
+    document.getElementById("checkExplainClose")?.addEventListener("click", closeCheckExplain);
+    document.getElementById("checkExplainModal")?.addEventListener("click", (e) => {
+      if (e.target === e.currentTarget) closeCheckExplain();
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeCheckExplain();
+    });
+    document.getElementById("btnImproveMd").addEventListener("click", () => {
+      const { runs, scope } = runsForImprovementReport();
+      const report = MapboxImprovement.buildReport(runs, { scope });
+      downloadText("mapbox-agent-improvement.md", MapboxImprovement.toMarkdown(report), "text/markdown");
+    });
+    document.getElementById("btnImproveJson").addEventListener("click", () => {
+      const { runs, scope } = runsForImprovementReport();
+      const report = MapboxImprovement.buildReport(runs, { scope });
+      downloadText("mapbox-agent-improvement.json", JSON.stringify(report, null, 2), "application/json");
+    });
+
+    boot().catch((err) => {
+      document.getElementById("chalMeta").textContent = "Failed to load catalog: " + err.message;
+    });
+  </script>
+</body>
+</html>

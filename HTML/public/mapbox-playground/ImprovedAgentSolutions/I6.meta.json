@@ -1,0 +1,16 @@
+{
+  "agentLabel": "Cursor Improved Skill",
+  "provider": "cursor",
+  "model": "composer",
+  "skillUsed": true,
+  "skillVersionNote": "mapbox-agent-skills @ .agents/skills",
+  "tokens": {
+    "input": null,
+    "output": null,
+    "total": null
+  },
+  "costUsd": null,
+  "latencySec": null,
+  "attempts": 2,
+  "notes": "post-coaching improved pack (gold) · I6"
+}

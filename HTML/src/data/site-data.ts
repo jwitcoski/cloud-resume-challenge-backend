@@ -134,6 +134,22 @@ export const featureWork = [
         url: "/maptiler-playground/agent-grader.html"
     },
     {
+        title: "Mapbox Agent Grader",
+        description: "Four-pack scoreboard for Mapbox GL JS agent skills — NoAgent, skill, Improved, and upload.",
+        outcome: "Grade agent Mapbox code against mapbox-agent-skills (Core + Extreme).",
+        roles: ["Mapbox GL JS", "Agent eval", "Isochrone", "Directions"],
+        image: "/images/feature-work/maptiler-agent-grader.png",
+        url: "/mapbox-playground/agent-grader.html"
+    },
+    {
+        title: "Ski Drive-Time (Mapbox)",
+        description: "Road-network isochrones and Matrix ETAs to ski resorts — upgrade over circular OSRM rings.",
+        outcome: "Shows Mapbox Isochrone + Matrix for real reachability, not crow-flies circles.",
+        roles: ["Mapbox Isochrone", "Matrix API", "GL JS", "Geocoding"],
+        image: "/images/feature-work/admin-boundary-tool.png",
+        url: "/mapbox-playground/ski-drive-time.html"
+    },
+    {
         title: "Raiders of Antikythera",
         description: "Indiana Jones–flavored dig game on real Antikythera Survey Project tracts — fogged GeoJSON, PMTiles finds, MapTiler satellite, glory ranks, and chapter recovery.",
         outcome: "Proves serious geospatial data can power engaging experiences — real survey tracts, fog-of-war, and chapter-driven discovery.",

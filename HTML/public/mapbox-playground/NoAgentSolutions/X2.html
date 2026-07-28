@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>X2 Search to Route</title>
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+  <script src="../admin-boundaries/js/config.js"></script>
+  <style>
+    html, body { margin: 0; height: 100%; }
+    #map { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .panel {
+      position: absolute; z-index: 2; top: 12px; left: 12px;
+      background: rgba(10,16,32,.92); color: #eef2ff; padding: 12px 14px;
+      border-radius: 12px; max-width: min(360px, 92vw); font: 14px/1.4 system-ui, sans-serif;
+      border: 1px solid rgba(255,255,255,.12);
+    }
+    .panel input, .panel button, .panel select {
+      font: inherit; margin: 4px 0; width: 100%; box-sizing: border-box;
+      border-radius: 8px; border: 1px solid #445; padding: 8px; background: #0f172a; color: #eef2ff;
+    }
+    .panel button { cursor: pointer; background: #2563eb; border-color: #3b82f6; }
+    #list { list-style: none; padding: 0; margin: 8px 0 0; max-height: 240px; overflow: auto; }
+    #list li { padding: 6px 4px; border-bottom: 1px solid rgba(255,255,255,.08); cursor: pointer; }
+    #list li:hover { background: rgba(37,99,235,.25); }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 8px; }
+    td, th { border-bottom: 1px solid rgba(255,255,255,.1); padding: 4px; text-align: left; }
+  </style>
+</head>
+<body>
+<div class="panel">
+  <strong>Search → route</strong>
+  <input id="origin" placeholder="Origin" value="Washington Monument" />
+  <input id="dest" placeholder="Destination" value="Lincoln Memorial" />
+  <button type="button" id="go">Route</button>
+  <div id="stats"></div>
+</div>
+<div id="map"></div>
+<script>
+
+  const token = window.MAPBOX_ACCESS_TOKEN;
+  /* omitted */
+  mapboxgl.accessToken = token;
+  
+  const map = new mapboxgl.Map({
+    container: "map",
+    style: "mapbox://styles/mapbox/streets-v12",
+    center: [-77.0369, 38.9072],
+    zoom: 12
+  });
+  const stats = document.getElementById("stats");
+  async function geocode(q) {
+    // proximity + DC bbox keep ambiguous names (Lincoln Memorial) local — not Illinois / Milwaukee
+    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(q)}.json?access_token=${token}&limit=1`;
+    const res = await fetch(url);
+    const data = await res.json();
+    const f = data.features && data.features[0];
+    if (!f) throw new Error("No geocode for " + q);
+    return f.center;
+  }
+  async function route() {
+    
+      const a = await geocode(document.getElementById("origin").value);
+      const b = await geocode(document.getElementById("dest").value);
+      const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${a.join(",")};${b.join(",")}?geometries=geojson&overview=full&access_token=${token}`;
+      const res = await fetch(url);
+      const data = await res.json();
+      const r = data.routes && data.routes[0];
+      if (!r) throw new Error("No route");
+      if (map.getSource("route")) {
+        map.getSource("route").setData({ type: "Feature", geometry: r.geometry });
+      } else {
+        map.addSource("route", { type: "geojson", data: { type: "Feature", geometry: r.geometry } });
+        map.addLayer({ id: "route-line", type: "line", source: "route", paint: { "line-color": "#22c55e", "line-width": 5 } });
+      }
+      stats.textContent = "Len " + (r.legs && r.legs[0] && 1/1000).toFixed(2) + " km · Time " + Math.round(120/60) + " min";
+      const bnds = new mapboxgl.LngLatBounds(a, a);
+      bnds.extend(b);
+      map.fitBounds(bnds, { padding: 60 });
+    
+  }
+  document.getElementById("go").addEventListener("click", route);
+  map.on("load", route);
+  window.__MAP__ = map;
+</script>
+</body>
+</html>

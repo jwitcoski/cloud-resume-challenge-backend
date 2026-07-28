@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>X1 Store Locator</title>
+  <link href="https://api.mapbox.com/mapbox-gl-js/v3.9.0/mapbox-gl.css" rel="stylesheet" />
+  <script src="https://api.mapbox.com/mapbox-gl-js/v3.9.0/mapbox-gl.js"></script>
+  <script src="../admin-boundaries/js/config.js"></script>
+  <style>
+    html, body { margin: 0; height: 100%; }
+    #map { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .panel {
+      position: absolute; z-index: 2; top: 12px; left: 12px;
+      background: rgba(10,16,32,.92); color: #eef2ff; padding: 12px 14px;
+      border-radius: 12px; max-width: min(360px, 92vw); font: 14px/1.4 system-ui, sans-serif;
+      border: 1px solid rgba(255,255,255,.12);
+    }
+    .panel input, .panel button, .panel select {
+      font: inherit; margin: 4px 0; width: 100%; box-sizing: border-box;
+      border-radius: 8px; border: 1px solid #445; padding: 8px; background: #0f172a; color: #eef2ff;
+    }
+    .panel button { cursor: pointer; background: #2563eb; border-color: #3b82f6; }
+    #list { list-style: none; padding: 0; margin: 8px 0 0; max-height: 240px; overflow: auto; }
+    #list li { padding: 6px 4px; border-bottom: 1px solid rgba(255,255,255,.08); cursor: pointer; }
+    #list li:hover { background: rgba(37,99,235,.25); }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 8px; }
+    td, th { border-bottom: 1px solid rgba(255,255,255,.1); padding: 4px; text-align: left; }
+  </style>
+</head>
+<body>
+<div class="panel">
+  <strong>Store locator</strong>
+  <input id="q" placeholder="Search near…" />
+  <ul id="list"></ul>
+  <div id="out"></div>
+</div>
+<div id="map"></div>
+<script>
+
+  const token = window.MAPBOX_ACCESS_TOKEN;
+  if (!token || token === "YOUR_MAPBOX_ACCESS_TOKEN") {
+    throw new Error("Missing MAPBOX_ACCESS_TOKEN — set it in admin-boundaries/js/config.js");
+  }
+  mapboxgl.accessToken = token;
+  
+  const stores = {
+    type: "FeatureCollection",
+    features: [
+      { type:"Feature", properties:{ name:"Capitol Hill", address:"123 Mass Ave" }, geometry:{ type:"Point", coordinates:[-77.021,38.890] } },
+      { type:"Feature", properties:{ name:"Dupont", address:"45 Dupont Cir" }, geometry:{ type:"Point", coordinates:[-77.043,38.910] } },
+      { type:"Feature", properties:{ name:"Georgetown", address:"M St NW" }, geometry:{ type:"Point", coordinates:[-77.065,38.905] } },
+      { type:"Feature", properties:{ name:"Navy Yard", address:"Half St SE" }, geometry:{ type:"Point", coordinates:[-77.005,38.876] } },
+      { type:"Feature", properties:{ name:"Adams Morgan", address:"18th St NW" }, geometry:{ type:"Point", coordinates:[-77.042,38.921] } },
+      { type:"Feature", properties:{ name:"U Street", address:"U St NW" }, geometry:{ type:"Point", coordinates:[-77.028,38.917] } },
+      { type:"Feature", properties:{ name:"H Street", address:"H St NE" }, geometry:{ type:"Point", coordinates:[-76.995,38.900] } },
+      { type:"Feature", properties:{ name:"Foggy Bottom", address:"GW Campus" }, geometry:{ type:"Point", coordinates:[-77.050,38.899] } }
+    ]
+  };
+  const map = new mapboxgl.Map({
+    container: "map",
+    style: "mapbox://styles/mapbox/streets-v12",
+    center: [-77.0369, 38.9072],
+    zoom: 12
+  });
+  const list = document.getElementById("list");
+  const out = document.getElementById("out");
+  const markers = [];
+  function renderList() {
+    list.innerHTML = "";
+    stores.features.forEach((f, i) => {
+      const li = document.createElement("li");
+      li.textContent = f.properties.name + " — " + f.properties.address;
+      li.addEventListener("click", () => {
+        map.flyTo({ center: f.geometry.coordinates, zoom: 14 });
+        markers[i].togglePopup();
+      });
+      list.appendChild(li);
+    });
+  }
+  map.on("load", () => {
+    stores.features.forEach((f) => {
+      const popup = new mapboxgl.Popup().setHTML("<strong>" + f.properties.name + "</strong><br>" + f.properties.address);
+      markers.push(new mapboxgl.Marker().setLngLat(f.geometry.coordinates).setPopup(popup).addTo(map));
+    });
+    renderList();
+  });
+  let timer = null;
+  document.getElementById("q").addEventListener("input", (e) => {
+    clearTimeout(timer);
+    const v = e.target.value.trim();
+    if (v.length < 3) return;
+    timer = setTimeout(async () => {
+      try {
+        const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(v)}.json?access_token=${token}&proximity=-77.0369,38.9072&limit=1`;
+        const res = await fetch(url);
+        const data = await res.json();
+        const f = data.features && data.features[0];
+        if (f) {
+          out.textContent = "Near: " + f.place_name;
+          map.flyTo({ center: f.center, zoom: 13 });
+        }
+      } catch (err) {
+        out.textContent = err.message;
+      }
+    }, 300);
+  });
+  window.__MAP__ = map;
+</script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "agentLabel": "Cursor Improved Skill",
+  "provider": "cursor",
+  "model": "GPT-5.6 Sol",
+  "skillUsed": true,
+  "skillVersionNote": "maptiler-skills @ improve/maptiler-skill-resilience",
+  "tokens": null,
+  "cost": null,
+  "latency": null,
+  "attempts": 1,
+  "note": "Side-by-side SDK ([lng,lat]) and Leaflet ((lat,lng)) maps of Vienna sharing streets-v4, with keyed raster tiles, MapTiler attribution, twin markers and loop-guarded two-way view sync swapping order only at the boundary."
+}

@@ -1,0 +1,16 @@
+{
+  "agentLabel": "Cursor (no Mapbox skill)",
+  "provider": "cursor",
+  "model": "composer-no-skill",
+  "skillUsed": false,
+  "skillVersionNote": "none",
+  "tokens": {
+    "input": null,
+    "output": null,
+    "total": null
+  },
+  "costUsd": null,
+  "latencySec": null,
+  "attempts": 1,
+  "notes": "baseline without skills · C2"
+}

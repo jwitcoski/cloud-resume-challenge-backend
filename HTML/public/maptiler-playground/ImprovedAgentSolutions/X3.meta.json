@@ -1,0 +1,12 @@
+{
+  "agentLabel": "Cursor Improved Skill",
+  "provider": "cursor",
+  "model": "GPT-5.6 Sol",
+  "skillUsed": true,
+  "skillVersionNote": "maptiler-skills @ improve/maptiler-skill-resilience",
+  "tokens": null,
+  "cost": null,
+  "latency": null,
+  "attempts": 1,
+  "note": "5,000 seeded stores via helpers.addPoint clustering plus a helpers.addHeatmap toggle; cluster-expansion clicks, store popups and a selection highlight layer ride on the helper's clustered source."
+}

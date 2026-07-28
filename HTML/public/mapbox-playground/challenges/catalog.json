@@ -1,0 +1,446 @@
+{
+  "version": 1,
+  "skill": "mapbox/mapbox-agent-skills",
+  "pinned": {
+    "mapboxGlJs": "v3.9.0",
+    "mapboxSearchJs": "v1.0.0"
+  },
+  "challenges": [
+    {
+      "id": "C1",
+      "tier": "core",
+      "title": "Hello Map",
+      "tags": ["gl-js", "token-security"],
+      "maxScore": 70,
+      "prompt": "Build a minimal Mapbox GL JS page: full-viewport #map, mapbox://styles/mapbox/standard, center on Prague [14.4178, 50.1167], zoom 12. Use mapbox-gl v3.9.0 from CDN (unpkg or jsDelivr). Load access token from ../admin-boundaries/js/config.js (window.MAPBOX_ACCESS_TOKEN). Guard missing token before constructing the map. Do not hardcode a pk. token.",
+      "checks": [
+        "uses_mapbox_gl",
+        "pinned_gl_version",
+        "no_template_leak",
+        "api_token_hygiene",
+        "loads_config_js",
+        "assigns_access_token",
+        "needs_validate_token",
+        "needs_standard_style",
+        "needs_prague_center",
+        "needs_full_viewport",
+        "lng_lat_order",
+        "min_substance_web"
+      ]
+    },
+    {
+      "id": "C2",
+      "tier": "core",
+      "title": "Fog and Lights",
+      "tags": ["gl-js", "style-patterns"],
+      "maxScore": 80,
+      "prompt": "Mapbox GL JS v3.9.0 map with fog (setFog) and either lights config or Standard style lightPreset (day/dusk/night/dawn). Full-viewport #map, token from config.js with missing-token guard.",
+      "checks": [
+        "uses_mapbox_gl",
+        "pinned_gl_version",
+        "api_token_hygiene",
+        "loads_config_js",
+        "assigns_access_token",
+        "needs_validate_token",
+        "needs_fog",
+        "needs_lights_or_preset",
+        "needs_full_viewport",
+        "min_substance_web"
+      ]
+    },
+    {
+      "id": "C3",
+      "tier": "core",
+      "title": "Terrain Fly",
+      "tags": ["gl-js", "terrain"],
+      "maxScore": 80,
+      "prompt": "Map with Mapbox terrain-dem source, setTerrain with exaggeration > 1, pitch ~60, flyTo Alps (~[8.6, 46.5]). GL JS v3.9.0, token from config.",
+      "checks": [
+        "uses_mapbox_gl",
+        "pinned_gl_version",
+        "api_token_hygiene",
+        "loads_config_js",
+        "assigns_access_token",
+        "needs_terrain_dem",
+        "needs_set_terrain",
+        "needs_flyto",
+        "flyto_alps",
+        "needs_full_viewport",
+        "min_substance_web"
+      ]
+    },
+    {
+      "id": "C4",
+      "tier": "core",
+      "title": "Style Switcher",
+      "tags": ["gl-js", "style-patterns"],
+      "maxScore": 80,
+      "prompt": "UI with at least 3 Mapbox style buttons (e.g. standard, outdoors-v12, satellite-streets-v12). Call map.setStyle on click and re-attach layers/handlers on style.load. GL JS v3.9.0 + config token.",
+      "checks": [
+        "uses_mapbox_gl",
+        "pinned_gl_version",
+        "api_token_hygiene",
+        "loads_config_js",
+        "assigns_access_token",
+        "needs_setstyle",
+        "style_switcher_at_least_3",
+        "needs_style_reload_hook",
+        "needs_full_viewport",
+        "min_substance_web"
+      ]
+    },
+    {
+      "id": "C5",
+      "tier": "core",
+      "title": "Geocode Roundtrip",
+      "tags": ["search", "geocoding"],
+      "maxScore": 80,
+      "prompt": "Forward geocode an address (Mapbox Geocoding API v5 or Search Box) and reverse geocode a click. Show results in the UI. Debounce the search input. Token from config; GL JS map optional but preferred.",
+      "checks": [
+        "api_token_hygiene",
+        "loads_config_js",
+        "needs_geocode_forward",
+        "needs_geocode_reverse",
+        "geocode_ui_input",
+        "needs_debounce",
+        "async_catch",
+        "min_substance_web"
+      ]
+    },
+    {
+      "id": "C6",
+      "tier": "core",
+      "title": "Directions Line",
+      "tags": ["directions", "geospatial"],
+      "maxScore": 80,
+      "prompt": "Call Mapbox Directions API for a driving route between two fixed points, draw the geometry as a GeoJSON line layer on a Mapbox GL JS map. Token from config. Handle fetch errors.",
+      "checks": [
+        "uses_mapbox_gl",
+        "pinned_gl_version",
+        "api_token_hygiene",
+        "loads_config_js",
+        "assigns_access_token",
+        "needs_directions_api",
+        "needs_line_layer",
+        "async_catch",
+        "needs_full_viewport",
+        "min_substance_web"
+      ]
+    },
+    {
+      "id": "C7",
+      "tier": "core",
+      "title": "3D Buildings",
+      "tags": ["gl-js", "extrusion"],
+      "maxScore": 80,
+      "prompt": "Add a fill-extrusion layer for 3D buildings using Mapbox composite building data (or Standard buildings). Data-driven height expression. Insert under labels when using classic styles. Pitch the camera. Token from config.",
+      "checks": [
+        "uses_mapbox_gl",
+        "pinned_gl_version",
+        "api_token_hygiene",
+        "loads_config_js",
+        "assigns_access_token",
+        "needs_fill_extrusion",
+        "extrusion_height_expr",
+        "needs_full_viewport",
+        "min_substance_web"
+      ]
+    },
+    {
+      "id": "C8",
+      "tier": "core",
+      "title": "Clustered Points",
+      "tags": ["gl-js", "performance"],
+      "maxScore": 80,
+      "prompt": "Generate ~5000 random points near a city, add as GeoJSON source with cluster:true, and render clustered + unclustered circle layers (has point_count / !has). Token from config. GL JS v3.9.0.",
+      "checks": [
+        "uses_mapbox_gl",
+        "pinned_gl_version",
+        "api_token_hygiene",
+        "loads_config_js",
+        "assigns_access_token",
+        "five_thousand_points",
+        "needs_cluster_true",
+        "cluster_and_unclustered_layers",
+        "needs_full_viewport",
+        "min_substance_web"
+      ]
+    },
+    {
+      "id": "X1",
+      "tier": "extreme",
+      "title": "Store Locator",
+      "tags": ["store-locator", "search"],
+      "maxScore": 140,
+      "prompt": "Store locator: search input (Mapbox geocoding/Search), list of ≥8 store markers from GeoJSON, flyTo on list click, popup on marker click, optional clustering. Production-ish UI. Token from config.",
+      "checks": [
+        "uses_mapbox_gl",
+        "api_token_hygiene",
+        "loads_config_js",
+        "assigns_access_token",
+        "needs_validate_token",
+        "needs_geocode_forward",
+        "store_list_ui",
+        "needs_popup_or_click",
+        "needs_flyto",
+        "async_catch",
+        "min_substance_extreme"
+      ]
+    },
+    {
+      "id": "X2",
+      "tier": "extreme",
+      "title": "Search to Route",
+      "tags": ["search", "directions"],
+      "maxScore": 140,
+      "prompt": "Full UX: geocode origin + destination inputs, call Directions API, draw route line, show distance/duration in UI from the route object (route.distance / route.duration), error handling. Bias geocoding with proximity near the map center (e.g. proximity=-77.0369,38.9072 for DC) so ambiguous names like Lincoln Memorial resolve locally — not Lincoln Memorial Parkway in Illinois. Token from config.",
+      "checks": [
+        "uses_mapbox_gl",
+        "api_token_hygiene",
+        "loads_config_js",
+        "assigns_access_token",
+        "needs_geocode_forward",
+        "needs_directions_api",
+        "needs_line_layer",
+        "route_stats_ui",
+        "uses_route_distance_duration",
+        "no_fake_route_stats",
+        "geocode_proximity_bias",
+        "geocode_two_inputs",
+        "async_catch",
+        "min_substance_extreme"
+      ]
+    },
+    {
+      "id": "X3",
+      "tier": "extreme",
+      "title": "Matrix ETAs",
+      "tags": ["matrix", "geospatial"],
+      "maxScore": 140,
+      "prompt": "One origin + ≥5 destinations. Call Mapbox Matrix API (driving). Display ETA table in the UI and mark destinations on the map. Token from config. Handle errors.",
+      "checks": [
+        "uses_mapbox_gl",
+        "api_token_hygiene",
+        "loads_config_js",
+        "assigns_access_token",
+        "needs_matrix_api",
+        "matrix_destinations_5",
+        "eta_table_ui",
+        "async_catch",
+        "min_substance_extreme"
+      ]
+    },
+    {
+      "id": "X4",
+      "tier": "extreme",
+      "title": "Isochrone Polygons",
+      "tags": ["isochrone", "geospatial"],
+      "maxScore": 140,
+      "prompt": "Mapbox Isochrone API: polygons for 15/30/60 minute contours (walking or driving). Draw as fill layers with opacity. Click or geolocate sets origin. Token from config.",
+      "checks": [
+        "uses_mapbox_gl",
+        "api_token_hygiene",
+        "loads_config_js",
+        "assigns_access_token",
+        "needs_isochrone_api",
+        "isochrone_multi_contour",
+        "needs_fill_layer",
+        "async_catch",
+        "min_substance_extreme"
+      ]
+    },
+    {
+      "id": "X5",
+      "tier": "extreme",
+      "title": "Perf Checklist",
+      "tags": ["performance"],
+      "maxScore": 140,
+      "prompt": "Demonstrate Mapbox web performance patterns: prefer symbol/circle layers over HTML Marker for large sets, use cluster:true, debounce moveend/geocode handlers (clearTimeout), and remove map on page teardown (map.remove). Comment or UI checklist of patterns used. Token from config.",
+      "checks": [
+        "uses_mapbox_gl",
+        "api_token_hygiene",
+        "loads_config_js",
+        "assigns_access_token",
+        "needs_cluster_true",
+        "debounce_cleartimeout",
+        "needs_map_remove",
+        "perf_checklist_mention",
+        "min_substance_extreme"
+      ]
+    },
+    {
+      "id": "X6",
+      "tier": "extreme",
+      "title": "MapLibre Migration Honesty",
+      "tags": ["maplibre-migration"],
+      "maxScore": 140,
+      "prompt": "HTML page documenting Mapbox GL JS ↔ MapLibre migration: show side-by-side code (or clearly labeled sections) for accessToken vs no token, mapbox:// style URL vs open style, and package name change. Include a working Mapbox GL map (token from config) AND note what would change for MapLibre. No fake APIs.",
+      "checks": [
+        "uses_mapbox_gl",
+        "api_token_hygiene",
+        "loads_config_js",
+        "assigns_access_token",
+        "mentions_maplibre",
+        "mentions_access_token_diff",
+        "mentions_style_url_diff",
+        "min_substance_extreme"
+      ]
+    },
+    {
+      "id": "I1",
+      "tier": "insane",
+      "title": "React Mapbox Map",
+      "tags": ["react", "web-integration"],
+      "maxScore": 150,
+      "mode": "static",
+      "prompt": "React (TSX) Mapbox GL JS map component: useRef container, useEffect to construct mapboxgl.Map with mapbox://styles/mapbox/streets-v12, set mapboxgl.accessToken from import.meta.env.VITE_MAPBOX_ACCESS_TOKEN or process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN (not a hardcoded pk.). Cleanup with map.remove() on unmount. Guard missing token. Pin mapbox-gl conceptually (comment or package note v3.9.x).",
+      "checks": [
+        "needs_react",
+        "needs_use_effect",
+        "uses_mapbox_gl",
+        "needs_map_remove",
+        "react_env_token",
+        "api_token_hygiene",
+        "needs_validate_token",
+        "no_stub_placeholder",
+        "min_substance_insane"
+      ]
+    },
+    {
+      "id": "I2",
+      "tier": "insane",
+      "title": "deck.gl on Mapbox",
+      "tags": ["deck.gl", "data-viz"],
+      "maxScore": 150,
+      "mode": "static",
+      "prompt": "HTML page: Mapbox GL JS v3.9.0 basemap + deck.gl ScatterplotLayer (or HexagonLayer) via MapboxOverlay. Prefer the unpkg deck.gl UMD bundle (or esm.sh) — do NOT use jsDelivr npm/@deck.gl/.../+esm (that path throws makeBatchFromTable at runtime). Token from ../admin-boundaries/js/config.js. At least 50 synthetic points. map.on('error') or visible error UI.",
+      "checks": [
+        "uses_mapbox_gl",
+        "pinned_gl_version",
+        "needs_deckgl",
+        "deck_mapbox_overlay",
+        "deck_stable_cdn",
+        "loads_config_js",
+        "assigns_access_token",
+        "api_token_hygiene",
+        "needs_validate_token",
+        "map_on_error",
+        "min_substance_insane"
+      ]
+    },
+    {
+      "id": "I3",
+      "tier": "insane",
+      "title": "Mapbox GL Draw",
+      "tags": ["draw", "geospatial"],
+      "maxScore": 150,
+      "mode": "static",
+      "prompt": "Mapbox GL JS map with @mapbox/mapbox-gl-draw: enable polygon + line draw modes, listen for draw.create, show drawn feature count or GeoJSON length in the UI. Token from config. GL JS v3.9.0.",
+      "checks": [
+        "uses_mapbox_gl",
+        "pinned_gl_version",
+        "needs_mapbox_draw",
+        "draw_create_handler",
+        "loads_config_js",
+        "assigns_access_token",
+        "api_token_hygiene",
+        "needs_validate_token",
+        "min_substance_insane"
+      ]
+    },
+    {
+      "id": "I4",
+      "tier": "insane",
+      "title": "iOS SwiftUI Mapbox",
+      "tags": ["ios", "swiftui"],
+      "maxScore": 150,
+      "mode": "static",
+      "prompt": "SwiftUI snippet using MapboxMaps: Map(initialViewport:), style URI mapbox://styles/mapbox/streets-v12 (or Standard), access token from Info.plist / .xcconfig (MBXAccessToken) — never hardcode pk. in source. Show a Marker or MapViewAnnotation. Mention MapboxMaps import.",
+      "checks": [
+        "needs_swift_mapbox",
+        "needs_swiftui_map",
+        "ios_style_uri",
+        "ios_token_not_hardcoded",
+        "ios_annotation_or_marker",
+        "no_stub_placeholder",
+        "min_substance_insane"
+      ]
+    },
+    {
+      "id": "I5",
+      "tier": "insane",
+      "title": "Android Compose Mapbox",
+      "tags": ["android", "compose"],
+      "maxScore": 150,
+      "mode": "static",
+      "prompt": "Jetpack Compose Mapbox map: MapboxMap / MapViewportState, Point(lng, lat) order, style mapbox://styles/mapbox/streets-v12, INTERNET permission in AndroidManifest snippet, token from BuildConfig or local.properties — not a pk. literal in Kotlin.",
+      "checks": [
+        "needs_android_mapbox",
+        "android_compose_map",
+        "android_point_lng_lat",
+        "needs_android_internet",
+        "android_style_uri",
+        "ios_token_not_hardcoded",
+        "no_stub_placeholder",
+        "min_substance_insane"
+      ]
+    },
+    {
+      "id": "I6",
+      "tier": "insane",
+      "title": "Flutter Mapbox",
+      "tags": ["flutter"],
+      "maxScore": 150,
+      "mode": "static",
+      "prompt": "Flutter Dart: MapWidget from mapbox_maps_flutter, styleURI MapboxStyles.STREETS or mapbox://styles/mapbox/streets-v12, ACCESS_TOKEN from String.fromEnvironment or similar — no pk. literal. CameraOptions with center Point.",
+      "checks": [
+        "needs_flutter_mapbox",
+        "flutter_map_widget",
+        "flutter_style_uri",
+        "flutter_token_env",
+        "api_token_hygiene",
+        "no_stub_placeholder",
+        "min_substance_insane"
+      ]
+    },
+    {
+      "id": "I7",
+      "tier": "insane",
+      "title": "React Native Mapbox",
+      "tags": ["react-native"],
+      "maxScore": 150,
+      "mode": "static",
+      "prompt": "React Native TSX using @rnmapbox/maps (MapView, Camera, PointAnnotation or ShapeSource). Set Mapbox.setAccessToken from Config / env — no hardcoded pk. StyleURL.Street or mapbox://styles/mapbox/streets-v12. Cleanup notes OK.",
+      "checks": [
+        "needs_rn_mapbox",
+        "rn_mapview",
+        "rn_set_access_token",
+        "api_token_hygiene",
+        "rn_style_url",
+        "no_stub_placeholder",
+        "min_substance_insane"
+      ]
+    },
+    {
+      "id": "I8",
+      "tier": "insane",
+      "title": "Google Maps Migration",
+      "tags": ["google-maps-migration"],
+      "maxScore": 150,
+      "mode": "static",
+      "prompt": "HTML guide + working Mapbox map: document Google Maps → Mapbox equivalents (google.maps.Map → mapboxgl.Map, LatLng → [lng,lat], DirectionsService → Directions API, places → Search/Geocoding). Include a live Mapbox GL JS map (token from config). Call out lng/lat order trap.",
+      "checks": [
+        "uses_mapbox_gl",
+        "mentions_google_maps",
+        "mentions_latlng_trap",
+        "google_equiv_directions_or_places",
+        "loads_config_js",
+        "assigns_access_token",
+        "api_token_hygiene",
+        "needs_validate_token",
+        "lng_lat_order",
+        "min_substance_insane"
+      ]
+    }
+  ]
+}

@@ -190,6 +190,12 @@
       do: "Import MapTiler SDK for MapTiler Cloud apps; do not dual-import bare maplibre-gl unless the challenge is Leaflet/Cesium/deck.",
       why: "SDK wraps session billing, helpers, and Cloud services.",
     },
+    needs_leaflet_latlng: {
+      theme: "Leaflet lat-first order",
+      skill: "Leaflet + MapTiler",
+      do: "Use Leaflet setView([lat, lng], …) / L.latLng(lat, lng) — latitude first, unlike MapLibre [lng, lat].",
+      why: "Swapping to lng-first on Leaflet puts Prague in the ocean and fails the Leaflet challenge.",
+    },
   };
 
   const THEME_ORDER = [
@@ -217,6 +223,7 @@
     "Pin versions from the catalog",
     "v4 styles only",
     "Prefer @maptiler/sdk",
+    "Leaflet lat-first order",
   ];
 
   function buildFromChecks(checkResults, context) {
@@ -239,12 +246,29 @@
     });
   }
 
-  /** Aggregate latest run per challenge → ranked improvement themes. */
-  function buildReport(runs) {
+  /** Aggregate runs → ranked improvement themes.
+   *  opts.preferSourceTags / preferLowestPct / scope mirror the Mapbox coaching report.
+   */
+  function buildReport(runs, opts) {
+    opts = opts || {};
+    let pool = (runs || []).filter((r) => r && r.challengeId);
+    const prefer = opts.preferSourceTags;
+    if (prefer && prefer.length) {
+      const filtered = pool.filter((r) => prefer.includes(r.sourceTag));
+      if (filtered.length) pool = filtered;
+    }
+
     const latest = {};
-    for (const r of runs || []) {
-      if (!r.challengeId) continue;
-      if (!latest[r.challengeId] || (r.timestamp || "") > (latest[r.challengeId].timestamp || "")) {
+    for (const r of pool) {
+      const prev = latest[r.challengeId];
+      if (!prev) {
+        latest[r.challengeId] = r;
+        continue;
+      }
+      if (opts.preferLowestPct) {
+        if ((r.pct ?? 101) < (prev.pct ?? 101)) latest[r.challengeId] = r;
+        else if (r.pct === prev.pct && (r.timestamp || "") > (prev.timestamp || "")) latest[r.challengeId] = r;
+      } else if ((r.timestamp || "") > (prev.timestamp || "")) {
         latest[r.challengeId] = r;
       }
     }
@@ -304,6 +328,7 @@
       });
 
     const summary = {
+      scope: opts.scope || null,
       challengesGraded: rows.length,
       avgPct: avg(rows.map((r) => r.pct)),
       byTier: {
@@ -325,6 +350,7 @@
           tier: r.tier,
           pct: r.pct,
           letter: r.letter,
+          sourceTag: r.sourceTag || null,
           fails: (r.checks || []).filter((c) => !c.pass).map((c) => c.id),
         }))
         .sort((a, b) => a.id.localeCompare(b.id)),
@@ -337,6 +363,7 @@
     const lines = [];
     lines.push("# MapTiler Agent — Improvement Report");
     lines.push("");
+    if (report.scope) lines.push(`**Scope:** ${report.scope}`);
     lines.push(`Challenges graded: **${report.challengesGraded}** · Combined avg: **${report.avgPct ?? "—"}%**`);
     lines.push(
       `By tier — Core **${report.byTier.core ?? "—"}%** · Extreme **${report.byTier.extreme ?? "—"}%** · Insane **${report.byTier.insane ?? "—"}%**`

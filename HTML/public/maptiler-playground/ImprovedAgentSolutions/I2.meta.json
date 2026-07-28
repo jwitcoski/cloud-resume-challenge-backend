@@ -1,0 +1,12 @@
+{
+  "agentLabel": "Cursor Improved Skill",
+  "provider": "cursor",
+  "model": "GPT-5.6 Sol",
+  "skillUsed": true,
+  "skillVersionNote": "maptiler-skills @ improve/maptiler-skill-resilience",
+  "tokens": null,
+  "cost": null,
+  "latency": null,
+  "attempts": 1,
+  "note": "Interleaved deck.gl scatterplot overlay on a pinned MapTiler SDK basemap."
+}

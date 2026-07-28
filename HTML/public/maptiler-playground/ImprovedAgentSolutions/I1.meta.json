@@ -1,0 +1,12 @@
+{
+  "agentLabel": "Cursor Improved Skill",
+  "provider": "cursor",
+  "model": "GPT-5.6 Sol",
+  "skillUsed": true,
+  "skillVersionNote": "maptiler-skills @ improve/maptiler-skill-resilience",
+  "tokens": null,
+  "cost": null,
+  "latency": null,
+  "attempts": 1,
+  "note": "Pinned Cesium globe with authenticated MapTiler imagery and quantized terrain."
+}

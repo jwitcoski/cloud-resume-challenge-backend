@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>X4 — Route Profile: elevation along an alpine route</title>
+  <script src="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.umd.min.js"></script>
+  <link href="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.css" rel="stylesheet" />
+  <script src="../admin-boundaries/js/config.js"></script>
+  <style>
+    html, body { margin: 0; padding: 0; height: 100%; }
+    #map { position: absolute; inset: 0; height: 100%; }
+    #error-bar {
+      position: absolute; top: 0; left: 0; right: 0; z-index: 20;
+      background: #b00020; color: #fff; padding: 10px 14px;
+      font: 14px/1.4 system-ui, sans-serif;
+    }
+    #panel {
+      position: absolute; top: 12px; left: 12px; z-index: 10;
+      background: rgba(16, 20, 28, 0.9); color: #eef2f7;
+      border-radius: 10px; padding: 12px 14px; width: 340px;
+      font: 13px/1.5 system-ui, sans-serif;
+    }
+    #panel h1 { margin: 0 0 8px; font-size: 15px; }
+    #stats { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 12px; margin: 8px 0; }
+    #stats dt { color: #a0aec0; }
+    #stats dd { margin: 0; color: #9fd3ff; font-variant-numeric: tabular-nums; }
+    #profile { width: 100%; height: 120px; background: #0d1117; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <div id="error-bar" hidden></div>
+  <div id="panel">
+    <h1>Grindelwald → Kleine Scheidegg</h1>
+    <dl id="stats">
+      <dt>Samples</dt><dd id="stat-samples">…</dd>
+      <dt>Min elevation</dt><dd id="stat-min">…</dd>
+      <dt>Max elevation</dt><dd id="stat-max">…</dd>
+      <dt>Total gain</dt><dd id="stat-gain">…</dd>
+      <dt>Total loss</dt><dd id="stat-loss">…</dd>
+    </dl>
+    <canvas id="profile" width="316" height="120"></canvas>
+  </div>
+  <script>
+    "use strict";
+
+    const errorBar = document.getElementById("error-bar");
+    function showError(message, error) {
+      errorBar.textContent = message;
+      errorBar.hidden = false;
+      if (error) console.error(message, error);
+    }
+
+    const apiKey = window.MAPTILER_API_KEY;
+    if (!apiKey || /YOUR_MAPTILER/i.test(apiKey)) {
+      showError("Missing MapTiler API key: define window.MAPTILER_API_KEY in ../admin-boundaries/js/config.js before loading this page.");
+      throw new Error("Missing MAPTILER_API_KEY");
+    }
+    maptilersdk.config.apiKey = apiKey;
+
+    // Sparse waypoints ([lng, lat]) sketching the hike; densified below so the
+    // elevation profile reflects the route, not just a handful of vertices.
+    const BASE_ROUTE = [
+      [8.0338, 46.6242], [8.0270, 46.6220], [8.0195, 46.6190], [8.0121, 46.6152],
+      [8.0056, 46.6110], [7.9998, 46.6063], [7.9942, 46.6016], [7.9890, 46.5967],
+      [7.9836, 46.5920], [7.9770, 46.5885], [7.9702, 46.5858], [7.9640, 46.5838],
+      [7.9601, 46.5823], [7.9612, 46.5852],
+    ];
+
+    function densifyRoute(route, stepsPerLeg) {
+      const dense = [];
+      for (let leg = 0; leg < route.length - 1; leg++) {
+        const [lng0, lat0] = route[leg];
+        const [lng1, lat1] = route[leg + 1];
+        for (let s = 0; s < stepsPerLeg; s++) {
+          const t = s / stepsPerLeg;
+          dense.push([lng0 + (lng1 - lng0) * t, lat0 + (lat1 - lat0) * t]);
+        }
+      }
+      dense.push(route[route.length - 1]);
+      return dense;
+    }
+
+    const denseCoordinates = densifyRoute(BASE_ROUTE, 8); // ~105 samples
+
+    const map = new maptilersdk.Map({
+      container: "map",
+      style: maptilersdk.MapStyle.OUTDOOR,
+      center: [8.0, 46.605],
+      zoom: 12.4,
+      pitch: 45,
+      navigationControl: true,
+    });
+
+    map.on("error", ({ error }) => {
+      showError("Map error: " + (error && error.message ? error.message : "style, tile or WebGL failure — see console."), error);
+    });
+
+    function setStat(id, text) {
+      document.getElementById(id).textContent = text;
+    }
+
+    function drawProfile(elevations) {
+      const canvas = document.getElementById("profile");
+      const ctx = canvas.getContext("2d");
+      const { width, height } = canvas;
+      const min = Math.min(...elevations);
+      const max = Math.max(...elevations);
+      const span = Math.max(max - min, 1);
+      ctx.clearRect(0, 0, width, height);
+      ctx.beginPath();
+      elevations.forEach((ele, i) => {
+        const x = (i / (elevations.length - 1)) * (width - 8) + 4;
+        const y = height - 14 - ((ele - min) / span) * (height - 28);
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      });
+      ctx.strokeStyle = "#63b3ed";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.fillStyle = "#a0aec0";
+      ctx.font = "10px system-ui, sans-serif";
+      ctx.fillText(Math.round(max) + " m", 4, 10);
+      ctx.fillText(Math.round(min) + " m", 4, height - 4);
+    }
+
+    async function sampleElevations(coordinates) {
+      // Elevation REST accepts max 50 positions per request: chunk and merge.
+      const elevated = [];
+      for (let i = 0; i < coordinates.length; i += 50) {
+        const chunk = coordinates.slice(i, i + 50);
+        const result = await maptilersdk.elevation.batch(chunk);
+        elevated.push(...result);
+      }
+      return elevated;
+    }
+
+    map.on("load", async () => {
+      try {
+        await maptilersdk.helpers.addPolyline(map, {
+          data: {
+            type: "Feature",
+            geometry: { type: "LineString", coordinates: denseCoordinates },
+            properties: { name: "Grindelwald - Kleine Scheidegg" },
+          },
+          lineColor: "#e53e3e",
+          lineWidth: 3,
+          outline: true,
+        });
+
+        const elevated = await sampleElevations(denseCoordinates);
+        if (!elevated.length) throw new Error("Elevation API returned no samples");
+
+        const elevations = elevated.map((p) => p[2]);
+        let gain = 0;
+        let loss = 0;
+        for (let i = 1; i < elevations.length; i++) {
+          const delta = elevations[i] - elevations[i - 1];
+          if (delta > 0) gain += delta; else loss -= delta;
+        }
+        const minEle = Math.min(...elevations);
+        const maxEle = Math.max(...elevations);
+
+        setStat("stat-samples", String(elevations.length));
+        setStat("stat-min", Math.round(minEle) + " m");
+        setStat("stat-max", Math.round(maxEle) + " m");
+        setStat("stat-gain", "+" + Math.round(gain) + " m");
+        setStat("stat-loss", "−" + Math.round(loss) + " m");
+        drawProfile(elevations);
+
+        const lowest = elevated[elevations.indexOf(minEle)];
+        const highest = elevated[elevations.indexOf(maxEle)];
+        new maptilersdk.Marker({ color: "#38a169" })
+          .setLngLat([lowest[0], lowest[1]])
+          .setPopup(new maptilersdk.Popup().setHTML("Lowest point: " + Math.round(minEle) + " m"))
+          .addTo(map);
+        new maptilersdk.Marker({ color: "#e53e3e" })
+          .setLngLat([highest[0], highest[1]])
+          .setPopup(new maptilersdk.Popup().setHTML("Highest point: " + Math.round(maxEle) + " m"))
+          .addTo(map);
+      } catch (error) {
+        showError("Elevation profile failed: " + (error.message || "MapTiler Cloud request error."), error);
+        setStat("stat-samples", "failed");
+      }
+    });
+  </script>
+</body>
+</html>
