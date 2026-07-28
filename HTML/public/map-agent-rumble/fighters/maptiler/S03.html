@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>S03 — MapTiler</title>
+  <script src="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.umd.min.js"></script>
+  <link href="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.css" rel="stylesheet" />
+  <script src="../../admin-boundaries/js/config.js"></script>
+  <style>
+    html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
+    #map { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .panel {
+      position: absolute; z-index: 2; top: 10px; left: 10px;
+      background: rgba(10,16,32,.92); color: #eef2ff; padding: 10px 12px;
+      border-radius: 10px; max-width: min(320px, 92vw); font-size: 13px;
+      border: 1px solid rgba(255,255,255,.12);
+    }
+    .panel button, .panel input {
+      font: inherit; margin: 4px 0; width: 100%; box-sizing: border-box;
+      border-radius: 8px; border: 1px solid #445; padding: 10px; min-height: 44px;
+      background: #0f172a; color: #eef2ff; cursor: pointer; touch-action: manipulation;
+    }
+    .panel button { background: #2563eb; border-color: #3b82f6; }
+    .legend { position: absolute; z-index: 2; bottom: 28px; left: 10px;
+      background: rgba(10,16,32,.9); color: #eef2ff; padding: 8px 10px; border-radius: 8px; font-size: 12px; }
+    #inset, #overview {
+      position: absolute; z-index: 2; right: 10px; bottom: 28px;
+      width: 140px; height: 110px; border: 2px solid #fff; border-radius: 6px; overflow: hidden;
+    }
+    .story { position: absolute; z-index: 2; top: 10px; right: 10px; width: min(280px, 40vw);
+      max-height: 80vh; overflow: auto; background: rgba(10,16,32,.94); color: #eef2ff;
+      padding: 12px; border-radius: 10px; }
+    .story .chapter { border-bottom: 1px solid rgba(255,255,255,.1); padding: 8px 0; cursor: pointer; }
+    .story .chapter.active { color: #6ec8ff; }
+    .swipe-wrap { position: absolute; inset: 0; }
+    .swipe-wrap #mapA, .swipe-wrap #mapB { position: absolute; inset: 0; }
+    .swipe-bar { position: absolute; top: 0; bottom: 0; width: 4px; background: #fff; z-index: 5; cursor: ew-resize; }
+    @media (max-width: 520px) {
+      .panel { max-width: 96vw; left: 2vw; right: 2vw; width: auto; }
+      .panel button { min-height: 48px; padding: 12px; }
+    }
+</style>
+</head>
+<body>
+
+<div class="panel">
+  <button type="button" data-style="streets">Streets</button>
+  <button type="button" data-style="outdoor">Outdoor</button>
+  <button type="button" data-style="satellite">Satellite</button>
+</div>
+<div id="map"></div>
+<script>
+
+  const key = window.MAPTILER_API_KEY;
+  maptilersdk.config.apiKey = key;
+  
+  const styles = {
+    streets: maptilersdk.MapStyle.STREETS,
+    outdoor: maptilersdk.MapStyle.OUTDOOR,
+    satellite: maptilersdk.MapStyle.SATELLITE
+  };
+  const map = new maptilersdk.Map({ container: "map", style: styles.streets, center: [14.4178, 50.1167], zoom: 11 });
+  document.querySelectorAll("[data-style]").forEach((btn) => {
+    btn.addEventListener("click", () => map.setStyle(styles[btn.getAttribute("data-style")]));
+  });
+  window.__MAP__ = map;
+</script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+{
+  "skillId": "N02",
+  "fighter": "maptiler",
+  "agentLabel": "MapTiler skill-agent (imperfect)",
+  "ready": true,
+  "notes": "N/A directions",
+  "runEnvironment": {
+    "tool": "Cursor",
+    "note": "Each fighter pack was authored as a Cursor Agent run. Token counts are estimated from prompt/skills context + solution size (~4 chars/token), not billed API receipts — label them as estimates in the UI."
+  },
+  "provider": "cursor",
+  "tool": "Cursor Agent",
+  "model": "Composer",
+  "modelNote": "Cursor Agent (Composer) with MapTiler skills loaded",
+  "skillUsed": true,
+  "skillPack": "maptiler/maptiler-skills",
+  "attempts": 1,
+  "tokens": {
+    "input": 36063,
+    "output": 676,
+    "total": 36739,
+    "estimate": true,
+    "estimateMethod": "chars/4 + skill-context base (not provider bill)"
+  },
+  "latencySec": 15
+}

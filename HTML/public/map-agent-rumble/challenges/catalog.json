@@ -1,0 +1,869 @@
+{
+  "version": 1,
+  "name": "map-agent-royal-rumble",
+  "pinned": {
+    "mapboxGlJs": "v3.9.0",
+    "maptilerSdk": "v4.0.2",
+    "maplibreGl": "v4.7.1"
+  },
+  "tierWeights": {
+    "easy": 1,
+    "medium": 1.15,
+    "hard": 1.35,
+    "insane": 1.5
+  },
+  "skills": [
+    {
+      "id": "S01",
+      "tier": "easy",
+      "track": "core",
+      "title": "Hello Map",
+      "categories": [
+        "display",
+        "mobile"
+      ],
+      "maxScore": 70,
+      "prompt": "Full-viewport #map centered on Prague [14.4178, 50.1167], zoom ~12. Load keys from config (except No Agent). Do not hardcode commercial tokens.",
+      "checks": {
+        "mapbox": [
+          "uses_mapbox",
+          "pinned_mapbox",
+          "loads_config",
+          "token_hygiene",
+          "token_guard",
+          "prague_center",
+          "full_viewport",
+          "min_substance",
+          "no_stub_placeholder"
+        ],
+        "maptiler": [
+          "uses_maptiler",
+          "pinned_maptiler",
+          "loads_config",
+          "key_hygiene",
+          "key_guard",
+          "prague_center",
+          "full_viewport",
+          "min_substance",
+          "no_stub_placeholder"
+        ],
+        "esri": [
+          "placeholder_or_esri"
+        ],
+        "no-agent": [
+          "uses_maplibre",
+          "no_commercial_key",
+          "open_style",
+          "prague_center",
+          "full_viewport",
+          "min_substance",
+          "no_stub_placeholder"
+        ]
+      }
+    },
+    {
+      "id": "S02",
+      "tier": "easy",
+      "track": "core",
+      "title": "Pins & Popups",
+      "categories": [
+        "display",
+        "interaction"
+      ],
+      "maxScore": 80,
+      "prompt": "At least 3 markers/points with popups or info UI; click focuses the map.",
+      "checks": {
+        "mapbox": [
+          "uses_mapbox",
+          "loads_config",
+          "token_hygiene",
+          "has_markers",
+          "has_popup",
+          "full_viewport",
+          "min_substance",
+          "no_stub_placeholder"
+        ],
+        "maptiler": [
+          "uses_maptiler",
+          "loads_config",
+          "key_hygiene",
+          "has_markers",
+          "has_popup",
+          "full_viewport",
+          "min_substance",
+          "no_stub_placeholder"
+        ],
+        "esri": [
+          "placeholder_or_esri"
+        ],
+        "no-agent": [
+          "uses_maplibre",
+          "no_commercial_key",
+          "has_markers",
+          "has_popup",
+          "full_viewport",
+          "min_substance",
+          "no_stub_placeholder"
+        ]
+      }
+    },
+    {
+      "id": "S03",
+      "tier": "easy",
+      "track": "core",
+      "title": "Style Switcher",
+      "categories": [
+        "display"
+      ],
+      "maxScore": 80,
+      "prompt": "At least 3 basemap/style controls; switching works; re-bind after style change when needed.",
+      "checks": {
+        "mapbox": [
+          "uses_mapbox",
+          "loads_config",
+          "style_switcher",
+          "set_style",
+          "full_viewport",
+          "min_substance",
+          "no_stub_placeholder",
+          "style_reload_hook"
+        ],
+        "maptiler": [
+          "uses_maptiler",
+          "loads_config",
+          "style_switcher",
+          "set_style",
+          "full_viewport",
+          "min_substance",
+          "no_stub_placeholder",
+          "style_reload_hook"
+        ],
+        "esri": [
+          "placeholder_or_esri"
+        ],
+        "no-agent": [
+          "uses_maplibre",
+          "no_commercial_key",
+          "style_switcher",
+          "set_style",
+          "full_viewport",
+          "min_substance",
+          "no_stub_placeholder"
+        ]
+      }
+    },
+    {
+      "id": "S04",
+      "tier": "easy",
+      "track": "core",
+      "title": "Atmosphere",
+      "categories": [
+        "display"
+      ],
+      "maxScore": 80,
+      "prompt": "Fog, lights/light preset, globe halo/space, or vendor-equivalent mood controls.",
+      "checks": {
+        "mapbox": [
+          "uses_mapbox",
+          "loads_config",
+          "has_atmosphere",
+          "full_viewport",
+          "min_substance",
+          "no_stub_placeholder"
+        ],
+        "maptiler": [
+          "uses_maptiler",
+          "loads_config",
+          "has_atmosphere",
+          "full_viewport",
+          "min_substance",
+          "no_stub_placeholder"
+        ],
+        "esri": [
+          "placeholder_or_esri"
+        ],
+        "no-agent": [
+          "uses_maplibre",
+          "no_commercial_key",
+          "has_atmosphere",
+          "full_viewport",
+          "min_substance",
+          "no_stub_placeholder"
+        ]
+      }
+    },
+    {
+      "id": "S05",
+      "tier": "easy",
+      "track": "core",
+      "title": "Geocode Roundtrip",
+      "categories": [
+        "display",
+        "navigation"
+      ],
+      "maxScore": 80,
+      "prompt": "Forward search + reverse-on-click; debounce; result is map display (marker + fly), not a route.",
+      "checks": {
+        "mapbox": [
+          "loads_config",
+          "geocode_forward",
+          "geocode_reverse",
+          "has_debounce",
+          "full_viewport",
+          "min_substance",
+          "no_stub_placeholder"
+        ],
+        "maptiler": [
+          "loads_config",
+          "geocode_forward",
+          "geocode_reverse",
+          "has_debounce",
+          "full_viewport",
+          "min_substance",
+          "no_stub_placeholder"
+        ],
+        "esri": [
+          "placeholder_or_esri"
+        ],
+        "no-agent": [
+          "uses_maplibre",
+          "no_commercial_key",
+          "geocode_forward",
+          "geocode_reverse",
+          "has_debounce",
+          "min_substance",
+          "no_stub_placeholder"
+        ]
+      }
+    },
+    {
+      "id": "S06",
+      "tier": "medium",
+      "track": "core",
+      "title": "Camera Choreography",
+      "categories": [
+        "display",
+        "interaction"
+      ],
+      "maxScore": 90,
+      "prompt": "Multi-step flyTo/easeTo (or vendor camera) sequence with pitch/bearing change.",
+      "checks": {
+        "mapbox": [
+          "uses_mapbox",
+          "loads_config",
+          "has_flyto",
+          "has_pitch_or_bearing",
+          "full_viewport",
+          "min_substance_med",
+          "no_stub_placeholder"
+        ],
+        "maptiler": [
+          "uses_maptiler",
+          "loads_config",
+          "has_flyto",
+          "has_pitch_or_bearing",
+          "full_viewport",
+          "min_substance_med",
+          "no_stub_placeholder"
+        ],
+        "esri": [
+          "placeholder_or_esri"
+        ],
+        "no-agent": [
+          "uses_maplibre",
+          "no_commercial_key",
+          "has_flyto",
+          "has_pitch_or_bearing",
+          "full_viewport",
+          "min_substance_med",
+          "no_stub_placeholder"
+        ]
+      }
+    },
+    {
+      "id": "S07",
+      "tier": "medium",
+      "track": "core",
+      "title": "Inset Map",
+      "categories": [
+        "display"
+      ],
+      "maxScore": 100,
+      "prompt": "Main detail map + smaller overview inset; inset shows extent rectangle; click/drag on inset recenters main.",
+      "checks": {
+        "mapbox": [
+          "uses_mapbox",
+          "loads_config",
+          "has_inset",
+          "extent_rect",
+          "full_viewport",
+          "min_substance_med",
+          "no_stub_placeholder"
+        ],
+        "maptiler": [
+          "uses_maptiler",
+          "loads_config",
+          "has_inset",
+          "extent_rect",
+          "full_viewport",
+          "min_substance_med",
+          "no_stub_placeholder"
+        ],
+        "esri": [
+          "placeholder_or_esri"
+        ],
+        "no-agent": [
+          "uses_maplibre",
+          "no_commercial_key",
+          "has_inset",
+          "extent_rect",
+          "full_viewport",
+          "min_substance_med",
+          "no_stub_placeholder"
+        ]
+      }
+    },
+    {
+      "id": "S08",
+      "tier": "medium",
+      "track": "core",
+      "title": "3D Buildings",
+      "categories": [
+        "display",
+        "dataviz"
+      ],
+      "maxScore": 90,
+      "prompt": "Building extrusions or realistic 3D buildings; pitched camera; data-driven height when applicable.",
+      "checks": {
+        "mapbox": [
+          "uses_mapbox",
+          "loads_config",
+          "has_extrusion",
+          "has_pitch_or_bearing",
+          "full_viewport",
+          "min_substance_med",
+          "no_stub_placeholder",
+          "extrusion_height_expr"
+        ],
+        "maptiler": [
+          "uses_maptiler",
+          "loads_config",
+          "has_extrusion",
+          "has_pitch_or_bearing",
+          "full_viewport",
+          "min_substance_med",
+          "no_stub_placeholder",
+          "extrusion_height_expr"
+        ],
+        "esri": [
+          "placeholder_or_esri"
+        ],
+        "no-agent": [
+          "uses_maplibre",
+          "no_commercial_key",
+          "has_extrusion",
+          "has_pitch_or_bearing",
+          "full_viewport",
+          "min_substance_med",
+          "no_stub_placeholder"
+        ]
+      }
+    },
+    {
+      "id": "S09",
+      "tier": "medium",
+      "track": "core",
+      "title": "Terrain Fly",
+      "categories": [
+        "display"
+      ],
+      "maxScore": 90,
+      "prompt": "Terrain/DEM on, exaggeration > 1, fly to mountainous target (e.g. Alps).",
+      "checks": {
+        "mapbox": [
+          "uses_mapbox",
+          "loads_config",
+          "has_terrain",
+          "has_flyto",
+          "full_viewport",
+          "min_substance_med",
+          "no_stub_placeholder"
+        ],
+        "maptiler": [
+          "uses_maptiler",
+          "loads_config",
+          "has_terrain",
+          "has_flyto",
+          "full_viewport",
+          "min_substance_med",
+          "no_stub_placeholder"
+        ],
+        "esri": [
+          "placeholder_or_esri"
+        ],
+        "no-agent": [
+          "uses_maplibre",
+          "no_commercial_key",
+          "has_terrain_or_honest",
+          "has_flyto",
+          "full_viewport",
+          "min_substance_med",
+          "no_stub_placeholder"
+        ]
+      }
+    },
+    {
+      "id": "S10",
+      "tier": "medium",
+      "track": "core",
+      "title": "Cluster Storm",
+      "categories": [
+        "dataviz",
+        "display"
+      ],
+      "maxScore": 100,
+      "prompt": "~5k points, clustering on, distinct clustered vs unclustered rendering.",
+      "checks": {
+        "mapbox": [
+          "uses_mapbox",
+          "loads_config",
+          "has_cluster",
+          "full_viewport",
+          "min_substance_med",
+          "no_stub_placeholder",
+          "cluster_volume"
+        ],
+        "maptiler": [
+          "uses_maptiler",
+          "loads_config",
+          "has_cluster",
+          "full_viewport",
+          "min_substance_med",
+          "no_stub_placeholder",
+          "cluster_volume"
+        ],
+        "esri": [
+          "placeholder_or_esri"
+        ],
+        "no-agent": [
+          "uses_maplibre",
+          "no_commercial_key",
+          "has_cluster",
+          "full_viewport",
+          "min_substance_med",
+          "no_stub_placeholder",
+          "cluster_volume"
+        ]
+      }
+    },
+    {
+      "id": "S11",
+      "tier": "hard",
+      "track": "core",
+      "title": "Story Map",
+      "categories": [
+        "display",
+        "interaction"
+      ],
+      "maxScore": 120,
+      "prompt": "Multi-chapter narrative UI; each chapter drives map camera and/or highlighted features; clear title/body per chapter.",
+      "checks": {
+        "mapbox": [
+          "uses_mapbox",
+          "loads_config",
+          "has_story_chapters",
+          "has_flyto",
+          "min_substance_hard",
+          "no_stub_placeholder"
+        ],
+        "maptiler": [
+          "uses_maptiler",
+          "loads_config",
+          "has_story_chapters",
+          "has_flyto",
+          "min_substance_hard",
+          "no_stub_placeholder"
+        ],
+        "esri": [
+          "placeholder_or_esri"
+        ],
+        "no-agent": [
+          "uses_maplibre",
+          "no_commercial_key",
+          "has_story_chapters",
+          "has_flyto",
+          "min_substance_hard",
+          "no_stub_placeholder"
+        ]
+      }
+    },
+    {
+      "id": "S12",
+      "tier": "hard",
+      "track": "core",
+      "title": "Layer Studio",
+      "categories": [
+        "dataviz",
+        "display"
+      ],
+      "maxScore": 120,
+      "prompt": "At least 3 thematic overlays + legend; toggles and/or opacity; filter that updates the map without a full reload.",
+      "checks": {
+        "mapbox": [
+          "uses_mapbox",
+          "loads_config",
+          "has_legend",
+          "has_layer_toggles",
+          "min_substance_hard",
+          "no_stub_placeholder"
+        ],
+        "maptiler": [
+          "uses_maptiler",
+          "loads_config",
+          "has_legend",
+          "has_layer_toggles",
+          "min_substance_hard",
+          "no_stub_placeholder"
+        ],
+        "esri": [
+          "placeholder_or_esri"
+        ],
+        "no-agent": [
+          "uses_maplibre",
+          "no_commercial_key",
+          "has_legend",
+          "has_layer_toggles",
+          "min_substance_hard",
+          "no_stub_placeholder"
+        ]
+      }
+    },
+    {
+      "id": "S13",
+      "tier": "hard",
+      "track": "core",
+      "title": "Swipe Compare",
+      "categories": [
+        "display",
+        "dataviz",
+        "interaction"
+      ],
+      "maxScore": 120,
+      "prompt": "Two styles or datasets in a swipe/clip or split view; both maps stay geographically aligned while dragging.",
+      "checks": {
+        "mapbox": [
+          "uses_mapbox",
+          "loads_config",
+          "has_swipe",
+          "min_substance_hard",
+          "no_stub_placeholder"
+        ],
+        "maptiler": [
+          "uses_maptiler",
+          "loads_config",
+          "has_swipe",
+          "min_substance_hard",
+          "no_stub_placeholder"
+        ],
+        "esri": [
+          "placeholder_or_esri"
+        ],
+        "no-agent": [
+          "uses_maplibre",
+          "no_commercial_key",
+          "has_swipe",
+          "min_substance_hard",
+          "no_stub_placeholder"
+        ]
+      }
+    },
+    {
+      "id": "S14",
+      "tier": "insane",
+      "track": "core",
+      "title": "Time-Travel Layers",
+      "categories": [
+        "dataviz",
+        "interaction"
+      ],
+      "maxScore": 140,
+      "prompt": "Animated time series or playback scrubber over map features; play/pause; data and/or camera updates over time.",
+      "checks": {
+        "mapbox": [
+          "uses_mapbox",
+          "loads_config",
+          "has_playback",
+          "has_raf_or_interval",
+          "min_substance_hard",
+          "no_stub_placeholder"
+        ],
+        "maptiler": [
+          "uses_maptiler",
+          "loads_config",
+          "has_playback",
+          "has_raf_or_interval",
+          "min_substance_hard",
+          "no_stub_placeholder"
+        ],
+        "esri": [
+          "placeholder_or_esri"
+        ],
+        "no-agent": [
+          "uses_maplibre",
+          "no_commercial_key",
+          "has_playback",
+          "has_raf_or_interval",
+          "min_substance_hard",
+          "no_stub_placeholder"
+        ]
+      }
+    },
+    {
+      "id": "S15",
+      "tier": "insane",
+      "track": "core",
+      "title": "Map Racecar",
+      "categories": [
+        "interaction",
+        "mobile"
+      ],
+      "maxScore": 150,
+      "prompt": "Build a playable racecar game on a REAL street: load road geometry from a routing API (Mapbox Directions, OSRM, or map matching) between real map points — not a hand-drawn rectangle. The car must stay constrained to that street centerline (progress along the LineString / snap-to-road). Keyboard controls, follow-cam, visible track layer, lap or score UI. Free driving off the road fails.",
+      "checks": {
+        "mapbox": [
+          "uses_mapbox",
+          "loads_config",
+          "has_game_controls",
+          "has_follow_cam",
+          "has_track",
+          "real_street_route",
+          "road_constrained",
+          "has_raf_or_interval",
+          "min_substance_hard",
+          "no_stub_placeholder"
+        ],
+        "maptiler": [
+          "uses_maptiler",
+          "loads_config",
+          "has_game_controls",
+          "has_follow_cam",
+          "has_track",
+          "real_street_route",
+          "road_constrained",
+          "has_raf_or_interval",
+          "min_substance_hard",
+          "no_stub_placeholder"
+        ],
+        "esri": [
+          "placeholder_or_esri"
+        ],
+        "no-agent": [
+          "uses_maplibre",
+          "no_commercial_key",
+          "has_game_controls",
+          "has_follow_cam",
+          "has_track",
+          "real_street_route",
+          "road_constrained",
+          "has_raf_or_interval",
+          "min_substance_hard",
+          "no_stub_placeholder"
+        ]
+      }
+    },
+    {
+      "id": "N01",
+      "tier": "medium",
+      "track": "navigation",
+      "title": "Directions Line",
+      "categories": [
+        "navigation"
+      ],
+      "requires": [
+        "directions"
+      ],
+      "maxScore": 100,
+      "prompt": "Route between two points; draw geometry as line; show distance and/or duration; error handling.",
+      "checks": {
+        "mapbox": [
+          "uses_mapbox",
+          "loads_config",
+          "has_directions",
+          "has_line_layer",
+          "min_substance_med",
+          "no_stub_placeholder"
+        ],
+        "maptiler": [],
+        "esri": [
+          "placeholder_or_esri"
+        ],
+        "no-agent": [
+          "uses_maplibre",
+          "no_commercial_key",
+          "has_directions",
+          "has_line_layer",
+          "min_substance_med",
+          "no_stub_placeholder"
+        ]
+      }
+    },
+    {
+      "id": "N02",
+      "tier": "hard",
+      "track": "navigation",
+      "title": "Search-to-Route",
+      "categories": [
+        "navigation",
+        "interaction"
+      ],
+      "requires": [
+        "directions"
+      ],
+      "maxScore": 120,
+      "prompt": "Origin + destination search, route draw, real distance/duration UI.",
+      "checks": {
+        "mapbox": [
+          "loads_config",
+          "geocode_forward",
+          "has_directions",
+          "has_line_layer",
+          "min_substance_hard",
+          "no_stub_placeholder"
+        ],
+        "maptiler": [],
+        "esri": [
+          "placeholder_or_esri"
+        ],
+        "no-agent": [
+          "uses_maplibre",
+          "no_commercial_key",
+          "geocode_forward",
+          "has_directions",
+          "has_line_layer",
+          "min_substance_hard",
+          "no_stub_placeholder"
+        ]
+      }
+    },
+    {
+      "id": "N03",
+      "tier": "hard",
+      "track": "navigation",
+      "title": "Reachability Rings",
+      "categories": [
+        "navigation",
+        "dataviz"
+      ],
+      "requires": [
+        "directions"
+      ],
+      "maxScore": 120,
+      "prompt": "Travel/isochrone polygons (15/30/60 or equivalent); fill layers. No Agent may use OSRM with honest labeling.",
+      "checks": {
+        "mapbox": [
+          "uses_mapbox",
+          "loads_config",
+          "has_isochrone",
+          "min_substance_hard",
+          "no_stub_placeholder"
+        ],
+        "maptiler": [],
+        "esri": [
+          "placeholder_or_esri"
+        ],
+        "no-agent": [
+          "uses_maplibre",
+          "no_commercial_key",
+          "has_isochrone",
+          "min_substance_hard",
+          "no_stub_placeholder"
+        ]
+      }
+    },
+    {
+      "id": "M01",
+      "tier": "medium",
+      "track": "mobile",
+      "title": "Responsive Touch Map",
+      "categories": [
+        "mobile",
+        "display"
+      ],
+      "maxScore": 90,
+      "prompt": "Usable at narrow width; touch-friendly controls; no hover-only UI.",
+      "checks": {
+        "mapbox": [
+          "uses_mapbox",
+          "loads_config",
+          "has_responsive",
+          "has_touch_friendly",
+          "full_viewport",
+          "min_substance_med",
+          "no_stub_placeholder"
+        ],
+        "maptiler": [
+          "uses_maptiler",
+          "loads_config",
+          "has_responsive",
+          "has_touch_friendly",
+          "full_viewport",
+          "min_substance_med",
+          "no_stub_placeholder"
+        ],
+        "esri": [
+          "placeholder_or_esri"
+        ],
+        "no-agent": [
+          "uses_maplibre",
+          "no_commercial_key",
+          "has_responsive",
+          "has_touch_friendly",
+          "full_viewport",
+          "min_substance_med",
+          "no_stub_placeholder"
+        ]
+      }
+    },
+    {
+      "id": "M02",
+      "tier": "medium",
+      "track": "mobile",
+      "title": "Locate Me",
+      "categories": [
+        "mobile",
+        "interaction"
+      ],
+      "maxScore": 90,
+      "prompt": "Geolocation with permission UX; accuracy indicator; recenter control.",
+      "checks": {
+        "mapbox": [
+          "uses_mapbox",
+          "loads_config",
+          "has_geolocation",
+          "full_viewport",
+          "min_substance_med",
+          "no_stub_placeholder"
+        ],
+        "maptiler": [
+          "uses_maptiler",
+          "loads_config",
+          "has_geolocation",
+          "full_viewport",
+          "min_substance_med",
+          "no_stub_placeholder"
+        ],
+        "esri": [
+          "placeholder_or_esri"
+        ],
+        "no-agent": [
+          "uses_maplibre",
+          "no_commercial_key",
+          "has_geolocation",
+          "full_viewport",
+          "min_substance_med",
+          "no_stub_placeholder"
+        ]
+      }
+    }
+  ]
+}

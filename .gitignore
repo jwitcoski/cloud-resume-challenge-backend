@@ -4,4 +4,7 @@ samconfig.toml
 # Next.js (HTML app)
 HTML/node_modules
 HTML/.next
-HTML/out 
+HTML/out
+
+# Local fork working copy (PR lives on jwitcoski/mapbox-agent-skills)
+mapbox-agent-skills/

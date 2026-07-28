@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>S15 — MapTiler</title>
+  <script src="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.umd.min.js"></script>
+  <link href="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.css" rel="stylesheet" />
+  <script src="../../admin-boundaries/js/config.js"></script>
+  <style>
+    html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
+    #map { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .panel {
+      position: absolute; z-index: 2; top: 10px; left: 10px;
+      background: rgba(10,16,32,.92); color: #eef2ff; padding: 10px 12px;
+      border-radius: 10px; max-width: min(320px, 92vw); font-size: 13px;
+      border: 1px solid rgba(255,255,255,.12);
+    }
+    .panel button, .panel input {
+      font: inherit; margin: 4px 0; width: 100%; box-sizing: border-box;
+      border-radius: 8px; border: 1px solid #445; padding: 10px; min-height: 44px;
+      background: #0f172a; color: #eef2ff; cursor: pointer; touch-action: manipulation;
+    }
+    .panel button { background: #2563eb; border-color: #3b82f6; }
+    .legend { position: absolute; z-index: 2; bottom: 28px; left: 10px;
+      background: rgba(10,16,32,.9); color: #eef2ff; padding: 8px 10px; border-radius: 8px; font-size: 12px; }
+    #inset, #overview {
+      position: absolute; z-index: 2; right: 10px; bottom: 28px;
+      width: 140px; height: 110px; border: 2px solid #fff; border-radius: 6px; overflow: hidden;
+    }
+    .story { position: absolute; z-index: 2; top: 10px; right: 10px; width: min(280px, 40vw);
+      max-height: 80vh; overflow: auto; background: rgba(10,16,32,.94); color: #eef2ff;
+      padding: 12px; border-radius: 10px; }
+    .story .chapter { border-bottom: 1px solid rgba(255,255,255,.1); padding: 8px 0; cursor: pointer; }
+    .story .chapter.active { color: #6ec8ff; }
+    .swipe-wrap { position: absolute; inset: 0; }
+    .swipe-wrap #mapA, .swipe-wrap #mapB { position: absolute; inset: 0; }
+    .swipe-bar { position: absolute; top: 0; bottom: 0; width: 4px; background: #fff; z-index: 5; cursor: ew-resize; }
+    @media (max-width: 520px) {
+      .panel { max-width: 96vw; left: 2vw; right: 2vw; width: auto; }
+      .panel button { min-height: 48px; padding: 12px; }
+    }
+</style>
+</head>
+<body>
+
+<div class="panel">
+  <strong>Street racecar</strong>
+  <div>↑/W along street · ↓/S reverse · Lap <span id="lap">0</span></div>
+  <div id="street">Loading real street via OSRM…</div>
+</div>
+<div id="map"></div>
+<script>
+
+  const key = window.MAPTILER_API_KEY;
+  maptilersdk.config.apiKey = key;
+  
+  const A = [14.4052, 50.0865];
+  const B = [14.4212, 50.0875];
+  const map = new maptilersdk.Map({
+    container: "map",
+    style: maptilersdk.MapStyle.STREETS,
+    center: A,
+    zoom: 15,
+    pitch: 55
+  });
+  const keys = {};
+  window.addEventListener("keydown", (e) => { keys[e.key] = true; e.preventDefault(); });
+  window.addEventListener("keyup", (e) => { keys[e.key] = false; });
+  function segLen(a, b) {
+    const dx = (b[0] - a[0]) * 111320 * Math.cos((a[1] * Math.PI) / 180);
+    const dy = (b[1] - a[1]) * 110540;
+    return Math.hypot(dx, dy);
+  }
+  function bearing(a, b) {
+    const dLon = ((b[0] - a[0]) * Math.PI) / 180;
+    const lat1 = (a[1] * Math.PI) / 180, lat2 = (b[1] * Math.PI) / 180;
+    const y = Math.sin(dLon) * Math.cos(lat2);
+    const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
+    return ((Math.atan2(y, x) * 180) / Math.PI + 360) % 360;
+  }
+  function pointAlong(coords, distM) {
+    let left = ((distM % totalLen) + totalLen) % totalLen;
+    for (let i = 0; i < coords.length - 1; i++) {
+      const L = segLen(coords[i], coords[i + 1]);
+      if (left <= L || i === coords.length - 2) {
+        const t = L ? left / L : 0;
+        return {
+          lng: coords[i][0] + (coords[i + 1][0] - coords[i][0]) * t,
+          lat: coords[i][1] + (coords[i + 1][1] - coords[i][1]) * t,
+          heading: bearing(coords[i], coords[i + 1])
+        };
+      }
+      left -= L;
+    }
+    return { lng: coords[0][0], lat: coords[0][1], heading: 0 };
+  }
+  let coords = [], totalLen = 1, progress = 0, speed = 0, lap = 0;
+  map.on("load", async () => {
+    const url = "https://router.project-osrm.org/route/v1/driving/" + A.join(",") + ";" + B.join(",") + "?overview=full&geometries=geojson";
+    const data = await (await fetch(url)).json();
+    const route = data.routes && data.routes[0];
+    if (!route) throw new Error("No street route");
+    coords = route.geometry.coordinates;
+    totalLen = 0;
+    for (let i = 0; i < coords.length - 1; i++) totalLen += segLen(coords[i], coords[i + 1]);
+    document.getElementById("street").textContent = "On-street only · " + (totalLen / 1000).toFixed(2) + " km real road (OSRM)";
+    map.addSource("track", { type: "geojson", data: { type: "Feature", properties: { street: true }, geometry: route.geometry } });
+    map.addLayer({ id: "track", type: "line", source: "track", paint: { "line-color": "#fbbf24", "line-width": 8 } });
+    map.addSource("car", { type: "geojson", data: { type: "Feature", geometry: { type: "Point", coordinates: coords[0] } } });
+    map.addLayer({ id: "car", type: "circle", source: "car", paint: { "circle-radius": 9, "circle-color": "#ef4444" } });
+    function loop() {
+      if (keys.ArrowUp || keys.w || keys.W) speed = Math.min(28, speed + 0.6);
+      if (keys.ArrowDown || keys.s || keys.S) speed = Math.max(-14, speed - 0.5);
+      speed *= 0.98;
+      progress += speed * 0.05;
+      if (progress >= totalLen) { progress -= totalLen; lap++; document.getElementById("lap").textContent = String(lap); }
+      if (progress < 0) progress += totalLen;
+      const p = pointAlong(coords, progress);
+      map.getSource("car").setData({ type: "Feature", geometry: { type: "Point", coordinates: [p.lng, p.lat] } });
+      map.easeTo({ center: [p.lng, p.lat], bearing: p.heading, pitch: 55, duration: 0 });
+      requestAnimationFrame(loop);
+    }
+    requestAnimationFrame(loop);
+  });
+  window.__MAP__ = map;
+</script>
+</body>
+</html>

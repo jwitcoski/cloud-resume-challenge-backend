@@ -1,0 +1,26 @@
+{
+  "skillId": "S14",
+  "fighter": "no-agent",
+  "agentLabel": "No Agent (MapLibre, imperfect)",
+  "ready": true,
+  "notes": "Intentionally imperfect — no vendor skill pack",
+  "runEnvironment": {
+    "tool": "Cursor",
+    "note": "Each fighter pack was authored as a Cursor Agent run. Token counts are estimated from prompt/skills context + solution size (~4 chars/token), not billed API receipts — label them as estimates in the UI."
+  },
+  "provider": "cursor",
+  "tool": "Cursor Agent",
+  "model": "Composer",
+  "modelNote": "Cursor Agent (Composer) with NO map vendor skills — baseline",
+  "skillUsed": false,
+  "skillPack": null,
+  "attempts": 1,
+  "tokens": {
+    "input": 2893,
+    "output": 979,
+    "total": 3872,
+    "estimate": true,
+    "estimateMethod": "chars/4 + skill-context base (not provider bill)"
+  },
+  "latencySec": 11
+}

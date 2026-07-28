@@ -1,0 +1,110 @@
+{
+  "runEnvironment": {
+    "tool": "Cursor",
+    "toolUrl": "https://cursor.com",
+    "note": "Each fighter pack was authored as a Cursor Agent run. Token counts are estimated from prompt/skills context + solution size (~4 chars/token), not billed API receipts — label them as estimates in the UI."
+  },
+  "fighters": [
+    {
+      "id": "mapbox",
+      "label": "Mapbox",
+      "color": "#6ec8ff",
+      "skillsetUrl": "/mapbox-playground/agent-grader.html",
+      "skillsetLabel": "Current Mapbox skillset",
+      "ready": true,
+      "adapterPrompt": "Implement with Mapbox GL JS v3.9.0 (CDN). Load window.MAPBOX_ACCESS_TOKEN from admin-boundaries/js/config.js. Guard missing tokens. Prefer mapbox:// styles and Mapbox APIs where the skill needs search/routing/terrain.",
+      "run": {
+        "provider": "cursor",
+        "tool": "Cursor Agent",
+        "model": "Composer",
+        "modelNote": "Cursor Agent (Composer) with Mapbox agent skills loaded",
+        "skillUsed": true,
+        "skillPack": "mapbox/mapbox-agent-skills (.agents/skills)",
+        "inputBaseTokens": 42000,
+        "attempts": 1
+      },
+      "capabilities": {
+        "directions": true,
+        "geocoding": true,
+        "terrain": true,
+        "isochrone": true
+      }
+    },
+    {
+      "id": "maptiler",
+      "label": "MapTiler",
+      "color": "#c8f542",
+      "skillsetUrl": "/maptiler-playground/agent-grader.html",
+      "skillsetLabel": "Current MapTiler skillset",
+      "ready": true,
+      "adapterPrompt": "Implement with @maptiler/sdk v4.0.2 (CDN). Load window.MAPTILER_API_KEY from config.js. Use MapStyle constants. Do not invent a Directions API — navigation skills are N/A for this seat.",
+      "run": {
+        "provider": "cursor",
+        "tool": "Cursor Agent",
+        "model": "Composer",
+        "modelNote": "Cursor Agent (Composer) with MapTiler skills loaded",
+        "skillUsed": true,
+        "skillPack": "maptiler/maptiler-skills",
+        "inputBaseTokens": 36000,
+        "attempts": 1
+      },
+      "capabilities": {
+        "directions": false,
+        "geocoding": true,
+        "terrain": true,
+        "isochrone": false
+      }
+    },
+    {
+      "id": "esri",
+      "label": "Esri",
+      "color": "#3dd6c6",
+      "skillsetUrl": "/esri-playground/",
+      "skillsetLabel": "Esri playground",
+      "ready": false,
+      "adapterPrompt": "Implement with ArcGIS Maps SDK for JavaScript when API keys land. Until then this seat shows awaiting API — not a failing grade.",
+      "run": {
+        "provider": "cursor",
+        "tool": "Cursor Agent",
+        "model": null,
+        "modelNote": "Not run yet — awaiting ArcGIS API packs",
+        "skillUsed": false,
+        "skillPack": null,
+        "inputBaseTokens": 0,
+        "attempts": 0
+      },
+      "capabilities": {
+        "directions": true,
+        "geocoding": true,
+        "terrain": true,
+        "isochrone": true
+      }
+    },
+    {
+      "id": "no-agent",
+      "label": "No Agent",
+      "color": "#fbbf24",
+      "skillsetUrl": null,
+      "skillsetNote": "MapLibre + OpenFreeMap — impartial baseline, no commercial agent skills. Packs are intentionally imperfect.",
+      "ready": true,
+      "adapterPrompt": "Implement with MapLibre GL JS + an open basemap (https://tiles.openfreemap.org/styles/liberty). No Mapbox/MapTiler/Esri/Google keys. Geocode via Nominatim; routing via public OSRM when on the Navigation track. Expect lower scores — this is the no-skill baseline.",
+      "run": {
+        "provider": "cursor",
+        "tool": "Cursor Agent",
+        "model": "Composer",
+        "modelNote": "Cursor Agent (Composer) with NO map vendor skills — baseline",
+        "skillUsed": false,
+        "skillPack": null,
+        "inputBaseTokens": 2800,
+        "attempts": 1
+      },
+      "capabilities": {
+        "directions": true,
+        "geocoding": true,
+        "terrain": false,
+        "isochrone": true,
+        "openRouter": true
+      }
+    }
+  ]
+}

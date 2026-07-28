@@ -1,0 +1,41 @@
+{
+  "categories": [
+    {
+      "id": "all",
+      "label": "All",
+      "bestFor": "Full display ladder (S01–S15)",
+      "blurb": "Core royal rumble — map display skills only.",
+      "coreOnly": true
+    },
+    {
+      "id": "display",
+      "label": "Display",
+      "bestFor": "Basemaps, story, insets, atmosphere, camera",
+      "blurb": "Who wins at showing geography?"
+    },
+    {
+      "id": "navigation",
+      "label": "Navigation",
+      "bestFor": "Routes, search-to-route, reachability",
+      "blurb": "Who wins if you need routing? (N/A if no Directions API)"
+    },
+    {
+      "id": "dataviz",
+      "label": "Data viz",
+      "bestFor": "Clusters, legends, layers, time series",
+      "blurb": "Who wins at thematic overlays?"
+    },
+    {
+      "id": "interaction",
+      "label": "Interaction",
+      "bestFor": "Popups, swipe, story steps, games",
+      "blurb": "Who wins at input-driven map UX?"
+    },
+    {
+      "id": "mobile",
+      "label": "Mobile",
+      "bestFor": "Responsive layout, touch, locate-me",
+      "blurb": "Who wins at mobile web maps?"
+    }
+  ]
+}
