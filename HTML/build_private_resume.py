@@ -85,3 +85,19 @@ if __name__ == "__main__":
     shutil.copy2(OUTPUT, DOWNLOADS)
     print(f"Saved: {OUTPUT}")
     print(f"Copied: {DOWNLOADS}")
+
+    pdf_path = OUTPUT.with_suffix(".pdf")
+    try:
+        import win32com.client
+
+        word = win32com.client.Dispatch("Word.Application")
+        word.Visible = False
+        try:
+            document = word.Documents.Open(str(OUTPUT.resolve()))
+            document.SaveAs(str(pdf_path.resolve()), FileFormat=17)
+            document.Close(False)
+        finally:
+            word.Quit()
+        print(f"Saved: {pdf_path}")
+    except Exception as exc:
+        print(f"PDF export skipped: {exc}")

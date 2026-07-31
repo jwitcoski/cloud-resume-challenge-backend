@@ -100,62 +100,67 @@ export const educationData = [
     { date: "2026", title: "AWS Solutions Architect – Associate (SAA-C03)", subtitle: "In progress — see study plan", url: "/aws-solutions-architect-study.html" }
 ];
 
-/** Hiring-signal work — architecture, ETL, cartography, production systems. */
+/** Architecture / cloud / systems design — what SE/SA hiring managers should see first. */
 export const featureWork = [
     {
         title: "Global Ski Atlas",
-        description: "Web GIS of 3,000+ ski areas on a MapTiler basemap, with Python ETL and automated geospatial workflows.",
-        outcome: "Makes 3,000+ ski areas searchable on one live map, kept current by automated Python ETL instead of hand-edited data.",
-        roles: ["MapTiler", "JavaScript", "Python", "ETL", "Web GIS"],
+        description: "Live ski-resort product on AWS — Step Functions, Lambda, DynamoDB, and S3 feeding a MapTiler web map.",
+        outcome: "Production serverless GIS backend keeps 3,000+ ski areas current via automated ETL instead of hand-edited layers.",
+        roles: ["AWS", "Step Functions", "Lambda", "DynamoDB", "Python ETL"],
         image: "/images/feature-work/feature-img-1.jpg",
         url: "https://globalskiatlas.com"
     },
     {
         title: "Vector Ledger",
-        description: "ArcGIS-integrated editing and validation tools with Python pipelines and REST APIs.",
-        outcome: "Bridges ArcGIS editing with lakehouse patterns (Iceberg, GeoParquet) so map updates are validated, versioned, and queryable.",
-        roles: ["ArcGIS", "Python", "REST APIs", "SQL Server"],
+        description: "ArcGIS-connected editing and validation bridged to lakehouse patterns.",
+        outcome: "Map updates become validated, versioned, and queryable across Iceberg, GeoParquet, and changelog history.",
+        roles: ["ArcGIS", "AWS", "Iceberg", "GeoParquet", "REST APIs"],
         image: "/images/feature-work/VectorLedger_AWS_ESRI_Architecture.png",
         url: "https://vectorscopeai.com"
     },
     {
+        title: "Cloud Resume Challenge",
+        description: "This site’s AWS stack — S3, CloudFront, Route 53, API Gateway, Lambda, DynamoDB, SAM, and CI/CD.",
+        outcome: "End-to-end cloud architecture you can click: static edge frontend plus a live visitor-counter API.",
+        roles: ["S3", "CloudFront", "Lambda", "DynamoDB", "SAM", "CI/CD"],
+        image: "/images/cloud-resume-challenge/CloudResumeArchitecture.png",
+        url: "/cloud-resume-challenge/"
+    },
+];
+
+/** Cartography, tools, and experiments — real GIS craft, not architecture case studies. */
+export const sideProjects = [
+    {
         title: "Nepal Census Atlas 2011",
-        description: "Story-driven choropleth atlas of Nepal’s 2011 census — war-era hills, three belts, Tarai schooling, remittance sex ratios, and the Kathmandu Valley before Gorkha.",
-        outcome: "Turns imperfect public census data into geographically trustworthy chapters so a reader understands a place, not just a color ramp.",
-        roles: ["Choropleth", "GADM", "Code for Nepal", "Narrative cartography"],
+        blurb: "Story-driven choropleth atlas from Nepal’s 2011 census — place narrative over color ramps.",
+        roles: ["Choropleth", "GADM", "Narrative cartography"],
         image: "/images/feature-work/nepal-census-atlas.png",
         url: "https://jwitcoski.github.io/Census-Data-Code-For-Nepal-2011/"
     },
     {
         title: "BuildingPop (OSM)",
-        description: "Draw a city-scale area, pull OpenStreetMap buildings via Overpass, and estimate population from houses, apartments, and demographic presets — with WorldPop / GHS-POP comparison.",
-        outcome: "Shows how mapped building footprints become a transparent, adjustable population estimate instead of a black-box density layer.",
-        roles: ["OpenStreetMap", "Overpass", "Leaflet", "WorldPop", "GHS-POP"],
+        blurb: "Draw an area, pull OSM buildings via Overpass, estimate population vs WorldPop / GHS-POP.",
+        roles: ["OpenStreetMap", "Overpass", "Leaflet"],
         image: "/images/feature-work/osm-building-population.png",
         url: "https://jwitcoski.github.io/OpenStreetMapPopulation/"
     },
     {
         title: "Admin Boundary Tool",
-        description: "Punch any state or province out of a country polygon for map highlights (MapTiler + GeoJSON).",
-        outcome: "Turns a common cartography need into a reusable boundary workflow instead of manually clipping polygons every time.",
-        roles: ["MapTiler", "GeoJSON", "Natural Earth", "Web GIS"],
+        blurb: "Punch any state or province out of a country polygon for map highlights.",
+        roles: ["MapTiler", "GeoJSON", "Natural Earth"],
         image: "/images/feature-work/admin-boundary-tool.png",
         url: "/admin-boundaries/tool.html"
     },
-];
-
-/** Playful / experimental — keep visible, clearly secondary to featured work. */
-export const sideProjects = [
     {
         title: "Raiders of Antikythera",
-        blurb: "Dig game on real Antikythera Survey Project tracts — fog-of-war GeoJSON, PMTiles finds, MapTiler satellite.",
+        blurb: "Dig game on real Antikythera Survey Project tracts — fog-of-war GeoJSON, PMTiles finds.",
         roles: ["MapTiler SDK", "PMTiles", "Game design"],
         image: "/images/feature-work/raiders-of-antikythera.png",
         url: "/maptiler-playground/antikythera-dig.html"
     },
     {
         title: "Map Agent Arena",
-        blurb: "Compare Mapbox / MapTiler agent skill packs in a dedicated eval arena off the homepage.",
+        blurb: "Compare Mapbox / MapTiler agent skill packs in a dedicated eval arena.",
         roles: ["Mapbox GL JS", "MapTiler SDK", "Agent eval"],
         image: "/images/feature-work/maptiler-agent-grader.png",
         url: "https://jwitcoski.github.io/map-agent-arena/"

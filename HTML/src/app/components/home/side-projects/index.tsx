@@ -13,7 +13,7 @@ const SideProjects = () => {
               Side projects
             </p>
             <p className="text-secondary text-sm sm:text-base max-w-2xl">
-              Experiments and play — real geospatial tech, lighter stakes than the work above.
+              Maps, tools, and experiments — GIS craft without the architecture case study.
             </p>
           </div>
           <ul className="border-t border-primary/10 divide-y divide-primary/10">
