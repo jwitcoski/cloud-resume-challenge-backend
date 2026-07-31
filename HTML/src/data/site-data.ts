@@ -148,5 +148,21 @@ export const featureWork = [
         roles: ["MapTiler SDK", "PMTiles", "GeoJSON", "Game design"],
         image: "/images/feature-work/raiders-of-antikythera.png",
         url: "/maptiler-playground/antikythera-dig.html"
+    },
+    {
+        title: "Nepal Census Atlas 2011",
+        description: "Story-driven choropleth atlas of Nepal’s 2011 census — war-era hills, three belts, Tarai schooling, remittance sex ratios, and the Kathmandu Valley before Gorkha.",
+        outcome: "Turns imperfect public census data into geographically trustworthy chapters so a reader understands a place, not just a color ramp.",
+        roles: ["Choropleth", "GADM", "Code for Nepal", "Narrative cartography"],
+        image: "/images/feature-work/nepal-census-atlas.png",
+        url: "https://jwitcoski.github.io/Census-Data-Code-For-Nepal-2011/"
+    },
+    {
+        title: "BuildingPop (OSM)",
+        description: "Draw a city-scale area, pull OpenStreetMap buildings via Overpass, and estimate population from houses, apartments, and demographic presets — with WorldPop / GHS-POP comparison.",
+        outcome: "Shows how mapped building footprints become a transparent, adjustable population estimate instead of a black-box density layer.",
+        roles: ["OpenStreetMap", "Overpass", "Leaflet", "WorldPop", "GHS-POP"],
+        image: "/images/feature-work/osm-building-population.png",
+        url: "https://jwitcoski.github.io/OpenStreetMapPopulation/"
     }
 ];
