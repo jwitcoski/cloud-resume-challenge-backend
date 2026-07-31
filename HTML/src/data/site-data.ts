@@ -94,7 +94,7 @@ export const experienceData = [
 ];
 
 export const educationData = [
-    { date: "2007", title: "Master of Science in Geography", subtitle: "University of Tennessee, Knoxville" },
+    { date: "2007", title: "Master of Science in Geography", subtitle: "University of Tennessee, Knoxville — thesis & archive", url: "/history/#thesis" },
     { date: "2004", title: "Bachelor of Arts, Geography and Anthropology", subtitle: "Penn State University — Minor in GIS" },
     { date: "2021", title: "AWS Certified Cloud Practitioner", subtitle: "Amazon Web Services" },
     { date: "2026", title: "AWS Solutions Architect – Associate (SAA-C03)", subtitle: "In progress — see study plan", url: "/aws-solutions-architect-study.html" }
