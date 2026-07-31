@@ -100,6 +100,7 @@ export const educationData = [
     { date: "2026", title: "AWS Solutions Architect – Associate (SAA-C03)", subtitle: "In progress — see study plan", url: "/aws-solutions-architect-study.html" }
 ];
 
+/** Hiring-signal work — architecture, ETL, cartography, production systems. */
 export const featureWork = [
     {
         title: "Global Ski Atlas",
@@ -118,30 +119,6 @@ export const featureWork = [
         url: "https://vectorscopeai.com"
     },
     {
-        title: "Admin Boundary Tool",
-        description: "Punch any state or province out of a country polygon for map highlights (MapTiler + GeoJSON).",
-        outcome: "Turns a common cartography need into a reusable boundary workflow instead of manually clipping polygons every time.",
-        roles: ["MapTiler", "GeoJSON", "Natural Earth", "Web GIS"],
-        image: "/images/feature-work/admin-boundary-tool.png",
-        url: "/admin-boundaries/tool.html"
-    },
-    {
-        title: "Map Agent Arena",
-        description: "Royal Rumble + Mapbox/MapTiler skill graders in a dedicated GitHub project.",
-        outcome: "Compare agent map skill packs across vendors without hosting eval tooling on the personal homepage.",
-        roles: ["Mapbox GL JS", "MapTiler SDK", "Agent eval", "Rubix"],
-        image: "/images/feature-work/maptiler-agent-grader.png",
-        url: "https://jwitcoski.github.io/map-agent-arena/"
-    },
-    {
-        title: "Raiders of Antikythera",
-        description: "Indiana Jones–flavored dig game on real Antikythera Survey Project tracts — fogged GeoJSON, PMTiles finds, MapTiler satellite, glory ranks, and chapter recovery.",
-        outcome: "Proves serious geospatial data can power engaging experiences — real survey tracts, fog-of-war, and chapter-driven discovery.",
-        roles: ["MapTiler SDK", "PMTiles", "GeoJSON", "Game design"],
-        image: "/images/feature-work/raiders-of-antikythera.png",
-        url: "/maptiler-playground/antikythera-dig.html"
-    },
-    {
         title: "Nepal Census Atlas 2011",
         description: "Story-driven choropleth atlas of Nepal’s 2011 census — war-era hills, three belts, Tarai schooling, remittance sex ratios, and the Kathmandu Valley before Gorkha.",
         outcome: "Turns imperfect public census data into geographically trustworthy chapters so a reader understands a place, not just a color ramp.",
@@ -156,5 +133,31 @@ export const featureWork = [
         roles: ["OpenStreetMap", "Overpass", "Leaflet", "WorldPop", "GHS-POP"],
         image: "/images/feature-work/osm-building-population.png",
         url: "https://jwitcoski.github.io/OpenStreetMapPopulation/"
-    }
+    },
+    {
+        title: "Admin Boundary Tool",
+        description: "Punch any state or province out of a country polygon for map highlights (MapTiler + GeoJSON).",
+        outcome: "Turns a common cartography need into a reusable boundary workflow instead of manually clipping polygons every time.",
+        roles: ["MapTiler", "GeoJSON", "Natural Earth", "Web GIS"],
+        image: "/images/feature-work/admin-boundary-tool.png",
+        url: "/admin-boundaries/tool.html"
+    },
+];
+
+/** Playful / experimental — keep visible, clearly secondary to featured work. */
+export const sideProjects = [
+    {
+        title: "Raiders of Antikythera",
+        blurb: "Dig game on real Antikythera Survey Project tracts — fog-of-war GeoJSON, PMTiles finds, MapTiler satellite.",
+        roles: ["MapTiler SDK", "PMTiles", "Game design"],
+        image: "/images/feature-work/raiders-of-antikythera.png",
+        url: "/maptiler-playground/antikythera-dig.html"
+    },
+    {
+        title: "Map Agent Arena",
+        blurb: "Compare Mapbox / MapTiler agent skill packs in a dedicated eval arena off the homepage.",
+        roles: ["Mapbox GL JS", "MapTiler SDK", "Agent eval"],
+        image: "/images/feature-work/maptiler-agent-grader.png",
+        url: "https://jwitcoski.github.io/map-agent-arena/"
+    },
 ];
