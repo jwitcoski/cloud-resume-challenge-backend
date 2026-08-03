@@ -6,6 +6,7 @@ import Experience from "./components/home/experience"
 import FeaturedWork from "./components/home/featured-work"
 import HeroSection from "./components/home/hero-section"
 import PlatformLabs from "./components/home/platform-labs"
+import SideProjects from "./components/home/side-projects"
 
 const page = () => {
   return (
@@ -15,6 +16,8 @@ const page = () => {
       <AboutMe/>
       <Divider/>
       <FeaturedWork/>
+      <Divider/>
+      <SideProjects/>
       <Divider/>
       <PlatformLabs/>
       <Divider/>
