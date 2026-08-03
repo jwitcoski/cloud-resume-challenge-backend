@@ -1,6 +1,0 @@
-# Large source GeoJSON (~43 MB) — re-fetch with fetch_geojson.ps1
-geojson/*
-!geojson/tracts.geojson
-
-# ADS scrape leftovers
-raw/

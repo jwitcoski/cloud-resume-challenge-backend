@@ -156,7 +156,7 @@ export const sideProjects = [
         blurb: "Dig game on real Antikythera Survey Project tracts — fog-of-war GeoJSON, PMTiles finds.",
         roles: ["MapTiler SDK", "PMTiles", "Game design"],
         image: "/images/feature-work/raiders-of-antikythera.png",
-        url: "/maptiler-playground/antikythera-dig.html"
+        url: "https://jwitcoski.github.io/raiders-of-antikythera/"
     },
     {
         title: "Map Agent Arena",
