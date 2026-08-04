@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Resort Constellation — Mapbox Playground</title>
+  <meta name="description" content="Clustered ski resorts with feature-state hover — the GL JS UX pattern behind Global Ski Atlas scale." />
+  <link href="https://api.mapbox.com/mapbox-gl-js/v3.9.0/mapbox-gl.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Syne:wght@600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #070b16;
+      --panel: rgba(12, 18, 36, 0.94);
+      --ink: #eef2ff;
+      --muted: #9aa3c7;
+      --line: rgba(238, 242, 255, 0.14);
+      --accent: #7aa2ff;
+      --warm: #f0c14d;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; font-family: Figtree, system-ui, sans-serif; color: var(--ink); background: var(--bg); }
+    #map { position: absolute; inset: 0; }
+    .topbar {
+      position: absolute; z-index: 2; top: 0; left: 0; right: 0;
+      display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between;
+      padding: 12px 16px; background: linear-gradient(180deg, rgba(7,11,22,.92), transparent);
+      pointer-events: none;
+    }
+    .topbar a, .topbar .brand { pointer-events: auto; }
+    .brand { font-family: Syne, sans-serif; font-weight: 700; font-size: 1.05rem; color: var(--ink); text-decoration: none; }
+    .brand span { color: var(--accent); }
+    .links { display: flex; gap: 12px; flex-wrap: wrap; }
+    .links a { color: var(--muted); text-decoration: none; font-size: 0.85rem; }
+    .links a:hover { color: var(--accent); }
+    .panel {
+      position: absolute; z-index: 2; top: 64px; left: 16px;
+      width: min(360px, calc(100vw - 32px)); max-height: calc(100vh - 96px);
+      overflow: auto; background: var(--panel); border: 1px solid var(--line);
+      border-radius: 16px; padding: 14px 16px; backdrop-filter: blur(10px);
+    }
+    .panel h1 { margin: 0 0 4px; font-family: Syne, sans-serif; font-size: 1.15rem; }
+    .panel .lede { margin: 0 0 12px; color: var(--muted); font-size: 0.82rem; line-height: 1.45; }
+    label { display: block; font-size: 0.68rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 10px 0 4px; }
+    input, select, button {
+      width: 100%; font: inherit; border-radius: 10px; border: 1px solid var(--line);
+      background: rgba(0,0,0,.35); color: var(--ink); padding: 9px 10px;
+    }
+    button.primary { background: rgba(122,162,255,.25); border-color: var(--accent); font-weight: 650; cursor: pointer; margin-top: 8px; }
+    button:hover { border-color: rgba(122,162,255,.6); }
+    .status { margin-top: 10px; font-size: 0.8rem; color: var(--muted); min-height: 1.2em; }
+    .stats {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px;
+    }
+    .stat {
+      padding: 10px; border-radius: 12px; border: 1px solid var(--line);
+      background: rgba(0,0,0,.25);
+    }
+    .stat strong { display: block; font-family: Syne, sans-serif; font-size: 1.2rem; }
+    .stat span { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+    .list { margin-top: 12px; }
+    .list h3 { margin: 0 0 6px; font-size: 0.72rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+    .list ul { list-style: none; margin: 0; padding: 0; }
+    .list li {
+      padding: 7px 8px; border-radius: 8px; cursor: pointer;
+      border: 1px solid transparent; font-size: 0.85rem;
+    }
+    .list li:hover, .list li.is-hover { background: rgba(122,162,255,.12); border-color: var(--line); }
+    .list li small { display: block; color: var(--muted); font-size: 0.72rem; }
+    .note {
+      margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--line);
+      font-size: 0.72rem; color: var(--muted); line-height: 1.4;
+    }
+    .note a { color: var(--accent); }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <div class="topbar">
+    <a class="brand" href="./index.html">Map<span>box</span> · Resort constellation</a>
+    <div class="links">
+      <a href="./ski-drive-time.html">Drive-time</a>
+      <a href="./powder-day-route.html">Powder-day route</a>
+      <a href="https://globalskiatlas.com" target="_blank" rel="noopener">GSA</a>
+      <a href="./index.html">Hub</a>
+    </div>
+  </div>
+
+  <aside class="panel">
+    <h1>Resort constellation</h1>
+    <p class="lede">
+      At Global Ski Atlas scale you don’t drop thousands of HTML markers —
+      you <strong>cluster</strong>, style, and use <strong>feature-state</strong> hover.
+    </p>
+
+    <label for="region">Focus region</label>
+    <select id="region">
+      <option value="all">All sample resorts</option>
+      <option value="rockies" selected>Rockies / Wasatch / Tetons</option>
+      <option value="bc">British Columbia / Alberta</option>
+      <option value="east">Eastern North America</option>
+    </select>
+    <button type="button" class="primary" id="btnFit">Fit to region</button>
+
+    <div class="stats">
+      <div class="stat"><strong id="nTotal">—</strong><span>In view</span></div>
+      <div class="stat"><strong id="nCluster">—</strong><span>Clusters</span></div>
+    </div>
+
+    <div class="status" id="status">Hover a resort · click a cluster to expand.</div>
+
+    <div class="list">
+      <h3>Visible unclustered</h3>
+      <ul id="list"></ul>
+    </div>
+
+    <p class="note">
+      Mapbox GL JS · GeoJSON clustering · feature-state.
+      Talk track: the UX layer under <a href="https://globalskiatlas.com" target="_blank" rel="noopener">Global Ski Atlas</a>.
+    </p>
+  </aside>
+
+  <script src="../admin-boundaries/js/config.js"></script>
+  <script src="https://api.mapbox.com/mapbox-gl-js/v3.9.0/mapbox-gl.js"></script>
+  <script>
+    const token = window.MAPBOX_ACCESS_TOKEN;
+    const statusEl = document.getElementById("status");
+    const listEl = document.getElementById("list");
+    if (!token || token === "YOUR_MAPBOX_ACCESS_TOKEN") {
+      statusEl.textContent = "Missing MAPBOX_ACCESS_TOKEN — set it in admin-boundaries/js/config.js";
+      throw new Error("Missing MAPBOX_ACCESS_TOKEN");
+    }
+    mapboxgl.accessToken = token;
+
+    const BOUNDS = {
+      all: [[-126, 36], [-70, 52]],
+      rockies: [[-113.5, 36.8], [-104, 45.5]],
+      bc: [[-126, 48.5], [-113, 53.5]],
+      east: [[-96, 41], [-69, 48]],
+    };
+
+    let hoveredId = null;
+    let allData = { type: "FeatureCollection", features: [] };
+
+    const map = new mapboxgl.Map({
+      container: "map",
+      style: "mapbox://styles/mapbox/dark-v11",
+      center: [-108.5, 40.5],
+      zoom: 4.6,
+      pitch: 20,
+    });
+    map.addControl(new mapboxgl.NavigationControl(), "bottom-right");
+
+    function setStatus(msg) { statusEl.textContent = msg; }
+
+    function filterRegion(region) {
+      if (region === "all") return allData;
+      const b = BOUNDS[region];
+      return {
+        type: "FeatureCollection",
+        features: allData.features.filter((f) => {
+          const [lng, lat] = f.geometry.coordinates;
+          return lng >= b[0][0] && lng <= b[1][0] && lat >= b[0][1] && lat <= b[1][1];
+        }),
+      };
+    }
+
+    function updateSidebar() {
+      if (!map.getLayer("unclustered-point")) return;
+      const feats = map.queryRenderedFeatures({ layers: ["unclustered-point"] });
+      const clusters = map.queryRenderedFeatures({ layers: ["clusters"] });
+      const seen = new Set();
+      const unique = [];
+      feats.forEach((f) => {
+        const id = f.properties.id;
+        if (seen.has(id)) return;
+        seen.add(id);
+        unique.push(f);
+      });
+      document.getElementById("nTotal").textContent = String(unique.length);
+      document.getElementById("nCluster").textContent = String(
+        new Set(clusters.map((c) => c.properties.cluster_id)).size
+      );
+      listEl.innerHTML = unique
+        .sort((a, b) => a.properties.name.localeCompare(b.properties.name))
+        .slice(0, 40)
+        .map((f) => {
+          return "<li data-id=\"" + f.properties.id + "\" data-lng=\"" +
+            f.geometry.coordinates[0] + "\" data-lat=\"" + f.geometry.coordinates[1] + "\">" +
+            "<strong>" + f.properties.name + "</strong>" +
+            "<small>" + (f.properties.country || "") + "</small></li>";
+        })
+        .join("") || "<li><small>Zoom in or expand a cluster.</small></li>";
+    }
+
+    function applyRegion() {
+      const region = document.getElementById("region").value;
+      const data = filterRegion(region);
+      // re-id features
+      data.features = data.features.map((f, i) => ({
+        ...f,
+        id: i,
+        properties: { ...f.properties, id: i },
+      }));
+      map.getSource("resorts").setData(data);
+      const b = BOUNDS[region];
+      map.fitBounds(b, { padding: 60, duration: 800 });
+      setStatus(data.features.length + " resorts in constellation (“" + region + "”).");
+      setTimeout(updateSidebar, 900);
+    }
+
+    map.on("load", async () => {
+      const raw = await fetch("./data/ski-resorts-constellation.geojson").then((r) => r.json());
+      allData = {
+        type: "FeatureCollection",
+        features: raw.features.map((f, i) => ({
+          ...f,
+          id: i,
+          properties: { ...f.properties, id: i },
+        })),
+      };
+
+      map.addSource("resorts", {
+        type: "geojson",
+        data: filterRegion("rockies"),
+        cluster: true,
+        clusterMaxZoom: 11,
+        clusterRadius: 52,
+      });
+
+      map.addLayer({
+        id: "clusters",
+        type: "circle",
+        source: "resorts",
+        filter: ["has", "point_count"],
+        paint: {
+          "circle-color": [
+            "step", ["get", "point_count"],
+            "#51bbd6", 8, "#f0c14d", 20, "#f28cb1"
+          ],
+          "circle-radius": ["step", ["get", "point_count"], 18, 8, 24, 20, 32],
+          "circle-opacity": 0.85,
+          "circle-stroke-width": 1,
+          "circle-stroke-color": "#070b16",
+        },
+      });
+
+      map.addLayer({
+        id: "cluster-count",
+        type: "symbol",
+        source: "resorts",
+        filter: ["has", "point_count"],
+        layout: {
+          "text-field": ["get", "point_count_abbreviated"],
+          "text-font": ["DIN Offc Pro Medium", "Arial Unicode MS Bold"],
+          "text-size": 12,
+        },
+        paint: { "text-color": "#0a1020" },
+      });
+
+      map.addLayer({
+        id: "unclustered-point",
+        type: "circle",
+        source: "resorts",
+        filter: ["!", ["has", "point_count"]],
+        paint: {
+          "circle-color": [
+            "case",
+            ["boolean", ["feature-state", "hover"], false],
+            "#f0c14d",
+            "#7aa2ff"
+          ],
+          "circle-radius": [
+            "case",
+            ["boolean", ["feature-state", "hover"], false],
+            10,
+            6
+          ],
+          "circle-stroke-width": 1.5,
+          "circle-stroke-color": "#eef2ff",
+        },
+      });
+
+      map.addLayer({
+        id: "unclustered-label",
+        type: "symbol",
+        source: "resorts",
+        filter: ["!", ["has", "point_count"]],
+        layout: {
+          "text-field": ["get", "name"],
+          "text-font": ["DIN Offc Pro Medium", "Arial Unicode MS Bold"],
+          "text-size": 11,
+          "text-offset": [0, 1.35],
+          "text-optional": true,
+        },
+        paint: {
+          "text-color": "#eef2ff",
+          "text-halo-color": "#070b16",
+          "text-halo-width": 1.2,
+        },
+      });
+
+      map.on("click", "clusters", (e) => {
+        const features = map.queryRenderedFeatures(e.point, { layers: ["clusters"] });
+        const clusterId = features[0].properties.cluster_id;
+        map.getSource("resorts").getClusterExpansionZoom(clusterId, (err, zoom) => {
+          if (err) return;
+          map.easeTo({ center: features[0].geometry.coordinates, zoom });
+        });
+      });
+
+      map.on("click", "unclustered-point", (e) => {
+        const f = e.features[0];
+        new mapboxgl.Popup()
+          .setLngLat(f.geometry.coordinates)
+          .setHTML("<strong>" + f.properties.name + "</strong><br/><span style=\"color:#9aa3c7\">" +
+            (f.properties.country || "") + "</span>")
+          .addTo(map);
+      });
+
+      map.on("mousemove", "unclustered-point", (e) => {
+        map.getCanvas().style.cursor = "pointer";
+        if (!e.features.length) return;
+        const id = e.features[0].properties.id;
+        if (hoveredId !== null && hoveredId !== id) {
+          map.setFeatureState({ source: "resorts", id: hoveredId }, { hover: false });
+        }
+        hoveredId = id;
+        map.setFeatureState({ source: "resorts", id }, { hover: true });
+        setStatus("Hover · " + e.features[0].properties.name);
+        [...listEl.querySelectorAll("li")].forEach((li) => {
+          li.classList.toggle("is-hover", Number(li.dataset.id) === id);
+        });
+      });
+
+      map.on("mouseleave", "unclustered-point", () => {
+        map.getCanvas().style.cursor = "";
+        if (hoveredId !== null) {
+          map.setFeatureState({ source: "resorts", id: hoveredId }, { hover: false });
+          hoveredId = null;
+        }
+      });
+
+      map.on("mouseenter", "clusters", () => { map.getCanvas().style.cursor = "pointer"; });
+      map.on("mouseleave", "clusters", () => { map.getCanvas().style.cursor = ""; });
+
+      map.on("moveend", updateSidebar);
+      document.getElementById("btnFit").addEventListener("click", applyRegion);
+      document.getElementById("region").addEventListener("change", applyRegion);
+      listEl.addEventListener("click", (e) => {
+        const li = e.target.closest("li");
+        if (!li || !li.dataset.lng) return;
+        map.flyTo({ center: [Number(li.dataset.lng), Number(li.dataset.lat)], zoom: 11 });
+      });
+
+      // Assign ids on initial filtered set
+      const initial = filterRegion("rockies");
+      initial.features = initial.features.map((f, i) => ({
+        ...f, id: i, properties: { ...f.properties, id: i },
+      }));
+      map.getSource("resorts").setData(initial);
+      setStatus(initial.features.length + " Rockies-region resorts loaded — hover & expand clusters.");
+      setTimeout(updateSidebar, 500);
+    });
+  </script>
+</body>
+</html>
