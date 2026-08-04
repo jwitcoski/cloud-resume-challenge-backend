@@ -218,7 +218,7 @@ const hubs = [
     workIntro: "Drive-time, constellation clustering, and powder-day routing on this site; agent graders live in the Map Agent Arena.",
     work: [
       {
-        href: "./ski-drive-time.html",
+        href: "./ski-drive-time/",
         fallback: "Drive Time",
         meta: "Demo · Isochrone · Matrix",
         title: "Ski resorts by drive time",
@@ -226,7 +226,7 @@ const hubs = [
         cta: "Open demo",
       },
       {
-        href: "./resort-constellation.html",
+        href: "./resort-constellation/",
         fallback: "Constellation",
         meta: "Demo · Cluster · Feature-state",
         title: "Resort constellation",
@@ -234,7 +234,7 @@ const hubs = [
         cta: "Open demo",
       },
       {
-        href: "./powder-day-route.html",
+        href: "./powder-day-route/",
         fallback: "Route",
         meta: "Demo · Directions · Geocoding",
         title: "Powder-day route",
@@ -309,7 +309,7 @@ const hubs = [
     workIntro: "Live client work stays private. Public demos show the Maps SDK patterns behind Vector Ledger — without Portal secrets.",
     work: [
       {
-        href: "./validation-desk.html",
+        href: "./validation-desk/",
         fallback: "Validation",
         meta: "Demo · Maps SDK · Validation",
         title: "Validation Desk",
@@ -394,7 +394,7 @@ const hubs = [
     workIntro: "Product-map patterns that contrast with MapLibre/MapTiler — especially when Google’s POI graph is the point.",
     work: [
       {
-        href: "./after-the-powder.html",
+        href: "./after-the-powder/",
         fallback: "After Powder",
         meta: "Demo · Places Nearby · Autocomplete",
         title: "After the Powder",
@@ -402,7 +402,7 @@ const hubs = [
         cta: "Open demo",
       },
       {
-        href: "/mapbox-playground/ski-drive-time.html",
+        href: "/mapbox-playground/ski-drive-time/",
         fallback: "Drive Time",
         meta: "Companion · Mapbox Isochrone",
         title: "Ski drive-time (Mapbox)",

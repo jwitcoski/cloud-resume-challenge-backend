@@ -64,11 +64,11 @@
 <body>
   <div id="map"></div>
   <div class="topbar">
-    <a class="brand" href="./index.html">Map<span>Tiler</span> · Powder access</a>
+    <a class="brand" href="../">Map<span>Tiler</span> · Powder access</a>
     <div class="links">
       <a href="https://jwitcoski.github.io/Census-Data-Code-For-Nepal-2011/" target="_blank" rel="noopener">Nepal atlas</a>
       <a href="https://globalskiatlas.com" target="_blank" rel="noopener">GSA</a>
-      <a href="./index.html">Hub</a>
+      <a href="../">Hub</a>
     </div>
   </div>
 
@@ -111,7 +111,7 @@
     </p>
   </aside>
 
-  <script src="../admin-boundaries/js/config.js"></script>
+  <script src="/admin-boundaries/js/config.js"></script>
   <script src="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.umd.min.js"></script>
   <script>
     const statusEl = document.getElementById("status");
@@ -140,7 +140,7 @@
     let hoveredId = null;
 
     map.on("load", async () => {
-      const data = await fetch("./data/co-county-powder-access.geojson").then((r) => r.json());
+      const data = await fetch("../data/co-county-powder-access.geojson").then((r) => r.json());
       // ensure feature ids for feature-state
       data.features.forEach((f, i) => { f.id = i; });
 

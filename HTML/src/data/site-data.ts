@@ -149,7 +149,7 @@ export const sideProjects = [
         blurb: "Punch any state or province out of a country polygon for map highlights.",
         roles: ["MapTiler", "GeoJSON", "Natural Earth"],
         image: "/images/feature-work/admin-boundary-tool.png",
-        url: "/admin-boundaries/tool.html"
+        url: "/admin-boundaries/tool/"
     },
     {
         title: "Raiders of Antikythera",

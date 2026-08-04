@@ -254,8 +254,8 @@
 
     <p class="hint">
       Built with MapTiler SDK (satellite, globe, markers, elevation).
-      <a href="./index.html">Playground</a> ·
-      <a href="./earth-lab.html">Earth Lab</a>
+      <a href="../">Playground</a> ·
+      <a href="../earth-lab/">Earth Lab</a>
     </p>
   </aside>
 
@@ -271,7 +271,7 @@
     </div>
   </div>
 
-  <script src="../admin-boundaries/js/config.js"></script>
+  <script src="/admin-boundaries/js/config.js"></script>
   <script src="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.umd.min.js"></script>
   <script>
     /** Curated landmarks — satellite looks distinctive at scout zoom */
@@ -639,7 +639,7 @@
 
         document.getElementById("btnAgain").addEventListener("click", startGame);
         document.getElementById("btnLab").addEventListener("click", () => {
-          location.href = "./earth-lab.html";
+          location.href = "../earth-lab/";
         });
 
         map.on("click", (e) => {
