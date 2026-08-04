@@ -98,11 +98,11 @@
 <body>
   <div id="viewDiv"></div>
   <div class="topbar">
-    <a class="brand" href="./index.html">Esri · <span>Validation Desk</span></a>
+    <a class="brand" href="../">Esri · <span>Validation Desk</span></a>
     <div class="links">
       <a href="https://vectorscopeai.com" target="_blank" rel="noopener">Vector Ledger</a>
-      <a href="/mapbox-playground/ski-drive-time.html">Ski drive-time</a>
-      <a href="./index.html">Hub</a>
+      <a href="/mapbox-playground/ski-drive-time/">Ski drive-time</a>
+      <a href="../">Hub</a>
     </div>
   </div>
 
@@ -162,7 +162,7 @@
     </p>
   </aside>
 
-  <script src="./admin-boundaries/js/config.js"></script>
+  <script src="/admin-boundaries/js/config.js"></script>
   <script src="https://js.arcgis.com/4.31/"></script>
   <script>
     require([
@@ -389,7 +389,7 @@
         setStatus("Proposal cleared.");
       }
 
-      fetch("./data/ops-notes-seed.geojson")
+      fetch("../data/ops-notes-seed.geojson")
         .then((r) => r.json())
         .then((geojson) => {
           const graphics = geojson.features.map((f) => new Graphic({

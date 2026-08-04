@@ -76,12 +76,12 @@
 <body>
   <div id="map"></div>
   <div class="topbar">
-    <a class="brand" href="./index.html">Map<span>box</span> · Resort constellation</a>
+    <a class="brand" href="../">Map<span>box</span> · Resort constellation</a>
     <div class="links">
-      <a href="./ski-drive-time.html">Drive-time</a>
-      <a href="./powder-day-route.html">Powder-day route</a>
+      <a href="../ski-drive-time/">Drive-time</a>
+      <a href="../powder-day-route/">Powder-day route</a>
       <a href="https://globalskiatlas.com" target="_blank" rel="noopener">GSA</a>
-      <a href="./index.html">Hub</a>
+      <a href="../">Hub</a>
     </div>
   </div>
 
@@ -119,7 +119,7 @@
     </p>
   </aside>
 
-  <script src="../admin-boundaries/js/config.js"></script>
+  <script src="/admin-boundaries/js/config.js"></script>
   <script src="https://api.mapbox.com/mapbox-gl-js/v3.9.0/mapbox-gl.js"></script>
   <script>
     const token = window.MAPBOX_ACCESS_TOKEN;
@@ -209,7 +209,7 @@
     }
 
     map.on("load", async () => {
-      const raw = await fetch("./data/ski-resorts-constellation.geojson").then((r) => r.json());
+      const raw = await fetch("../data/ski-resorts-constellation.geojson").then((r) => r.json());
       allData = {
         type: "FeatureCollection",
         features: raw.features.map((f, i) => ({

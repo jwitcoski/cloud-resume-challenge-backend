@@ -74,11 +74,11 @@
 <body>
   <div id="map"></div>
   <div class="topbar">
-    <a class="brand" href="./index.html">Map<span>box</span> · Powder-day route</a>
+    <a class="brand" href="../">Map<span>box</span> · Powder-day route</a>
     <div class="links">
-      <a href="./ski-drive-time.html">Drive-time (isochrone)</a>
-      <a href="./resort-constellation.html">Constellation</a>
-      <a href="./index.html">Hub</a>
+      <a href="../ski-drive-time/">Drive-time (isochrone)</a>
+      <a href="../resort-constellation/">Constellation</a>
+      <a href="../">Hub</a>
     </div>
   </div>
 
@@ -106,7 +106,7 @@
     </select>
 
     <div class="callout">
-      Pair with <a href="./ski-drive-time.html">ski drive-time</a>: isochrones show who can make it;
+      Pair with <a href="../ski-drive-time/">ski drive-time</a>: isochrones show who can make it;
       this page answers “what time do I leave for 9:00 first chair?”
     </div>
 
@@ -126,7 +126,7 @@
     </p>
   </aside>
 
-  <script src="../admin-boundaries/js/config.js"></script>
+  <script src="/admin-boundaries/js/config.js"></script>
   <script src="https://api.mapbox.com/mapbox-gl-js/v3.9.0/mapbox-gl.js"></script>
   <script>
     const token = window.MAPBOX_ACCESS_TOKEN;
@@ -268,7 +268,7 @@
     }
 
     map.on("load", async () => {
-      const data = await fetch("./data/ski-resorts-sample.geojson").then((r) => r.json());
+      const data = await fetch("../data/ski-resorts-sample.geojson").then((r) => r.json());
       // Prefer Rockies-ish resorts for the dropdown
       resorts = data.features.filter((f) => {
         const [lng, lat] = f.geometry.coordinates;

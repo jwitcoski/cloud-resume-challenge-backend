@@ -75,11 +75,11 @@
 <body>
   <div id="map"></div>
   <div class="topbar">
-    <a class="brand" href="./index.html">Map<span>box</span> · Ski drive-time</a>
+    <a class="brand" href="../">Map<span>box</span> · Ski drive-time</a>
     <div class="links">
       <a href="https://jwitcoski.github.io/map-agent-arena/" target="_blank" rel="noopener">Map Agent Arena</a>
       <a href="https://globalskiatlas.com/DriveTimeMap.html" target="_blank" rel="noopener">GSA original</a>
-      <a href="./index.html">Hub</a>
+      <a href="../">Hub</a>
     </div>
   </div>
 
@@ -120,7 +120,7 @@
     </p>
   </aside>
 
-  <script src="../admin-boundaries/js/config.js"></script>
+  <script src="/admin-boundaries/js/config.js"></script>
   <script src="https://api.mapbox.com/mapbox-gl-js/v3.9.0/mapbox-gl.js"></script>
   <script>
     const token = window.MAPBOX_ACCESS_TOKEN;
@@ -454,7 +454,7 @@
 
     map.on("load", async () => {
       try {
-        const res = await fetch("./data/ski-resorts-sample.geojson");
+        const res = await fetch("../data/ski-resorts-sample.geojson");
         resorts = await res.json();
         if (!map.getSource("all-resorts")) {
           map.addSource("all-resorts", { type: "geojson", data: resorts });
