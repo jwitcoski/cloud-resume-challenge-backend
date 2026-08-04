@@ -219,7 +219,8 @@ const hubs = [
     work: [
       {
         href: "./ski-drive-time/",
-        fallback: "Drive Time",
+        image: "/images/feature-work/ski-drive-time.png",
+        alt: "Ski drive-time isochrones from Denver",
         meta: "Demo · Isochrone · Matrix",
         title: "Ski resorts by drive time",
         desc: "Road-network isochrones + Matrix ETAs — an improved take on the Global Ski Atlas drive-time map.",
@@ -227,7 +228,8 @@ const hubs = [
       },
       {
         href: "./resort-constellation/",
-        fallback: "Constellation",
+        image: "/images/feature-work/resort-constellation.png",
+        alt: "Clustered ski resort constellation map",
         meta: "Demo · Cluster · Feature-state",
         title: "Resort constellation",
         desc: "Clustered ski resorts with hover feature-state — the GL JS UX pattern behind atlas-scale point layers.",
@@ -235,7 +237,8 @@ const hubs = [
       },
       {
         href: "./powder-day-route/",
-        fallback: "Route",
+        image: "/images/feature-work/powder-day-route.png",
+        alt: "Powder-day driving route to Breckenridge",
         meta: "Demo · Directions · Geocoding",
         title: "Powder-day route",
         desc: "Home → resort Directions with traffic and a 9am first-chair leave-by time. Isochrone vs one chosen path.",
@@ -244,7 +247,8 @@ const hubs = [
       {
         href: "https://jwitcoski.github.io/map-agent-arena/",
         external: true,
-        fallback: "Arena",
+        image: "/images/feature-work/maptiler-agent-grader.png",
+        alt: "Map Agent Arena",
         meta: "External · Agent eval",
         title: "Map Agent Arena",
         desc: "Royal Rumble + Mapbox/MapTiler skill graders — split into their own GitHub project.",
