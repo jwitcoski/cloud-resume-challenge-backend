@@ -100,6 +100,48 @@
       border-color: var(--warm);
     }
 
+    #diveRow {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+      gap: 8px;
+    }
+
+    button.dive {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+      padding: 0;
+      overflow: hidden;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.04);
+      text-align: left;
+    }
+
+    button.dive:hover {
+      border-color: rgba(110, 200, 255, 0.55);
+      background: rgba(110, 200, 255, 0.1);
+    }
+
+    button.dive img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      object-fit: cover;
+      background: #0a1220;
+    }
+
+    button.dive span {
+      display: block;
+      padding: 6px 8px 8px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      line-height: 1.2;
+      color: var(--ink);
+    }
+
     .probe {
       margin-top: 14px;
       padding-top: 12px;
@@ -233,7 +275,7 @@
     </div>
 
     <span class="label">Dive in</span>
-    <div class="row" id="diveRow"></div>
+    <div id="diveRow"></div>
 
     <div class="probe" id="probe">
       <div class="place">Click the map</div>
@@ -262,13 +304,13 @@
     };
 
     const DIVES = [
-      { id: "orbit", label: "Orbit", center: [-20, 18], zoom: 1.4, pitch: 0, bearing: 0, globe: true, terrain: false },
-      { id: "fuji", label: "Mt. Fuji", center: [138.7274, 35.3606], zoom: 11.4, pitch: 68, bearing: -30, globe: false, terrain: true },
-      { id: "alps", label: "Alps", center: [7.9851, 46.0207], zoom: 11.8, pitch: 70, bearing: -18, globe: false, terrain: true },
-      { id: "everest", label: "Everest", center: [86.9250, 27.9881], zoom: 11.5, pitch: 72, bearing: 40, globe: false, terrain: true },
-      { id: "canyon", label: "Grand Canyon", center: [-112.1401, 36.0544], zoom: 11.3, pitch: 62, bearing: 35, globe: false, terrain: true },
-      { id: "reykjavik", label: "Reykjavík", center: [-21.9426, 64.1466], zoom: 11.5, pitch: 55, bearing: -20, globe: false, terrain: true },
-      { id: "nyc", label: "NYC", center: [-73.9857, 40.7484], zoom: 14, pitch: 55, bearing: 20, globe: false, terrain: false },
+      { id: "orbit", label: "Orbit", thumb: "../images/dives/orbit.jpg", center: [-20, 18], zoom: 1.4, pitch: 0, bearing: 0, globe: true, terrain: false },
+      { id: "fuji", label: "Mt. Fuji", thumb: "../images/dives/fuji.jpg", center: [138.7274, 35.3606], zoom: 11.4, pitch: 68, bearing: -30, globe: false, terrain: true },
+      { id: "alps", label: "Alps", thumb: "../images/dives/alps.jpg", center: [7.6586, 45.9763], zoom: 12.2, pitch: 70, bearing: -25, globe: false, terrain: true },
+      { id: "everest", label: "Everest", thumb: "../images/dives/everest.jpg", center: [86.9250, 27.9881], zoom: 12.0, pitch: 72, bearing: 20, globe: false, terrain: true },
+      { id: "canyon", label: "Grand Canyon", thumb: "../images/dives/canyon.jpg", center: [-112.118, 36.100], zoom: 12.4, pitch: 62, bearing: 70, globe: false, terrain: true },
+      { id: "reykjavik", label: "Reykjavík", thumb: "../images/dives/reykjavik.jpg", center: [-21.9426, 64.1466], zoom: 11.5, pitch: 55, bearing: -20, globe: false, terrain: true },
+      { id: "nyc", label: "NYC", thumb: "../images/dives/nyc.jpg", center: [-73.9857, 40.7484], zoom: 14, pitch: 55, bearing: 20, globe: false, terrain: false },
     ];
 
     function showError(msg) {
@@ -604,14 +646,26 @@
         DIVES.forEach((d) => {
           const btn = document.createElement("button");
           btn.type = "button";
-          btn.textContent = d.label;
+          btn.className = "dive";
+          btn.title = `Fly to ${d.label}`;
+          btn.setAttribute("aria-label", `Fly to ${d.label}`);
+
+          const img = document.createElement("img");
+          img.src = d.thumb;
+          img.alt = "";
+          img.width = 160;
+          img.height = 100;
+          img.loading = "lazy";
+          img.decoding = "async";
+
+          const label = document.createElement("span");
+          label.textContent = d.label;
+
+          btn.append(img, label);
           btn.addEventListener("click", () => {
             setActive("projectionRow", "proj", d.globe ? "globe" : "mercator");
             map.setProjection(d.globe ? "globe" : "mercator", { persist: true });
             setTerrain(d.terrain);
-            if (d.terrain && (activeStyle === "satellite" || activeStyle === "ocean")) {
-              // Outdoor/hybrid show more relief context; leave style if user chose outdoor already
-            }
             map.flyTo({
               center: d.center,
               zoom: d.zoom,
