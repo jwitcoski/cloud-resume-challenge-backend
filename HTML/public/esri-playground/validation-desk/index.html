@@ -307,7 +307,7 @@
 
         const names = await existingNames(objectId);
         if (attrs.name && names.includes(attrs.name.toLowerCase())) {
-          errors.push('Duplicate name “‘ + attrs.name + '” already exists in the layer.');
+          errors.push("Duplicate name \"" + attrs.name + "\" already exists in the layer.");
         }
 
         proposal = {
@@ -389,7 +389,7 @@
         setStatus("Proposal cleared.");
       }
 
-      fetch("../data/ops-notes-seed.geojson")
+      fetch("/esri-playground/data/ops-notes-seed.geojson")
         .then((r) => r.json())
         .then((geojson) => {
           const graphics = geojson.features.map((f) => new Graphic({

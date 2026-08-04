@@ -128,9 +128,10 @@
 
     maptilersdk.config.apiKey = key;
 
+    // Streets is more reliable than Backdrop for choropleth contrast + key scopes.
     const map = new maptilersdk.Map({
       container: "map",
-      style: maptilersdk.MapStyle.BACKDROP,
+      style: maptilersdk.MapStyle.STREETS,
       center: [-105.5, 39.0],
       zoom: 6.2,
       navigationControl: true,
@@ -139,102 +140,124 @@
 
     let hoveredId = null;
 
+    map.on("error", (e) => {
+      const msg = (e && e.error && e.error.message) || "Map style/tile error";
+      statusEl.textContent = msg;
+      console.error(e);
+    });
+
     map.on("load", async () => {
-      const data = await fetch("../data/co-county-powder-access.geojson").then((r) => r.json());
-      // ensure feature ids for feature-state
-      data.features.forEach((f, i) => { f.id = i; });
+      try {
+        const res = await fetch("/maptiler-playground/data/co-county-powder-access.geojson");
+        if (!res.ok) throw new Error("County GeoJSON HTTP " + res.status);
+        const data = await res.json();
+        data.features.forEach((f, i) => {
+          f.id = i;
+        });
 
-      map.addSource("counties", {
-        type: "geojson",
-        data,
-        generateId: true,
-      });
+        map.addSource("counties", {
+          type: "geojson",
+          data,
+          promoteId: "fips",
+        });
 
-      map.addLayer({
-        id: "counties-fill",
-        type: "fill",
-        source: "counties",
-        paint: {
-          "fill-color": [
-            "interpolate", ["linear"], ["get", "access_score"],
-            0, "#f7fcf5",
-            20, "#c7e9c0",
-            40, "#74c476",
-            70, "#238b45",
-            100, "#00441b"
-          ],
-          "fill-opacity": [
-            "case",
-            ["boolean", ["feature-state", "hover"], false],
-            0.92,
-            0.72
-          ],
-        },
-      });
+        map.addLayer({
+          id: "counties-fill",
+          type: "fill",
+          source: "counties",
+          paint: {
+            "fill-color": [
+              "interpolate",
+              ["linear"],
+              ["to-number", ["get", "access_score"]],
+              0,
+              "#edf8e9",
+              20,
+              "#bae4b3",
+              40,
+              "#74c476",
+              70,
+              "#31a354",
+              100,
+              "#006d2c",
+            ],
+            "fill-opacity": [
+              "case",
+              ["boolean", ["feature-state", "hover"], false],
+              0.95,
+              0.78,
+            ],
+          },
+        });
 
-      map.addLayer({
-        id: "counties-line",
-        type: "line",
-        source: "counties",
-        paint: {
-          "line-color": "#0a1210",
-          "line-width": 0.8,
-          "line-opacity": 0.55,
-        },
-      });
+        map.addLayer({
+          id: "counties-line",
+          type: "line",
+          source: "counties",
+          paint: {
+            "line-color": "#1a1a1a",
+            "line-width": 0.7,
+            "line-opacity": 0.45,
+          },
+        });
 
-      // Resort dots for context
-      const resorts = await fetch("/mapbox-playground/data/ski-resorts-sample.geojson").then((r) => r.json());
-      const rockies = {
-        type: "FeatureCollection",
-        features: resorts.features.filter((f) => {
-          const [lng, lat] = f.geometry.coordinates;
-          return lng > -109.5 && lng < -104 && lat > 36.8 && lat < 41.2;
-        }),
-      };
-      map.addSource("resorts", { type: "geojson", data: rockies });
-      map.addLayer({
-        id: "resorts",
-        type: "circle",
-        source: "resorts",
-        paint: {
-          "circle-radius": 4,
-          "circle-color": "#e8c547",
-          "circle-stroke-width": 1,
-          "circle-stroke-color": "#0a1210",
-        },
-      });
+        const resortsRes = await fetch("/mapbox-playground/data/ski-resorts-sample.geojson");
+        if (!resortsRes.ok) throw new Error("Resort GeoJSON HTTP " + resortsRes.status);
+        const resorts = await resortsRes.json();
+        const rockies = {
+          type: "FeatureCollection",
+          features: resorts.features.filter((f) => {
+            const [lng, lat] = f.geometry.coordinates;
+            return lng > -109.5 && lng < -104 && lat > 36.8 && lat < 41.2;
+          }),
+        };
+        map.addSource("resorts", { type: "geojson", data: rockies });
+        map.addLayer({
+          id: "resorts",
+          type: "circle",
+          source: "resorts",
+          paint: {
+            "circle-radius": 4,
+            "circle-color": "#c9a227",
+            "circle-stroke-width": 1,
+            "circle-stroke-color": "#fff",
+          },
+        });
 
-      map.on("mousemove", "counties-fill", (e) => {
-        map.getCanvas().style.cursor = "pointer";
-        if (!e.features.length) return;
-        const id = e.features[0].id;
-        if (hoveredId !== null && hoveredId !== id) {
-          map.setFeatureState({ source: "counties", id: hoveredId }, { hover: false });
-        }
-        hoveredId = id;
-        map.setFeatureState({ source: "counties", id }, { hover: true });
-      });
-      map.on("mouseleave", "counties-fill", () => {
-        map.getCanvas().style.cursor = "";
-        if (hoveredId !== null) {
-          map.setFeatureState({ source: "counties", id: hoveredId }, { hover: false });
-          hoveredId = null;
-        }
-      });
+        map.on("mousemove", "counties-fill", (e) => {
+          map.getCanvas().style.cursor = "pointer";
+          if (!e.features.length) return;
+          const id = e.features[0].id;
+          if (hoveredId !== null && hoveredId !== id) {
+            map.setFeatureState({ source: "counties", id: hoveredId }, { hover: false });
+          }
+          hoveredId = id;
+          map.setFeatureState({ source: "counties", id }, { hover: true });
+        });
+        map.on("mouseleave", "counties-fill", () => {
+          map.getCanvas().style.cursor = "";
+          if (hoveredId !== null) {
+            map.setFeatureState({ source: "counties", id: hoveredId }, { hover: false });
+            hoveredId = null;
+          }
+        });
 
-      map.on("click", "counties-fill", (e) => {
-        const f = e.features[0];
-        const p = f.properties;
-        document.getElementById("dName").textContent = p.name + " County";
-        document.getElementById("dScore").textContent = p.access_score;
-        document.getElementById("dCount").textContent = p.resort_count;
-        document.getElementById("dNear").textContent = p.nearest || "—";
-        detailEl.classList.add("show");
-        statusEl.textContent = p.name + " · access " + p.access_score + " / 100";
-      });
+        map.on("click", "counties-fill", (e) => {
+          const f = e.features[0];
+          const p = f.properties;
+          document.getElementById("dName").textContent = p.name + " County";
+          document.getElementById("dScore").textContent = p.access_score;
+          document.getElementById("dCount").textContent = p.resort_count;
+          document.getElementById("dNear").textContent = p.nearest || "—";
+          detailEl.classList.add("show");
+          statusEl.textContent = p.name + " · access " + p.access_score + " / 100";
+        });
 
-      statusEl.textContent = data.features.length + " Colorado counties · click for access score.";
+        statusEl.textContent = data.features.length + " Colorado counties · click for access score.";
+      } catch (err) {
+        statusEl.textContent = "Failed to load choropleth: " + err.message;
+        console.error(err);
+      }
     });
   </script>
 </body>

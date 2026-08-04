@@ -165,7 +165,7 @@
     }
 
     function updateSidebar() {
-      if (!map.getLayer("unclustered-point")) return;
+      if (!map.getLayer("unclustered-point") || !map.isStyleLoaded()) return;
       const feats = map.queryRenderedFeatures({ layers: ["unclustered-point"] });
       const clusters = map.queryRenderedFeatures({ layers: ["clusters"] });
       const seen = new Set();
@@ -195,7 +195,6 @@
     function applyRegion() {
       const region = document.getElementById("region").value;
       const data = filterRegion(region);
-      // re-id features
       data.features = data.features.map((f, i) => ({
         ...f,
         id: i,
@@ -204,12 +203,12 @@
       map.getSource("resorts").setData(data);
       const b = BOUNDS[region];
       map.fitBounds(b, { padding: 60, duration: 800 });
-      setStatus(data.features.length + " resorts in constellation (“" + region + "”).");
-      setTimeout(updateSidebar, 900);
+      setStatus(data.features.length + " resorts in constellation (" + region + ").");
+      map.once("idle", updateSidebar);
     }
 
     map.on("load", async () => {
-      const raw = await fetch("../data/ski-resorts-constellation.geojson").then((r) => r.json());
+      const raw = await fetch("/mapbox-playground/data/ski-resorts-constellation.geojson").then((r) => r.json());
       allData = {
         type: "FeatureCollection",
         features: raw.features.map((f, i) => ({
@@ -219,12 +218,20 @@
         })),
       };
 
+      const initial = filterRegion("rockies");
+      initial.features = initial.features.map((f, i) => ({
+        ...f,
+        id: i,
+        properties: { ...f.properties, id: i },
+      }));
+
       map.addSource("resorts", {
         type: "geojson",
-        data: filterRegion("rockies"),
+        data: initial,
         cluster: true,
         clusterMaxZoom: 11,
         clusterRadius: 52,
+        promoteId: "id",
       });
 
       map.addLayer({
@@ -352,14 +359,8 @@
         map.flyTo({ center: [Number(li.dataset.lng), Number(li.dataset.lat)], zoom: 11 });
       });
 
-      // Assign ids on initial filtered set
-      const initial = filterRegion("rockies");
-      initial.features = initial.features.map((f, i) => ({
-        ...f, id: i, properties: { ...f.properties, id: i },
-      }));
-      map.getSource("resorts").setData(initial);
       setStatus(initial.features.length + " Rockies-region resorts loaded — hover & expand clusters.");
-      setTimeout(updateSidebar, 500);
+      map.once("idle", updateSidebar);
     });
   </script>
 </body>
