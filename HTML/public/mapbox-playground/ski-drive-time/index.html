@@ -454,7 +454,7 @@
 
     map.on("load", async () => {
       try {
-        const res = await fetch("../data/ski-resorts-sample.geojson");
+        const res = await fetch("/mapbox-playground/data/ski-resorts-sample.geojson");
         resorts = await res.json();
         if (!map.getSource("all-resorts")) {
           map.addSource("all-resorts", { type: "geojson", data: resorts });

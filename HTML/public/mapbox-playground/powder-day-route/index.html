@@ -268,7 +268,7 @@
     }
 
     map.on("load", async () => {
-      const data = await fetch("../data/ski-resorts-sample.geojson").then((r) => r.json());
+      const data = await fetch("/mapbox-playground/data/ski-resorts-sample.geojson").then((r) => r.json());
       // Prefer Rockies-ish resorts for the dropdown
       resorts = data.features.filter((f) => {
         const [lng, lat] = f.geometry.coordinates;
