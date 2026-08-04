@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>After the Powder — Google Maps Playground</title>
+  <meta name="description" content="Places Nearby around Rockies ski resorts — lodging, parking, hospitals after you arrive. Companion to Mapbox ski drive-time." />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Syne:wght@600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0c111b;
+      --panel: rgba(14, 20, 34, 0.94);
+      --ink: #eef3ff;
+      --muted: #9aa8c4;
+      --line: rgba(238, 243, 255, 0.14);
+      --accent: #8ab4f8;
+      --warm: #fdd663;
+      --lodging: #8ab4f8;
+      --parking: #fdd663;
+      --hospital: #f28b82;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; font-family: Figtree, system-ui, sans-serif; color: var(--ink); background: var(--bg); }
+    #map { position: absolute; inset: 0; }
+    .topbar {
+      position: absolute; z-index: 2; top: 0; left: 0; right: 0;
+      display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between;
+      padding: 12px 16px; background: linear-gradient(180deg, rgba(12,17,27,.92), transparent);
+      pointer-events: none;
+    }
+    .topbar a, .topbar .brand { pointer-events: auto; }
+    .brand { font-family: Syne, sans-serif; font-weight: 700; font-size: 1.05rem; color: var(--ink); text-decoration: none; }
+    .brand span { color: var(--accent); }
+    .links { display: flex; gap: 12px; flex-wrap: wrap; }
+    .links a { color: var(--muted); text-decoration: none; font-size: 0.85rem; }
+    .links a:hover { color: var(--accent); }
+    .panel {
+      position: absolute; z-index: 2; top: 64px; left: 16px;
+      width: min(380px, calc(100vw - 32px)); max-height: calc(100vh - 96px);
+      overflow: auto; background: var(--panel); border: 1px solid var(--line);
+      border-radius: 16px; padding: 14px 16px; backdrop-filter: blur(10px);
+    }
+    .panel h1 { margin: 0 0 4px; font-family: Syne, sans-serif; font-size: 1.15rem; }
+    .panel .lede { margin: 0 0 12px; color: var(--muted); font-size: 0.82rem; line-height: 1.45; }
+    label { display: block; font-size: 0.68rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 10px 0 4px; }
+    input, select, button {
+      width: 100%; font: inherit; border-radius: 10px; border: 1px solid var(--line);
+      background: rgba(0,0,0,.35); color: var(--ink); padding: 9px 10px;
+    }
+    .pac-container { z-index: 10000 !important; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    button.primary { background: rgba(138,180,248,.22); border-color: var(--accent); font-weight: 650; cursor: pointer; }
+    button.ghost { cursor: pointer; margin-top: 8px; }
+    button:hover { border-color: rgba(138,180,248,.6); }
+    .filters { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .filters label.chip {
+      display: inline-flex; align-items: center; gap: 5px; margin: 0;
+      padding: 6px 10px; border-radius: 999px; border: 1px solid var(--line);
+      font-size: 0.75rem; text-transform: none; letter-spacing: 0; cursor: pointer;
+      color: var(--ink);
+    }
+    .filters input { width: auto; margin: 0; }
+    .status { margin-top: 10px; font-size: 0.8rem; color: var(--muted); min-height: 1.2em; }
+    .legend { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; font-size: 0.72rem; }
+    .swatch { display: inline-flex; align-items: center; gap: 5px; }
+    .swatch i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+    .results { margin-top: 12px; }
+    .results h3 { margin: 0 0 6px; font-size: 0.72rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+    .results ul { list-style: none; margin: 0; padding: 0; }
+    .results li {
+      padding: 8px; border-radius: 8px; cursor: pointer; border: 1px solid transparent;
+      font-size: 0.85rem; margin-bottom: 4px;
+    }
+    .results li:hover { background: rgba(138,180,248,.12); border-color: var(--line); }
+    .results li small { display: block; color: var(--muted); font-size: 0.72rem; }
+    .tag {
+      display: inline-block; font-size: 0.65rem; padding: 1px 6px; border-radius: 999px;
+      margin-right: 4px; border: 1px solid var(--line);
+    }
+    .tag.lodging { color: var(--lodging); }
+    .tag.parking { color: var(--parking); }
+    .tag.hospital { color: var(--hospital); }
+    .note {
+      margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--line);
+      font-size: 0.72rem; color: var(--muted); line-height: 1.4;
+    }
+    .note a { color: var(--accent); }
+    .callout {
+      margin-top: 10px; padding: 10px; border-radius: 10px;
+      border: 1px solid rgba(253,214,99,.35); background: rgba(253,214,99,.08);
+      font-size: 0.75rem; color: var(--muted); line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <div class="topbar">
+    <a class="brand" href="./index.html">Google · <span>After the Powder</span></a>
+    <div class="links">
+      <a href="/mapbox-playground/ski-drive-time.html">Mapbox drive-time</a>
+      <a href="https://globalskiatlas.com" target="_blank" rel="noopener">Global Ski Atlas</a>
+      <a href="./index.html">Hub</a>
+    </div>
+  </div>
+
+  <aside class="panel">
+    <h1>After the powder</h1>
+    <p class="lede">
+      Mapbox Isochrone answers <em>can I drive there</em>. Google Places answers
+      <em>what’s around once I arrive</em> — lodging, parking, urgent care at the resort.
+    </p>
+
+    <label for="resort">Rockies resort</label>
+    <select id="resort"></select>
+
+    <label for="stay">Where I’m staying tonight (Places Autocomplete)</label>
+    <input id="stay" placeholder="Hotel or address near the mountain" autocomplete="off" />
+
+    <div class="filters">
+      <label class="chip"><input type="checkbox" data-type="lodging" checked /> Lodging</label>
+      <label class="chip"><input type="checkbox" data-type="parking" checked /> Parking</label>
+      <label class="chip"><input type="checkbox" data-type="hospital" checked /> Hospital</label>
+    </div>
+
+    <div class="row" style="margin-top:10px">
+      <button type="button" class="primary" id="btnGo">Find amenities</button>
+      <button type="button" class="ghost" id="btnReset" style="margin:0">Reset to resort</button>
+    </div>
+
+    <div class="legend">
+      <span class="swatch"><i style="background:var(--lodging)"></i> Lodging</span>
+      <span class="swatch"><i style="background:var(--parking)"></i> Parking</span>
+      <span class="swatch"><i style="background:var(--hospital)"></i> Hospital</span>
+    </div>
+
+    <div class="callout">
+      Same ski product, different vendor strength — SA judgment for when Places beats open gazetteers.
+    </div>
+
+    <div class="status" id="status">Pick a resort, then find amenities within ~5 km.</div>
+    <div class="results">
+      <h3>Nearby</h3>
+      <ul id="list"></ul>
+    </div>
+
+    <p class="note">
+      Maps JavaScript API + Places Nearby / Autocomplete.
+      Companion to <a href="/mapbox-playground/ski-drive-time.html">ski drive-time</a>.
+      Requires <code>GOOGLE_MAPS_API_KEY</code> with Maps JS + Places enabled.
+    </p>
+  </aside>
+
+  <script src="./admin-boundaries/js/config.js"></script>
+  <script>
+    const RESORTS = [
+      { name: "Vail", lng: -106.3742, lat: 39.6061 },
+      { name: "Breckenridge", lng: -106.0384, lat: 39.4817 },
+      { name: "Keystone", lng: -105.9347, lat: 39.6069 },
+      { name: "Copper Mountain", lng: -106.1561, lat: 39.5022 },
+      { name: "Aspen Mountain", lng: -106.8183, lat: 39.1864 },
+      { name: "Snowmass", lng: -106.9513, lat: 39.2089 },
+      { name: "Winter Park", lng: -105.7628, lat: 39.8868 },
+      { name: "Steamboat", lng: -106.8075, lat: 40.4572 },
+      { name: "Telluride", lng: -107.8123, lat: 37.9375 },
+      { name: "Crested Butte", lng: -106.9658, lat: 38.8997 },
+      { name: "Park City", lng: -111.5080, lat: 40.6514 },
+      { name: "Jackson Hole", lng: -110.8260, lat: 43.5875 },
+    ];
+
+    const COLORS = { lodging: "#8ab4f8", parking: "#fdd663", hospital: "#f28b82" };
+    const statusEl = document.getElementById("status");
+    const listEl = document.getElementById("list");
+    const resortSel = document.getElementById("resort");
+
+    RESORTS.forEach((r, i) => {
+      const opt = document.createElement("option");
+      opt.value = i;
+      opt.textContent = r.name;
+      resortSel.appendChild(opt);
+    });
+
+    let map, markers = [], infoWindow, anchorMarker, placesService, autocomplete;
+    let anchor = { lat: RESORTS[0].lat, lng: RESORTS[0].lng, label: RESORTS[0].name };
+
+    function setStatus(msg) { statusEl.textContent = msg; }
+
+    function selectedTypes() {
+      return [...document.querySelectorAll(".filters input:checked")].map((el) => el.dataset.type);
+    }
+
+    function clearMarkers() {
+      markers.forEach((m) => m.setMap(null));
+      markers = [];
+      listEl.innerHTML = "";
+    }
+
+    function setAnchor(lat, lng, label) {
+      anchor = { lat, lng, label };
+      if (anchorMarker) anchorMarker.setMap(null);
+      anchorMarker = new google.maps.Marker({
+        map,
+        position: { lat, lng },
+        title: label,
+        zIndex: 999,
+        icon: {
+          path: google.maps.SymbolPath.CIRCLE,
+          scale: 9,
+          fillColor: "#ffffff",
+          fillOpacity: 1,
+          strokeColor: "#8ab4f8",
+          strokeWeight: 3,
+        },
+      });
+      map.panTo({ lat, lng });
+      if (map.getZoom() < 12) map.setZoom(13);
+    }
+
+    function placeKind(types) {
+      if (types.includes("lodging")) return "lodging";
+      if (types.includes("parking")) return "parking";
+      if (types.includes("hospital") || types.includes("doctor") || types.includes("health")) return "hospital";
+      return "lodging";
+    }
+
+    function addResult(place, kind) {
+      const pos = place.geometry && place.geometry.location;
+      if (!pos) return;
+      const marker = new google.maps.Marker({
+        map,
+        position: pos,
+        title: place.name,
+        icon: {
+          path: google.maps.SymbolPath.CIRCLE,
+          scale: 7,
+          fillColor: COLORS[kind],
+          fillOpacity: 0.95,
+          strokeColor: "#0c111b",
+          strokeWeight: 1.5,
+        },
+      });
+      const html =
+        "<div style=\"max-width:220px;font-family:Figtree,sans-serif\">" +
+        "<strong>" + place.name + "</strong><br/>" +
+        "<span style=\"color:#666;font-size:12px\">" + (place.vicinity || "") + "</span><br/>" +
+        (place.rating != null ? "<span style=\"font-size:12px\">★ " + place.rating + "</span>" : "") +
+        "</div>";
+      marker.addListener("click", () => {
+        infoWindow.setContent(html);
+        infoWindow.open(map, marker);
+      });
+      markers.push(marker);
+
+      const li = document.createElement("li");
+      li.innerHTML =
+        "<span class=\"tag " + kind + "\">" + kind + "</span>" +
+        "<strong>" + place.name + "</strong>" +
+        "<small>" + (place.vicinity || "") +
+        (place.rating != null ? " · ★ " + place.rating : "") + "</small>";
+      li.addEventListener("click", () => {
+        map.panTo(pos);
+        infoWindow.setContent(html);
+        infoWindow.open(map, marker);
+      });
+      listEl.appendChild(li);
+    }
+
+    function nearbySearch(type) {
+      return new Promise((resolve) => {
+        placesService.nearbySearch(
+          {
+            location: anchor,
+            radius: 5000,
+            type,
+          },
+          (results, status) => {
+            if (status !== google.maps.places.PlacesServiceStatus.OK || !results) {
+              resolve([]);
+              return;
+            }
+            resolve(results.slice(0, 8));
+          }
+        );
+      });
+    }
+
+    async function findAmenities() {
+      const types = selectedTypes();
+      if (!types.length) {
+        setStatus("Select at least one amenity type.");
+        return;
+      }
+      clearMarkers();
+      setStatus("Searching Places near " + anchor.label + "…");
+      const batches = await Promise.all(types.map((t) => nearbySearch(t)));
+      let count = 0;
+      types.forEach((type, i) => {
+        batches[i].forEach((place) => {
+          addResult(place, type);
+          count++;
+        });
+      });
+      setStatus(
+        count
+          ? count + " Places results within ~5 km of " + anchor.label + "."
+          : "No Places results — check API key quotas / Places enablement."
+      );
+    }
+
+    function initMap() {
+      const key = window.GOOGLE_MAPS_API_KEY;
+      if (!key || key === "YOUR_GOOGLE_MAPS_API_KEY") {
+        setStatus("Missing GOOGLE_MAPS_API_KEY — set it in /admin-boundaries/js/config.js (Maps JS + Places).");
+        return;
+      }
+
+      map = new google.maps.Map(document.getElementById("map"), {
+        center: { lat: RESORTS[0].lat, lng: RESORTS[0].lng },
+        zoom: 12,
+        mapId: undefined,
+        styles: [
+          { elementType: "geometry", stylers: [{ color: "#1d2433" }] },
+          { elementType: "labels.text.stroke", stylers: [{ color: "#1d2433" }] },
+          { elementType: "labels.text.fill", stylers: [{ color: "#8a9bb8" }] },
+          { featureType: "road", elementType: "geometry", stylers: [{ color: "#2a3347" }] },
+          { featureType: "water", elementType: "geometry", stylers: [{ color: "#0e1624" }] },
+          { featureType: "poi.park", elementType: "geometry", stylers: [{ color: "#1a2a22" }] },
+        ],
+        disableDefaultUI: false,
+        mapTypeControl: false,
+        streetViewControl: false,
+      });
+      infoWindow = new google.maps.InfoWindow();
+      placesService = new google.maps.places.PlacesService(map);
+      setAnchor(RESORTS[0].lat, RESORTS[0].lng, RESORTS[0].name);
+
+      autocomplete = new google.maps.places.Autocomplete(
+        document.getElementById("stay"),
+        { fields: ["geometry", "name", "formatted_address"], types: ["establishment", "geocode"] }
+      );
+      autocomplete.bindTo("bounds", map);
+      autocomplete.addListener("place_changed", () => {
+        const place = autocomplete.getPlace();
+        if (!place.geometry || !place.geometry.location) {
+          setStatus("No geometry for that place.");
+          return;
+        }
+        const lat = place.geometry.location.lat();
+        const lng = place.geometry.location.lng();
+        setAnchor(lat, lng, place.name || place.formatted_address || "Stay");
+        setStatus("Stay anchor set to " + anchor.label + " — find amenities from here.");
+        findAmenities();
+      });
+
+      resortSel.addEventListener("change", () => {
+        const r = RESORTS[Number(resortSel.value)];
+        document.getElementById("stay").value = "";
+        setAnchor(r.lat, r.lng, r.name);
+        findAmenities();
+      });
+      document.getElementById("btnGo").addEventListener("click", findAmenities);
+      document.getElementById("btnReset").addEventListener("click", () => {
+        const r = RESORTS[Number(resortSel.value)];
+        document.getElementById("stay").value = "";
+        setAnchor(r.lat, r.lng, r.name);
+        findAmenities();
+      });
+
+      findAmenities();
+    }
+
+    window.initAfterPowder = initMap;
+
+    (function loadGoogle() {
+      const key = window.GOOGLE_MAPS_API_KEY;
+      if (!key || key === "YOUR_GOOGLE_MAPS_API_KEY") {
+        setStatus("Missing GOOGLE_MAPS_API_KEY — set it in /admin-boundaries/js/config.js (Maps JS + Places).");
+        return;
+      }
+      const s = document.createElement("script");
+      s.src =
+        "https://maps.googleapis.com/maps/api/js?key=" +
+        encodeURIComponent(key) +
+        "&libraries=places&callback=initAfterPowder";
+      s.async = true;
+      s.defer = true;
+      s.onerror = () => setStatus("Failed to load Google Maps JS — check the API key.");
+      document.head.appendChild(s);
+    })();
+  </script>
+</body>
+</html>

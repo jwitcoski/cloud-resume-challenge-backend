@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>County Powder Access — MapTiler Playground</title>
+  <meta name="description" content="Colorado county choropleth of ski-access scores derived from nearby sample resorts — thematic cartography tied to Global Ski Atlas." />
+  <link href="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Syne:wght@600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0a1210;
+      --panel: rgba(10, 24, 20, 0.94);
+      --ink: #e8f6ef;
+      --muted: #8fadb0;
+      --line: rgba(232, 246, 239, 0.14);
+      --accent: #5ecf9a;
+      --warm: #e8c547;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; font-family: Figtree, system-ui, sans-serif; color: var(--ink); background: var(--bg); }
+    #map { position: absolute; inset: 0; }
+    .topbar {
+      position: absolute; z-index: 2; top: 0; left: 0; right: 0;
+      display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between;
+      padding: 12px 16px; background: linear-gradient(180deg, rgba(10,18,16,.92), transparent);
+      pointer-events: none;
+    }
+    .topbar a, .topbar .brand { pointer-events: auto; }
+    .brand { font-family: Syne, sans-serif; font-weight: 700; font-size: 1.05rem; color: var(--ink); text-decoration: none; }
+    .brand span { color: var(--accent); }
+    .links { display: flex; gap: 12px; flex-wrap: wrap; }
+    .links a { color: var(--muted); text-decoration: none; font-size: 0.85rem; }
+    .links a:hover { color: var(--accent); }
+    .panel {
+      position: absolute; z-index: 2; top: 64px; left: 16px;
+      width: min(360px, calc(100vw - 32px)); max-height: calc(100vh - 96px);
+      overflow: auto; background: var(--panel); border: 1px solid var(--line);
+      border-radius: 16px; padding: 14px 16px; backdrop-filter: blur(10px);
+    }
+    .panel h1 { margin: 0 0 4px; font-family: Syne, sans-serif; font-size: 1.15rem; }
+    .panel .lede { margin: 0 0 12px; color: var(--muted); font-size: 0.82rem; line-height: 1.45; }
+    .status { margin-top: 10px; font-size: 0.8rem; color: var(--muted); min-height: 1.2em; }
+    .legend { margin-top: 12px; }
+    .legend h3 { margin: 0 0 8px; font-size: 0.72rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+    .ramp { display: flex; height: 12px; border-radius: 6px; overflow: hidden; border: 1px solid var(--line); }
+    .ramp span { flex: 1; }
+    .ramp-labels { display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--muted); margin-top: 4px; }
+    .detail {
+      margin-top: 12px; padding: 12px; border-radius: 12px; border: 1px solid var(--line);
+      background: rgba(0,0,0,.28); display: none;
+    }
+    .detail.show { display: block; }
+    .detail h2 { margin: 0 0 4px; font-family: Syne, sans-serif; font-size: 1.05rem; }
+    .detail .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; font-size: 0.82rem; }
+    .detail .grid span { display: block; color: var(--muted); font-size: 0.68rem; text-transform: uppercase; letter-spacing: .04em; }
+    .note {
+      margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--line);
+      font-size: 0.72rem; color: var(--muted); line-height: 1.4;
+    }
+    .note a { color: var(--accent); }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <div class="topbar">
+    <a class="brand" href="./index.html">Map<span>Tiler</span> · Powder access</a>
+    <div class="links">
+      <a href="https://jwitcoski.github.io/Census-Data-Code-For-Nepal-2011/" target="_blank" rel="noopener">Nepal atlas</a>
+      <a href="https://globalskiatlas.com" target="_blank" rel="noopener">GSA</a>
+      <a href="./index.html">Hub</a>
+    </div>
+  </div>
+
+  <aside class="panel">
+    <h1>County powder access</h1>
+    <p class="lede">
+      Colorado counties colored by a <strong>ski-access index</strong> —
+      how many sample Rockies resorts sit within ~90 km of the county centroid, plus a proximity bonus.
+      Thematic craft tied to the ski product, not a generic population ramp.
+    </p>
+
+    <div class="legend">
+      <h3>Access score</h3>
+      <div class="ramp" aria-hidden="true">
+        <span style="background:#f7fcf5"></span>
+        <span style="background:#c7e9c0"></span>
+        <span style="background:#74c476"></span>
+        <span style="background:#238b45"></span>
+        <span style="background:#00441b"></span>
+      </div>
+      <div class="ramp-labels"><span>Low</span><span>High</span></div>
+    </div>
+
+    <div class="status" id="status">Click a county for score details.</div>
+    <div class="detail" id="detail">
+      <h2 id="dName">—</h2>
+      <div class="grid">
+        <div><span>Access score</span><strong id="dScore">—</strong></div>
+        <div><span>Resorts ≤90 km</span><strong id="dCount">—</strong></div>
+      </div>
+      <p style="margin:10px 0 0;font-size:0.78rem;color:var(--muted)">
+        Nearest sample: <strong id="dNear" style="color:var(--ink)">—</strong>
+      </p>
+    </div>
+
+    <p class="note">
+      MapTiler SDK · data-driven fill · authored county GeoJSON.
+      Full narrative choropleth craft lives in the
+      <a href="https://jwitcoski.github.io/Census-Data-Code-For-Nepal-2011/" target="_blank" rel="noopener">Nepal Census Atlas</a>.
+    </p>
+  </aside>
+
+  <script src="../admin-boundaries/js/config.js"></script>
+  <script src="https://cdn.maptiler.com/maptiler-sdk-js/v4.0.2/maptiler-sdk.umd.min.js"></script>
+  <script>
+    const statusEl = document.getElementById("status");
+    const detailEl = document.getElementById("detail");
+    const key = window.MAPTILER_API_KEY;
+    if (!key || key === "YOUR_MAPTILER_KEY_HERE") {
+      statusEl.textContent = "Missing MAPTILER_API_KEY — copy admin-boundaries/js/config.example.js → config.js";
+      throw new Error("Missing MapTiler key");
+    }
+    if (typeof maptilersdk === "undefined") {
+      statusEl.textContent = "MapTiler SDK failed to load.";
+      throw new Error("SDK missing");
+    }
+
+    maptilersdk.config.apiKey = key;
+
+    const map = new maptilersdk.Map({
+      container: "map",
+      style: maptilersdk.MapStyle.BACKDROP,
+      center: [-105.5, 39.0],
+      zoom: 6.2,
+      navigationControl: true,
+      geolocateControl: false,
+    });
+
+    let hoveredId = null;
+
+    map.on("load", async () => {
+      const data = await fetch("./data/co-county-powder-access.geojson").then((r) => r.json());
+      // ensure feature ids for feature-state
+      data.features.forEach((f, i) => { f.id = i; });
+
+      map.addSource("counties", {
+        type: "geojson",
+        data,
+        generateId: true,
+      });
+
+      map.addLayer({
+        id: "counties-fill",
+        type: "fill",
+        source: "counties",
+        paint: {
+          "fill-color": [
+            "interpolate", ["linear"], ["get", "access_score"],
+            0, "#f7fcf5",
+            20, "#c7e9c0",
+            40, "#74c476",
+            70, "#238b45",
+            100, "#00441b"
+          ],
+          "fill-opacity": [
+            "case",
+            ["boolean", ["feature-state", "hover"], false],
+            0.92,
+            0.72
+          ],
+        },
+      });
+
+      map.addLayer({
+        id: "counties-line",
+        type: "line",
+        source: "counties",
+        paint: {
+          "line-color": "#0a1210",
+          "line-width": 0.8,
+          "line-opacity": 0.55,
+        },
+      });
+
+      // Resort dots for context
+      const resorts = await fetch("/mapbox-playground/data/ski-resorts-sample.geojson").then((r) => r.json());
+      const rockies = {
+        type: "FeatureCollection",
+        features: resorts.features.filter((f) => {
+          const [lng, lat] = f.geometry.coordinates;
+          return lng > -109.5 && lng < -104 && lat > 36.8 && lat < 41.2;
+        }),
+      };
+      map.addSource("resorts", { type: "geojson", data: rockies });
+      map.addLayer({
+        id: "resorts",
+        type: "circle",
+        source: "resorts",
+        paint: {
+          "circle-radius": 4,
+          "circle-color": "#e8c547",
+          "circle-stroke-width": 1,
+          "circle-stroke-color": "#0a1210",
+        },
+      });
+
+      map.on("mousemove", "counties-fill", (e) => {
+        map.getCanvas().style.cursor = "pointer";
+        if (!e.features.length) return;
+        const id = e.features[0].id;
+        if (hoveredId !== null && hoveredId !== id) {
+          map.setFeatureState({ source: "counties", id: hoveredId }, { hover: false });
+        }
+        hoveredId = id;
+        map.setFeatureState({ source: "counties", id }, { hover: true });
+      });
+      map.on("mouseleave", "counties-fill", () => {
+        map.getCanvas().style.cursor = "";
+        if (hoveredId !== null) {
+          map.setFeatureState({ source: "counties", id: hoveredId }, { hover: false });
+          hoveredId = null;
+        }
+      });
+
+      map.on("click", "counties-fill", (e) => {
+        const f = e.features[0];
+        const p = f.properties;
+        document.getElementById("dName").textContent = p.name + " County";
+        document.getElementById("dScore").textContent = p.access_score;
+        document.getElementById("dCount").textContent = p.resort_count;
+        document.getElementById("dNear").textContent = p.nearest || "—";
+        detailEl.classList.add("show");
+        statusEl.textContent = p.name + " · access " + p.access_score + " / 100";
+      });
+
+      statusEl.textContent = data.features.length + " Colorado counties · click for access score.";
+    });
+  </script>
+</body>
+</html>

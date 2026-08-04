@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Powder-Day Route — Mapbox Playground</title>
+  <meta name="description" content="Geocode home → Directions to a ski resort with traffic ETAs and a 9am first-chair leave-by time. Companion to isochrone drive-time." />
+  <link href="https://api.mapbox.com/mapbox-gl-js/v3.9.0/mapbox-gl.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Syne:wght@600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #070b16;
+      --panel: rgba(12, 18, 36, 0.94);
+      --ink: #eef2ff;
+      --muted: #9aa3c7;
+      --line: rgba(238, 242, 255, 0.14);
+      --accent: #7aa2ff;
+      --warm: #f0c14d;
+      --ok: #22c55e;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; font-family: Figtree, system-ui, sans-serif; color: var(--ink); background: var(--bg); }
+    #map { position: absolute; inset: 0; }
+    .topbar {
+      position: absolute; z-index: 2; top: 0; left: 0; right: 0;
+      display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between;
+      padding: 12px 16px; background: linear-gradient(180deg, rgba(7,11,22,.92), transparent);
+      pointer-events: none;
+    }
+    .topbar a, .topbar .brand { pointer-events: auto; }
+    .brand { font-family: Syne, sans-serif; font-weight: 700; font-size: 1.05rem; color: var(--ink); text-decoration: none; }
+    .brand span { color: var(--accent); }
+    .links { display: flex; gap: 12px; flex-wrap: wrap; }
+    .links a { color: var(--muted); text-decoration: none; font-size: 0.85rem; }
+    .links a:hover { color: var(--accent); }
+    .panel {
+      position: absolute; z-index: 2; top: 64px; left: 16px;
+      width: min(370px, calc(100vw - 32px)); max-height: calc(100vh - 96px);
+      overflow: auto; background: var(--panel); border: 1px solid var(--line);
+      border-radius: 16px; padding: 14px 16px; backdrop-filter: blur(10px);
+    }
+    .panel h1 { margin: 0 0 4px; font-family: Syne, sans-serif; font-size: 1.15rem; }
+    .panel .lede { margin: 0 0 12px; color: var(--muted); font-size: 0.82rem; line-height: 1.45; }
+    label { display: block; font-size: 0.68rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 10px 0 4px; }
+    input, select, button {
+      width: 100%; font: inherit; border-radius: 10px; border: 1px solid var(--line);
+      background: rgba(0,0,0,.35); color: var(--ink); padding: 9px 10px;
+    }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    button.primary { background: rgba(122,162,255,.25); border-color: var(--accent); font-weight: 650; cursor: pointer; }
+    button.ghost { cursor: pointer; margin-top: 8px; }
+    button:hover { border-color: rgba(122,162,255,.6); }
+    .status { margin-top: 10px; font-size: 0.8rem; color: var(--muted); min-height: 1.2em; }
+    .eta {
+      margin-top: 12px; padding: 12px; border-radius: 12px;
+      border: 1px solid var(--line); background: rgba(0,0,0,.28); display: none;
+    }
+    .eta.show { display: block; }
+    .eta .big { font-family: Syne, sans-serif; font-size: 1.35rem; color: var(--warm); }
+    .eta .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; font-size: 0.8rem; }
+    .eta .grid span { color: var(--muted); display: block; font-size: 0.68rem; text-transform: uppercase; letter-spacing: .04em; }
+    .callout {
+      margin-top: 10px; padding: 10px; border-radius: 10px;
+      border: 1px solid rgba(122,162,255,.35); background: rgba(122,162,255,.08);
+      font-size: 0.75rem; color: var(--muted); line-height: 1.4;
+    }
+    .callout a { color: var(--accent); }
+    .note {
+      margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--line);
+      font-size: 0.72rem; color: var(--muted); line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <div class="topbar">
+    <a class="brand" href="./index.html">Map<span>box</span> · Powder-day route</a>
+    <div class="links">
+      <a href="./ski-drive-time.html">Drive-time (isochrone)</a>
+      <a href="./resort-constellation.html">Constellation</a>
+      <a href="./index.html">Hub</a>
+    </div>
+  </div>
+
+  <aside class="panel">
+    <h1>Powder-day route</h1>
+    <p class="lede">
+      One chosen path: geocode home → <strong>Directions</strong> to a resort with traffic.
+      Isochrone = reachable set; Directions = the drive you actually take.
+    </p>
+
+    <label for="q">Starting point</label>
+    <input id="q" placeholder="City, address, or landmark" value="Denver, CO" />
+    <div class="row" style="margin-top:8px">
+      <button type="button" class="primary" id="btnGo">Route</button>
+      <button type="button" class="ghost" id="btnGeo" style="margin:0">Use my location</button>
+    </div>
+
+    <label for="resort">First chair destination</label>
+    <select id="resort"></select>
+
+    <label for="profile">Profile</label>
+    <select id="profile">
+      <option value="driving-traffic" selected>Driving (traffic)</option>
+      <option value="driving">Driving</option>
+    </select>
+
+    <div class="callout">
+      Pair with <a href="./ski-drive-time.html">ski drive-time</a>: isochrones show who can make it;
+      this page answers “what time do I leave for 9:00 first chair?”
+    </div>
+
+    <div class="status" id="status">Pick a resort and route from home.</div>
+    <div class="eta" id="eta">
+      <div class="big" id="leaveBy">—</div>
+      <div style="font-size:0.8rem;color:var(--muted);margin-top:2px">Leave by (for 9:00 AM chair)</div>
+      <div class="grid">
+        <div><span>Duration</span><strong id="dur">—</strong></div>
+        <div><span>Distance</span><strong id="dist">—</strong></div>
+      </div>
+    </div>
+
+    <p class="note">
+      Mapbox Directions API · Geocoding · GL JS line layer.
+      Sample resorts shared with the drive-time demo.
+    </p>
+  </aside>
+
+  <script src="../admin-boundaries/js/config.js"></script>
+  <script src="https://api.mapbox.com/mapbox-gl-js/v3.9.0/mapbox-gl.js"></script>
+  <script>
+    const token = window.MAPBOX_ACCESS_TOKEN;
+    const statusEl = document.getElementById("status");
+    const etaEl = document.getElementById("eta");
+    const resortSel = document.getElementById("resort");
+
+    if (!token || token === "YOUR_MAPBOX_ACCESS_TOKEN") {
+      statusEl.textContent = "Missing MAPBOX_ACCESS_TOKEN — set it in admin-boundaries/js/config.js";
+      throw new Error("Missing MAPBOX_ACCESS_TOKEN");
+    }
+    mapboxgl.accessToken = token;
+
+    let resorts = [];
+    let originMarker = null;
+    let destMarker = null;
+    let origin = [-104.9903, 39.7392];
+
+    const map = new mapboxgl.Map({
+      container: "map",
+      style: "mapbox://styles/mapbox/outdoors-v12",
+      center: origin,
+      zoom: 7,
+      pitch: 35,
+    });
+    map.addControl(new mapboxgl.NavigationControl(), "bottom-right");
+
+    function setStatus(msg) { statusEl.textContent = msg; }
+
+    function formatDuration(sec) {
+      if (sec == null || !isFinite(sec)) return "—";
+      const m = Math.round(sec / 60);
+      const h = Math.floor(m / 60);
+      const rm = m % 60;
+      return h ? h + "h " + rm + "m" : m + " min";
+    }
+
+    function leaveByForChair(durationSec) {
+      // 9:00 AM first chair, minus drive, minus 20 min lot/boot buffer
+      const bufferSec = 20 * 60;
+      const chair = new Date();
+      chair.setHours(9, 0, 0, 0);
+      if (chair.getTime() < Date.now()) chair.setDate(chair.getDate() + 1);
+      const leave = new Date(chair.getTime() - (durationSec + bufferSec) * 1000);
+      return leave.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+    }
+
+    async function geocode(query) {
+      const url =
+        "https://api.mapbox.com/geocoding/v5/mapbox.places/" +
+        encodeURIComponent(query) +
+        ".json?access_token=" + token + "&limit=1";
+      const res = await fetch(url);
+      if (!res.ok) throw new Error("Geocode HTTP " + res.status);
+      const data = await res.json();
+      const f = data.features && data.features[0];
+      if (!f) throw new Error("No results for “" + query + "”");
+      return { center: f.center, place: f.place_name };
+    }
+
+    function ensureMarkers(from, to, destName) {
+      if (originMarker) originMarker.setLngLat(from);
+      else originMarker = new mapboxgl.Marker({ color: "#7aa2ff" }).setLngLat(from).addTo(map);
+      if (destMarker) destMarker.setLngLat(to);
+      else destMarker = new mapboxgl.Marker({ color: "#f0c14d" }).setLngLat(to).addTo(map);
+      destMarker.setPopup(new mapboxgl.Popup().setText(destName));
+    }
+
+    function paintRoute(geojson) {
+      if (map.getSource("route")) {
+        map.getSource("route").setData(geojson);
+        return;
+      }
+      map.addSource("route", { type: "geojson", data: geojson });
+      map.addLayer({
+        id: "route-line",
+        type: "line",
+        source: "route",
+        layout: { "line-join": "round", "line-cap": "round" },
+        paint: {
+          "line-color": "#7aa2ff",
+          "line-width": 5,
+          "line-opacity": 0.9,
+        },
+      });
+      map.addLayer({
+        id: "route-casing",
+        type: "line",
+        source: "route",
+        layout: { "line-join": "round", "line-cap": "round" },
+        paint: {
+          "line-color": "#0a1020",
+          "line-width": 8,
+          "line-opacity": 0.35,
+        },
+      }, "route-line");
+    }
+
+    async function route() {
+      const profile = document.getElementById("profile").value;
+      const resort = resorts[Number(resortSel.value)];
+      if (!resort) return;
+      setStatus("Routing…");
+      etaEl.classList.remove("show");
+
+      let start = origin;
+      const q = document.getElementById("q").value.trim();
+      if (q) {
+        const g = await geocode(q);
+        start = g.center;
+        origin = start;
+        setStatus("From " + g.place);
+      }
+
+      const dest = resort.geometry.coordinates;
+      ensureMarkers(start, dest, resort.properties.name);
+
+      const url =
+        "https://api.mapbox.com/directions/v5/mapbox/" + profile + "/" +
+        start[0] + "," + start[1] + ";" + dest[0] + "," + dest[1] +
+        "?geometries=geojson&overview=full&access_token=" + token;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error("Directions HTTP " + res.status);
+      const data = await res.json();
+      const r = data.routes && data.routes[0];
+      if (!r) throw new Error("No route found");
+
+      paintRoute({ type: "Feature", properties: {}, geometry: r.geometry });
+      const bounds = new mapboxgl.LngLatBounds(start, start);
+      bounds.extend(dest);
+      r.geometry.coordinates.forEach((c) => bounds.extend(c));
+      map.fitBounds(bounds, { padding: 70, duration: 900 });
+
+      document.getElementById("dur").textContent = formatDuration(r.duration);
+      document.getElementById("dist").textContent = (r.distance / 1609.34).toFixed(1) + " mi";
+      document.getElementById("leaveBy").textContent = leaveByForChair(r.duration);
+      etaEl.classList.add("show");
+      setStatus("Route to " + resort.properties.name + " · " + profile);
+    }
+
+    map.on("load", async () => {
+      const data = await fetch("./data/ski-resorts-sample.geojson").then((r) => r.json());
+      // Prefer Rockies-ish resorts for the dropdown
+      resorts = data.features.filter((f) => {
+        const [lng, lat] = f.geometry.coordinates;
+        return lng > -113 && lng < -104 && lat > 36.5 && lat < 45;
+      });
+      if (!resorts.length) resorts = data.features;
+      resorts.forEach((f, i) => {
+        const opt = document.createElement("option");
+        opt.value = i;
+        opt.textContent = f.properties.name;
+        if (f.properties.name === "Vail") opt.selected = true;
+        resortSel.appendChild(opt);
+      });
+
+      map.addSource("resorts", { type: "geojson", data: { type: "FeatureCollection", features: resorts } });
+      map.addLayer({
+        id: "resorts",
+        type: "circle",
+        source: "resorts",
+        paint: {
+          "circle-radius": 5,
+          "circle-color": "#f0c14d",
+          "circle-stroke-width": 1,
+          "circle-stroke-color": "#fff",
+        },
+      });
+
+      document.getElementById("btnGo").addEventListener("click", () => {
+        route().catch((e) => setStatus(e.message));
+      });
+      document.getElementById("btnGeo").addEventListener("click", () => {
+        if (!navigator.geolocation) {
+          setStatus("Geolocation not available.");
+          return;
+        }
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            origin = [pos.coords.longitude, pos.coords.latitude];
+            document.getElementById("q").value = "";
+            route().catch((e) => setStatus(e.message));
+          },
+          () => setStatus("Could not get location.")
+        );
+      });
+      resortSel.addEventListener("change", () => {
+        route().catch((e) => setStatus(e.message));
+      });
+
+      route().catch((e) => setStatus(e.message));
+    });
+  </script>
+</body>
+</html>

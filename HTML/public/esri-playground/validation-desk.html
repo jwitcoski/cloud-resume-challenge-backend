@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Validation Desk — Esri Playground</title>
+  <meta name="description" content="Maps SDK editing with domain, AOI, and duplicate validation — Vector Ledger lite without client Portal data." />
+  <link rel="stylesheet" href="https://js.arcgis.com/4.31/esri/themes/dark/main.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Syne:wght@600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #06141a;
+      --panel: rgba(8, 28, 34, 0.94);
+      --ink: #e8f4f8;
+      --muted: #8fadb8;
+      --line: rgba(232, 244, 248, 0.14);
+      --accent: #3dd6c6;
+      --warn: #f4a261;
+      --bad: #f07178;
+      --ok: #7fd99a;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; font-family: Figtree, system-ui, sans-serif; color: var(--ink); background: var(--bg); }
+    #viewDiv { position: absolute; inset: 0; }
+    .topbar {
+      position: absolute; z-index: 2; top: 0; left: 0; right: 0;
+      display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between;
+      padding: 12px 16px; background: linear-gradient(180deg, rgba(6,20,26,.92), transparent);
+      pointer-events: none;
+    }
+    .topbar a, .topbar .brand { pointer-events: auto; }
+    .brand { font-family: Syne, sans-serif; font-weight: 700; font-size: 1.05rem; color: var(--ink); text-decoration: none; }
+    .brand span { color: var(--accent); }
+    .links { display: flex; gap: 12px; flex-wrap: wrap; }
+    .links a { color: var(--muted); text-decoration: none; font-size: 0.85rem; }
+    .links a:hover { color: var(--accent); }
+    .panel {
+      position: absolute; z-index: 2; top: 64px; left: 16px;
+      width: min(380px, calc(100vw - 32px)); max-height: calc(100vh - 96px);
+      overflow: auto; background: var(--panel); border: 1px solid var(--line);
+      border-radius: 16px; padding: 14px 16px; backdrop-filter: blur(10px);
+    }
+    .panel h1 { margin: 0 0 4px; font-family: Syne, sans-serif; font-size: 1.15rem; }
+    .panel .lede { margin: 0 0 12px; color: var(--muted); font-size: 0.82rem; line-height: 1.45; }
+    label { display: block; font-size: 0.68rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 10px 0 4px; }
+    input, select, textarea, button {
+      width: 100%; font: inherit; border-radius: 10px; border: 1px solid var(--line);
+      background: rgba(0,0,0,.35); color: var(--ink); padding: 9px 10px;
+    }
+    textarea { min-height: 64px; resize: vertical; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    button.primary { background: rgba(61,214,198,.22); border-color: var(--accent); font-weight: 650; cursor: pointer; }
+    button.ghost { cursor: pointer; margin-top: 8px; }
+    button:hover { border-color: rgba(61,214,198,.6); }
+    button:disabled { opacity: 0.45; cursor: not-allowed; }
+    .status { margin-top: 10px; font-size: 0.8rem; color: var(--muted); min-height: 1.2em; }
+    .rules {
+      margin: 10px 0 0; padding: 10px; border-radius: 12px; border: 1px solid var(--line);
+      font-size: 0.75rem; color: var(--muted); line-height: 1.45;
+    }
+    .rules strong { color: var(--ink); }
+    .fail {
+      margin-top: 10px; padding: 10px; border-radius: 10px;
+      background: rgba(240,113,120,.12); border: 1px solid rgba(240,113,120,.35);
+      color: #ffc9cc; font-size: 0.8rem; display: none;
+    }
+    .fail.show { display: block; }
+    .fail li { margin: 4px 0; }
+    .ok-banner {
+      margin-top: 10px; padding: 10px; border-radius: 10px; display: none;
+      background: rgba(127,217,154,.12); border: 1px solid rgba(127,217,154,.35);
+      color: var(--ok); font-size: 0.8rem;
+    }
+    .ok-banner.show { display: block; }
+    .log { margin-top: 12px; font-size: 0.75rem; }
+    .log h3 { margin: 0 0 6px; font-size: 0.72rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+    .log ul { list-style: none; margin: 0; padding: 0; }
+    .log li {
+      padding: 7px 8px; border-radius: 8px; border: 1px solid transparent;
+      margin-bottom: 4px; cursor: pointer;
+    }
+    .log li:hover { background: rgba(61,214,198,.1); border-color: var(--line); }
+    .log li small { display: block; color: var(--muted); }
+    .badge {
+      display: inline-block; font-size: 0.65rem; padding: 2px 6px; border-radius: 999px;
+      margin-right: 4px; border: 1px solid var(--line);
+    }
+    .badge.open { color: var(--ok); border-color: rgba(127,217,154,.4); }
+    .badge.hold { color: var(--warn); border-color: rgba(244,162,97,.4); }
+    .badge.closed { color: var(--bad); border-color: rgba(240,113,120,.4); }
+    .note {
+      margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--line);
+      font-size: 0.72rem; color: var(--muted); line-height: 1.4;
+    }
+    .note a { color: var(--accent); }
+  </style>
+</head>
+<body>
+  <div id="viewDiv"></div>
+  <div class="topbar">
+    <a class="brand" href="./index.html">Esri · <span>Validation Desk</span></a>
+    <div class="links">
+      <a href="https://vectorscopeai.com" target="_blank" rel="noopener">Vector Ledger</a>
+      <a href="/mapbox-playground/ski-drive-time.html">Ski drive-time</a>
+      <a href="./index.html">Hub</a>
+    </div>
+  </div>
+
+  <aside class="panel">
+    <h1>Field validation desk</h1>
+    <p class="lede">
+      Propose an ops-note edit on a client-side FeatureLayer, then run the same class of
+      <strong>domain / AOI / uniqueness</strong> checks Vector Ledger enforces before a write is trusted.
+    </p>
+
+    <div class="rules">
+      <strong>Rules before accept</strong><br />
+      1. <code>name</code> required · <code>status</code> in open / hold / closed<br />
+      2. Point must fall inside the Colorado AOI<br />
+      3. Resort name must be unique in the layer
+    </div>
+
+    <label for="mode">Edit mode</label>
+    <select id="mode">
+      <option value="update" selected>Update selected feature</option>
+      <option value="add">Add point (click map)</option>
+    </select>
+
+    <label for="name">Resort / site name</label>
+    <input id="name" placeholder="e.g. Vail ops staging" />
+
+    <label for="status">Status domain</label>
+    <select id="status">
+      <option value="open">open</option>
+      <option value="hold">hold</option>
+      <option value="closed">closed</option>
+      <option value="maybe">maybe (invalid — for demos)</option>
+    </select>
+
+    <label for="note">Ops note</label>
+    <textarea id="note" placeholder="Groom report, hold reason, etc."></textarea>
+
+    <div class="row" style="margin-top:10px">
+      <button type="button" class="primary" id="btnValidate">Validate</button>
+      <button type="button" class="ghost" id="btnAccept" style="margin:0" disabled>Accept edit</button>
+    </div>
+    <button type="button" class="ghost" id="btnReject">Clear proposal</button>
+
+    <div class="fail" id="fail"></div>
+    <div class="ok-banner" id="ok">All rules passed — accept to commit locally (no Portal write).</div>
+    <div class="status" id="statusMsg">Click a feature to load it, or switch to Add and click the map.</div>
+
+    <div class="log">
+      <h3>Layer changelog (local)</h3>
+      <ul id="log"></ul>
+    </div>
+
+    <p class="note">
+      Maps SDK for JS · client-side FeatureLayer · Colorado AOI graphic.
+      Talk track: enterprise GIS is trustworthy edits, not just drawing points —
+      see <a href="https://vectorscopeai.com" target="_blank" rel="noopener">Vector Ledger</a>.
+    </p>
+  </aside>
+
+  <script src="./admin-boundaries/js/config.js"></script>
+  <script src="https://js.arcgis.com/4.31/"></script>
+  <script>
+    require([
+      "esri/config",
+      "esri/Map",
+      "esri/views/MapView",
+      "esri/layers/FeatureLayer",
+      "esri/layers/GraphicsLayer",
+      "esri/Graphic",
+      "esri/geometry/Polygon",
+      "esri/geometry/Point",
+      "esri/geometry/geometryEngine",
+      "esri/symbols/SimpleMarkerSymbol",
+      "esri/symbols/SimpleFillSymbol",
+      "esri/widgets/Legend",
+    ], function (
+      esriConfig, Map, MapView, FeatureLayer, GraphicsLayer, Graphic,
+      Polygon, Point, geometryEngine, SimpleMarkerSymbol, SimpleFillSymbol, Legend
+    ) {
+      const apiKey = window.ARCGIS_API_KEY;
+      if (apiKey && apiKey !== "YOUR_ARCGIS_API_KEY") {
+        esriConfig.apiKey = apiKey;
+      }
+
+      const statusMsg = document.getElementById("statusMsg");
+      const failEl = document.getElementById("fail");
+      const okEl = document.getElementById("ok");
+      const btnAccept = document.getElementById("btnAccept");
+      const logEl = document.getElementById("log");
+
+      // Rough Colorado state AOI (simplified)
+      const coAoi = new Polygon({
+        rings: [[
+          [-109.06, 41.00], [-102.05, 41.00], [-102.05, 36.99],
+          [-109.06, 36.99], [-109.06, 41.00]
+        ]],
+        spatialReference: { wkid: 4326 }
+      });
+
+      let proposal = null; // { mode, objectId?, geometry, attrs, errors: [] }
+      let nextOid = 100;
+      const changelog = [];
+
+      const aoiLayer = new GraphicsLayer({ title: "Colorado AOI", listMode: "hide" });
+      aoiLayer.add(new Graphic({
+        geometry: coAoi,
+        symbol: new SimpleFillSymbol({
+          color: [61, 214, 198, 0.08],
+          outline: { color: [61, 214, 198, 0.55], width: 1.5 }
+        })
+      }));
+
+      const renderer = {
+        type: "unique-value",
+        field: "status",
+        defaultSymbol: { type: "simple-marker", color: "#8fadb8", size: 10, outline: { color: "#06141a", width: 1 } },
+        uniqueValueInfos: [
+          { value: "open", symbol: { type: "simple-marker", color: "#7fd99a", size: 11, outline: { color: "#06141a", width: 1 } } },
+          { value: "hold", symbol: { type: "simple-marker", color: "#f4a261", size: 11, outline: { color: "#06141a", width: 1 } } },
+          { value: "closed", symbol: { type: "simple-marker", color: "#f07178", size: 11, outline: { color: "#06141a", width: 1 } } },
+        ]
+      };
+
+      const popupTemplate = {
+        title: "{name}",
+        content: [
+          {
+            type: "fields",
+            fieldInfos: [
+              { fieldName: "status", label: "Status" },
+              { fieldName: "note", label: "Ops note" },
+              { fieldName: "validated", label: "Validated" },
+            ]
+          }
+        ]
+      };
+
+      let notesLayer;
+
+      function setStatus(msg) { statusMsg.textContent = msg; }
+
+      function readForm() {
+        return {
+          name: document.getElementById("name").value.trim(),
+          status: document.getElementById("status").value,
+          note: document.getElementById("note").value.trim(),
+        };
+      }
+
+      function fillForm(attrs) {
+        document.getElementById("name").value = attrs.name || "";
+        document.getElementById("status").value = ["open","hold","closed"].includes(attrs.status) ? attrs.status : "open";
+        document.getElementById("note").value = attrs.note || "";
+      }
+
+      async function existingNames(excludeOid) {
+        const q = notesLayer.createQuery();
+        q.where = "1=1";
+        q.outFields = ["ObjectID", "name"];
+        q.returnGeometry = false;
+        const res = await notesLayer.queryFeatures(q);
+        return res.features
+          .filter((f) => f.attributes.ObjectID !== excludeOid)
+          .map((f) => (f.attributes.name || "").toLowerCase());
+      }
+
+      async function validateProposal() {
+        failEl.classList.remove("show");
+        okEl.classList.remove("show");
+        btnAccept.disabled = true;
+
+        const mode = document.getElementById("mode").value;
+        const attrs = readForm();
+        const errors = [];
+
+        if (!attrs.name) errors.push("Name is required.");
+        if (!["open", "hold", "closed"].includes(attrs.status)) {
+          errors.push('Status must be one of: open, hold, closed (domain violation).');
+        }
+
+        let geometry = proposal && proposal.geometry;
+        let objectId = proposal && proposal.objectId;
+
+        if (mode === "update" && !objectId) {
+          errors.push("Select a feature on the map before updating.");
+        }
+        if (mode === "add" && !geometry) {
+          errors.push("Click the map inside Colorado to place the new point.");
+        }
+
+        if (geometry) {
+          const pt = geometry.type === "point" ? geometry : new Point({
+            longitude: geometry.longitude || geometry.x,
+            latitude: geometry.latitude || geometry.y,
+            spatialReference: { wkid: 4326 }
+          });
+          if (!geometryEngine.contains(coAoi, pt)) {
+            errors.push("Geometry is outside the Colorado AOI — rejected.");
+          }
+          geometry = pt;
+        }
+
+        const names = await existingNames(objectId);
+        if (attrs.name && names.includes(attrs.name.toLowerCase())) {
+          errors.push('Duplicate name “‘ + attrs.name + '” already exists in the layer.');
+        }
+
+        proposal = {
+          mode,
+          objectId,
+          geometry,
+          attrs: { ...attrs, validated: errors.length ? 0 : 1 },
+          errors,
+        };
+
+        if (errors.length) {
+          failEl.innerHTML = "<strong>Validation failed</strong><ul>" +
+            errors.map((e) => "<li>" + e + "</li>").join("") + "</ul>";
+          failEl.classList.add("show");
+          setStatus("Fix the failures, then validate again.");
+          return false;
+        }
+
+        okEl.classList.add("show");
+        btnAccept.disabled = false;
+        setStatus("Validation passed — safe to accept locally.");
+        return true;
+      }
+
+      function renderLog() {
+        logEl.innerHTML = changelog.slice().reverse().map((c) => {
+          return "<li data-oid=\"" + (c.objectId || "") + "\">" +
+            "<span class=\"badge " + c.status + "\">" + c.status + "</span>" +
+            "<strong>" + c.name + "</strong>" +
+            "<small>" + c.action + " · " + c.at + "</small></li>";
+        }).join("") || "<li><small>No accepted edits yet.</small></li>";
+      }
+
+      async function acceptEdit() {
+        if (!proposal || proposal.errors.length) {
+          setStatus("Validate successfully before accepting.");
+          return;
+        }
+        const { mode, objectId, geometry, attrs } = proposal;
+        if (mode === "add") {
+          const oid = nextOid++;
+          await notesLayer.applyEdits({
+            addFeatures: [new Graphic({
+              geometry,
+              attributes: { ObjectID: oid, ...attrs }
+            })]
+          });
+          changelog.push({
+            action: "ADD", name: attrs.name, status: attrs.status, objectId: oid,
+            at: new Date().toLocaleTimeString()
+          });
+          setStatus("Accepted ADD for “" + attrs.name + "” (local FeatureLayer only).");
+        } else {
+          await notesLayer.applyEdits({
+            updateFeatures: [new Graphic({
+              geometry,
+              attributes: { ObjectID: objectId, ...attrs }
+            })]
+          });
+          changelog.push({
+            action: "UPDATE", name: attrs.name, status: attrs.status, objectId,
+            at: new Date().toLocaleTimeString()
+          });
+          setStatus("Accepted UPDATE for “" + attrs.name + "”.");
+        }
+        btnAccept.disabled = true;
+        okEl.classList.remove("show");
+        renderLog();
+      }
+
+      function clearProposal() {
+        proposal = null;
+        failEl.classList.remove("show");
+        okEl.classList.remove("show");
+        btnAccept.disabled = true;
+        document.getElementById("name").value = "";
+        document.getElementById("note").value = "";
+        document.getElementById("status").value = "open";
+        setStatus("Proposal cleared.");
+      }
+
+      fetch("./data/ops-notes-seed.geojson")
+        .then((r) => r.json())
+        .then((geojson) => {
+          const graphics = geojson.features.map((f) => new Graphic({
+            geometry: {
+              type: "point",
+              longitude: f.geometry.coordinates[0],
+              latitude: f.geometry.coordinates[1],
+            },
+            attributes: f.properties,
+          }));
+
+          notesLayer = new FeatureLayer({
+            title: "Ski ops notes",
+            source: graphics,
+            objectIdField: "ObjectID",
+            geometryType: "point",
+            spatialReference: { wkid: 4326 },
+            fields: [
+              { name: "ObjectID", type: "oid" },
+              { name: "name", type: "string", alias: "Name" },
+              { name: "status", type: "string", alias: "Status" },
+              { name: "note", type: "string", alias: "Ops note" },
+              { name: "validated", type: "integer", alias: "Validated" },
+            ],
+            renderer,
+            popupTemplate,
+            outFields: ["*"],
+          });
+
+          const map = new Map({
+            basemap: (apiKey && apiKey !== "YOUR_ARCGIS_API_KEY") ? "arcgis/dark-gray" : "dark-gray-vector",
+            layers: [aoiLayer, notesLayer],
+          });
+
+          const view = new MapView({
+            container: "viewDiv",
+            map,
+            center: [-106.5, 39.3],
+            zoom: 7,
+            constraints: { minZoom: 5 },
+          });
+
+          view.ui.add(new Legend({ view, layerInfos: [{ layer: notesLayer }] }), "bottom-right");
+
+          view.on("click", async (event) => {
+            const mode = document.getElementById("mode").value;
+            if (mode === "add") {
+              const pt = event.mapPoint.clone();
+              pt.spatialReference = { wkid: 4326 };
+              // project if needed — MapView often WebMercator
+              const mapPt = view.toMap(event);
+              const lonlat = {
+                type: "point",
+                longitude: event.mapPoint.longitude,
+                latitude: event.mapPoint.latitude,
+                spatialReference: { wkid: 4326 },
+              };
+              proposal = { mode: "add", geometry: lonlat, objectId: null, attrs: readForm(), errors: [] };
+              setStatus("Proposed ADD at " + lonlat.longitude.toFixed(4) + ", " + lonlat.latitude.toFixed(4) + " — validate to check AOI.");
+              btnAccept.disabled = true;
+              okEl.classList.remove("show");
+              return;
+            }
+
+            const hit = await view.hitTest(event, { include: notesLayer });
+            const res = hit.results.find((r) => r.graphic && r.graphic.layer === notesLayer);
+            if (!res) {
+              setStatus("No ops note here — click a marker or switch to Add.");
+              return;
+            }
+            const g = res.graphic;
+            fillForm(g.attributes);
+            proposal = {
+              mode: "update",
+              objectId: g.attributes.ObjectID,
+              geometry: {
+                type: "point",
+                longitude: g.geometry.longitude,
+                latitude: g.geometry.latitude,
+                spatialReference: { wkid: 4326 },
+              },
+              attrs: { ...g.attributes },
+              errors: [],
+            };
+            setStatus("Loaded “" + g.attributes.name + "” — edit fields, then Validate.");
+            btnAccept.disabled = true;
+            okEl.classList.remove("show");
+            failEl.classList.remove("show");
+          });
+
+          document.getElementById("btnValidate").addEventListener("click", () => validateProposal());
+          document.getElementById("btnAccept").addEventListener("click", () => acceptEdit());
+          document.getElementById("btnReject").addEventListener("click", () => clearProposal());
+          document.getElementById("mode").addEventListener("change", () => {
+            clearProposal();
+            setStatus(document.getElementById("mode").value === "add"
+              ? "Add mode: click the map to propose a point inside Colorado."
+              : "Update mode: click an existing ops note.");
+          });
+
+          renderLog();
+          if (!apiKey || apiKey === "YOUR_ARCGIS_API_KEY") {
+            setStatus("Loaded seed ops notes. Optional: set ARCGIS_API_KEY in config.js for ArcGIS basemaps.");
+          }
+        })
+        .catch((err) => {
+          setStatus("Failed to load seed data: " + err.message);
+        });
+    });
+  </script>
+</body>
+</html>
