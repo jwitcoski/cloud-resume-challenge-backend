@@ -218,7 +218,7 @@ const hubs = [
     workIntro: "Drive-time, constellation clustering, and powder-day routing on this site; agent graders live in the Map Agent Arena.",
     work: [
       {
-        href: "./ski-drive-time/",
+        href: "/mapbox-playground/ski-drive-time/",
         image: "/images/feature-work/ski-drive-time.png",
         alt: "Ski drive-time isochrones from Denver",
         meta: "Demo · Isochrone · Matrix",
@@ -227,7 +227,7 @@ const hubs = [
         cta: "Open demo",
       },
       {
-        href: "./resort-constellation/",
+        href: "/mapbox-playground/resort-constellation/",
         image: "/images/feature-work/resort-constellation.png",
         alt: "Clustered ski resort constellation map",
         meta: "Demo · Cluster · Feature-state",
@@ -236,7 +236,7 @@ const hubs = [
         cta: "Open demo",
       },
       {
-        href: "./powder-day-route/",
+        href: "/mapbox-playground/powder-day-route/",
         image: "/images/feature-work/powder-day-route.png",
         alt: "Powder-day driving route to Breckenridge",
         meta: "Demo · Directions · Geocoding",
@@ -313,7 +313,7 @@ const hubs = [
     workIntro: "Live client work stays private. Public demos show the Maps SDK patterns behind Vector Ledger — without Portal secrets.",
     work: [
       {
-        href: "./validation-desk/",
+        href: "/esri-playground/validation-desk/",
         fallback: "Validation",
         meta: "Demo · Maps SDK · Validation",
         title: "Validation Desk",
@@ -398,7 +398,7 @@ const hubs = [
     workIntro: "Product-map patterns that contrast with MapLibre/MapTiler — especially when Google’s POI graph is the point.",
     work: [
       {
-        href: "./after-the-powder/",
+        href: "/google-maps-playground/after-the-powder/",
         fallback: "After Powder",
         meta: "Demo · Places Nearby · Autocomplete",
         title: "After the Powder",
