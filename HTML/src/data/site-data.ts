@@ -126,6 +126,14 @@ export const featureWork = [
         image: "/images/cloud-resume-challenge/CloudResumeArchitecture.png",
         url: "/cloud-resume-challenge/"
     },
+    {
+        title: "Learn Bosnian",
+        description: "30-day Bosnian lessons on AWS — S3 + CloudFront for the learner site and private recorder SPA, Lambda for audio login and uploads.",
+        outcome: "Learners tap vocab and dialogue to play voice-overs; talent records from a password-gated studio that uploads clips to S3 for CloudFront playback.",
+        roles: ["S3", "CloudFront", "Lambda", "API Gateway", "DynamoDB"],
+        image: "/images/feature-work/learnbosnian.png",
+        url: "https://github.com/jwitcoski/learnbosnian"
+    },
 ];
 
 /** Cartography, tools, and experiments — real GIS craft, not architecture case studies. */
