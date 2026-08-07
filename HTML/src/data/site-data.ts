@@ -100,8 +100,8 @@ export const educationData = [
     { date: "2026", title: "AWS Solutions Architect – Associate (SAA-C03)", subtitle: "In progress — see study plan", url: "/aws-solutions-architect-study.html" }
 ];
 
-/** Architecture / cloud / systems design — what SE/SA hiring managers should see first. */
-export const featureWork = [
+/** Cloud architecture case studies — AWS and systems design, not client-only map demos. */
+export const cloudWork = [
     {
         title: "Global Ski Atlas",
         description: "Live ski-resort product on AWS — Step Functions, Lambda, DynamoDB, and S3 feeding a MapTiler web map.",
@@ -136,7 +136,7 @@ export const featureWork = [
     },
 ];
 
-/** Cartography, tools, and experiments — real GIS craft, not architecture case studies. */
+/** Cartography, tools, and experiments — GIS craft, not cloud architecture case studies. */
 export const sideProjects = [
     {
         title: "Nepal Census Atlas 2011",
