@@ -128,9 +128,9 @@ export const featureWork = [
     },
     {
         title: "Learn Bosnian",
-        description: "30-day Bosnian lessons on AWS — S3 + CloudFront for the learner site and private recorder SPA, Lambda for audio login and uploads.",
-        outcome: "Learners tap vocab and dialogue to play voice-overs; talent records from a password-gated studio that uploads clips to S3 for CloudFront playback.",
-        roles: ["S3", "CloudFront", "Lambda", "API Gateway", "DynamoDB"],
+        description: "30-day Bosnian lessons on AWS — S3 + CloudFront for the learner site, plus speak-check via Amazon Transcribe and Bedrock Nova.",
+        outcome: "Learners record a line and get AI feedback: Transcribe turns speech into text, then Bedrock interprets pronunciation and meaning against the target phrase.",
+        roles: ["S3", "CloudFront", "Lambda", "Transcribe", "Bedrock"],
         image: "/images/feature-work/learnbosnian.png",
         url: "https://github.com/jwitcoski/learnbosnian"
     },
