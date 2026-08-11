@@ -70,7 +70,7 @@ GIS Solutions Developer, Tyco Telecommunications (2007–2009) · GIS Analyst, W
 
 **Cloud Resume Challenge** — Designed and deployed an AWS-hosted portfolio application using infrastructure as code, REST APIs, DynamoDB, Lambda, API Gateway, CloudFront, and CI/CD ([witcoskitech.com](https://witcoskitech.com))
 
-**Global Ski Atlas** — Multi-tier AWS architecture combining serverless APIs, containerized data processing, and web GIS delivery ([globalskiatlas.com](https://globalskiatlas.com))
+**Global Ski Atlas** — Multi-tier AWS architecture: Docker/ECS pipeline for OSM → GeoParquet/PMTiles, S3 delivery, DynamoDB seed for ywiki ([globalskiatlas.com](https://globalskiatlas.com))
 
 **Vector Ledger (TBD)** — Planned ArcGIS + AWS lakehouse editing/validation product; architecture target only ([vectorscopeai.com](https://vectorscopeai.com))
 
