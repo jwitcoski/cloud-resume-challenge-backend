@@ -112,7 +112,7 @@ export const featureWork = [
         outcome:
             "Chose event-driven orchestration over manual layer edits so resort data stays current as a product, not a one-off map export.",
         roles: ["AWS", "Step Functions", "Lambda", "DynamoDB", "S3", "MapTiler"],
-        image: "/images/feature-work/feature-img-1.jpg",
+        image: "/images/feature-work/architecture/global-ski-atlas.png",
         url: "https://globalskiatlas.com",
     },
     {
@@ -122,7 +122,7 @@ export const featureWork = [
         outcome:
             "Picked managed auth and a revision accept/reject workflow so collaborative resort pages stay durable and auditable without running a traditional wiki server.",
         roles: ["Cognito", "Lambda", "DynamoDB", "SAM", "S3"],
-        image: "/images/feature-work/ywiki-architecture.png",
+        image: "/images/feature-work/architecture/ywiki.png",
         url: "https://github.com/jwitcoski/ywiki",
     },
     {
@@ -132,7 +132,7 @@ export const featureWork = [
         outcome:
             "End-to-end cloud architecture you can click through — proof of designing, deploying, and operating a full static+serverless product.",
         roles: ["S3", "CloudFront", "Route 53", "API Gateway", "Lambda", "DynamoDB", "SAM", "CI/CD"],
-        image: "/images/cloud-resume-challenge/CloudResumeArchitecture.png",
+        image: "/images/feature-work/architecture/cloud-resume.png",
         url: "/cloud-resume-challenge/",
     },
     {
@@ -142,7 +142,7 @@ export const featureWork = [
         outcome:
             "Composed managed AI services instead of a custom ML stack so learners get pronunciation feedback from a lightweight serverless architecture.",
         roles: ["S3", "CloudFront", "Lambda", "Transcribe", "Bedrock"],
-        image: "/images/feature-work/learnbosnian.png",
+        image: "/images/feature-work/architecture/learn-bosnian.png",
         url: "https://github.com/jwitcoski/learnbosnian",
     },
     {
@@ -152,7 +152,7 @@ export const featureWork = [
         outcome:
             "Holding the design pattern for versioned, queryable map updates across Esri and cloud analytics stacks until the product ships.",
         roles: ["ArcGIS", "AWS", "Iceberg", "GeoParquet"],
-        image: "/images/feature-work/VectorLedger_AWS_ESRI_Architecture.png",
+        image: "/images/feature-work/architecture/vector-ledger.png",
         url: "https://vectorscopeai.com",
         status: "tbd" as const,
     },

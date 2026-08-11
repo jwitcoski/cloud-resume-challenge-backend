@@ -31,13 +31,13 @@ const FeaturedWork = () => {
                                     key={index}
                                     className={`group flex flex-col gap-3.5 sm:gap-5 p-3.5 sm:p-6 h-full ${isRightCol ? 'md:border-l md:border-primary/10' : ''}`}
                                 >
-                                    <Link href={value?.url ?? "/"} className="block aspect-[4/3] w-full overflow-hidden rounded-lg bg-muted">
+                                    <Link href={value?.url ?? "/"} className="block aspect-[4/3] w-full overflow-hidden rounded-lg bg-[#f3f4f6]">
                                         <Image
                                             src={value?.image}
-                                            alt={value?.title ?? "Image"}
+                                            alt={`${value?.title ?? "Project"} architecture diagram`}
                                             width={490}
                                             height={368}
-                                            className="w-full h-full object-cover group-hover:scale-105 transition-all duration-300 ease-in-out"
+                                            className="w-full h-full object-contain group-hover:scale-[1.02] transition-all duration-300 ease-in-out"
                                         />
                                     </Link>
                                     <div className="flex flex-col gap-1.5 sm:gap-2 px-2">
