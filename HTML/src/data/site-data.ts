@@ -100,43 +100,65 @@ export const educationData = [
     { date: "2026", title: "AWS Solutions Architect – Associate (SAA-C03)", subtitle: "In progress — see study plan", url: "/aws-solutions-architect-study.html" }
 ];
 
-/** Architecture / cloud / systems design — what SE/SA hiring managers should see first. */
+/**
+ * Cloud architecture case studies — what Solutions Architect hiring managers should see first.
+ * Each entry is framed around platform/service choices that ship a product, not feature lists.
+ */
 export const featureWork = [
     {
         title: "Global Ski Atlas",
-        description: "Live ski-resort product on AWS — Step Functions, Lambda, DynamoDB, and S3 feeding a MapTiler web map.",
-        outcome: "Production serverless GIS backend keeps 3,000+ ski areas current via automated ETL instead of hand-edited layers.",
-        roles: ["AWS", "Step Functions", "Lambda", "DynamoDB", "Python ETL"],
-        image: "/images/feature-work/feature-img-1.jpg",
-        url: "https://globalskiatlas.com"
+        description:
+            "Orchestrated serverless GIS backend on AWS: Step Functions drives Lambda ETL into DynamoDB and S3, then a MapTiler web map serves 3,000+ ski areas.",
+        outcome:
+            "Chose event-driven orchestration over manual layer edits so resort data stays current as a product, not a one-off map export.",
+        roles: ["AWS", "Step Functions", "Lambda", "DynamoDB", "S3", "MapTiler"],
+        image: "/images/feature-work/architecture/global-ski-atlas.png",
+        url: "https://globalskiatlas.com",
     },
     {
-        title: "Vector Ledger",
-        description: "ArcGIS-connected editing and validation bridged to lakehouse patterns.",
-        outcome: "Map updates become validated, versioned, and queryable across Iceberg, GeoParquet, and changelog history.",
-        roles: ["ArcGIS", "AWS", "Iceberg", "GeoParquet", "REST APIs"],
-        image: "/images/feature-work/VectorLedger_AWS_ESRI_Architecture.png",
-        url: "https://vectorscopeai.com"
+        title: "ywiki",
+        description:
+            "Markdown wiki product on AWS: Cognito for write auth, Lambda/API for the wiki API, DynamoDB for pages/revisions/comments, SAM for deploy — built to feed Ski Atlas content workflows.",
+        outcome:
+            "Picked managed auth and a revision accept/reject workflow so collaborative resort pages stay durable and auditable without running a traditional wiki server.",
+        roles: ["Cognito", "Lambda", "DynamoDB", "SAM", "S3"],
+        image: "/images/feature-work/architecture/ywiki.png",
+        url: "https://github.com/jwitcoski/ywiki",
     },
     {
         title: "Cloud Resume Challenge",
-        description: "This site’s AWS stack — S3, CloudFront, Route 53, API Gateway, Lambda, DynamoDB, SAM, and CI/CD.",
-        outcome: "End-to-end cloud architecture you can click: static edge frontend plus a live visitor-counter API.",
-        roles: ["S3", "CloudFront", "Lambda", "DynamoDB", "SAM", "CI/CD"],
-        image: "/images/cloud-resume-challenge/CloudResumeArchitecture.png",
-        url: "/cloud-resume-challenge/"
+        description:
+            "This site’s edge-to-API AWS stack: S3 + CloudFront + Route 53 for the static front, API Gateway + Lambda + DynamoDB for the visitor counter, SAM and GitHub Actions for IaC/CI/CD.",
+        outcome:
+            "End-to-end cloud architecture you can click through — proof of designing, deploying, and operating a full static+serverless product.",
+        roles: ["S3", "CloudFront", "Route 53", "API Gateway", "Lambda", "DynamoDB", "SAM", "CI/CD"],
+        image: "/images/feature-work/architecture/cloud-resume.png",
+        url: "/cloud-resume-challenge/",
     },
     {
         title: "Learn Bosnian",
-        description: "30-day Bosnian lessons on AWS — S3 + CloudFront for the learner site, plus speak-check via Amazon Transcribe and Bedrock Nova.",
-        outcome: "Learners record a line and get AI feedback: Transcribe turns speech into text, then Bedrock interprets pronunciation and meaning against the target phrase.",
+        description:
+            "Language-learning product on AWS: S3 + CloudFront host the lessons; Lambda ties Amazon Transcribe speech-to-text to Bedrock Nova for speak-check feedback.",
+        outcome:
+            "Composed managed AI services instead of a custom ML stack so learners get pronunciation feedback from a lightweight serverless architecture.",
         roles: ["S3", "CloudFront", "Lambda", "Transcribe", "Bedrock"],
-        image: "/images/feature-work/learnbosnian.png",
-        url: "https://github.com/jwitcoski/learnbosnian"
+        image: "/images/feature-work/architecture/learn-bosnian.png",
+        url: "https://github.com/jwitcoski/learnbosnian",
+    },
+    {
+        title: "Vector Ledger",
+        description:
+            "Planned hybrid ArcGIS + AWS lakehouse: editing and validation APIs bridging enterprise GIS into Iceberg tables, GeoParquet, and changelog history. Not built yet — architecture target only.",
+        outcome:
+            "Holding the design pattern for versioned, queryable map updates across Esri and cloud analytics stacks until the product ships.",
+        roles: ["ArcGIS", "AWS", "Iceberg", "GeoParquet"],
+        image: "/images/feature-work/architecture/vector-ledger.png",
+        url: "https://vectorscopeai.com",
+        status: "tbd" as const,
     },
 ];
 
-/** Cartography, tools, and experiments — real GIS craft, not architecture case studies. */
+/** Cartography, tools, and experiments — GIS craft, not cloud architecture case studies. */
 export const sideProjects = [
     {
         title: "Nepal Census Atlas 2011",
