@@ -116,16 +116,6 @@ export const featureWork = [
         url: "https://globalskiatlas.com",
     },
     {
-        title: "Vector Ledger",
-        description:
-            "Hybrid ArcGIS + AWS lakehouse: editing and validation APIs bridge enterprise GIS into Iceberg tables, GeoParquet, and changelog history.",
-        outcome:
-            "Designed the integration pattern so map updates become versioned, queryable data products across Esri and cloud analytics stacks.",
-        roles: ["ArcGIS", "AWS", "Iceberg", "GeoParquet", "REST APIs"],
-        image: "/images/feature-work/VectorLedger_AWS_ESRI_Architecture.png",
-        url: "https://vectorscopeai.com",
-    },
-    {
         title: "ywiki",
         description:
             "Markdown wiki product on AWS: Cognito for write auth, Lambda/API for the wiki API, DynamoDB for pages/revisions/comments, SAM for deploy — built to feed Ski Atlas content workflows.",
@@ -154,6 +144,17 @@ export const featureWork = [
         roles: ["S3", "CloudFront", "Lambda", "Transcribe", "Bedrock"],
         image: "/images/feature-work/learnbosnian.png",
         url: "https://github.com/jwitcoski/learnbosnian",
+    },
+    {
+        title: "Vector Ledger",
+        description:
+            "Planned hybrid ArcGIS + AWS lakehouse: editing and validation APIs bridging enterprise GIS into Iceberg tables, GeoParquet, and changelog history. Not built yet — architecture target only.",
+        outcome:
+            "Holding the design pattern for versioned, queryable map updates across Esri and cloud analytics stacks until the product ships.",
+        roles: ["ArcGIS", "AWS", "Iceberg", "GeoParquet"],
+        image: "/images/feature-work/VectorLedger_AWS_ESRI_Architecture.png",
+        url: "https://vectorscopeai.com",
+        status: "tbd" as const,
     },
 ];
 

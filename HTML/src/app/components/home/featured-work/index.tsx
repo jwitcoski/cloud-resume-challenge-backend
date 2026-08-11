@@ -41,7 +41,14 @@ const FeaturedWork = () => {
                                         />
                                     </Link>
                                     <div className="flex flex-col gap-1.5 sm:gap-2 px-2">
-                                        <Link href={value?.url ?? "/"}><h4>{value?.title}</h4></Link>
+                                        <div className="flex items-baseline gap-2 flex-wrap">
+                                            <Link href={value?.url ?? "/"}><h4>{value?.title}</h4></Link>
+                                            {"status" in value && value.status === "tbd" && (
+                                                <span className="text-xs tracking-[0.14em] uppercase text-secondary border border-primary/15 px-1.5 py-0.5">
+                                                    TBD
+                                                </span>
+                                            )}
+                                        </div>
                                         <p className="text-sm text-secondary">{value?.roles?.join(' · ')}</p>
                                         {value?.description && (
                                             <p className="text-sm sm:text-base text-primary/90 leading-relaxed">
