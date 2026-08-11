@@ -71,8 +71,10 @@ GIS Solutions Developer, Tyco Telecommunications (2007–2009) · GIS Analyst, W
 
 ## PROJECTS
 
-**Global Ski Atlas** — Web GIS with Python ETL and JavaScript mapping ([globalskiatlas.com](https://globalskiatlas.com))  
-**Cloud Resume Challenge** — AWS-hosted application with IaC, REST APIs, and CI/CD ([witcoskitech.com](https://witcoskitech.com))
+**Global Ski Atlas** — Serverless GIS product on AWS (Step Functions, Lambda, DynamoDB, S3) + MapTiler ([globalskiatlas.com](https://globalskiatlas.com))  
+**ywiki** — Cognito-authenticated Markdown wiki on Lambda and DynamoDB ([github.com/jwitcoski/ywiki](https://github.com/jwitcoski/ywiki))  
+**Cloud Resume Challenge** — AWS-hosted application with IaC, REST APIs, and CI/CD ([witcoskitech.com](https://witcoskitech.com))  
+**Learn Bosnian** — S3/CloudFront lessons with Transcribe + Bedrock speak-check ([github.com/jwitcoski/learnbosnian](https://github.com/jwitcoski/learnbosnian))
 
 ## EDUCATION & CERTIFICATIONS
 

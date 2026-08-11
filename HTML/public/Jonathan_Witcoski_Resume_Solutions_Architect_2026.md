@@ -72,6 +72,10 @@ GIS Solutions Developer, Tyco Telecommunications (2007–2009) · GIS Analyst, W
 
 **Vector Ledger / Global Ski Atlas** — Multi-tier AWS and Esri architecture combining serverless APIs, containerized data processing, and web GIS delivery ([globalskiatlas.com](https://globalskiatlas.com), [vectorscopeai.com](https://vectorscopeai.com))
 
+**ywiki** — Serverless Markdown wiki on Cognito, Lambda, and DynamoDB with revision workflows, designed to feed Ski Atlas content ([github.com/jwitcoski/ywiki](https://github.com/jwitcoski/ywiki))
+
+**Learn Bosnian** — Language-learning product composing S3/CloudFront delivery with Amazon Transcribe and Bedrock for speak-check feedback ([github.com/jwitcoski/learnbosnian](https://github.com/jwitcoski/learnbosnian))
+
 ## EDUCATION & CERTIFICATIONS
 
 Master of Science in Geography — University of Tennessee, Knoxville (2007)  
