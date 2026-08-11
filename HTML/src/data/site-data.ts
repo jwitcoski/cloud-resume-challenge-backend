@@ -32,7 +32,7 @@ export const experienceData = [
         endYear: "Present",
         bulletPoints: [
             "Build ArcGIS-connected web tools and Python pipelines for map editing, validation, and data extraction",
-            "Ship Global Ski Atlas (3,000+ ski areas) as a live MapTiler web map with automated ETL"
+            "Ship Global Ski Atlas (3,000+ ski areas) as a live MapTiler web map with Docker/ECS ETL (OSM → Parquet/PMTiles → DynamoDB for ywiki)"
         ]
     },
     {
@@ -108,20 +108,20 @@ export const featureWork = [
     {
         title: "Global Ski Atlas",
         description:
-            "Orchestrated serverless GIS backend on AWS: Step Functions drives Lambda ETL into DynamoDB and S3, then a MapTiler web map serves 3,000+ ski areas.",
+            "Containerized GIS pipeline on AWS: Docker runs Python ETL against OpenStreetMap, writes GeoParquet and PMTiles to S3, and loads Parquet into DynamoDB for ywiki — because Lambda hit time/memory limits on regional OSM extracts.",
         outcome:
-            "Chose event-driven orchestration over manual layer edits so resort data stays current as a product, not a one-off map export.",
-        roles: ["AWS", "Step Functions", "Lambda", "DynamoDB", "S3", "MapTiler"],
+            "Moved heavy ETL from Lambda to Docker containers so resort data, map tiles, and wiki seed rows stay in sync as one product pipeline.",
+        roles: ["Docker", "ECS/Fargate", "OpenStreetMap", "GeoParquet", "PMTiles", "S3", "DynamoDB"],
         image: "/images/feature-work/architecture/global-ski-atlas.png",
         url: "https://globalskiatlas.com",
     },
     {
         title: "ywiki",
         description:
-            "Markdown wiki product on AWS: Cognito for write auth, Lambda/API for the wiki API, DynamoDB for pages/revisions/comments, SAM for deploy — built to feed Ski Atlas content workflows.",
+            "Markdown wiki on AWS: Cognito for write auth, Lambda/API Gateway for the wiki API, DynamoDB for pages/revisions/comments — seeded from Global Ski Atlas Parquet so resort entries start from the same pipeline that builds the map.",
         outcome:
-            "Picked managed auth and a revision accept/reject workflow so collaborative resort pages stay durable and auditable without running a traditional wiki server.",
-        roles: ["Cognito", "Lambda", "DynamoDB", "SAM", "S3"],
+            "Reused the atlas Parquet → DynamoDB load instead of a separate content DB, so wiki and map share one ski-area source of truth.",
+        roles: ["Cognito", "Lambda", "DynamoDB", "SAM", "Parquet ingest"],
         image: "/images/feature-work/architecture/ywiki.png",
         url: "https://github.com/jwitcoski/ywiki",
     },

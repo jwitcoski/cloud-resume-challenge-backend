@@ -110,7 +110,7 @@
           <div class="work-body">
             <p class="work-meta">Product · Serverless · ETL</p>
             <h3 class="work-title">Global Ski Atlas on AWS</h3>
-            <p class="work-desc">Step Functions, Lambda, DynamoDB, and S3 powering a live ski-resort map product.</p>
+            <p class="work-desc">Docker on ECS/Fargate runs OSM → GeoParquet/PMTiles, then loads Parquet into DynamoDB for ywiki.</p>
             <span class="work-go">Visit globalskiatlas.com →</span>
           </div>
         </a>
@@ -120,9 +120,9 @@
             <img src="/images/feature-work/architecture/ywiki.png" alt="ywiki architecture" width="640" height="400" loading="lazy" />
           </div>
           <div class="work-body">
-            <p class="work-meta">Wiki · Cognito · Lambda · DynamoDB</p>
+            <p class="work-meta">Wiki · Cognito · Lambda · DynamoDB · Atlas Parquet</p>
             <h3 class="work-title">ywiki</h3>
-            <p class="work-desc">Serverless Markdown wiki with Cognito write auth, DynamoDB revisions, and SAM deploy — content workflows for Ski Atlas.</p>
+            <p class="work-desc">Serverless Markdown wiki seeded from Ski Atlas Parquet into DynamoDB — Cognito write auth and revision workflow.</p>
             <span class="work-go">View on GitHub →</span>
           </div>
         </a>
