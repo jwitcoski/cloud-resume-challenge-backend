@@ -31,7 +31,7 @@ export const experienceData = [
         startYear: "2025",
         endYear: "Present",
         bulletPoints: [
-            "Ship Vector Ledger (live): collaborative GIS editing on AWS with Cognito, DynamoDB proposals, ECS convert/apply, and versioned GeoParquet + PMTiles",
+            "Ship Vector Scope AI on AWS with Cognito sign in, DynamoDB proposals and approvals, ECS convert and apply workers, and a versioned GeoParquet and PMTiles lake",
             "Ship Global Ski Atlas (3,000+ ski areas) as a live MapTiler web map with Docker/ECS ETL (OSM → Parquet/PMTiles → DynamoDB for ywiki)"
         ]
     },
@@ -156,14 +156,14 @@ export const featureWork = [
         url: "https://github.com/jwitcoski/learnbosnian",
     },
     {
-        title: "Vector Ledger",
+        title: "Vector Scope AI",
         description:
-            "Collaborative GIS editing on AWS: Cognito-authenticated SPA (CloudFront + S3), API Gateway → Lambda control plane, DynamoDB for sandboxes/proposals/approvals, ECS Fargate convert/apply workers, and a private S3 lake of versioned GeoParquet + PMTiles.",
+            "Collaborative map editing product on AWS. Staff sign in with Cognito, propose edits in the browser app, and reviewers approve or reject those proposals in DynamoDB. ECS workers convert shapefiles and apply approved changes into a private S3 lake of versioned GeoParquet and PMTiles.",
         outcome:
-            "Edit → approve → batch apply writes a new lake version for web maps (PMTiles) and desktop GIS (GeoParquet). Iceberg/Athena stay on the roadmap—not shipped.",
+            "Approved edits become lake files for desktop GIS and tiles for web maps, so teams stop shipping shapefiles over email.",
         roles: ["Cognito", "Lambda", "DynamoDB", "ECS", "S3", "GeoParquet", "PMTiles"],
         image: "/images/feature-work/architecture/vector-ledger.png",
-        url: "https://app.vectorscopeai.com",
+        url: "https://vectorscopeai.com",
     },
 ];
 
