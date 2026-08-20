@@ -31,7 +31,7 @@ export const experienceData = [
         startYear: "2025",
         endYear: "Present",
         bulletPoints: [
-            "Build ArcGIS-connected web tools and Python pipelines for map editing, validation, and data extraction",
+            "Ship Vector Ledger (live): collaborative GIS editing on AWS with Cognito, DynamoDB proposals, ECS convert/apply, and versioned GeoParquet + PMTiles",
             "Ship Global Ski Atlas (3,000+ ski areas) as a live MapTiler web map with Docker/ECS ETL (OSM → Parquet/PMTiles → DynamoDB for ywiki)"
         ]
     },
@@ -158,13 +158,12 @@ export const featureWork = [
     {
         title: "Vector Ledger",
         description:
-            "Planned hybrid ArcGIS + AWS lakehouse: editing and validation APIs bridging enterprise GIS into Iceberg tables, GeoParquet, and changelog history. Not built yet — architecture target only.",
+            "Live collaborative GIS editing on AWS: Cognito SPA, Lambda/API Gateway, DynamoDB proposals, ECS convert/apply, versioned S3 GeoParquet + PMTiles lake. Edit → approve → publish.",
         outcome:
-            "Documents the planned design for versioned map edits across ArcGIS and cloud analytics. The product is not built yet.",
-        roles: ["ArcGIS", "AWS", "Iceberg", "GeoParquet"],
+            "Ship sandboxes and proposal workflow in DynamoDB; apply writes a new lake version as GeoParquet/PMTiles instead of claiming Iceberg/Athena as current product.",
+        roles: ["AWS", "GeoParquet", "PMTiles", "Cognito", "ECS"],
         image: "/images/feature-work/architecture/vector-ledger.png",
-        url: "https://vectorscopeai.com",
-        status: "tbd" as const,
+        url: "https://app.vectorscopeai.com",
     },
 ];
 
