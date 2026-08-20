@@ -158,10 +158,10 @@ export const featureWork = [
     {
         title: "Vector Ledger",
         description:
-            "Live collaborative GIS editing on AWS: Cognito SPA, Lambda/API Gateway, DynamoDB proposals, ECS convert/apply, versioned S3 GeoParquet + PMTiles lake. Edit → approve → publish.",
+            "Collaborative GIS editing on AWS: Cognito-authenticated SPA (CloudFront + S3), API Gateway → Lambda control plane, DynamoDB for sandboxes/proposals/approvals, ECS Fargate convert/apply workers, and a private S3 lake of versioned GeoParquet + PMTiles.",
         outcome:
-            "Ship sandboxes and proposal workflow in DynamoDB; apply writes a new lake version as GeoParquet/PMTiles instead of claiming Iceberg/Athena as current product.",
-        roles: ["AWS", "GeoParquet", "PMTiles", "Cognito", "ECS"],
+            "Edit → approve → batch apply writes a new lake version for web maps (PMTiles) and desktop GIS (GeoParquet). Iceberg/Athena stay on the roadmap—not shipped.",
+        roles: ["Cognito", "Lambda", "DynamoDB", "ECS", "S3", "GeoParquet", "PMTiles"],
         image: "/images/feature-work/architecture/vector-ledger.png",
         url: "https://app.vectorscopeai.com",
     },
