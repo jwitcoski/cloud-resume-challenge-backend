@@ -3,7 +3,7 @@
 **Email:** jwitcoski@gmail.com | **Phone:** (570) 582-3933 | **LinkedIn:** linkedin.com/in/jonathanwitcoski/  
 **Location:** Washington, DC metropolitan area | **Work authorization:** U.S. citizen | **Availability:** Immediate
 
-Geospatial engineer with 15+ years building enterprise ArcGIS web applications, spatial databases, and automated workflows for federal agencies. Recent USPS ITS contract experience plus prior DHS/FEMA operational GIS support. Strong match for investigative and operational mapping, ArcGIS Enterprise/Online/Pro, Python, JavaScript, SQL, and stakeholder-facing delivery.
+Geospatial engineer with 15+ years building enterprise ArcGIS web applications, spatial databases, and automated workflows for federal agencies. Recent USPS ITS contract experience plus prior DHS operational GIS support. Strong match for investigative and operational mapping, ArcGIS Enterprise/Online/Pro, Python, JavaScript, SQL, and stakeholder-facing delivery.
 
 ## TECHNICAL SKILLS
 
@@ -18,7 +18,7 @@ Geospatial engineer with 15+ years building enterprise ArcGIS web applications, 
 
 Northern Virginia | 2026 – Present
 
-- Design, build, and maintain enterprise geodatabases and geospatial workflows with ArcGIS Enterprise, Online, and Desktop for IC and USPIS missions
+- Design, build, and maintain enterprise geodatabases and geospatial workflows with ArcGIS Enterprise, Online, and Desktop for U.S. Postal Inspection Service (USPIS) missions
 - Automate spatial analysis, data validation, and ETL with Python and SQL across Oracle, SQL Server, and PostgreSQL
 - Produce web maps and visualizations, and support GIS users with troubleshooting, migrations, and documentation
 
@@ -34,18 +34,24 @@ Remote | October 2025 – Present
 
 ### Geographer | DRT Strategies (CDC)
 
-Remote | March 2022 – 2026
+Remote | 2024 – 2026
 
 - Develop web mapping applications and dashboards with ArcGIS Enterprise, ArcGIS API for JavaScript, JavaScript, React, and Power BI for CDC surveillance programs
 - Translate program requirements into geospatial application designs, ETL workflows, and recurring map products
 - Build SQL Server and PostgreSQL/PostGIS databases and Python/SQL ETL pipelines for automated geospatial updates
 - Collaborate with non-technical stakeholders to align technical deliverables with mission needs
 
+### Geographer | Centers for Disease Control and Prevention
+
+Remote | March 2022 – 2024
+
+- Same CDC Geographer role as a federal employee: surveillance web maps, dashboards, and geospatial ETL with ArcGIS Enterprise, Python, and SQL
+
 ### GIS Data Engineer & Scrum Master | Saicon (National Grid)
 
 Remote | May 2021 – March 2022
 
-- Migrated large utility GIS datasets to cloud-hosted ArcGIS Enterprise using Python and SQL
+- Migrated large utility GIS datasets to Azure-hosted ArcGIS Enterprise using Python and SQL
 - Led Agile delivery of migration milestones and spatial data quality checks
 
 ### Geographer | U.S. Census Bureau
@@ -62,12 +68,12 @@ Reston, VA | May 2014 – November 2016
 - Administered ArcGIS Server and Portal deployments backed by SQL Server for federal clients
 - Built secure web mapping applications used by hundreds of concurrent users
 
-### Geospatial Analyst | Booz Allen Hamilton (DHS/FEMA)
+### Geospatial Analyst | Booz Allen Hamilton (DHS)
 
 Philadelphia, PA & Arlington, VA | October 2009 – May 2014
 
-- Built maps, spatial analysis workflows, and web GIS tools for FEMA and DHS disaster response and situational awareness
-- Supported mission stakeholders during major disaster operations with timely geospatial products for operational decision-making
+- Built maps, spatial analysis workflows, and web GIS tools for DHS disaster response
+- Supported mission stakeholders during major disaster operations with timely geospatial products
 
 ### Earlier Roles
 

@@ -8,7 +8,7 @@
 
 ## SUMMARY OF QUALIFICATIONS
 
-Geographic Information Systems (GIS) developer with more than 15 years of experience designing, building, and supporting enterprise geospatial applications for federal agencies and regulated industries. Skilled in Esri ArcGIS Enterprise, ArcGIS Online, ArcGIS Pro, Python, R, JavaScript, Structured Query Language (SQL), SQL Server, PostgreSQL/PostGIS, REST application programming interfaces (APIs), and automated extract-transform-load (ETL) workflows. Experience includes public health surveillance mapping, utility GIS migration, census geography production, and emergency management support for the Department of Homeland Security (DHS) and the Federal Emergency Management Agency (FEMA).
+Geographic Information Systems (GIS) developer with more than 15 years of experience designing, building, and supporting enterprise geospatial applications for federal agencies and regulated industries. Skilled in Esri ArcGIS Enterprise, ArcGIS Online, ArcGIS Pro, Python, R, JavaScript, Structured Query Language (SQL), SQL Server, PostgreSQL/PostGIS, REST application programming interfaces (APIs), and automated extract-transform-load (ETL) workflows. Experience includes public health surveillance mapping, utility GIS migration, census geography production, and emergency management support for the Department of Homeland Security (DHS).
 
 ---
 
@@ -18,7 +18,7 @@ Geographic Information Systems (GIS) developer with more than 15 years of experi
 
 **Employer:** DRT Strategies (Centers for Disease Control and Prevention)  
 **Location:** Remote  
-**Dates:** 03/2022 – Present  
+**Dates:** 2024 – 2026  
 **Hours per week:** 40  
 **Supervisor:** Available upon request | May contact: Yes
 
@@ -26,6 +26,16 @@ Geographic Information Systems (GIS) developer with more than 15 years of experi
 - Use R and Python to build PMTiles and GeoParquet datasets that feed dashboards and web maps.
 - Build SQL Server and PostgreSQL/PostGIS databases and Python/SQL ETL pipelines for recurring geospatial updates.
 - Support CDC teams on enterprise GIS standards, automation, and application maintenance.
+
+### Geographer
+
+**Employer:** Centers for Disease Control and Prevention  
+**Location:** Remote  
+**Dates:** 03/2022 – 2024  
+**Hours per week:** 40  
+**Supervisor:** Available upon request | May contact: Yes
+
+- Same CDC Geographer role as a federal employee: surveillance web maps, dashboards, and geospatial ETL with ArcGIS Enterprise, Python, and SQL.
 
 ### Founder
 
@@ -46,7 +56,7 @@ Geographic Information Systems (GIS) developer with more than 15 years of experi
 **Hours per week:** 40  
 **Supervisor:** Available upon request | May contact: Yes
 
-- Migrated large utility GIS datasets to cloud-hosted ArcGIS Enterprise using Python and SQL.
+- Migrated large utility GIS datasets to Azure-hosted ArcGIS Enterprise using Python and SQL.
 - Led Agile delivery of migration milestones and spatial data quality checks.
 
 ### Geographer
@@ -74,14 +84,14 @@ Geographic Information Systems (GIS) developer with more than 15 years of experi
 
 ### Geospatial Analyst
 
-**Employer:** Booz Allen Hamilton (DHS/FEMA)  
+**Employer:** Booz Allen Hamilton (DHS)  
 **Location:** Philadelphia, Pennsylvania and Arlington, Virginia  
 **Dates:** 10/2009 – 05/2014  
 **Hours per week:** 40  
 **Supervisor:** Available upon request | May contact: Yes
 
-- Built maps, spatial analysis workflows, and web GIS tools for FEMA and DHS disaster response operations.
-- Supported situational awareness and decision-making during major disaster events.
+- Built maps, spatial analysis workflows, and web GIS tools for DHS disaster response operations.
+- Supported disaster operations with maps and spatial analysis.
 
 ### Earlier GIS Roles (2007 – 2009)
 
