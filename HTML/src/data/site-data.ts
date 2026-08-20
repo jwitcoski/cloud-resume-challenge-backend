@@ -39,12 +39,22 @@ export const experienceData = [
         initials: "DRT",
         role: "Geographer | DRT Strategies (CDC)",
         location: "Remote",
-        startYear: "2022",
+        startYear: "2024",
         endYear: "2026",
         bulletPoints: [
             "Develop web mapping applications and dashboards with ArcGIS Enterprise, JavaScript, React, and Power BI for CDC surveillance programs",
             "Use R and Python to build PMTiles and GeoParquet datasets that feed those dashboards and web maps",
             "Build SQL Server and PostgreSQL/PostGIS databases and Python/SQL ETL pipelines for recurring geospatial updates"
+        ]
+    },
+    {
+        initials: "CDC",
+        role: "Geographer | Centers for Disease Control and Prevention",
+        location: "Remote",
+        startYear: "2022",
+        endYear: "2024",
+        bulletPoints: [
+            "Same CDC Geographer role as a federal employee: surveillance web maps, dashboards, and geospatial ETL with ArcGIS Enterprise, Python, and SQL"
         ]
     },
     {

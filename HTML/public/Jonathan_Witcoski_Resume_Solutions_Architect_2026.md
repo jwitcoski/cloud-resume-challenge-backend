@@ -20,12 +20,18 @@ Solution design & requirements analysis · Build vs. buy and platform evaluation
 
 ### Geographer | DRT Strategies (Centers for Disease Control and Prevention)
 
-Remote | March 2022 – 2026
+Remote | 2024 – 2026
 
 - Partner with CDC program stakeholders to clarify surveillance mapping requirements and define delivery approaches for dashboards, web maps, and recurring data products.
 - Design and maintain enterprise GIS application patterns using ArcGIS Enterprise, JavaScript, React, and Power BI for public health programs.
 - Architect SQL Server and PostgreSQL/PostGIS data layers and Python/SQL ETL pipelines that support automated geospatial updates at scale.
 - Advise teams on enterprise GIS standards, automation strategy, and sustainable application maintenance.
+
+### Geographer | Centers for Disease Control and Prevention
+
+Remote | March 2022 – 2024
+
+- Same CDC Geographer role as a federal employee: surveillance web maps, dashboards, and geospatial ETL with ArcGIS Enterprise, Python, and SQL.
 
 ### Founder | Vector Scope AI LLC
 

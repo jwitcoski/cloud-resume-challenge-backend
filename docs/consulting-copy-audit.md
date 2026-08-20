@@ -62,12 +62,12 @@ The revised goal is not "win consulting clients" but help **employers, teammates
 4. What you build on your own (Vector Scope AI playground, case studies, labs)
 5. How to reach you
 
-**Copy problems to fix:**
+**Copy problems addressed in this pass:**
 
-1. **Accuracy fixes required:** IC/USPIS → USPIS; remove TS/SCI; align years-of-experience with 2007 start; clarify Vector Scope AI is an R&D playground, not consulting.
-2. **Tone fixes:** Reduce jargon ("Solutions Architect lens," "product-grade," "table stakes"), em dashes, and blog hype ("thrilled to announce," "utilizing").
-3. **Positioning gap:** Homepage is résumé-dense but does not say plainly that this is a **professional portfolio** (employers/peers) or what Vector Scope AI is for.
-4. **Not needed:** Services page, engagement model, client testimonials, or consulting CTAs like "Ask about a project."
+1. **Accuracy:** IC/USPIS → U.S. Postal Inspection Service (USPIS); TS/SCI removed; FEMA removed (DHS only); Azure named for National Grid; Vector Scope AI described as an experimental playground.
+2. **Tone:** Reduced jargon ("Solutions Architect lens," "product-grade," "table stakes"), em dashes in key spots, and blog hype ("thrilled to announce," "utilizing").
+3. **Positioning:** About Me and contact copy now speak to employers/recruiters, not consulting clients.
+4. **Not added:** Services page, engagement model, or sales CTAs.
 
 ---
 
@@ -139,18 +139,11 @@ The revised goal is not "win consulting clients" but help **employers, teammates
 
 ## Remaining questions
 
-**R1. CDC federal vs contractor split**  
-You wrote: "cdc fed for 4 years, contractor with same job for 2." The site currently shows DRT Strategies (CDC) as contractor, March 2022–2026 (~4 years), and Census as federal 2016–2021. There is no separate federal CDC job on the timeline. Did you mean:
+**R1. CDC federal vs contractor split** — answered: federal for the first 2 years, then contractor for 2 (same Geographer job). Applied as CDC 2022–2024 (federal) and DRT Strategies 2024–2026 (contractor). Switch year is 2024; exact month of conversion was not given, so résumés keep March 2022 as the federal start and use 2024 as the contractor start year.
 
-- A) Keep the site as-is (DRT contractor 2022–2026; Census is the federal role)
-- B) Add a federal CDC role (need title, dates, employer)
-- C) Something else: ___
+**R2. USPS ITS on the INCATech résumé variant** — keep (confirmed).
 
-**R2. USPS ITS on the INCATech résumé variant**  
-That file still mentions a short USPS ITS / PlanIT Group contract (Oct–Nov 2025) under Vector Scope AI. Keep, move, or remove?
-
-**R3. Downloadable PDF**  
-Markdown résumés were updated. If `Jonathan_Witcoski_Resume_2026.pdf` is generated from those files, it needs a rebuild to match.
+**R3. Downloadable PDF** — rebuilt from the updated markdown.
 
 ---
 
@@ -167,7 +160,7 @@ Markdown résumés were updated. If `Jonathan_Witcoski_Resume_2026.pdf` is gener
 
 ## Next steps
 
-Review the live copy diffs. Reply with R1–R3 if you want further fact fixes. PDFs may need a separate rebuild.
+Copy edits from the approved audit are applied. Optional content gaps above can wait.
 
 ---
 
@@ -178,3 +171,4 @@ Review the live copy diffs. Reply with R1–R3 if you want further fact fixes. P
 | 2026-08-20 | Initial audit |
 | 2026-08-20 | Reframed as GIS professional portfolio (not consulting) |
 | 2026-08-20 | Applied approved copy edits from owner answers (Q1c–Q12) |
+| 2026-08-20 | Split CDC role: federal 2022–2024, DRT contractor 2024–2026; rebuilt downloadable PDFs |

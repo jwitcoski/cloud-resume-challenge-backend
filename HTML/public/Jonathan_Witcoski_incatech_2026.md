@@ -34,12 +34,18 @@ Remote | October 2025 – Present
 
 ### Geographer | DRT Strategies (CDC)
 
-Remote | March 2022 – 2026
+Remote | 2024 – 2026
 
 - Develop web mapping applications and dashboards with ArcGIS Enterprise, ArcGIS API for JavaScript, JavaScript, React, and Power BI for CDC surveillance programs
 - Translate program requirements into geospatial application designs, ETL workflows, and recurring map products
 - Build SQL Server and PostgreSQL/PostGIS databases and Python/SQL ETL pipelines for automated geospatial updates
 - Collaborate with non-technical stakeholders to align technical deliverables with mission needs
+
+### Geographer | Centers for Disease Control and Prevention
+
+Remote | March 2022 – 2024
+
+- Same CDC Geographer role as a federal employee: surveillance web maps, dashboards, and geospatial ETL with ArcGIS Enterprise, Python, and SQL
 
 ### GIS Data Engineer & Scrum Master | Saicon (National Grid)
 

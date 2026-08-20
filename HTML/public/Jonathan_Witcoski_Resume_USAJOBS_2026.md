@@ -18,7 +18,7 @@ Geographic Information Systems (GIS) developer with more than 15 years of experi
 
 **Employer:** DRT Strategies (Centers for Disease Control and Prevention)  
 **Location:** Remote  
-**Dates:** 03/2022 – 2026  
+**Dates:** 2024 – 2026  
 **Hours per week:** 40  
 **Supervisor:** Available upon request | May contact: Yes
 
@@ -26,6 +26,16 @@ Geographic Information Systems (GIS) developer with more than 15 years of experi
 - Use R and Python to build PMTiles and GeoParquet datasets that feed dashboards and web maps.
 - Build SQL Server and PostgreSQL/PostGIS databases and Python/SQL ETL pipelines for recurring geospatial updates.
 - Support CDC teams on enterprise GIS standards, automation, and application maintenance.
+
+### Geographer
+
+**Employer:** Centers for Disease Control and Prevention  
+**Location:** Remote  
+**Dates:** 03/2022 – 2024  
+**Hours per week:** 40  
+**Supervisor:** Available upon request | May contact: Yes
+
+- Same CDC Geographer role as a federal employee: surveillance web maps, dashboards, and geospatial ETL with ArcGIS Enterprise, Python, and SQL.
 
 ### Founder
 
