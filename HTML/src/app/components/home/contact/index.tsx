@@ -37,7 +37,10 @@ export default function Contact() {
                 <div className="border-x border-primary/10">
                     <div className="flex flex-col max-w-3xl mx-auto px-4 sm:px-7 py-10 md:py-16">
                         <p className="text-sm tracking-[2px] text-primary uppercase font-medium mb-6">Contact</p>
-                        <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-[32px] mb-8">Get in touch</h2>
+                        <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-[32px] mb-3">Get in touch</h2>
+                        <p className="text-secondary mb-8">
+                            If you are hiring for a GIS or cloud architecture role, or reviewing my résumé, you can reach me here.
+                        </p>
                         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
                             <div className="flex flex-col gap-2">
                                 <label htmlFor="name" className="text-sm font-medium text-primary">Name</label>
@@ -69,7 +72,7 @@ export default function Contact() {
                                     required
                                     rows={5}
                                     className="w-full px-4 py-3 border border-primary/20 rounded-lg bg-background text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 resize-y"
-                                    placeholder="Your message"
+                                    placeholder="Role, team, or question"
                                 />
                             </div>
                             {status === "success" && (

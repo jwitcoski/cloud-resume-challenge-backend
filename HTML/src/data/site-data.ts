@@ -19,7 +19,7 @@ export const experienceData = [
         startYear: "2026",
         endYear: "Present",
         bulletPoints: [
-            "Design, build, and maintain enterprise geodatabases and geospatial workflows with ArcGIS Enterprise, Online, and Desktop for IC and USPIS missions",
+            "Design, build, and maintain enterprise geodatabases and geospatial workflows with ArcGIS Enterprise, Online, and Desktop for U.S. Postal Inspection Service (USPIS) missions",
             "Automate spatial analysis, data validation, and ETL with Python and SQL across Oracle, SQL Server, and PostgreSQL",
             "Produce web maps and visualizations, and support GIS users with troubleshooting, migrations, and documentation"
         ]
@@ -54,7 +54,7 @@ export const experienceData = [
         startYear: "2021",
         endYear: "2022",
         bulletPoints: [
-            "Migrated large utility GIS datasets to cloud-hosted ArcGIS Enterprise using Python and SQL",
+            "Migrated large utility GIS datasets to Azure-hosted ArcGIS Enterprise using Python and SQL",
             "Led Agile delivery of migration milestones and spatial data quality checks"
         ]
     },
@@ -82,13 +82,13 @@ export const experienceData = [
     },
     {
         initials: "BAH",
-        role: "Geospatial Analyst | Booz Allen Hamilton (DHS/FEMA)",
+        role: "Geospatial Analyst | Booz Allen Hamilton (DHS)",
         location: "Philadelphia, PA & Arlington, VA",
         startYear: "2009",
         endYear: "2014",
         bulletPoints: [
-            "Built maps, spatial analysis workflows, and web GIS tools for FEMA and DHS disaster response",
-            "Supported situational awareness and decision-making during major disaster operations"
+            "Built maps, spatial analysis workflows, and web GIS tools for DHS disaster response",
+            "Processed and analyzed raster and imagery datasets during major disaster operations"
         ]
     },
 ];
@@ -130,7 +130,7 @@ export const featureWork = [
         description:
             "This site’s edge-to-API AWS stack: S3 + CloudFront + Route 53 for the static front, API Gateway + Lambda + DynamoDB for the visitor counter, SAM and GitHub Actions for IaC/CI/CD.",
         outcome:
-            "End-to-end cloud architecture you can click through — proof of designing, deploying, and operating a full static+serverless product.",
+            "You can click through the full stack on this site: static hosting, DNS, a serverless counter API, and the IaC/CI pipeline that deploys it.",
         roles: ["S3", "CloudFront", "Route 53", "API Gateway", "Lambda", "DynamoDB", "SAM", "CI/CD"],
         image: "/images/feature-work/architecture/cloud-resume.png",
         url: "/cloud-resume-challenge/",
@@ -140,7 +140,7 @@ export const featureWork = [
         description:
             "Language-learning product on AWS: S3 + CloudFront host the lessons; Lambda ties Amazon Transcribe speech-to-text to Bedrock Nova for speak-check feedback.",
         outcome:
-            "Composed managed AI services instead of a custom ML stack so learners get pronunciation feedback from a lightweight serverless architecture.",
+            "Used Transcribe and Bedrock instead of a custom ML stack so learners get pronunciation feedback from a small serverless setup.",
         roles: ["S3", "CloudFront", "Lambda", "Transcribe", "Bedrock"],
         image: "/images/feature-work/architecture/learn-bosnian.png",
         url: "https://github.com/jwitcoski/learnbosnian",
@@ -150,7 +150,7 @@ export const featureWork = [
         description:
             "Planned hybrid ArcGIS + AWS lakehouse: editing and validation APIs bridging enterprise GIS into Iceberg tables, GeoParquet, and changelog history. Not built yet — architecture target only.",
         outcome:
-            "Holding the design pattern for versioned, queryable map updates across Esri and cloud analytics stacks until the product ships.",
+            "Documents the planned design for versioned map edits across ArcGIS and cloud analytics. The product is not built yet.",
         roles: ["ArcGIS", "AWS", "Iceberg", "GeoParquet"],
         image: "/images/feature-work/architecture/vector-ledger.png",
         url: "https://vectorscopeai.com",

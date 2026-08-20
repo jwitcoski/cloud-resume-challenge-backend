@@ -3,7 +3,7 @@
 **Email:** jwitcoski@gmail.com | **Phone:** (570) 582-3933 | **LinkedIn:** linkedin.com/in/jonathanwitcoski/  
 **Location:** Washington, DC metropolitan area | **Work authorization:** U.S. citizen | **Availability:** Immediate
 
-Enterprise technology professional with 18+ years translating business and operational requirements into implementable geospatial and cloud solutions for federal agencies and regulated industries. Experienced leading discovery through delivery: refining scope with stakeholders, evaluating platform and tooling trade-offs, guiding architecture decisions, and coordinating cross-functional implementation. Background includes CDC public health systems, utility cloud migration, census production platforms, and FEMA/DHS emergency operations support in the National Capital Region.
+Enterprise technology professional with 18+ years translating business and operational requirements into implementable geospatial and cloud solutions for federal agencies and regulated industries. Experienced leading discovery through delivery: refining scope with stakeholders, evaluating platform and tooling trade-offs, guiding architecture decisions, and coordinating cross-functional implementation. Background includes CDC public health systems, utility cloud migration, census production platforms, and DHS emergency operations support in the National Capital Region.
 
 ## CORE COMPETENCIES
 
@@ -20,7 +20,7 @@ Solution design & requirements analysis · Build vs. buy and platform evaluation
 
 ### Geographer | DRT Strategies (Centers for Disease Control and Prevention)
 
-Remote | March 2022 – Present
+Remote | March 2022 – 2026
 
 - Partner with CDC program stakeholders to clarify surveillance mapping requirements and define delivery approaches for dashboards, web maps, and recurring data products.
 - Design and maintain enterprise GIS application patterns using ArcGIS Enterprise, JavaScript, React, and Power BI for public health programs.
@@ -38,7 +38,7 @@ Remote | October 2025 – Present
 
 Remote | May 2021 – March 2022
 
-- Led cloud migration of large utility GIS datasets to ArcGIS Enterprise, coordinating technical dependencies across data engineering and operations teams.
+- Led cloud migration of large utility GIS datasets to ArcGIS Enterprise on Azure, coordinating technical dependencies across data engineering and operations teams.
 - Facilitated Agile delivery of migration milestones, spatial data quality controls, and implementation planning with program stakeholders.
 
 ### Geographer | U.S. Census Bureau
@@ -55,12 +55,12 @@ Reston, VA | May 2014 – November 2016
 - Administered ArcGIS Server and Portal deployments backed by SQL Server for federal clients, including capacity, security, and integration planning.
 - Built secure web mapping applications supporting hundreds of concurrent users.
 
-### Geospatial Analyst | Booz Allen Hamilton (DHS/FEMA)
+### Geospatial Analyst | Booz Allen Hamilton (DHS)
 
 Philadelphia, PA & Arlington, VA | October 2009 – May 2014
 
-- Supported FEMA and DHS disaster response operations with maps, spatial analysis workflows, and web GIS tools for situational awareness.
-- Collaborated with mission stakeholders during major disaster events to align technical deliverables with operational decision-making needs.
+- Supported DHS disaster response operations with maps, spatial analysis workflows, and web GIS tools.
+- Collaborated with mission stakeholders during major disaster events to align technical deliverables with operational needs.
 
 ### Earlier Roles
 

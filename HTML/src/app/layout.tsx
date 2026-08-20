@@ -11,7 +11,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "Jonathan Witcoski — Solutions Architect · GIS & Cloud",
-  description: "Solutions Architect–track GIS engineer. 15+ years designing enterprise geospatial systems on ArcGIS, AWS, and spatial data platforms for CDC, utilities, and federal clients.",
+  description: "Solutions Architect–track GIS engineer. 15+ years designing enterprise geospatial systems on ArcGIS, AWS, and spatial data platforms for CDC, utilities, and federal agencies.",
 };
 
 export default function RootLayout({

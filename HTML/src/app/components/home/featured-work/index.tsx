@@ -19,7 +19,7 @@ const FeaturedWork = () => {
                             </Button>
                         </div>
                         <p className="text-secondary text-sm sm:text-base max-w-2xl">
-                            Case studies in how cloud platforms and services ship a product — the Solutions Architect lens, not a feature checklist.
+                            Each project explains a platform choice: why Docker instead of Lambda, why one Parquet file feeds both map and wiki, and what broke along the way.
                         </p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 border-t border-primary/10">

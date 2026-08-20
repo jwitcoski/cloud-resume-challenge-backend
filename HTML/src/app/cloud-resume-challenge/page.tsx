@@ -44,12 +44,12 @@ export default function CloudResumeChallengePage() {
             </p>
           </aside>
 
-          <p className="leading-relaxed mb-4">Hello everyone, I&apos;m Jonathan.</p>
+          <p className="leading-relaxed mb-4">I&apos;m Jonathan Witcoski.</p>
           <p className="leading-relaxed mb-6">
             I&apos;ve been working near the cloud industry for the past few years, but my
-            focus has primarily been on utilizing products already produced in cloud
-            services rather than designing them. With some free time on my hands, I
-            decided to challenge myself by taking on the{" "}
+            focus has primarily been on using products other teams had already built
+            rather than designing the architecture myself. With some free time, I
+            took on the{" "}
             <a
               href="https://cloudresumechallenge.dev/docs/the-challenge/aws/"
               target="_blank"
@@ -58,8 +58,7 @@ export default function CloudResumeChallengePage() {
             >
               Cloud Resume Challenge
             </a>
-            . After two years of effort, I&apos;m thrilled to announce that I&apos;ve completed
-            the challenge!
+            . After two years of on-and-off work, I finished the challenge in 2023.
           </p>
 
           <figure className="my-8">
@@ -242,7 +241,7 @@ export default function CloudResumeChallengePage() {
             Since no one really wants to read a resume, I decided to expand the
             challenge into something more interesting by showcasing my cartographic and
             geographic skills. I created ski maps using an open-source GIS program
-            called QGIS, utilizing DEM data from{" "}
+            called QGIS, using DEM data from{" "}
             <a
               href="https://opentopography.org/"
               target="_blank"
@@ -521,8 +520,7 @@ export default function CloudResumeChallengePage() {
           </ul>
 
           <p className="leading-relaxed mb-8">
-            Feel free to reach out if you have any questions or just want to chat about
-            Cloud Computing, GIS, or Skiing!
+            Reach out if you have questions about this project, GIS, or cloud architecture.
           </p>
 
           <Link

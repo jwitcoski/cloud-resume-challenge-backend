@@ -24,7 +24,7 @@ const PlatformLabs = () => {
                 Mapping and cloud playgrounds
               </h2>
               <p className="text-secondary">
-                Same hub pattern for each stack — why I use it, what I&apos;ve built, and what&apos;s coming next.
+                Each link opens a short write-up: when I pick that platform, what I&apos;ve built with it, and what is still in progress.
               </p>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">

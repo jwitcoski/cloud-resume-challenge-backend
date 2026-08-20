@@ -1,24 +1,33 @@
 # GIS Professional Portfolio Copy Audit — witcoskitech.com
 
-**Date:** August 20, 2026 (updated with owner clarifications)  
+**Date:** August 20, 2026 (copy edits applied after owner answers)  
 **Site purpose:** Online résumé and portfolio for a **GIS professional** transitioning toward solution architecture. **Not a consulting business.**  
 **Scope:** Public-facing English copy on the Next.js site (`HTML/`), platform playgrounds, downloadable résumés, History archive, Cloud Resume Challenge blog, and AWS study UI chrome.  
 **Out of scope:** Quiz/study-guide corpus in `HTML/study-lab/` (~630 questions, 30 guides).
 
-No application files have been changed yet.
+**Status:** Approved copy edits have been applied to webpage and résumé files. No routes, APIs, schema, analytics, or styling were changed.
 
 ---
 
 ## Owner clarifications (confirmed)
 
-| Topic | Your answer | Implication for copy |
-|-------|-------------|---------------------|
-| Role | GIS professional | Voice should read as an experienced practitioner, not faculty and not a consultant |
-| Consulting | Not doing consulting work | Remove client/engagement/services framing; contact is for professional connection, not billable work |
-| Vector Scope AI LLC | Playground for cutting-edge GIS experiments | Side R&D lab, not a client-facing firm; explain briefly on homepage |
-| Clearance | No TS/SCI | **Remove** TS/SCI and classified-environment claims from Esri playground and anywhere else |
-| Current employer mission | USPIS (not IC/USPIS) | Fix `site-data.ts`, résumé variants, and Esri playground lede that say "IC and USPIS" or "IC/DoD" |
-| Career start | 2007 | Site copy says "15+ years"; from 2007 to 2026 that is **19 years**. Decide preferred phrasing (see open questions) |
+| Topic | Your answer | How copy treats it |
+|-------|-------------|-------------------|
+| Role | GIS professional, not a professor | Practitioner voice |
+| Consulting | Not doing consulting | Contact is for hiring managers/recruiters, not billable work |
+| Vector Scope AI LLC | Playground (you had no preferred slogan) | "a playground for experimental GIS and cloud projects" |
+| Clearance | No TS/SCI | Removed from Esri playground |
+| Current employer mission | USPIS, not IC/USPIS | First mention spelled out: U.S. Postal Inspection Service (USPIS) |
+| Career start | 2007, keep **15+ years** (Q1c) | Homepage, Esri lede, and main résumé keep "15+ years" |
+| Contact | Employers/recruiters (Q2a) | Contact intro added; CTA stays "Get in touch" |
+| Tagline | "Whatever pays the most" (Q3) | Keep **Solutions Architect · GIS & Cloud** |
+| National Grid | Azure (Q5) | Experience bullets now say Azure-hosted ArcGIS Enterprise |
+| DRT / CDC | Finished 2026 (Q6) | Timeline stays 2022–2026; "Previously DRT Strategies (CDC)" |
+| Booz Allen | DHS only, remove FEMA (Q7) | FEMA removed from site, playgrounds, and résumé variants |
+| SAA-C03 | Still in progress (Q8) | Education/homepage unchanged |
+| Cloud Resume Challenge | Completed **2023** (Q9) | Blog opener updated |
+| Public names | Fine as-is (Q11) | CDC, National Grid, Census, DHS, Booz Allen remain |
+| Esri years (Q12) | No preference | Keep 15+ years to match Q1c |
 
 ---
 
@@ -112,13 +121,13 @@ The revised goal is not "win consulting clients" but help **employers, teammates
 
 ---
 
-## Revised five highest-impact changes
+## Highest-impact changes (applied)
 
-1. **Fix factual strings:** USPIS-only (drop IC/USPIS/IC/DoD); remove TS/SCI from Esri playground; align experience years with 2007 start across homepage, metadata, and Esri lede.
-2. **Rewrite About Me** to state GIS professional + SA-track, Vector Scope AI as R&D playground, and employment focus (not consulting).
-3. **Replace Cloud architecture section intro** to drop "Solutions Architect lens" jargon.
-4. **Add one sentence above the contact form** explaining who should write (employers, peers, collaborators) since this is not a consulting intake form.
-5. **Tone-edit Cloud Resume Challenge opening** (remove "utilizing," "thrilled to announce," exclamation marks).
+1. **Factual strings:** USPIS spelled out; IC/DoD and TS/SCI removed; FEMA removed (DHS only); National Grid named as Azure; "15+ years" kept.
+2. **About Me:** SA-track GIS engineer; Vector Scope AI as experimental playground; federal agencies not clients; DHS not FEMA/DHS.
+3. **Cloud architecture intro:** Platform-choice language instead of "Solutions Architect lens."
+4. **Contact:** One sentence for hiring managers and résumé reviewers; placeholder "Role, team, or question."
+5. **Cloud Resume Challenge:** Removed "utilizing" and "thrilled to announce"; completion year set to 2023.
 
 ---
 
@@ -128,98 +137,37 @@ The revised goal is not "win consulting clients" but help **employers, teammates
 
 ---
 
-## Content gaps (for you to fill — not for AI to invent)
+## Remaining questions
 
-These would strengthen the **résumé/portfolio** story without implying consulting:
+**R1. CDC federal vs contractor split**  
+You wrote: "cdc fed for 4 years, contractor with same job for 2." The site currently shows DRT Strategies (CDC) as contractor, March 2022–2026 (~4 years), and Census as federal 2016–2021. There is no separate federal CDC job on the timeline. Did you mean:
 
-1. **One-line site purpose** near the hero or About section: e.g. "Portfolio and case studies for GIS and cloud architecture roles."
-2. **Primary audience you want** (hiring managers, GIS teams, SA interviewers, peers) in your own words.
-3. **Vector Scope AI description** you are happy with publicly (you said "cutting edge GIS playground"; we can soften to "experimental" or "R&D" if you prefer less marketing tone).
-4. **Contact intent:** job inquiries, networking, technical questions about projects, speaking/media, or all of the above.
-5. **Whether early roles (2007 Tyco, WDG, Philmont)** should appear on the main site timeline or stay in PDF résumés only.
-6. **Privacy note** for the Formspree contact form (one paragraph).
-7. **Verified metrics** for case studies if you want them (e.g. 3,000+ ski areas is already in experience bullets).
+- A) Keep the site as-is (DRT contractor 2022–2026; Census is the federal role)
+- B) Add a federal CDC role (need title, dates, employer)
+- C) Something else: ___
 
-**Removed from plan (not applicable):** services page, engagement/pricing, client testimonials, consulting FAQ, "how engagements work."
+**R2. USPS ITS on the INCATech résumé variant**  
+That file still mentions a short USPS ITS / PlanIT Group contract (Oct–Nov 2025) under Vector Scope AI. Keep, move, or remove?
+
+**R3. Downloadable PDF**  
+Markdown résumés were updated. If `Jonathan_Witcoski_Resume_2026.pdf` is generated from those files, it needs a rebuild to match.
 
 ---
 
-## Open questions (please answer)
+## Content gaps still optional (do not invent)
 
-### Experience and dates
+1. One-line site purpose under the hero ("Portfolio for GIS and cloud architecture roles")
+2. Whether 2007 Tyco / WDG / Philmont should appear on the **homepage** timeline
+3. Privacy note for the Formspree contact form
+4. Verified metrics for case studies
 
-**Q1. Years of experience**  
-You said you started working in 2007. The site says "15+ years" in several places. Which do you want on the public site?
-
-- A) "Since 2007" (exact, no math)
-- B) "19 years" / "nearly 20 years" (as of 2026)
-- C) Keep "15+ years" (understated rounding)
-- D) Something else: ___
-
-**Q2. Contact section purpose**  
-Who is the contact form mainly for, and what should the heading/intro say?
-
-- Employers / recruiters reviewing your résumé?
-- Former colleagues and peers?
-- Anyone with a technical question about your projects?
-- Should skiing/GIS/cloud blog readers be invited explicitly?
-
-**Q3. Solutions Architect positioning**  
-The hero tagline is **Solutions Architect · GIS & Cloud**. Are you actively pursuing SA roles, or should the tagline lead with **GIS** and mention SA study as secondary?
-
-### Employment details
-
-**Q4. USPIS wording**  
-For INCATech copy, do you want:
-
-- A) "USPIS missions" only (minimal)
-- B) "U.S. Postal Inspection Service (USPIS)" spelled out once, then USPIS
-- C) Avoid naming the agency on the public site entirely
-
-The INCATech résumé variant also mentions "Recent USPS ITS contract experience." Is that accurate and OK to keep, or should it be removed/changed?
-
-**Q5. National Grid / Azure**  
-The Azure playground says you migrated utility GIS to ArcGIS Enterprise **on Azure**. Your main résumé says "cloud-hosted" without naming Azure. Which is correct for public copy?
-
-**Q6. DRT Strategies end date**  
-`site-data.ts` shows 2022–2026. About Me says "Previously DRT Strategies (CDC)." Is that role fully ended? Should the end year stay 2026 on the site?
-
-**Q7. FEMA/Booz Allen bullet**  
-Current: "Supported situational awareness and decision-making during major disaster operations."  
-Proposed: "Built maps and spatial workflows used during major FEMA and DHS disaster operations."  
-Keep original, use proposed, or rewrite differently?
-
-### Certifications and projects
-
-**Q8. AWS SAA-C03 status**  
-Education lists "In progress" (2026). Study page says started June 2026. Has the exam been scheduled, passed, or still in progress? What should the site say today?
-
-**Q9. Cloud Resume Challenge completion**  
-Opening line says you completed after two years; sections run 2021–2024+. What year should the blog cite as completion?
-
-**Q10. Vector Scope AI phrasing**  
-You described it as a playground for "cutting edge GIS." That phrase is close to marketing/AI buzzword territory. Do you prefer:
-
-- A) "cutting-edge GIS" (your words)
-- B) "experimental GIS and cloud projects"
-- C) "R&D playground for GIS tools and maps"
-- D) Your wording: ___
-
-### Public naming
-
-**Q11. Employer and client names on the public site**  
-CDC, National Grid, Census, FEMA/DHS, Booz Allen appear by name. Any you want shortened or removed from the **public website** (even if they stay on PDF résumés)?
-
-**Q12. Esri playground "15+ years" lede**  
-Besides fixing IC/DoD → USPIS and removing TS/SCI, should the Esri hub lede match the same years phrasing you pick in Q1?
+**Not applicable:** services page, consulting FAQ, engagement model.
 
 ---
 
 ## Next steps
 
-1. Answer the open questions above (even short A/B/C replies help).
-2. Confirm or edit the proposed revision tables.
-3. After that, I will apply approved copy changes to webpage files only (no code behavior changes).
+Review the live copy diffs. Reply with R1–R3 if you want further fact fixes. PDFs may need a separate rebuild.
 
 ---
 
@@ -228,4 +176,5 @@ Besides fixing IC/DoD → USPIS and removing TS/SCI, should the Esri hub lede ma
 | Date | Change |
 |------|--------|
 | 2026-08-20 | Initial audit |
-| 2026-08-20 | Reframed as GIS professional portfolio (not consulting); incorporated owner clarifications on professor, Vector Scope AI, USPIS, TS/SCI, 2007 start |
+| 2026-08-20 | Reframed as GIS professional portfolio (not consulting) |
+| 2026-08-20 | Applied approved copy edits from owner answers (Q1c–Q12) |
