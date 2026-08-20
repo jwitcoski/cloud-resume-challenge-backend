@@ -78,7 +78,7 @@ GIS Solutions Developer, Tyco Telecommunications (2007–2009) · GIS Analyst, W
 
 **Global Ski Atlas** — Multi-tier AWS architecture: Docker/ECS pipeline for OSM → GeoParquet/PMTiles, S3 delivery, DynamoDB seed for ywiki ([globalskiatlas.com](https://globalskiatlas.com))
 
-**Vector Ledger** — Live collaborative GIS editing on AWS: versioned GeoParquet lake, proposals/approvals, PMTiles for web maps ([app.vectorscopeai.com](https://app.vectorscopeai.com))
+**Vector Scope AI** — Collaborative map editing on AWS with a versioned GeoParquet lake, proposal approvals, and PMTiles for web maps ([vectorscopeai.com](https://vectorscopeai.com))
 
 **ywiki** — Serverless Markdown wiki on Cognito, Lambda, and DynamoDB with revision workflows, designed to feed Ski Atlas content ([github.com/jwitcoski/ywiki](https://github.com/jwitcoski/ywiki))
 
