@@ -1,24 +1,36 @@
 # JONATHAN WITCOSKI
 
 **Email:** jwitcoski@gmail.com | **Phone:** (570) 582-3933  
-**Location:** Washington, DC metropolitan area (previously Reston, Virginia)  
+**Location:** Washington, DC metropolitan area (Reston, Virginia)  
 **Citizenship:** United States
 
 ---
 
 ## SUMMARY OF QUALIFICATIONS
 
-Geographic Information Systems (GIS) developer with more than 15 years of experience designing, building, and supporting enterprise geospatial applications for federal agencies and regulated industries. Skilled in Esri ArcGIS Enterprise, ArcGIS Online, ArcGIS Pro, Python, R, JavaScript, Structured Query Language (SQL), SQL Server, PostgreSQL/PostGIS, REST application programming interfaces (APIs), and automated extract-transform-load (ETL) workflows. Experience includes public health surveillance mapping, utility GIS migration, census geography production, and emergency management support for the Department of Homeland Security (DHS) and the Federal Emergency Management Agency (FEMA).
+Geographic Information Systems (GIS) developer with more than 15 years of experience designing, building, and supporting enterprise geospatial applications for federal agencies and regulated industries. Skilled in Esri ArcGIS Enterprise, ArcGIS Online, ArcGIS Pro, Python, R, JavaScript, Structured Query Language (SQL), SQL Server, PostgreSQL/PostGIS, REST application programming interfaces (APIs), and automated extract-transform-load (ETL) workflows. Experience includes public health surveillance mapping, utility GIS migration, and census geography production.
 
 ---
 
 ## WORK EXPERIENCE
 
+### Geospatial Engineer
+
+**Employer:** INCATech  
+**Location:** Reston, Virginia  
+**Dates:** 07/2026 – Present  
+**Hours per week:** 40  
+**Supervisor:** Available upon request | May contact: Yes
+
+- Design, build, and maintain enterprise geodatabases and geospatial workflows with ArcGIS Enterprise, ArcGIS Online, and ArcGIS Pro in support of Intelligence Community and U.S. Postal Inspection Service (USPIS) law-enforcement missions.
+- Automate spatial analysis, data validation, and extract-transform-load (ETL) workflows with Python and SQL across Oracle, SQL Server, and PostgreSQL.
+- Produce web maps and visualizations, and support GIS users with troubleshooting, migrations, and documentation.
+
 ### Geographer
 
 **Employer:** DRT Strategies (Centers for Disease Control and Prevention)  
 **Location:** Remote  
-**Dates:** 03/2022 – Present  
+**Dates:** 09/2024 – 07/2026  
 **Hours per week:** 40  
 **Supervisor:** Available upon request | May contact: Yes
 
@@ -26,6 +38,18 @@ Geographic Information Systems (GIS) developer with more than 15 years of experi
 - Use R and Python to build PMTiles and GeoParquet datasets that feed dashboards and web maps.
 - Build SQL Server and PostgreSQL/PostGIS databases and Python/SQL ETL pipelines for recurring geospatial updates.
 - Support CDC teams on enterprise GIS standards, automation, and application maintenance.
+
+### Geographer
+
+**Employer:** Centers for Disease Control and Prevention  
+**Location:** Remote  
+**Dates:** 03/2022 – 09/2024  
+**Hours per week:** 40  
+**Supervisor:** Available upon request | May contact: Yes
+
+- Develop web mapping applications and dashboards using ArcGIS Enterprise, JavaScript, React, and Power BI for CDC public health surveillance programs.
+- Use R and Python to build PMTiles and GeoParquet datasets that feed dashboards and web maps.
+- Build SQL Server and PostgreSQL/PostGIS databases and Python/SQL ETL pipelines for recurring geospatial updates.
 
 ### Founder
 

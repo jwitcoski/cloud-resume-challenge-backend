@@ -3,7 +3,7 @@
 **Email:** jwitcoski@gmail.com | **Phone:** (570) 582-3933 | **LinkedIn:** linkedin.com/in/jonathanwitcoski/  
 **Location:** Washington, DC metropolitan area | **Work authorization:** U.S. citizen | **Availability:** Immediate
 
-Enterprise technology professional with 18+ years translating business and operational requirements into implementable geospatial and cloud solutions for federal agencies and regulated industries. Experienced leading discovery through delivery: refining scope with stakeholders, evaluating platform and tooling trade-offs, guiding architecture decisions, and coordinating cross-functional implementation. Background includes CDC public health systems, utility cloud migration, census production platforms, and FEMA/DHS emergency operations support in the National Capital Region.
+Enterprise technology professional with 18+ years translating business and operational requirements into implementable geospatial and cloud solutions for federal agencies and regulated industries. Experienced leading discovery through delivery: refining scope with stakeholders, evaluating platform and tooling trade-offs, guiding architecture decisions, and coordinating cross-functional implementation. Background includes CDC public health systems, utility cloud migration, and census production platforms.
 
 ## CORE COMPETENCIES
 
@@ -18,14 +18,30 @@ Solution design & requirements analysis · Build vs. buy and platform evaluation
 
 ## PROFESSIONAL EXPERIENCE
 
+### Geospatial Engineer | INCATech
+
+Reston, VA | July 2026 – Present
+
+- Design and maintain enterprise geodatabases and geospatial workflows with ArcGIS Enterprise, Online, and Pro for Intelligence Community and USPIS missions.
+- Automate spatial analysis, data validation, and ETL with Python and SQL across Oracle, SQL Server, and PostgreSQL.
+- Support GIS users with troubleshooting, migrations, documentation, and web map delivery.
+
 ### Geographer | DRT Strategies (Centers for Disease Control and Prevention)
 
-Remote | March 2022 – Present
+Remote | September 2024 – July 2026
 
 - Partner with CDC program stakeholders to clarify surveillance mapping requirements and define delivery approaches for dashboards, web maps, and recurring data products.
 - Design and maintain enterprise GIS application patterns using ArcGIS Enterprise, JavaScript, React, and Power BI for public health programs.
 - Architect SQL Server and PostgreSQL/PostGIS data layers and Python/SQL ETL pipelines that support automated geospatial updates at scale.
 - Advise teams on enterprise GIS standards, automation strategy, and sustainable application maintenance.
+
+### Geographer | Centers for Disease Control and Prevention
+
+Remote | March 2022 – September 2024
+
+- Developed web mapping applications and dashboards using ArcGIS Enterprise, JavaScript, React, and Power BI for CDC public health surveillance programs.
+- Built R and Python workflows producing PMTiles and GeoParquet datasets for dashboards and web maps.
+- Built SQL Server and PostgreSQL/PostGIS databases and Python/SQL ETL pipelines for recurring geospatial updates.
 
 ### Founder | Vector Scope AI LLC
 

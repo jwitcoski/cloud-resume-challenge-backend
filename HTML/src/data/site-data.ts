@@ -15,8 +15,8 @@ export const experienceData = [
     {
         initials: "INCA",
         role: "Geospatial Engineer | INCATech",
-        location: "Northern Virginia",
-        startYear: "2026",
+        location: "Reston, VA",
+        startYear: "07/2026",
         endYear: "Present",
         bulletPoints: [
             "Design, build, and maintain enterprise geodatabases and geospatial workflows with ArcGIS Enterprise, Online, and Desktop for IC and USPIS missions",
@@ -39,12 +39,24 @@ export const experienceData = [
         initials: "DRT",
         role: "Geographer | DRT Strategies (CDC)",
         location: "Remote",
-        startYear: "2022",
-        endYear: "2026",
+        startYear: "09/2024",
+        endYear: "07/2026",
         bulletPoints: [
             "Develop web mapping applications and dashboards with ArcGIS Enterprise, JavaScript, React, and Power BI for CDC surveillance programs",
             "Use R and Python to build PMTiles and GeoParquet datasets that feed those dashboards and web maps",
             "Build SQL Server and PostgreSQL/PostGIS databases and Python/SQL ETL pipelines for recurring geospatial updates"
+        ]
+    },
+    {
+        initials: "CDC",
+        role: "Geographer | Centers for Disease Control and Prevention",
+        location: "Remote",
+        startYear: "03/2022",
+        endYear: "09/2024",
+        bulletPoints: [
+            "Developed web mapping applications and dashboards with ArcGIS Enterprise, JavaScript, React, and Power BI for CDC public health surveillance programs",
+            "Built R and Python workflows producing PMTiles and GeoParquet datasets for dashboards and web maps",
+            "Built SQL Server and PostgreSQL/PostGIS databases and Python/SQL ETL pipelines for recurring geospatial updates"
         ]
     },
     {
