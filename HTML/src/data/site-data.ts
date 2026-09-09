@@ -15,11 +15,11 @@ export const experienceData = [
     {
         initials: "INCA",
         role: "Geospatial Engineer | INCATech",
-        location: "Northern Virginia",
-        startYear: "2026",
+        location: "Reston, VA",
+        startYear: "07/2026",
         endYear: "Present",
         bulletPoints: [
-            "Design, build, and maintain enterprise geodatabases and geospatial workflows with ArcGIS Enterprise, Online, and Desktop for U.S. Postal Inspection Service (USPIS) missions",
+            "Design, build, and maintain enterprise geodatabases and geospatial workflows with ArcGIS Enterprise, Online, and Desktop for IC and USPIS missions",
             "Automate spatial analysis, data validation, and ETL with Python and SQL across Oracle, SQL Server, and PostgreSQL",
             "Produce web maps and visualizations, and support GIS users with troubleshooting, migrations, and documentation"
         ]
@@ -31,16 +31,16 @@ export const experienceData = [
         startYear: "2025",
         endYear: "Present",
         bulletPoints: [
-            "Ship Vector Scope AI on AWS with Cognito sign in, DynamoDB proposals and approvals, ECS convert and apply workers, and a versioned GeoParquet and PMTiles lake",
-            "Ship Global Ski Atlas (3,000+ ski areas) as a live MapTiler web map with Docker/ECS ETL (OSM → Parquet/PMTiles → DynamoDB for ywiki)"
+            "Build ArcGIS-connected web tools and Python pipelines for map editing, validation, and data extraction",
+            "Ship Global Ski Atlas (3,000+ ski areas) as a live MapTiler web map with automated ETL"
         ]
     },
     {
         initials: "DRT",
         role: "Geographer | DRT Strategies (CDC)",
         location: "Remote",
-        startYear: "2024",
-        endYear: "2026",
+        startYear: "09/2024",
+        endYear: "07/2026",
         bulletPoints: [
             "Develop web mapping applications and dashboards with ArcGIS Enterprise, JavaScript, React, and Power BI for CDC surveillance programs",
             "Use R and Python to build PMTiles and GeoParquet datasets that feed those dashboards and web maps",
@@ -51,10 +51,12 @@ export const experienceData = [
         initials: "CDC",
         role: "Geographer | Centers for Disease Control and Prevention",
         location: "Remote",
-        startYear: "2022",
-        endYear: "2024",
+        startYear: "03/2022",
+        endYear: "09/2024",
         bulletPoints: [
-            "Same CDC Geographer role as a federal employee: surveillance web maps, dashboards, and geospatial ETL with ArcGIS Enterprise, Python, and SQL"
+            "Developed web mapping applications and dashboards with ArcGIS Enterprise, JavaScript, React, and Power BI for CDC public health surveillance programs",
+            "Built R and Python workflows producing PMTiles and GeoParquet datasets for dashboards and web maps",
+            "Built SQL Server and PostgreSQL/PostGIS databases and Python/SQL ETL pipelines for recurring geospatial updates"
         ]
     },
     {
@@ -64,7 +66,7 @@ export const experienceData = [
         startYear: "2021",
         endYear: "2022",
         bulletPoints: [
-            "Migrated large utility GIS datasets to Azure-hosted ArcGIS Enterprise using Python and SQL",
+            "Migrated large utility GIS datasets to cloud-hosted ArcGIS Enterprise using Python and SQL",
             "Led Agile delivery of migration milestones and spatial data quality checks"
         ]
     },
@@ -92,13 +94,13 @@ export const experienceData = [
     },
     {
         initials: "BAH",
-        role: "Geospatial Analyst | Booz Allen Hamilton (DHS)",
+        role: "Geospatial Analyst | Booz Allen Hamilton (DHS/FEMA)",
         location: "Philadelphia, PA & Arlington, VA",
         startYear: "2009",
         endYear: "2014",
         bulletPoints: [
-            "Built maps, spatial analysis workflows, and web GIS tools for DHS disaster response",
-            "Processed and analyzed raster and imagery datasets during major disaster operations"
+            "Built maps, spatial analysis workflows, and web GIS tools for FEMA and DHS disaster response",
+            "Supported situational awareness and decision-making during major disaster operations"
         ]
     },
 ];
@@ -110,60 +112,39 @@ export const educationData = [
     { date: "2026", title: "AWS Solutions Architect – Associate (SAA-C03)", subtitle: "In progress — see study plan", url: "/aws-solutions-architect-study.html" }
 ];
 
-/**
- * Cloud architecture case studies — what Solutions Architect hiring managers should see first.
- * Each entry is framed around platform/service choices that ship a product, not feature lists.
- */
-export const featureWork = [
+/** Cloud architecture case studies — AWS and systems design, not client-only map demos. */
+export const cloudWork = [
     {
         title: "Global Ski Atlas",
-        description:
-            "Containerized GIS pipeline on AWS: Docker runs Python ETL against OpenStreetMap, writes GeoParquet and PMTiles to S3, and loads Parquet into DynamoDB for ywiki — because Lambda hit time/memory limits on regional OSM extracts.",
-        outcome:
-            "Moved heavy ETL from Lambda to Docker containers so resort data, map tiles, and wiki seed rows stay in sync as one product pipeline.",
-        roles: ["Docker", "ECS/Fargate", "OpenStreetMap", "GeoParquet", "PMTiles", "S3", "DynamoDB"],
-        image: "/images/feature-work/architecture/global-ski-atlas.png",
-        url: "https://globalskiatlas.com",
+        description: "Live ski-resort product on AWS — Step Functions, Lambda, DynamoDB, and S3 feeding a MapTiler web map.",
+        outcome: "Production serverless GIS backend keeps 3,000+ ski areas current via automated ETL instead of hand-edited layers.",
+        roles: ["AWS", "Step Functions", "Lambda", "DynamoDB", "Python ETL"],
+        image: "/images/feature-work/feature-img-1.jpg",
+        url: "https://globalskiatlas.com"
     },
     {
-        title: "ywiki",
-        description:
-            "Markdown wiki on AWS: Cognito for write auth, Lambda/API Gateway for the wiki API, DynamoDB for pages/revisions/comments — seeded from Global Ski Atlas Parquet so resort entries start from the same pipeline that builds the map.",
-        outcome:
-            "Reused the atlas Parquet → DynamoDB load instead of a separate content DB, so wiki and map share one ski-area source of truth.",
-        roles: ["Cognito", "Lambda", "DynamoDB", "SAM", "Parquet ingest"],
-        image: "/images/feature-work/architecture/ywiki.png",
-        url: "https://github.com/jwitcoski/ywiki",
+        title: "Vector Ledger",
+        description: "ArcGIS-connected editing and validation bridged to lakehouse patterns.",
+        outcome: "Map updates become validated, versioned, and queryable across Iceberg, GeoParquet, and changelog history.",
+        roles: ["ArcGIS", "AWS", "Iceberg", "GeoParquet", "REST APIs"],
+        image: "/images/feature-work/VectorLedger_AWS_ESRI_Architecture.png",
+        url: "https://vectorscopeai.com"
     },
     {
         title: "Cloud Resume Challenge",
-        description:
-            "This site’s edge-to-API AWS stack: S3 + CloudFront + Route 53 for the static front, API Gateway + Lambda + DynamoDB for the visitor counter, SAM and GitHub Actions for IaC/CI/CD.",
-        outcome:
-            "You can click through the full stack on this site: static hosting, DNS, a serverless counter API, and the IaC/CI pipeline that deploys it.",
-        roles: ["S3", "CloudFront", "Route 53", "API Gateway", "Lambda", "DynamoDB", "SAM", "CI/CD"],
-        image: "/images/feature-work/architecture/cloud-resume.png",
-        url: "/cloud-resume-challenge/",
+        description: "This site’s AWS stack — S3, CloudFront, Route 53, API Gateway, Lambda, DynamoDB, SAM, and CI/CD.",
+        outcome: "End-to-end cloud architecture you can click: static edge frontend plus a live visitor-counter API.",
+        roles: ["S3", "CloudFront", "Lambda", "DynamoDB", "SAM", "CI/CD"],
+        image: "/images/cloud-resume-challenge/CloudResumeArchitecture.png",
+        url: "/cloud-resume-challenge/"
     },
     {
         title: "Learn Bosnian",
-        description:
-            "Language-learning product on AWS: S3 + CloudFront host the lessons; Lambda ties Amazon Transcribe speech-to-text to Bedrock Nova for speak-check feedback.",
-        outcome:
-            "Used Transcribe and Bedrock instead of a custom ML stack so learners get pronunciation feedback from a small serverless setup.",
-        roles: ["S3", "CloudFront", "Lambda", "Transcribe", "Bedrock"],
-        image: "/images/feature-work/architecture/learn-bosnian.png",
-        url: "https://github.com/jwitcoski/learnbosnian",
-    },
-    {
-        title: "Vector Scope AI",
-        description:
-            "Collaborative map editing product on AWS. Staff sign in with Cognito, propose edits in the browser app, and reviewers approve or reject those proposals in DynamoDB. ECS workers convert shapefiles and apply approved changes into a private S3 lake of versioned GeoParquet and PMTiles.",
-        outcome:
-            "Approved edits become lake files for desktop GIS and tiles for web maps, so teams stop shipping shapefiles over email.",
-        roles: ["Cognito", "Lambda", "DynamoDB", "ECS", "S3", "GeoParquet", "PMTiles"],
-        image: "/images/feature-work/architecture/vector-ledger.png",
-        url: "https://vectorscopeai.com",
+        description: "30-day Bosnian lessons on AWS — S3 + CloudFront for the learner site and private recorder SPA, Lambda for audio login and uploads.",
+        outcome: "Learners tap vocab and dialogue to play voice-overs; talent records from a password-gated studio that uploads clips to S3 for CloudFront playback.",
+        roles: ["S3", "CloudFront", "Lambda", "API Gateway", "DynamoDB"],
+        image: "/images/feature-work/learnbosnian.png",
+        url: "https://github.com/jwitcoski/learnbosnian"
     },
 ];
 

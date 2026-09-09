@@ -16,7 +16,7 @@ Geospatial engineer with 15+ years building enterprise ArcGIS web applications, 
 
 ### Geospatial Engineer | INCATech
 
-Northern Virginia | 2026 – Present
+Reston, VA | July 2026 – Present
 
 - Design, build, and maintain enterprise geodatabases and geospatial workflows with ArcGIS Enterprise, Online, and Desktop for U.S. Postal Inspection Service (USPIS) missions
 - Automate spatial analysis, data validation, and ETL with Python and SQL across Oracle, SQL Server, and PostgreSQL
@@ -34,7 +34,7 @@ Remote | October 2025 – Present
 
 ### Geographer | DRT Strategies (CDC)
 
-Remote | 2024 – 2026
+Remote | September 2024 – July 2026
 
 - Develop web mapping applications and dashboards with ArcGIS Enterprise, ArcGIS API for JavaScript, JavaScript, React, and Power BI for CDC surveillance programs
 - Translate program requirements into geospatial application designs, ETL workflows, and recurring map products

@@ -14,6 +14,18 @@ Geographic Information Systems (GIS) developer with more than 15 years of experi
 
 ## WORK EXPERIENCE
 
+### Geospatial Engineer
+
+**Employer:** INCATech  
+**Location:** Reston, Virginia  
+**Dates:** 07/2026 – Present  
+**Hours per week:** 40  
+**Supervisor:** Available upon request | May contact: Yes
+
+- Design, build, and maintain enterprise geodatabases and geospatial workflows with ArcGIS Enterprise, ArcGIS Online, and ArcGIS Pro in support of Intelligence Community and U.S. Postal Inspection Service (USPIS) law-enforcement missions.
+- Automate spatial analysis, data validation, and extract-transform-load (ETL) workflows with Python and SQL across Oracle, SQL Server, and PostgreSQL.
+- Produce web maps and visualizations, and support GIS users with troubleshooting, migrations, and documentation.
+
 ### Geographer
 
 **Employer:** DRT Strategies (Centers for Disease Control and Prevention)  

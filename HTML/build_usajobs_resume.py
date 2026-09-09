@@ -87,7 +87,7 @@ def build_document():
     contact.paragraph_format.space_after = Pt(2)
     run = contact.add_run(
         "Email: jwitcoski@gmail.com | Phone: (570) 582-3933\n"
-        "Washington, DC metropolitan area (previously Reston, Virginia) | Citizenship: United States"
+        "Washington, DC metropolitan area (Reston, Virginia) | Citizenship: United States"
     )
     set_run_font(run, size=10)
 
@@ -99,8 +99,7 @@ def build_document():
         "Skilled in Esri ArcGIS Enterprise, ArcGIS Online, ArcGIS Pro, Python, R, JavaScript, Structured Query "
         "Language (SQL), SQL Server, PostgreSQL/PostGIS, REST application programming interfaces (APIs), and "
         "automated extract-transform-load (ETL) workflows. Experience includes public health surveillance mapping, "
-        "utility GIS migration, census geography production, and emergency management support for the Department "
-        "of Homeland Security (DHS) and the Federal Emergency Management Agency (FEMA).",
+        "utility GIS migration, and census geography production.",
         space_after=4,
     )
 
@@ -108,13 +107,41 @@ def build_document():
 
     add_job_block(
         doc,
+        "Geospatial Engineer",
+        [
+            "Employer: INCATech | Location: Reston, Virginia",
+            "Dates: 07/2026 – Present | Hours per week: 40 | Supervisor: Available upon request | May contact: Yes",
+        ],
+        [
+            "Design, build, and maintain enterprise geodatabases and geospatial workflows with ArcGIS Enterprise, ArcGIS Online, and ArcGIS Pro in support of Intelligence Community and U.S. Postal Inspection Service (USPIS) law-enforcement missions.",
+            "Automate spatial analysis, data validation, and extract-transform-load (ETL) workflows with Python and SQL across Oracle, SQL Server, and PostgreSQL.",
+            "Produce web maps and visualizations, and support GIS users with troubleshooting, migrations, and documentation.",
+        ],
+    )
+
+    add_job_block(
+        doc,
         "Geographer",
         [
             "Employer: DRT Strategies (Centers for Disease Control and Prevention) | Location: Remote",
-            "Dates: 03/2022 – Present | Hours per week: 40 | Supervisor: Available upon request | May contact: Yes",
+            "Dates: 09/2024 – 07/2026 | Hours per week: 40 | Supervisor: Available upon request | May contact: Yes",
         ],
         [
             "Develop web mapping applications and dashboards using ArcGIS Enterprise, JavaScript, React, and Power BI for Centers for Disease Control and Prevention (CDC) public health surveillance programs.",
+            "Use R and Python to build PMTiles and GeoParquet datasets that feed dashboards and web maps.",
+            "Build SQL Server and PostgreSQL/PostGIS databases and Python/SQL ETL pipelines for recurring geospatial updates.",
+        ],
+    )
+
+    add_job_block(
+        doc,
+        "Geographer",
+        [
+            "Employer: Centers for Disease Control and Prevention | Location: Remote",
+            "Dates: 03/2022 – 09/2024 | Hours per week: 40 | Supervisor: Available upon request | May contact: Yes",
+        ],
+        [
+            "Develop web mapping applications and dashboards using ArcGIS Enterprise, JavaScript, React, and Power BI for CDC public health surveillance programs.",
             "Use R and Python to build PMTiles and GeoParquet datasets that feed dashboards and web maps.",
             "Build SQL Server and PostgreSQL/PostGIS databases and Python/SQL ETL pipelines for recurring geospatial updates.",
         ],
